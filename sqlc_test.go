@@ -103,12 +103,8 @@ sql:
 		}
 		assertStringField(t, "Schema", config.SQL[0].Schema, "schema.sql")
 		assertStringField(t, "Engine", config.SQL[0].Engine, "postgresql")
-		if config.SQL[0].Gen.Go.Package != "db" {
-			t.Errorf("Package = %q, want %q", config.SQL[0].Gen.Go.Package, "db")
-		}
-		if config.SQL[0].Gen.Go.Out != "internal/db" {
-			t.Errorf("Out = %q, want %q", config.SQL[0].Gen.Go.Out, "internal/db")
-		}
+		assertStringField(t, "Package", config.SQL[0].Gen.Go.Package, "db")
+		assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "internal/db")
 	})
 
 	t.Run("non-existent file", func(t *testing.T) {
