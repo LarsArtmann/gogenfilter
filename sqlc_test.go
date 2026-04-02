@@ -53,7 +53,12 @@ func TestRecordSQLCConfig(t *testing.T) {
 			configs := make(map[string]string)
 			recordSQLCConfig(tt.filePath, configs)
 			if len(configs) != tt.wantLen {
-				t.Errorf("recordSQLCConfig(%q) added %d configs, want %d", tt.filePath, len(configs), tt.wantLen)
+				t.Errorf(
+					"recordSQLCConfig(%q) added %d configs, want %d",
+					tt.filePath,
+					len(configs),
+					tt.wantLen,
+				)
 			}
 			if tt.wantLen > 0 {
 				dir := filepath.Dir(tt.filePath)
@@ -142,7 +147,11 @@ func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("finds config in directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -158,10 +167,18 @@ func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("finds both yaml and yml", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -181,7 +198,11 @@ func TestFindSQLCConfigs(t *testing.T) {
 		if err := os.MkdirAll(nestedDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(nestedDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(nestedDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -201,7 +222,11 @@ func TestFindSQLCConfigs(t *testing.T) {
 		if err := os.MkdirAll(hiddenDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(hiddenDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(hiddenDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -221,7 +246,11 @@ func TestFindSQLCConfigs(t *testing.T) {
 		if err := os.MkdirAll(vendorDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(filepath.Join(vendorDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(vendorDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -278,7 +307,11 @@ sql:
         package: "models"
         out: "pkg/models"
 `
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yaml"), []byte(content), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yaml"),
+			[]byte(content),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -314,7 +347,11 @@ sql:
       go:
         package: "db"
 `
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yaml"), []byte(content), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yaml"),
+			[]byte(content),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
@@ -334,7 +371,11 @@ func TestTryAddSQLCConfig(t *testing.T) {
 	t.Run("adds existing config", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(filepath.Join(tmpDir, "sqlc.yaml"), []byte("version: \"2\""), 0o644); err != nil {
+		if err := os.WriteFile(
+			filepath.Join(tmpDir, "sqlc.yaml"),
+			[]byte("version: \"2\""),
+			0o644,
+		); err != nil {
 			t.Fatal(err)
 		}
 
