@@ -417,7 +417,11 @@ func TestFilterWithMetrics(t *testing.T) {
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				t.Fatalf("Failed to create dir: %v", err)
 			}
-			if err := os.WriteFile(filepath.Join(tmpDir, name), []byte(content), 0o644); err != nil {
+			if err := os.WriteFile(
+				filepath.Join(tmpDir, name),
+				[]byte(content),
+				0o644,
+			); err != nil {
 				t.Fatalf("Failed to write file: %v", err)
 			}
 		}
@@ -439,7 +443,10 @@ func TestFilterWithMetrics(t *testing.T) {
 			t.Errorf("Expected 1 Templ file filtered, got %d", stats.FilteredByReason[ReasonTempl])
 		}
 		if stats.FilteredByReason[ReasonGoEnum] != 1 {
-			t.Errorf("Expected 1 GoEnum file filtered, got %d", stats.FilteredByReason[ReasonGoEnum])
+			t.Errorf(
+				"Expected 1 GoEnum file filtered, got %d",
+				stats.FilteredByReason[ReasonGoEnum],
+			)
 		}
 		totalFiltered := stats.TotalFiltered()
 		if totalFiltered < 3 {
