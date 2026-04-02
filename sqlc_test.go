@@ -6,6 +6,13 @@ import (
 	"testing"
 )
 
+func assertStringField(t *testing.T, fieldName, actual, expected string) {
+	t.Helper()
+	if actual != expected {
+		t.Errorf("%s = %q, want %q", fieldName, actual, expected)
+	}
+}
+
 func TestHandleDirectoryWalk(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -94,12 +101,8 @@ sql:
 		if len(config.SQL) != 1 {
 			t.Fatalf("len(SQL) = %d, want 1", len(config.SQL))
 		}
-		if config.SQL[0].Schema != "schema.sql" {
-			t.Errorf("Schema = %q, want %q", config.SQL[0].Schema, "schema.sql")
-		}
-		if config.SQL[0].Engine != "postgresql" {
-			t.Errorf("Engine = %q, want %q", config.SQL[0].Engine, "postgresql")
-		}
+		assertStringField(t, "Schema", config.SQL[0].Schema, "schema.sql")
+		assertStringField(t, "Engine", config.SQL[0].Engine, "postgresql")
 		if config.SQL[0].Gen.Go.Package != "db" {
 			t.Errorf("Package = %q, want %q", config.SQL[0].Gen.Go.Package, "db")
 		}
