@@ -7,6 +7,21 @@ import (
 	"testing/quick"
 )
 
+func testPatternSetter(
+	t *testing.T,
+	f *Filter,
+	setter func(*Filter),
+	getPatterns func(*Filter) []string,
+	expectedLen int,
+) {
+	t.Helper()
+	setter(f)
+	patterns := getPatterns(f)
+	if len(patterns) != expectedLen {
+		t.Errorf("Expected %d patterns, got %d", expectedLen, len(patterns))
+	}
+}
+
 func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
@@ -459,10 +474,12 @@ func TestWithIncludePatterns(t *testing.T) {
 	t.Run("patterns test", func(t *testing.T) {
 		t.Parallel()
 		f := NewFilter(true, []FilterOption{FilterAll})
-		f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"})
-		if len(f.includePatterns) != 2 {
-			t.Errorf("Expected 2 include patterns, got %d", len(f.includePatterns))
-		}
+		testPatternSetter(
+			t, f,
+			func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
+			func(f *Filter) []string { return f.includePatterns },
+			2,
+		)
 	})
 }
 
@@ -470,10 +487,12 @@ func TestWithExcludePatterns(t *testing.T) {
 	t.Run("patterns test", func(t *testing.T) {
 		t.Parallel()
 		f := NewFilter(true, []FilterOption{FilterAll})
-		f.WithExcludePatterns([]string{"test/*", "*.pb.go"})
-		if len(f.excludePatterns) != 2 {
-			t.Errorf("Expected 2 exclude patterns, got %d", len(f.excludePatterns))
-		}
+		testPatternSetter(
+			t, f,
+			func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
+			func(f *Filter) []string { return f.excludePatterns },
+			2,
+		)
 	})
 }
 
