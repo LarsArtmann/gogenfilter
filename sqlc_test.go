@@ -135,6 +135,28 @@ sql:
 	})
 }
 
+func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
+	t.Helper()
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(
+		filepath.Join(dir, "sqlc.yaml"),
+		[]byte("version: \"2\""),
+		0o644,
+	); err != nil {
+		t.Fatal(err)
+	}
+
+	configs, err := FindSQLCConfigs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("FindSQLCConfigs() error = %v", err)
+	}
+	if len(configs) != 0 {
+		t.Errorf("len(configs) = %d, want 0", len(configs))
+	}
+}
+
 func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("finds config in directory", func(t *testing.T) {
 		t.Parallel()
@@ -210,49 +232,15 @@ func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("skips hidden directories", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		hiddenDir := filepath.Join(tmpDir, ".git")
-		if err := os.MkdirAll(hiddenDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(
-			filepath.Join(hiddenDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
-
-		configs, err := FindSQLCConfigs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
-		if len(configs) != 0 {
-			t.Errorf("len(configs) = %d, want 0 (should skip .git)", len(configs))
-		}
+		dir := filepath.Join(tmpDir, ".git")
+		testSQLCConfigInSkippedDir(t, tmpDir, dir)
 	})
 
 	t.Run("skips vendor directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		vendorDir := filepath.Join(tmpDir, "vendor")
-		if err := os.MkdirAll(vendorDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(
-			filepath.Join(vendorDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
-
-		configs, err := FindSQLCConfigs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
-		if len(configs) != 0 {
-			t.Errorf("len(configs) = %d, want 0 (should skip vendor)", len(configs))
-		}
+		dir := filepath.Join(tmpDir, "vendor")
+		testSQLCConfigInSkippedDir(t, tmpDir, dir)
 	})
 
 	t.Run("empty paths", func(t *testing.T) {
