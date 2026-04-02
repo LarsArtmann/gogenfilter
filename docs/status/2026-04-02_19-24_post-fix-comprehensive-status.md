@@ -51,20 +51,20 @@ Session recovery after interruption. The project had build cache corruption (`co
 - **Issues resolved:** 23 (66%)
 - **Remaining issues:** 12 (all acceptable)
 
-| #   | Severity | File                                       | Rule                      | Verdict         |
-| --- | -------- | ------------------------------------------ | ------------------------- | --------------- |
-| 1   | HIGH     | `detection.go`                             | root-package-files        | Intentional     |
-| 2   | HIGH     | `filter.go`                                | root-package-files        | Intentional     |
-| 3   | HIGH     | `metrics.go`                               | root-package-files        | Intentional     |
-| 4   | HIGH     | `pattern.go`                               | root-package-files        | Intentional     |
-| 5   | HIGH     | `project.go`                               | root-package-files        | Intentional     |
-| 6   | HIGH     | `sqlc.go`                                  | root-package-files        | Intentional     |
-| 7   | MEDIUM   | `internal/`                                | internal-directory        | Intentional     |
-| 8   | LOW      | `.golangci.yaml`                           | testdata-directory        | False positive  |
-| 9   | LOW      | `AGENTS.md`                                | testdata-directory        | False positive  |
-| 10  | LOW      | `CHANGELOG.md`                             | testdata-directory        | False positive  |
-| 11  | LOW      | `README.md`                                | testdata-directory        | False positive  |
-| 12  | LOW      | `docs/status/2026-04-02_17-45_...md`       | testdata-directory        | False positive  |
+| #   | Severity | File                                 | Rule               | Verdict        |
+| --- | -------- | ------------------------------------ | ------------------ | -------------- |
+| 1   | HIGH     | `detection.go`                       | root-package-files | Intentional    |
+| 2   | HIGH     | `filter.go`                          | root-package-files | Intentional    |
+| 3   | HIGH     | `metrics.go`                         | root-package-files | Intentional    |
+| 4   | HIGH     | `pattern.go`                         | root-package-files | Intentional    |
+| 5   | HIGH     | `project.go`                         | root-package-files | Intentional    |
+| 6   | HIGH     | `sqlc.go`                            | root-package-files | Intentional    |
+| 7   | MEDIUM   | `internal/`                          | internal-directory | Intentional    |
+| 8   | LOW      | `.golangci.yaml`                     | testdata-directory | False positive |
+| 9   | LOW      | `AGENTS.md`                          | testdata-directory | False positive |
+| 10  | LOW      | `CHANGELOG.md`                       | testdata-directory | False positive |
+| 11  | LOW      | `README.md`                          | testdata-directory | False positive |
+| 12  | LOW      | `docs/status/2026-04-02_17-45_...md` | testdata-directory | False positive |
 
 Note: The `flake.nix` LOW issue from the previous report (13th issue) did not appear in the latest linter run. The linter may have reclassified it.
 
@@ -243,13 +243,13 @@ ok  	github.com/LarsArtmann/gogenfilter	2.544s
 
 ## Structure Linter Final Count
 
-| Severity | Initial | Current | Fixed | Status          |
-| -------- | ------- | ------- | ----- | --------------- |
-| CRITICAL | 1       | 0       | 1/1   | Done            |
-| HIGH     | 8       | 6       | 2/8   | 6 intentional   |
-| MEDIUM   | 22      | 1       | 21/22 | 1 intentional   |
-| LOW      | 4       | 5       | -1    | All false pos.  |
-| **TOTAL**| **35**  | **12**  | **23**| **66% resolved**|
+| Severity  | Initial | Current | Fixed  | Status           |
+| --------- | ------- | ------- | ------ | ---------------- |
+| CRITICAL  | 1       | 0       | 1/1    | Done             |
+| HIGH      | 8       | 6       | 2/8    | 6 intentional    |
+| MEDIUM    | 22      | 1       | 21/22  | 1 intentional    |
+| LOW       | 4       | 5       | -1     | All false pos.   |
+| **TOTAL** | **35**  | **12**  | **23** | **66% resolved** |
 
 ---
 
