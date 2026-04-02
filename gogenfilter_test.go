@@ -579,38 +579,26 @@ func TestMatchesSQLCFilename(t *testing.T) {
 func TestDetectGenerated(t *testing.T) {
 	t.Parallel()
 
-	t.Run("detects sqlc by filename", func(t *testing.T) {
-		t.Parallel()
-		reason := getFilenameBasedReason("db/models.go", map[FilterOption]bool{FilterSQLC: true})
-		if reason != ReasonSQLC {
-			t.Errorf("Expected %v, got %v", ReasonSQLC, reason)
-		}
-	})
+	tests := []struct {
+		name     string
+		filename string
+		options  map[FilterOption]bool
+		expected FilterReason
+	}{
+		{"detects sqlc by filename", "db/models.go", map[FilterOption]bool{FilterSQLC: true}, ReasonSQLC},
+		{"detects templ by filename", "page_templ.go", map[FilterOption]bool{FilterTempl: true}, ReasonTempl},
+		{"detects go-enum by filename", "status_enum.go", map[FilterOption]bool{FilterGoEnum: true}, ReasonGoEnum},
+		{"returns not filtered for regular file", "main.go", map[FilterOption]bool{FilterSQLC: true}, ReasonNotFiltered},
+	}
 
-	t.Run("detects templ by filename", func(t *testing.T) {
-		t.Parallel()
-		reason := getFilenameBasedReason("page_templ.go", map[FilterOption]bool{FilterTempl: true})
-		if reason != ReasonTempl {
-			t.Errorf("Expected %v, got %v", ReasonTempl, reason)
-		}
-	})
-
-	t.Run("detects go-enum by filename", func(t *testing.T) {
-		t.Parallel()
-		reason := getFilenameBasedReason(
-			"status_enum.go",
-			map[FilterOption]bool{FilterGoEnum: true},
-		)
-		if reason != ReasonGoEnum {
-			t.Errorf("Expected %v, got %v", ReasonGoEnum, reason)
-		}
-	})
-
-	t.Run("returns not filtered for regular file", func(t *testing.T) {
-		t.Parallel()
-		reason := getFilenameBasedReason("main.go", map[FilterOption]bool{FilterSQLC: true})
-		if reason != ReasonNotFiltered {
-			t.Errorf("Expected %v, got %v", ReasonNotFiltered, reason)
-		}
-	})
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			reason := getFilenameBasedReason(tc.filename, tc.options)
+			if reason != tc.expected {
+				t.Errorf("Expected %v, got %v", tc.expected, reason)
+			}
+		})
+	}
 }

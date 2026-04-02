@@ -278,11 +278,30 @@ func TestFindSQLCConfigs(t *testing.T) {
 	})
 }
 
+func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
+	t.Helper()
+	t.Parallel()
+	tmpDir := t.TempDir()
+	if err := os.WriteFile(
+		filepath.Join(tmpDir, "sqlc.yaml"),
+		[]byte(yamlContent),
+		0o644,
+	); err != nil {
+		t.Fatal(err)
+	}
+
+	dirs, err := GetSQLOutputDirs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("GetSQLOutputDirs() error = %v", err)
+	}
+	if len(dirs) != wantDirs {
+		t.Errorf("len(dirs) = %d, want %d", len(dirs), wantDirs)
+	}
+}
+
 func TestGetSQLOutputDirs(t *testing.T) {
 	t.Run("extracts output directories", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		content := `version: "2"
+		testSQLOutputDirs(t, `version: "2"
 sql:
   - schema: "schema.sql"
     engine: "postgresql"
@@ -296,22 +315,7 @@ sql:
       go:
         package: "models"
         out: "pkg/models"
-`
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yaml"),
-			[]byte(content),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
-
-		dirs, err := GetSQLOutputDirs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("GetSQLOutputDirs() error = %v", err)
-		}
-		if len(dirs) != 2 {
-			t.Errorf("len(dirs) = %d, want 2", len(dirs))
-		}
+`, 2)
 	})
 
 	t.Run("no config files", func(t *testing.T) {
@@ -327,31 +331,14 @@ sql:
 	})
 
 	t.Run("handles empty out field", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		content := `version: "2"
+		testSQLOutputDirs(t, `version: "2"
 sql:
   - schema: "schema.sql"
     engine: "postgresql"
     gen:
       go:
         package: "db"
-`
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yaml"),
-			[]byte(content),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
-
-		dirs, err := GetSQLOutputDirs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("GetSQLOutputDirs() error = %v", err)
-		}
-		if len(dirs) != 0 {
-			t.Errorf("len(dirs) = %d, want 0", len(dirs))
-		}
+`, 0)
 	})
 }
 
