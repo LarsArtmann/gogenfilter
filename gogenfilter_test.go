@@ -22,6 +22,25 @@ func testPatternSetter(
 	}
 }
 
+type generatedFileTest struct {
+	name     string
+	filePath string
+	content  string
+	expected bool
+}
+
+func runGeneratedFileTest(t *testing.T, tests []generatedFileTest, fn func(string, string) bool, fnName string) {
+	t.Helper()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := fn(tt.filePath, tt.content)
+			if got != tt.expected {
+				t.Errorf("%s(%q) = %v, want %v", fnName, tt.filePath, got, tt.expected)
+			}
+		})
+	}
+}
+
 func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
@@ -245,12 +264,7 @@ func TestShouldFilterIntegration(t *testing.T) {
 }
 
 func TestIsSQLCGenerated(t *testing.T) {
-	tests := []struct {
-		name     string
-		filePath string
-		content  string
-		expected bool
-	}{
+	tests := []generatedFileTest{
 		{
 			name:     "sqlc models with comment",
 			filePath: "db/models.go",
@@ -277,25 +291,13 @@ func TestIsSQLCGenerated(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := IsSQLCGenerated(tt.filePath, tt.content)
-			if got != tt.expected {
-				t.Errorf("IsSQLCGenerated(%q) = %v, want %v", tt.filePath, got, tt.expected)
-			}
-		})
-	}
+	runGeneratedFileTest(t, tests, IsSQLCGenerated, "IsSQLCGenerated")
 }
 
 func TestIsTemplGenerated(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name     string
-		filePath string
-		content  string
-		expected bool
-	}{
+	tests := []generatedFileTest{
 		{
 			name:     "templ generated file",
 			filePath: "components/header_templ.go",
@@ -312,25 +314,13 @@ func TestIsTemplGenerated(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := IsTemplGenerated(tt.filePath, tt.content)
-			if got != tt.expected {
-				t.Errorf("IsTemplGenerated(%q) = %v, want %v", tt.filePath, got, tt.expected)
-			}
-		})
-	}
+	runGeneratedFileTest(t, tests, IsTemplGenerated, "IsTemplGenerated")
 }
 
 func TestIsGoEnumGenerated(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name     string
-		filePath string
-		content  string
-		expected bool
-	}{
+	tests := []generatedFileTest{
 		{
 			name:     "go-enum generated file",
 			filePath: "enums/status_enum.go",
@@ -351,14 +341,7 @@ func TestIsGoEnumGenerated(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := IsGoEnumGenerated(tt.filePath, tt.content)
-			if got != tt.expected {
-				t.Errorf("IsGoEnumGenerated(%q) = %v, want %v", tt.filePath, got, tt.expected)
-			}
-		})
-	}
+	runGeneratedFileTest(t, tests, IsGoEnumGenerated, "IsGoEnumGenerated")
 }
 
 func TestFilterMetrics(t *testing.T) {
