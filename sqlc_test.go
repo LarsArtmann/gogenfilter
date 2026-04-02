@@ -135,18 +135,23 @@ sql:
 	})
 }
 
-func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
+func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 	t.Helper()
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		t.Fatal(err)
-	}
 	if err := os.WriteFile(
-		filepath.Join(dir, "sqlc.yaml"),
+		filepath.Join(dir, filename),
 		[]byte("version: \"2\""),
 		0o644,
 	); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
+	t.Helper()
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	writeSQLCConfigFile(t, dir, "sqlc.yaml")
 
 	configs, err := FindSQLCConfigs([]string{tmpDir})
 	if err != nil {
@@ -161,13 +166,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("finds config in directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
+		writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
 
 		configs, err := FindSQLCConfigs([]string{tmpDir})
 		if err != nil {
@@ -181,20 +180,8 @@ func TestFindSQLCConfigs(t *testing.T) {
 	t.Run("finds both yaml and yml", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
+		writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
+		writeSQLCConfigFile(t, tmpDir, "sqlc.yml")
 
 		configs, err := FindSQLCConfigs([]string{tmpDir})
 		if err != nil {
@@ -212,13 +199,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 		if err := os.MkdirAll(nestedDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := os.WriteFile(
-			filepath.Join(nestedDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
+		writeSQLCConfigFile(t, nestedDir, "sqlc.yaml")
 
 		configs, err := FindSQLCConfigs([]string{tmpDir})
 		if err != nil {
@@ -334,13 +315,7 @@ func TestTryAddSQLCConfig(t *testing.T) {
 	t.Run("adds existing config", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
-		if err := os.WriteFile(
-			filepath.Join(tmpDir, "sqlc.yaml"),
-			[]byte("version: \"2\""),
-			0o644,
-		); err != nil {
-			t.Fatal(err)
-		}
+		writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
 
 		configs := make(map[string]string)
 		tryAddSQLCConfig(tmpDir, "sqlc.yaml", configs)
