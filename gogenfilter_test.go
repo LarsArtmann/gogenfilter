@@ -8,8 +8,6 @@ import (
 )
 
 func TestNewFilter(t *testing.T) {
-	t.Parallel()
-
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 		f := NewFilter(false, nil)
@@ -36,6 +34,7 @@ func TestNewFilter(t *testing.T) {
 	})
 
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
+		t.Parallel()
 		f := NewFilter(true, []FilterOption{FilterAll})
 		if !f.enabled {
 			t.Error("Expected enabled filter")
@@ -53,8 +52,6 @@ func TestNewFilter(t *testing.T) {
 }
 
 func TestShouldFilter(t *testing.T) {
-	t.Parallel()
-
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
 		f := NewFilter(false, []FilterOption{FilterAll})
@@ -65,8 +62,6 @@ func TestShouldFilter(t *testing.T) {
 }
 
 func TestMatchPattern(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		path     string
@@ -102,66 +97,74 @@ func TestMatchPattern(t *testing.T) {
 }
 
 func TestFilterIdempotentProperty(t *testing.T) {
-	t.Parallel()
-	f := func(filePath string) bool {
-		if filePath == "" || len(filePath) < 1 {
-			return true
+	t.Run("property test", func(t *testing.T) {
+		t.Parallel()
+		f := func(filePath string) bool {
+			if filePath == "" || len(filePath) < 1 {
+				return true
+			}
+			filter1 := NewFilter(true, nil)
+			filter2 := NewFilter(true, nil)
+			return filter1.ShouldFilter(filePath) == filter2.ShouldFilter(filePath)
 		}
-		filter1 := NewFilter(true, nil)
-		filter2 := NewFilter(true, nil)
-		return filter1.ShouldFilter(filePath) == filter2.ShouldFilter(filePath)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Errorf("Idempotent property failed: %v", err)
-	}
+		if err := quick.Check(f, nil); err != nil {
+			t.Errorf("Idempotent property failed: %v", err)
+		}
+	})
 }
 
 func TestDisabledFilterProperty(t *testing.T) {
-	t.Parallel()
-	f := func(filePath string) bool {
-		if filePath == "" {
-			return true
+	t.Run("property test", func(t *testing.T) {
+		t.Parallel()
+		f := func(filePath string) bool {
+			if filePath == "" {
+				return true
+			}
+			return !NewFilter(false, nil).ShouldFilter(filePath)
 		}
-		return !NewFilter(false, nil).ShouldFilter(filePath)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Errorf("Disabled filter property failed: %v", err)
-	}
+		if err := quick.Check(f, nil); err != nil {
+			t.Errorf("Disabled filter property failed: %v", err)
+		}
+	})
 }
 
 func TestIncludePatternProperty(t *testing.T) {
-	t.Parallel()
-	f := func(includePattern, filePath string) bool {
-		if includePattern == "" || filePath == "" {
-			return true
+	t.Run("property test", func(t *testing.T) {
+		t.Parallel()
+		f := func(includePattern, filePath string) bool {
+			if includePattern == "" || filePath == "" {
+				return true
+			}
+			filter := NewFilter(true, nil)
+			filter.WithIncludePatterns([]string{includePattern})
+			if !MatchPattern(filePath, includePattern) {
+				return true
+			}
+			return !filter.ShouldFilter(filePath)
 		}
-		filter := NewFilter(true, nil)
-		filter.WithIncludePatterns([]string{includePattern})
-		if !MatchPattern(filePath, includePattern) {
-			return true
+		if err := quick.Check(f, nil); err != nil {
+			t.Errorf("Include pattern property failed: %v", err)
 		}
-		return !filter.ShouldFilter(filePath)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Errorf("Include pattern property failed: %v", err)
-	}
+	})
 }
 
 func TestExcludePatternProperty(t *testing.T) {
-	t.Parallel()
-	f := func(excludePattern, filePath string) bool {
-		if excludePattern == "" || filePath == "" {
-			return true
+	t.Run("property test", func(t *testing.T) {
+		t.Parallel()
+		f := func(excludePattern, filePath string) bool {
+			if excludePattern == "" || filePath == "" {
+				return true
+			}
+			filter := NewFilter(true, nil)
+			filter.WithExcludePatterns([]string{excludePattern})
+			shouldFilter := MatchPattern(filePath, excludePattern)
+			isFiltered := filter.ShouldFilter(filePath)
+			return shouldFilter == isFiltered
 		}
-		filter := NewFilter(true, nil)
-		filter.WithExcludePatterns([]string{excludePattern})
-		shouldFilter := MatchPattern(filePath, excludePattern)
-		isFiltered := filter.ShouldFilter(filePath)
-		return shouldFilter == isFiltered
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Errorf("Exclude pattern property failed: %v", err)
-	}
+		if err := quick.Check(f, nil); err != nil {
+			t.Errorf("Exclude pattern property failed: %v", err)
+		}
+	})
 }
 
 func createTempFile(t *testing.T, name, content string) string {
@@ -190,8 +193,6 @@ func assertFilterBehavior(
 }
 
 func TestShouldFilterIntegration(t *testing.T) {
-	t.Parallel()
-
 	t.Run("filters sqlc file", func(t *testing.T) {
 		t.Parallel()
 		assertFilterBehavior(t, "models.go",
@@ -229,8 +230,6 @@ func TestShouldFilterIntegration(t *testing.T) {
 }
 
 func TestIsSQLCGenerated(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		filePath string
@@ -401,69 +400,74 @@ func TestFilterMetrics(t *testing.T) {
 }
 
 func TestFilterWithMetrics(t *testing.T) {
-	t.Parallel()
-
-	tmpDir := t.TempDir()
-	files := map[string]string{
-		"db/models.go": "// Code generated by sqlc. DO NOT EDIT.\npackage db\ntype User struct{ ID int64 }",
-		"main.go":      "package main\nfunc main() {}",
-		"components/header_templ.go": "// Code generated by templ DO NOT EDIT\n\npackage components\n\n" +
-			"import \"github.com/a-h/templ\"\n\nfunc Header() templ.Component { return nil }",
-		"enums/status_enum.go": "// Code generated by go-enum DO NOT EDIT.\npackage enums\n" +
-			"type Status int\nconst StatusPending Status = iota",
-	}
-
-	for name, content := range files {
-		dir := filepath.Join(tmpDir, filepath.Dir(name))
-		if err := os.MkdirAll(dir, 0o755); err != nil {
-			t.Fatalf("Failed to create dir: %v", err)
+	t.Run("integration test", func(t *testing.T) {
+		t.Parallel()
+		tmpDir := t.TempDir()
+		files := map[string]string{
+			"db/models.go": "// Code generated by sqlc. DO NOT EDIT.\npackage db\ntype User struct{ ID int64 }",
+			"main.go":      "package main\nfunc main() {}",
+			"components/header_templ.go": "// Code generated by templ DO NOT EDIT\n\npackage components\n\n" +
+				"import \"github.com/a-h/templ\"\n\nfunc Header() templ.Component { return nil }",
+			"enums/status_enum.go": "// Code generated by go-enum DO NOT EDIT.\npackage enums\n" +
+				"type Status int\nconst StatusPending Status = iota",
 		}
-		if err := os.WriteFile(filepath.Join(tmpDir, name), []byte(content), 0o644); err != nil {
-			t.Fatalf("Failed to write file: %v", err)
+
+		for name, content := range files {
+			dir := filepath.Join(tmpDir, filepath.Dir(name))
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				t.Fatalf("Failed to create dir: %v", err)
+			}
+			if err := os.WriteFile(filepath.Join(tmpDir, name), []byte(content), 0o644); err != nil {
+				t.Fatalf("Failed to write file: %v", err)
+			}
 		}
-	}
 
-	fltr := NewFilter(true, []FilterOption{FilterAll})
-	for name := range files {
-		filePath := filepath.Join(tmpDir, name)
-		_ = fltr.ShouldFilter(filePath)
-	}
+		fltr := NewFilter(true, []FilterOption{FilterAll})
+		for name := range files {
+			filePath := filepath.Join(tmpDir, name)
+			_ = fltr.ShouldFilter(filePath)
+		}
 
-	stats := fltr.GetStats()
-	if stats.TotalFilesChecked != 4 {
-		t.Errorf("Expected TotalFilesChecked=4, got %d", stats.TotalFilesChecked)
-	}
-	if stats.FilteredByReason[ReasonSQLC] != 1 {
-		t.Errorf("Expected 1 SQLC file filtered, got %d", stats.FilteredByReason[ReasonSQLC])
-	}
-	if stats.FilteredByReason[ReasonTempl] != 1 {
-		t.Errorf("Expected 1 Templ file filtered, got %d", stats.FilteredByReason[ReasonTempl])
-	}
-	if stats.FilteredByReason[ReasonGoEnum] != 1 {
-		t.Errorf("Expected 1 GoEnum file filtered, got %d", stats.FilteredByReason[ReasonGoEnum])
-	}
-	totalFiltered := stats.TotalFiltered()
-	if totalFiltered < 3 {
-		t.Errorf("Expected at least 3 files filtered, got %d", totalFiltered)
-	}
+		stats := fltr.GetStats()
+		if stats.TotalFilesChecked != 4 {
+			t.Errorf("Expected TotalFilesChecked=4, got %d", stats.TotalFilesChecked)
+		}
+		if stats.FilteredByReason[ReasonSQLC] != 1 {
+			t.Errorf("Expected 1 SQLC file filtered, got %d", stats.FilteredByReason[ReasonSQLC])
+		}
+		if stats.FilteredByReason[ReasonTempl] != 1 {
+			t.Errorf("Expected 1 Templ file filtered, got %d", stats.FilteredByReason[ReasonTempl])
+		}
+		if stats.FilteredByReason[ReasonGoEnum] != 1 {
+			t.Errorf("Expected 1 GoEnum file filtered, got %d", stats.FilteredByReason[ReasonGoEnum])
+		}
+		totalFiltered := stats.TotalFiltered()
+		if totalFiltered < 3 {
+			t.Errorf("Expected at least 3 files filtered, got %d", totalFiltered)
+		}
+	})
 }
 
 func TestWithIncludePatterns(t *testing.T) {
-	t.Parallel()
-	f := NewFilter(true, []FilterOption{FilterAll})
-	f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"})
-	if len(f.includePatterns) != 2 {
-		t.Errorf("Expected 2 include patterns, got %d", len(f.includePatterns))
-	}
+	t.Run("patterns test", func(t *testing.T) {
+		t.Parallel()
+		f := NewFilter(true, []FilterOption{FilterAll})
+		f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"})
+		if len(f.includePatterns) != 2 {
+			t.Errorf("Expected 2 include patterns, got %d", len(f.includePatterns))
+		}
+	})
 }
 
 func TestWithExcludePatterns(t *testing.T) {
-	t.Parallel()
-	f := NewFilter(true, []FilterOption{FilterAll})
-	f.WithExcludePatterns([]string{"test/*", "*.pb.go"})
-	if len(f.excludePatterns) != 2 {
-		t.Errorf("Expected 2 exclude patterns, got %d", len(f.excludePatterns))
-	}
+	t.Run("patterns test", func(t *testing.T) {
+		t.Parallel()
+		f := NewFilter(true, []FilterOption{FilterAll})
+		f.WithExcludePatterns([]string{"test/*", "*.pb.go"})
+		if len(f.excludePatterns) != 2 {
+			t.Errorf("Expected 2 exclude patterns, got %d", len(f.excludePatterns))
+		}
+	})
 }
 
 func TestFindProjectRoot(t *testing.T) {

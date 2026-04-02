@@ -7,8 +7,6 @@ import (
 )
 
 func TestHandleDirectoryWalk(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		dirName  string
@@ -34,8 +32,6 @@ func TestHandleDirectoryWalk(t *testing.T) {
 }
 
 func TestRecordSQLCConfig(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		filePath string
@@ -71,8 +67,6 @@ func TestRecordSQLCConfig(t *testing.T) {
 }
 
 func TestParseSQLCConfig(t *testing.T) {
-	t.Parallel()
-
 	t.Run("valid config", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
@@ -142,8 +136,6 @@ sql:
 }
 
 func TestFindSQLCConfigs(t *testing.T) {
-	t.Parallel()
-
 	t.Run("finds config in directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
@@ -287,8 +279,6 @@ func TestFindSQLCConfigs(t *testing.T) {
 }
 
 func TestGetSQLOutputDirs(t *testing.T) {
-	t.Parallel()
-
 	t.Run("extracts output directories", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
@@ -366,8 +356,6 @@ sql:
 }
 
 func TestTryAddSQLCConfig(t *testing.T) {
-	t.Parallel()
-
 	t.Run("adds existing config", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
