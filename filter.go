@@ -38,20 +38,21 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 
 // WithIncludePatterns adds custom include patterns to the filter.
 func (f *Filter) WithIncludePatterns(patterns []string) *Filter {
-	f.includePatterns = append(f.includePatterns, patterns...)
-
-	return f
+	return f.withPatterns(&f.includePatterns, patterns)
 }
 
 // WithExcludePatterns adds custom exclude patterns to the filter.
 func (f *Filter) WithExcludePatterns(patterns []string) *Filter {
-	f.excludePatterns = append(f.excludePatterns, patterns...)
+	return f.withPatterns(&f.excludePatterns, patterns)
+}
+
+func (f *Filter) withPatterns(target *[]string, patterns []string) *Filter {
+	*target = append(*target, patterns...)
 
 	return f
 }
 
 // ShouldFilter determines if a file should be filtered out (excluded from analysis).
-// Returns true if the file should be filtered, false otherwise.
 func (f *Filter) ShouldFilter(filePath string) bool {
 	if !f.enabled {
 		f.recordChecked(filePath)
