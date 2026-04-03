@@ -14,6 +14,7 @@ type MetricsMixin struct {
 // Metrics tracks filter statistics for analysis and debugging.
 type Metrics struct {
 	MetricsMixin
+
 	mu sync.RWMutex
 
 	FilteredFiles map[FilterReason][]string

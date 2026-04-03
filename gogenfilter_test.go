@@ -16,6 +16,7 @@ func testPatternSetter(
 ) {
 	t.Helper()
 	setter(f)
+
 	patterns := getPatterns(f)
 	if len(patterns) != expectedLen {
 		t.Errorf("Expected %d patterns, got %d", expectedLen, len(patterns))
@@ -29,8 +30,14 @@ type generatedFileTest struct {
 	expected bool
 }
 
-func runGeneratedFileTest(t *testing.T, tests []generatedFileTest, fn func(string, string) bool, fnName string) {
+func runGeneratedFileTest(
+	t *testing.T,
+	tests []generatedFileTest,
+	fn func(string, string) bool,
+	fnName string,
+) {
 	t.Helper()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := fn(tt.filePath, tt.content)
@@ -44,10 +51,12 @@ func runGeneratedFileTest(t *testing.T, tests []generatedFileTest, fn func(strin
 func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(false, nil)
 		if f.enabled {
 			t.Error("Expected disabled filter")
 		}
+
 		if len(f.options) != 0 {
 			t.Errorf("Expected empty options, got %v", f.options)
 		}
@@ -55,13 +64,16 @@ func TestNewFilter(t *testing.T) {
 
 	t.Run("creates enabled filter with options", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(true, []FilterOption{FilterSQLC, FilterTempl})
 		if !f.enabled {
 			t.Error("Expected enabled filter")
 		}
+
 		if !f.options[FilterSQLC] {
 			t.Error("Expected SQLC option enabled")
 		}
+
 		if !f.options[FilterTempl] {
 			t.Error("Expected Templ option enabled")
 		}
@@ -69,16 +81,20 @@ func TestNewFilter(t *testing.T) {
 
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(true, []FilterOption{FilterAll})
 		if !f.enabled {
 			t.Error("Expected enabled filter")
 		}
+
 		if !f.options[FilterSQLC] {
 			t.Error("Expected SQLC option enabled for FilterAll")
 		}
+
 		if !f.options[FilterTempl] {
 			t.Error("Expected Templ option enabled for FilterAll")
 		}
+
 		if !f.options[FilterGoEnum] {
 			t.Error("Expected GoEnum option enabled for FilterAll")
 		}
@@ -88,6 +104,7 @@ func TestNewFilter(t *testing.T) {
 func TestShouldFilter(t *testing.T) {
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(false, []FilterOption{FilterAll})
 		if f.ShouldFilter("any/file.go") {
 			t.Error("Disabled filter should not filter")
@@ -133,15 +150,19 @@ func TestMatchPattern(t *testing.T) {
 func TestFilterIdempotentProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
+
 		f := func(filePath string) bool {
 			if filePath == "" || len(filePath) < 1 {
 				return true
 			}
+
 			filter1 := NewFilter(true, nil)
 			filter2 := NewFilter(true, nil)
+
 			return filter1.ShouldFilter(filePath) == filter2.ShouldFilter(filePath)
 		}
-		if err := quick.Check(f, nil); err != nil {
+		err := quick.Check(f, nil)
+		if err != nil {
 			t.Errorf("Idempotent property failed: %v", err)
 		}
 	})
@@ -150,13 +171,16 @@ func TestFilterIdempotentProperty(t *testing.T) {
 func TestDisabledFilterProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
+
 		f := func(filePath string) bool {
 			if filePath == "" {
 				return true
 			}
+
 			return !NewFilter(false, nil).ShouldFilter(filePath)
 		}
-		if err := quick.Check(f, nil); err != nil {
+		err := quick.Check(f, nil)
+		if err != nil {
 			t.Errorf("Disabled filter property failed: %v", err)
 		}
 	})
@@ -165,18 +189,23 @@ func TestDisabledFilterProperty(t *testing.T) {
 func TestIncludePatternProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
+
 		f := func(includePattern, filePath string) bool {
 			if includePattern == "" || filePath == "" {
 				return true
 			}
+
 			filter := NewFilter(true, nil)
 			filter.WithIncludePatterns([]string{includePattern})
+
 			if !MatchPattern(filePath, includePattern) {
 				return true
 			}
+
 			return !filter.ShouldFilter(filePath)
 		}
-		if err := quick.Check(f, nil); err != nil {
+		err := quick.Check(f, nil)
+		if err != nil {
 			t.Errorf("Include pattern property failed: %v", err)
 		}
 	})
@@ -185,17 +214,21 @@ func TestIncludePatternProperty(t *testing.T) {
 func TestExcludePatternProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
+
 		f := func(excludePattern, filePath string) bool {
 			if excludePattern == "" || filePath == "" {
 				return true
 			}
+
 			filter := NewFilter(true, nil)
 			filter.WithExcludePatterns([]string{excludePattern})
 			shouldFilter := MatchPattern(filePath, excludePattern)
 			isFiltered := filter.ShouldFilter(filePath)
+
 			return shouldFilter == isFiltered
 		}
-		if err := quick.Check(f, nil); err != nil {
+		err := quick.Check(f, nil)
+		if err != nil {
 			t.Errorf("Exclude pattern property failed: %v", err)
 		}
 	})
@@ -204,10 +237,13 @@ func TestExcludePatternProperty(t *testing.T) {
 func createTempFile(t *testing.T, name, content string) string {
 	t.Helper()
 	tmpDir := t.TempDir()
+
 	filePath := filepath.Join(tmpDir, name)
-	if err := os.WriteFile(filePath, []byte(content), 0o600); err != nil {
+	err := os.WriteFile(filePath, []byte(content), 0o600)
+	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
+
 	return filePath
 }
 
@@ -220,6 +256,7 @@ func assertFilterBehavior(
 	t.Helper()
 	tmpFile := createTempFile(t, name, content)
 	f := NewFilter(true, opts)
+
 	got := f.ShouldFilter(tmpFile)
 	if got != shouldFilter {
 		t.Errorf("ShouldFilter() = %v, want %v", got, shouldFilter)
@@ -358,6 +395,7 @@ func TestFilterMetrics(t *testing.T) {
 
 	t.Run("tracks filtered files by reason", func(t *testing.T) {
 		t.Parallel()
+
 		metrics := NewMetrics()
 		metrics.Record("db/models.go", ReasonSQLC)
 		metrics.Record("db/query.sql.go", ReasonSQLC)
@@ -368,12 +406,15 @@ func TestFilterMetrics(t *testing.T) {
 		if stats.TotalFilesChecked != 4 {
 			t.Errorf("Expected TotalFilesChecked=4, got %d", stats.TotalFilesChecked)
 		}
+
 		if stats.FilteredByReason[ReasonSQLC] != 2 {
 			t.Errorf("Expected SQLC count=2, got %d", stats.FilteredByReason[ReasonSQLC])
 		}
+
 		if stats.FilteredByReason[ReasonTempl] != 1 {
 			t.Errorf("Expected Templ count=1, got %d", stats.FilteredByReason[ReasonTempl])
 		}
+
 		if stats.TotalFiltered() != 4 {
 			t.Errorf("Expected TotalFiltered=4, got %d", stats.TotalFiltered())
 		}
@@ -381,6 +422,7 @@ func TestFilterMetrics(t *testing.T) {
 
 	t.Run("tracks not filtered files", func(t *testing.T) {
 		t.Parallel()
+
 		metrics := NewMetrics()
 		metrics.Record("db/models.go", ReasonSQLC)
 		metrics.Record("main.go", ReasonNotFiltered)
@@ -390,6 +432,7 @@ func TestFilterMetrics(t *testing.T) {
 		if stats.TotalFilesChecked != 3 {
 			t.Errorf("Expected TotalFilesChecked=3, got %d", stats.TotalFilesChecked)
 		}
+
 		if stats.TotalFiltered() != 1 {
 			t.Errorf("Expected TotalFiltered=1, got %d", stats.TotalFiltered())
 		}
@@ -397,8 +440,10 @@ func TestFilterMetrics(t *testing.T) {
 
 	t.Run("nil metrics handler", func(t *testing.T) {
 		t.Parallel()
+
 		var metrics *Metrics
 		metrics.Record("test.go", ReasonSQLC)
+
 		stats := metrics.GetStats()
 		if stats.TotalFilesChecked != 0 {
 			t.Errorf("Expected empty stats, got %+v", stats)
@@ -421,19 +466,23 @@ func TestFilterWithMetrics(t *testing.T) {
 
 		for name, content := range files {
 			dir := filepath.Join(tmpDir, filepath.Dir(name))
-			if err := os.MkdirAll(dir, 0o755); err != nil {
+			err := os.MkdirAll(dir, 0o755)
+			if err != nil {
 				t.Fatalf("Failed to create dir: %v", err)
 			}
-			if err := os.WriteFile(
+
+			err := os.WriteFile(
 				filepath.Join(tmpDir, name),
 				[]byte(content),
 				0o644,
-			); err != nil {
+			)
+			if err != nil {
 				t.Fatalf("Failed to write file: %v", err)
 			}
 		}
 
 		fltr := NewFilter(true, []FilterOption{FilterAll})
+
 		for name := range files {
 			filePath := filepath.Join(tmpDir, name)
 			_ = fltr.ShouldFilter(filePath)
@@ -443,18 +492,22 @@ func TestFilterWithMetrics(t *testing.T) {
 		if stats.TotalFilesChecked != 4 {
 			t.Errorf("Expected TotalFilesChecked=4, got %d", stats.TotalFilesChecked)
 		}
+
 		if stats.FilteredByReason[ReasonSQLC] != 1 {
 			t.Errorf("Expected 1 SQLC file filtered, got %d", stats.FilteredByReason[ReasonSQLC])
 		}
+
 		if stats.FilteredByReason[ReasonTempl] != 1 {
 			t.Errorf("Expected 1 Templ file filtered, got %d", stats.FilteredByReason[ReasonTempl])
 		}
+
 		if stats.FilteredByReason[ReasonGoEnum] != 1 {
 			t.Errorf(
 				"Expected 1 GoEnum file filtered, got %d",
 				stats.FilteredByReason[ReasonGoEnum],
 			)
 		}
+
 		totalFiltered := stats.TotalFiltered()
 		if totalFiltered < 3 {
 			t.Errorf("Expected at least 3 files filtered, got %d", totalFiltered)
@@ -465,6 +518,7 @@ func TestFilterWithMetrics(t *testing.T) {
 func TestWithIncludePatterns(t *testing.T) {
 	t.Run("patterns test", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(true, []FilterOption{FilterAll})
 		testPatternSetter(
 			t, f,
@@ -478,6 +532,7 @@ func TestWithIncludePatterns(t *testing.T) {
 func TestWithExcludePatterns(t *testing.T) {
 	t.Run("patterns test", func(t *testing.T) {
 		t.Parallel()
+
 		f := NewFilter(true, []FilterOption{FilterAll})
 		testPatternSetter(
 			t, f,
@@ -494,14 +549,17 @@ func TestFindProjectRoot(t *testing.T) {
 	t.Run("finds marker in current directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
+
 		markerPath := filepath.Join(tmpDir, "go.mod")
 		if err := os.WriteFile(markerPath, []byte("module test\n"), 0o644); err != nil {
 			t.Fatal(err)
 		}
+
 		root, err := FindProjectRoot(tmpDir, []string{"go.mod"})
 		if err != nil {
 			t.Fatalf("FindProjectRoot() error: %v", err)
 		}
+
 		if root != tmpDir {
 			t.Errorf("Expected %q, got %q", tmpDir, root)
 		}
@@ -510,18 +568,22 @@ func TestFindProjectRoot(t *testing.T) {
 	t.Run("finds marker in parent directory", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
+
 		childDir := filepath.Join(tmpDir, "subdir", "deep")
 		if err := os.MkdirAll(childDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
+
 		markerPath := filepath.Join(tmpDir, "go.mod")
 		if err := os.WriteFile(markerPath, []byte("module test\n"), 0o644); err != nil {
 			t.Fatal(err)
 		}
+
 		root, err := FindProjectRoot(childDir, []string{"go.mod"})
 		if err != nil {
 			t.Fatalf("FindProjectRoot() error: %v", err)
 		}
+
 		if root != tmpDir {
 			t.Errorf("Expected %q, got %q", tmpDir, root)
 		}
@@ -530,6 +592,7 @@ func TestFindProjectRoot(t *testing.T) {
 	t.Run("returns error when no marker found", func(t *testing.T) {
 		t.Parallel()
 		tmpDir := t.TempDir()
+
 		_, err := FindProjectRoot(tmpDir, []string{"nonexistent.marker"})
 		if err == nil {
 			t.Error("Expected error when no marker found")
@@ -596,15 +659,36 @@ func TestDetectGenerated(t *testing.T) {
 		options  map[FilterOption]bool
 		expected FilterReason
 	}{
-		{"detects sqlc by filename", "db/models.go", map[FilterOption]bool{FilterSQLC: true}, ReasonSQLC},
-		{"detects templ by filename", "page_templ.go", map[FilterOption]bool{FilterTempl: true}, ReasonTempl},
-		{"detects go-enum by filename", "status_enum.go", map[FilterOption]bool{FilterGoEnum: true}, ReasonGoEnum},
-		{"returns not filtered for regular file", "main.go", map[FilterOption]bool{FilterSQLC: true}, ReasonNotFiltered},
+		{
+			"detects sqlc by filename",
+			"db/models.go",
+			map[FilterOption]bool{FilterSQLC: true},
+			ReasonSQLC,
+		},
+		{
+			"detects templ by filename",
+			"page_templ.go",
+			map[FilterOption]bool{FilterTempl: true},
+			ReasonTempl,
+		},
+		{
+			"detects go-enum by filename",
+			"status_enum.go",
+			map[FilterOption]bool{FilterGoEnum: true},
+			ReasonGoEnum,
+		},
+		{
+			"returns not filtered for regular file",
+			"main.go",
+			map[FilterOption]bool{FilterSQLC: true},
+			ReasonNotFiltered,
+		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+
 			reason := getFilenameBasedReason(tc.filename, tc.options)
 			if reason != tc.expected {
 				t.Errorf("Expected %v, got %v", tc.expected, reason)
