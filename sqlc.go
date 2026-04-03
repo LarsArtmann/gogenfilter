@@ -41,7 +41,8 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 	configs := make(map[string]string)
 
 	for _, path := range paths {
-		if err := findSQLCConfigsInPath(path, configs); err != nil {
+		err := findSQLCConfigsInPath(path, configs)
+		if err != nil {
 			return nil, err
 		}
 	}
@@ -51,7 +52,8 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 
 // findSQLCConfigsInPath searches for sqlc configs in a single path.
 func findSQLCConfigsInPath(path string, configs map[string]string) error {
-	if err := walkPathForSQLCConfigs(path, configs); err != nil {
+	err := walkPathForSQLCConfigs(path, configs)
+	if err != nil {
 		return fmt.Errorf("walking %q for sqlc configs: %w", path, err)
 	}
 
