@@ -16,6 +16,7 @@ func assertStringField(t *testing.T, fieldName, actual, expected string) {
 
 func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 	t.Helper()
+
 	if got != want {
 		t.Errorf("%s = %v, want %v", name, got, want)
 	}
@@ -23,7 +24,9 @@ func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 
 func writeFile(t *testing.T, path, content string) {
 	t.Helper()
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+
+	err := os.WriteFile(path, []byte(content), 0o644)
+	if err != nil {
 		t.Fatal(err)
 	}
 }
