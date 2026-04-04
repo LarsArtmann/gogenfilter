@@ -21,9 +21,11 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 
 	for _, opt := range options {
 		if opt == FilterAll {
-			f.options[FilterSQLC] = true
-			f.options[FilterTempl] = true
-			f.options[FilterGoEnum] = true
+			for _, specific := range allSpecificOptions {
+				f.options[specific] = true
+			}
+
+			f.options[FilterGeneric] = true
 		} else {
 			f.options[opt] = true
 		}

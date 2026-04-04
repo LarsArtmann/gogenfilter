@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/LarsArtmann/gogenfilter/pkg/errors"
 	"github.com/go-faster/yaml"
 )
 
@@ -43,7 +44,10 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 	for _, path := range paths {
 		err := findSQLCConfigsInPath(path, configs)
 		if err != nil {
-			return nil, err
+			return nil, &errors.SQLCConfigError{
+				Operation: "find",
+				Cause:     fmt.Errorf("searching path %q: %w", path, err),
+			}
 		}
 	}
 
@@ -54,7 +58,7 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 func findSQLCConfigsInPath(path string, configs map[string]string) error {
 	err := walkPathForSQLCConfigs(path, configs)
 	if err != nil {
-		return fmt.Errorf("walking %q for sqlc configs: %w", path, err)
+		return fmt.Errorf("finding sqlc configs: %w", err)
 	}
 
 	findSQLCConfigsInParent(path, configs)
@@ -66,7 +70,7 @@ func findSQLCConfigsInPath(path string, configs map[string]string) error {
 func walkPathForSQLCConfigs(path string, configs map[string]string) error {
 	err := filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return fmt.Errorf("accessing %q: %w", filePath, err)
 		}
 
 		if info.IsDir() {
@@ -78,7 +82,7 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) error {
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("walking for sqlc configs: %w", err)
+		return fmt.Errorf("walking %q for sqlc configs: %w", path, err)
 	}
 
 	return nil
@@ -124,12 +128,20 @@ func tryAddSQLCConfig(parentPath, filename string, configs map[string]string) {
 func ParseSQLCConfig(configPath string) (*SQLCConfig, error) {
 	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is from controlled source
 	if err != nil {
-		return nil, fmt.Errorf("reading sqlc config %q: %w", configPath, err)
+		return nil, &errors.SQLCConfigError{
+			ConfigPath: configPath,
+			Operation:  "read",
+			Cause:      fmt.Errorf("reading sqlc config %q: %w", configPath, err),
+		}
 	}
 
 	var config SQLCConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, fmt.Errorf("parsing sqlc config: %w", err)
+		return nil, &errors.SQLCConfigError{
+			ConfigPath: configPath,
+			Operation:  "parse",
+			Cause:      fmt.Errorf("parsing sqlc config: %w", err),
+		}
 	}
 
 	return &config, nil
@@ -152,9 +164,11 @@ func GetSQLOutputDirs(paths []string) ([]string, error) {
 	for configPath, projectRoot := range configPaths {
 		config, err := ParseSQLCConfig(configPath)
 		if err != nil {
-			slog.Warn("failed to parse sqlc config", "file", configPath, "err", err)
-
-			continue
+			return nil, &errors.SQLCConfigError{
+				ConfigPath: configPath,
+				Operation:  "collect-output-dirs",
+				Cause:      err,
+			}
 		}
 
 		for _, sqlEngine := range config.SQL {
