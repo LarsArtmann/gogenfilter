@@ -14,6 +14,20 @@ func assertStringField(t *testing.T, fieldName, actual, expected string) {
 	}
 }
 
+func assertEqual[T comparable](t *testing.T, name string, got, want T) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s = %v, want %v", name, got, want)
+	}
+}
+
+func writeFile(t *testing.T, path, content string) {
+	t.Helper()
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestHandleDirectoryWalk(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -60,14 +74,7 @@ func TestRecordSQLCConfig(t *testing.T) {
 			configs := make(map[string]string)
 			recordSQLCConfig(tt.filePath, configs)
 
-			if len(configs) != tt.wantLen {
-				t.Errorf(
-					"recordSQLCConfig(%q) added %d configs, want %d",
-					tt.filePath,
-					len(configs),
-					tt.wantLen,
-				)
-			}
+			assertEqual(t, "len(configs)", len(configs), tt.wantLen)
 
 			if tt.wantLen > 0 {
 				dir := filepath.Dir(tt.filePath)
@@ -94,9 +101,7 @@ sql:
         package: "db"
         out: "internal/db"
 `
-		if err := os.WriteFile(configPath, []byte(content), 0o644); err != nil {
-			t.Fatal(err)
-		}
+		writeFile(t, configPath, content)
 
 		config, err := ParseSQLCConfig(configPath)
 		if err != nil {
@@ -135,9 +140,7 @@ sql:
 sql:
   - [invalid yaml structure
 `
-		if err := os.WriteFile(configPath, []byte(content), 0o644); err != nil {
-			t.Fatal(err)
-		}
+		writeFile(t, configPath, content)
 
 		_, err := ParseSQLCConfig(configPath)
 		if err == nil {
@@ -148,15 +151,7 @@ sql:
 
 func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 	t.Helper()
-
-	err := os.WriteFile(
-		filepath.Join(dir, filename),
-		[]byte("version: \"2\""),
-		0o644,
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	writeFile(t, filepath.Join(dir, filename), "version: \"2\"")
 }
 
 func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
@@ -173,9 +168,7 @@ func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
 		t.Fatalf("FindSQLCConfigs() error = %v", err)
 	}
 
-	if len(configs) != 0 {
-		t.Errorf("len(configs) = %d, want 0", len(configs))
-	}
+	assertEqual(t, "len(configs)", len(configs), 0)
 }
 
 func TestFindSQLCConfigs(t *testing.T) {
@@ -189,9 +182,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 			t.Fatalf("FindSQLCConfigs() error = %v", err)
 		}
 
-		if len(configs) != 1 {
-			t.Errorf("len(configs) = %d, want 1", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 1)
 	})
 
 	t.Run("finds both yaml and yml", func(t *testing.T) {
@@ -205,9 +196,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 			t.Fatalf("FindSQLCConfigs() error = %v", err)
 		}
 
-		if len(configs) != 2 {
-			t.Errorf("len(configs) = %d, want 2", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 2)
 	})
 
 	t.Run("finds config in nested directory", func(t *testing.T) {
@@ -226,24 +215,16 @@ func TestFindSQLCConfigs(t *testing.T) {
 			t.Fatalf("FindSQLCConfigs() error = %v", err)
 		}
 
-		if len(configs) != 1 {
-			t.Errorf("len(configs) = %d, want 1", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 1)
 	})
 
-	t.Run("skips hidden directories", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		dir := filepath.Join(tmpDir, ".git")
-		testSQLCConfigInSkippedDir(t, tmpDir, dir)
-	})
-
-	t.Run("skips vendor directory", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		dir := filepath.Join(tmpDir, "vendor")
-		testSQLCConfigInSkippedDir(t, tmpDir, dir)
-	})
+	for _, dir := range []string{".git", "vendor"} {
+		t.Run("skips "+dir, func(t *testing.T) {
+			t.Parallel()
+			tmpDir := t.TempDir()
+			testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, dir))
+		})
+	}
 
 	t.Run("empty paths", func(t *testing.T) {
 		t.Parallel()
@@ -253,9 +234,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 			t.Fatalf("FindSQLCConfigs() error = %v", err)
 		}
 
-		if len(configs) != 0 {
-			t.Errorf("len(configs) = %d, want 0", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 0)
 	})
 
 	t.Run("non-existent path", func(t *testing.T) {
@@ -266,9 +245,7 @@ func TestFindSQLCConfigs(t *testing.T) {
 			t.Error("FindSQLCConfigs() expected error for non-existent path, got nil")
 		}
 
-		if len(configs) != 0 {
-			t.Errorf("len(configs) = %d, want 0", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 0)
 	})
 }
 
@@ -277,27 +254,25 @@ func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
-	if err := os.WriteFile(
-		filepath.Join(tmpDir, "sqlc.yaml"),
-		[]byte(yamlContent),
-		0o644,
-	); err != nil {
-		t.Fatal(err)
-	}
+	writeFile(t, filepath.Join(tmpDir, "sqlc.yaml"), yamlContent)
 
 	dirs, err := GetSQLOutputDirs([]string{tmpDir})
 	if err != nil {
 		t.Fatalf("GetSQLOutputDirs() error = %v", err)
 	}
 
-	if len(dirs) != wantDirs {
-		t.Errorf("len(dirs) = %d, want %d", len(dirs), wantDirs)
-	}
+	assertEqual(t, "len(dirs)", len(dirs), wantDirs)
 }
 
 func TestGetSQLOutputDirs(t *testing.T) {
-	t.Run("extracts output directories", func(t *testing.T) {
-		testSQLOutputDirs(t, `version: "2"
+	tests := []struct {
+		name     string
+		yaml     string
+		wantDirs int
+	}{
+		{
+			name: "extracts output directories",
+			yaml: `version: "2"
 sql:
   - schema: "schema.sql"
     engine: "postgresql"
@@ -311,8 +286,28 @@ sql:
       go:
         package: "models"
         out: "pkg/models"
-`, 2)
-	})
+`,
+			wantDirs: 2,
+		},
+		{
+			name: "handles empty out field",
+			yaml: `version: "2"
+sql:
+  - schema: "schema.sql"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+`,
+			wantDirs: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testSQLOutputDirs(t, tt.yaml, tt.wantDirs)
+		})
+	}
 
 	t.Run("no config files", func(t *testing.T) {
 		t.Parallel()
@@ -323,20 +318,7 @@ sql:
 			t.Fatalf("GetSQLOutputDirs() error = %v", err)
 		}
 
-		if len(dirs) != 0 {
-			t.Errorf("len(dirs) = %d, want 0", len(dirs))
-		}
-	})
-
-	t.Run("handles empty out field", func(t *testing.T) {
-		testSQLOutputDirs(t, `version: "2"
-sql:
-  - schema: "schema.sql"
-    engine: "postgresql"
-    gen:
-      go:
-        package: "db"
-`, 0)
+		assertEqual(t, "len(dirs)", len(dirs), 0)
 	})
 }
 
@@ -349,9 +331,7 @@ func TestTryAddSQLCConfig(t *testing.T) {
 		configs := make(map[string]string)
 		tryAddSQLCConfig(tmpDir, "sqlc.yaml", configs)
 
-		if len(configs) != 1 {
-			t.Errorf("len(configs) = %d, want 1", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 1)
 	})
 
 	t.Run("skips non-existent config", func(t *testing.T) {
@@ -360,8 +340,6 @@ func TestTryAddSQLCConfig(t *testing.T) {
 		configs := make(map[string]string)
 		tryAddSQLCConfig(tmpDir, "sqlc.yaml", configs)
 
-		if len(configs) != 0 {
-			t.Errorf("len(configs) = %d, want 0", len(configs))
-		}
+		assertEqual(t, "len(configs)", len(configs), 0)
 	})
 }
