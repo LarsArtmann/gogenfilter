@@ -840,18 +840,15 @@ func TestDetectGenerated(t *testing.T) {
 	}
 }
 
-func detectGeneratedTestCases() []struct {
+type filenameTestCase struct {
 	name     string
 	filename string
 	options  map[FilterOption]bool
 	expected FilterReason
-} {
-	return []struct {
-		name     string
-		filename string
-		options  map[FilterOption]bool
-		expected FilterReason
-	}{
+}
+
+func detectGeneratedTestCases() []filenameTestCase {
+	return []filenameTestCase{
 		{
 			"detects sqlc by filename",
 			"db/models.go",

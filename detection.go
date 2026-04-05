@@ -41,18 +41,8 @@ func filenameChecks() []struct {
 		match  func(string) bool
 	}{
 		{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern},
-		{
-			FilterTempl, ReasonTempl,
-			func(f string) bool {
-				return strings.HasSuffix(f, "_templ.go")
-			},
-		},
-		{
-			FilterGoEnum, ReasonGoEnum,
-			func(f string) bool {
-				return strings.HasSuffix(f, "_enum.go")
-			},
-		},
+		{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go")},
+		{FilterGoEnum, ReasonGoEnum, matchesSuffixPattern("_enum.go")},
 		{FilterProtobuf, ReasonProtobuf, matchesProtobufFilename},
 		{FilterMockgen, ReasonMockgen, matchesMockgenFilename},
 	}
@@ -100,7 +90,13 @@ func matchesSQLCFilenamePattern(filename string) bool {
 	return strings.HasSuffix(filename, ".sql.go")
 }
 
-// matchesProtobufFilename checks if a base filename matches protobuf naming patterns.
+// matchesSuffixPattern returns a function that matches filenames ending with the given suffix.
+func matchesSuffixPattern(suffix string) func(string) bool {
+	return func(f string) bool {
+		return strings.HasSuffix(f, suffix)
+	}
+}
+
 func matchesProtobufFilename(filename string) bool {
 	return strings.HasSuffix(filename, ".pb.go") || strings.HasSuffix(filename, "_grpc.pb.go")
 }
