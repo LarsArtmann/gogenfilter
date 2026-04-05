@@ -59,7 +59,7 @@ func matchSegments(pathParts, patternParts []string) bool {
 				return true
 			}
 
-			for i := range len(pathParts) {
+			for i := range pathParts {
 				if matchSegments(pathParts[i:], patternParts) {
 					return true
 				}
