@@ -1,6 +1,7 @@
 package gogenfilter
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -894,11 +895,33 @@ func detectGeneratedTestCases() []struct {
 	}
 }
 
+func testStringer[T any](t *testing.T, name string, cases []struct {
+		value    T
+		expected string
+	}) {
+	for _, tt := range cases {
+		t.Run(fmt.Sprintf("%s/%v", name, tt.value), func(t *testing.T) {
+			t.Parallel()
+
+			var got string
+			if s, ok := any(tt.value).(interface{ String() string }); ok {
+				got = s.String()
+			} else {
+				t.Skip("type does not implement String()")
+				return
+			}
+			if got != tt.expected {
+				t.Errorf("%s(%v).String() = %q, want %q", name, tt.value, got, tt.expected)
+			}
+		})
+	}
+}
+
 func TestFilterOptionString(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		option   FilterOption
+	testStringer(t, "FilterOption", []struct {
+		value    FilterOption
 		expected string
 	}{
 		{FilterSQLC, "sqlc"},
@@ -909,24 +932,14 @@ func TestFilterOptionString(t *testing.T) {
 		{FilterStringer, "stringer"},
 		{FilterGeneric, "generic"},
 		{FilterAll, "all"},
-	}
-
-	for _, tt := range tests {
-		t.Run(string(tt.option), func(t *testing.T) {
-			t.Parallel()
-
-			if got := tt.option.String(); got != tt.expected {
-				t.Errorf("FilterOption(%q).String() = %q, want %q", tt.option, got, tt.expected)
-			}
-		})
-	}
+	})
 }
 
 func TestFilterReasonString(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		reason   FilterReason
+	testStringer(t, "FilterReason", []struct {
+		value    FilterReason
 		expected string
 	}{
 		{ReasonSQLC, "sqlc"},
@@ -937,17 +950,7 @@ func TestFilterReasonString(t *testing.T) {
 		{ReasonStringer, "stringer"},
 		{ReasonGeneric, "generic"},
 		{ReasonNotFiltered, "not-filtered"},
-	}
-
-	for _, tt := range tests {
-		t.Run(string(tt.reason), func(t *testing.T) {
-			t.Parallel()
-
-			if got := tt.reason.String(); got != tt.expected {
-				t.Errorf("FilterReason(%q).String() = %q, want %q", tt.reason, got, tt.expected)
-			}
-		})
-	}
+	})
 }
 
 func BenchmarkShouldFilter(b *testing.B) {
