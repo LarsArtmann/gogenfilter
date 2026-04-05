@@ -226,16 +226,22 @@ func TestFindSQLCConfigs_FindsInNestedDirectory(t *testing.T) {
 	assertEqual(t, "len(configs)", len(configs), 1)
 }
 
-func TestFindSQLCConfigs_SkipsGitDir(t *testing.T) {
-	t.Parallel()
-	tmpDir := t.TempDir()
-	testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, ".git"))
-}
+func TestFindSQLCConfigs_SkipsDirectories(t *testing.T) {
+	tests := []struct {
+		name string
+		dir  string
+	}{
+		{"Git", ".git"},
+		{"Vendor", "vendor"},
+	}
 
-func TestFindSQLCConfigs_SkipsVendorDir(t *testing.T) {
-	t.Parallel()
-	tmpDir := t.TempDir()
-	testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, "vendor"))
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			tmpDir := t.TempDir()
+			testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, tt.dir))
+		})
+	}
 }
 
 func TestFindSQLCConfigs_EmptyPaths(t *testing.T) {
