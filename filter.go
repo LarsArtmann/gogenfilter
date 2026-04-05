@@ -77,7 +77,12 @@ func (f *Filter) GetMetrics() *Metrics {
 // GetStats returns a snapshot of filter statistics.
 func (f *Filter) GetStats() FilterStats {
 	if f.metrics == nil {
-		return FilterStats{}
+		return FilterStats{
+			MetricsMixin: MetricsMixin{
+				TotalFilesChecked: 0,
+				FilteredByReason:  nil,
+			},
+		}
 	}
 
 	return f.metrics.GetStats()

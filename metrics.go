@@ -24,8 +24,10 @@ type Metrics struct {
 func NewMetrics() *Metrics {
 	return &Metrics{
 		MetricsMixin: MetricsMixin{
-			FilteredByReason: make(map[FilterReason]int),
+			TotalFilesChecked: 0,
+			FilteredByReason:  make(map[FilterReason]int),
 		},
+		mu:            sync.RWMutex{},
 		FilteredFiles: make(map[FilterReason][]string),
 	}
 }
@@ -60,7 +62,12 @@ func (m *Metrics) RecordFiltered(filePath string, reason FilterReason) {
 // GetStats returns the current filter statistics.
 func (m *Metrics) GetStats() FilterStats {
 	if m == nil {
-		return FilterStats{}
+		return FilterStats{
+			MetricsMixin: MetricsMixin{
+				TotalFilesChecked: 0,
+				FilteredByReason:  nil,
+			},
+		}
 	}
 
 	m.mu.RLock()

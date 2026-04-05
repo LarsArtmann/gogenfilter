@@ -45,8 +45,9 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 		err := findSQLCConfigsInPath(path, configs)
 		if err != nil {
 			return nil, &errors.SQLCConfigError{
-				Operation: "find",
-				Cause:     fmt.Errorf("searching path %q: %w", path, err),
+				ConfigPath: "",
+				Operation:  "find",
+				Cause:      fmt.Errorf("searching path %q: %w", path, err),
 			}
 		}
 	}

@@ -27,6 +27,7 @@ func New(message, code string) *BaseError {
 	return &BaseError{
 		Message: message,
 		Code:    code,
+		Cause:   nil,
 	}
 }
 
