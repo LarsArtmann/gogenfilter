@@ -6,9 +6,18 @@ import (
 	"path/filepath"
 )
 
+func fileExists(path string) bool {
+	stat, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+
+	return stat != nil
+}
+
 // FindProjectRoot searches parent directories for project marker files.
 // Returns empty string if no marker is found after searching up to maxProjectRootDepth levels.
-func FindProjectRoot(startPath string, markers []string) (string, error) {
+func FindProjectRoot(startPath string, markers []string) (string, *ProjectRootError) {
 	absPath, err := filepath.Abs(startPath)
 	if err != nil {
 		return "", &ProjectRootError{
@@ -23,7 +32,7 @@ func FindProjectRoot(startPath string, markers []string) (string, error) {
 	for range maxProjectRootDepth {
 		for _, marker := range markers {
 			markerPath := filepath.Join(current, marker)
-			if _, err := os.Stat(markerPath); err == nil {
+			if fileExists(markerPath) {
 				return current, nil
 			}
 		}

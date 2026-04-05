@@ -32,7 +32,8 @@ func NewMetrics() *Metrics {
 	}
 }
 
-// Record records that a file was filtered for a given reason.
+// Record records that a file was processed by the filter.
+// If reason is not ReasonNotFiltered, the file is also counted as filtered.
 func (m *Metrics) Record(filePath string, reason FilterReason) {
 	if m == nil {
 		return
@@ -88,14 +89,12 @@ type FilterStats struct {
 	MetricsMixin
 }
 
-// TotalFiltered returns the total number of filtered files.
+// TotalFiltered returns the total number of filtered files across all reasons.
 func (fs FilterStats) TotalFiltered() int {
 	total := 0
 
-	for reason, count := range fs.FilteredByReason {
-		if reason != ReasonNotFiltered {
-			total += count
-		}
+	for _, count := range fs.FilteredByReason {
+		total += count
 	}
 
 	return total

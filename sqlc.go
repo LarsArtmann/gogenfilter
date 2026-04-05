@@ -37,7 +37,7 @@ type SQLCGoConfig struct {
 // FindSQLCConfigs searches for sqlc.yaml or sqlc.yml files in the given paths.
 // Searches both the provided paths and their parent directories (up to 3 levels up).
 // Returns a map of config file path to project root directory.
-func FindSQLCConfigs(paths []string) (map[string]string, error) {
+func FindSQLCConfigs(paths []string) (map[string]string, *SQLCConfigError) {
 	configs := make(map[string]string)
 
 	for _, path := range paths {
@@ -55,10 +55,13 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 }
 
 // findSQLCConfigsInPath searches for sqlc configs in a single path.
-func findSQLCConfigsInPath(path string, configs map[string]string) error {
+func findSQLCConfigsInPath(path string, configs map[string]string) *SQLCConfigError {
 	err := walkPathForSQLCConfigs(path, configs)
 	if err != nil {
-		return fmt.Errorf("finding sqlc configs: %w", err)
+		return &SQLCConfigError{
+			Operation: "find",
+			Cause:     fmt.Errorf("finding sqlc configs in %q: %w", path, err),
+		}
 	}
 
 	findSQLCConfigsInParent(path, configs)
@@ -67,14 +70,14 @@ func findSQLCConfigsInPath(path string, configs map[string]string) error {
 }
 
 // walkPathForSQLCConfigs walks a path to find sqlc config files.
-func walkPathForSQLCConfigs(path string, configs map[string]string) error {
+func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigError {
 	err := filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return fmt.Errorf("accessing %q: %w", filePath, err)
 		}
 
-		if info.IsDir() {
-			return handleDirectoryWalk(info.Name())
+		if info.IsDir() && shouldSkipDirectory(info.Name()) {
+			return filepath.SkipDir
 		}
 
 		recordSQLCConfig(filePath, configs)
@@ -82,19 +85,18 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) error {
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("walking %q for sqlc configs: %w", path, err)
+		return &SQLCConfigError{
+			Operation: "walk",
+			Cause:     fmt.Errorf("walking %q for sqlc configs: %w", path, err),
+		}
 	}
 
 	return nil
 }
 
-// handleDirectoryWalk determines whether to skip a directory during walk.
-func handleDirectoryWalk(name string) error {
-	if strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor" {
-		return filepath.SkipDir
-	}
-
-	return nil
+// shouldSkipDirectory returns true if a directory should be skipped during walk.
+func shouldSkipDirectory(name string) bool {
+	return strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor"
 }
 
 // recordSQLCConfig records a sqlc config file if it matches.
@@ -119,13 +121,13 @@ func findSQLCConfigsInParent(path string, configs map[string]string) {
 // tryAddSQLCConfig adds a config to the map if the file exists.
 func tryAddSQLCConfig(parentPath, filename string, configs map[string]string) {
 	configPath := filepath.Join(parentPath, filename)
-	if _, err := os.Stat(configPath); err == nil {
+	if fileExists(configPath) {
 		configs[configPath] = parentPath
 	}
 }
 
 // ParseSQLCConfig reads and parses a sqlc.yaml file.
-func ParseSQLCConfig(configPath string) (*SQLCConfig, error) {
+func ParseSQLCConfig(configPath string) (*SQLCConfig, *SQLCConfigError) {
 	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is from controlled source
 	if err != nil {
 		return nil, &SQLCConfigError{
@@ -149,7 +151,7 @@ func ParseSQLCConfig(configPath string) (*SQLCConfig, error) {
 
 // GetSQLOutputDirs returns a list of output directories from sqlc configuration files.
 // Uses slog for any warnings about multiple or unparseable configs.
-func GetSQLOutputDirs(paths []string) ([]string, error) {
+func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 	configPaths, err := FindSQLCConfigs(paths)
 	if err != nil {
 		return nil, err
