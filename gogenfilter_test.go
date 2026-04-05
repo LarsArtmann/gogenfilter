@@ -965,20 +965,20 @@ func TestFilterReasonString(t *testing.T) {
 	})
 }
 
-func BenchmarkShouldFilter(b *testing.B) {
-	f := NewFilter(true, []FilterOption{FilterAll})
+func benchmarkShouldFilter(b *testing.B, enabled bool) {
+	f := NewFilter(enabled, []FilterOption{FilterAll})
 
 	for b.Loop() {
 		_ = f.ShouldFilter("db/models.go")
 	}
 }
 
-func BenchmarkShouldFilterDisabled(b *testing.B) {
-	f := NewFilter(false, []FilterOption{FilterAll})
+func BenchmarkShouldFilter(b *testing.B) {
+	benchmarkShouldFilter(b, true)
+}
 
-	for b.Loop() {
-		_ = f.ShouldFilter("db/models.go")
-	}
+func BenchmarkShouldFilterDisabled(b *testing.B) {
+	benchmarkShouldFilter(b, false)
 }
 
 func BenchmarkDetectGenerated(b *testing.B) {
