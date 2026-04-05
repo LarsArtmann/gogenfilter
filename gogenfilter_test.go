@@ -912,8 +912,10 @@ func testStringer[T any](t *testing.T, name string, cases []struct {
 				got = s.String()
 			} else {
 				t.Skip("type does not implement String()")
+
 				return
 			}
+
 			if got != tt.expected {
 				t.Errorf("%s(%v).String() = %q, want %q", name, tt.value, got, tt.expected)
 			}
