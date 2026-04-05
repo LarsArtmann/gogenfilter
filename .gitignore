@@ -47,3 +47,5 @@ Thumbs.db
 /gogenfilter
 # Test coverage
 /coverage
+# Sensitive files
+*.db
