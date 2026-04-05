@@ -86,27 +86,20 @@ func matchesSuffixPattern(suffix string) func(string) bool {
 	}
 }
 
-// matchesAnySuffix returns true if filename ends with any of the given suffixes.
-func matchesAnySuffix(filename string, suffixes ...string) bool {
-	return slices.ContainsFunc(suffixes, func(suffix string) bool {
-		return strings.HasSuffix(filename, suffix)
+// matchAnyWith returns true if the predicate returns true for any element.
+func matchAnyWith(s string, candidates []string, pred func(string, string) bool) bool {
+	return slices.ContainsFunc(candidates, func(c string) bool {
+		return pred(s, c)
 	})
 }
 
 func matchesProtobufFilename(filename string) bool {
-	return matchesAnySuffix(filename, ".pb.go", "_grpc.pb.go")
-}
-
-// matchesAnyContains returns true if filename contains any of the given substrings.
-func matchesAnyContains(filename string, substrings ...string) bool {
-	return slices.ContainsFunc(substrings, func(substr string) bool {
-		return strings.Contains(filename, substr)
-	})
+	return matchAnyWith(filename, []string{".pb.go", "_grpc.pb.go"}, strings.HasSuffix)
 }
 
 // matchesMockgenFilename checks if a base filename matches mockgen naming patterns.
 func matchesMockgenFilename(filename string) bool {
-	return matchesAnyContains(filename, "_mock.go", "mock_")
+	return matchAnyWith(filename, []string{"_mock.go", "mock_"}, strings.Contains)
 }
 
 // MatchesSQLCFilename checks if filename matches sqlc.dev naming patterns.
