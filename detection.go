@@ -6,18 +6,17 @@ import (
 	"strings"
 )
 
-// contentChecks returns filter options with their reasons and content-based detection functions.
-// Ordered from most specific to least specific; FilterGeneric must be last.
-func contentChecks() []struct {
+// contentCheck represents a filter option with its reason and content-based detection function.
+type contentCheck struct {
 	option FilterOption
 	reason FilterReason
 	check  func(string, string) bool
-} {
-	return []struct {
-		option FilterOption
-		reason FilterReason
-		check  func(string, string) bool
-	}{
+}
+
+// contentChecks returns filter options with their reasons and content-based detection functions.
+// Ordered from most specific to least specific; FilterGeneric must be last.
+func contentChecks() []contentCheck {
+	return []contentCheck{
 		{FilterSQLC, ReasonSQLC, IsSQLCGenerated},
 		{FilterTempl, ReasonTempl, IsTemplGenerated},
 		{FilterGoEnum, ReasonGoEnum, IsGoEnumGenerated},
