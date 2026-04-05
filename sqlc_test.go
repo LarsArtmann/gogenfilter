@@ -118,9 +118,9 @@ sql:
 `
 		writeFile(t, configPath, content)
 
-		config, err := ParseSQLCConfig(configPath)
+		config, err := parseSQLCConfig(configPath)
 		if err != nil {
-			t.Fatalf("ParseSQLCConfig() error = %v", err)
+			t.Fatalf("parseSQLCConfig() error = %v", err)
 		}
 
 		if config.Version != "2" {
@@ -140,9 +140,9 @@ sql:
 	t.Run("non-existent file", func(t *testing.T) {
 		t.Parallel()
 
-		_, err := ParseSQLCConfig("/nonexistent/sqlc.yaml")
+		_, err := parseSQLCConfig("/nonexistent/sqlc.yaml")
 		if err == nil {
-			t.Error("ParseSQLCConfig() expected error for non-existent file")
+			t.Error("parseSQLCConfig() expected error for non-existent file")
 		}
 	})
 
@@ -157,9 +157,9 @@ sql:
 `
 		writeFile(t, configPath, content)
 
-		_, err := ParseSQLCConfig(configPath)
+		_, err := parseSQLCConfig(configPath)
 		if err == nil {
-			t.Error("ParseSQLCConfig() expected error for invalid yaml")
+			t.Error("parseSQLCConfig() expected error for invalid yaml")
 		}
 	})
 }

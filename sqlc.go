@@ -10,26 +10,26 @@ import (
 	"github.com/go-faster/yaml"
 )
 
-// SQLCConfig represents a sqlc.yaml configuration file structure.
-type SQLCConfig struct {
+// sqlcConfig represents a sqlc.yaml configuration file structure.
+type sqlcConfig struct {
 	Version string       `yaml:"version"`
-	SQL     []SQLCEngine `yaml:"sql"`
+	SQL     []sqlcEngine `yaml:"sql"`
 }
 
-// SQLCEngine represents a single SQL engine configuration in sqlc.yaml.
-type SQLCEngine struct {
+// sqlcEngine represents a single SQL engine configuration in sqlc.yaml.
+type sqlcEngine struct {
 	Schema string        `yaml:"schema"`
 	Engine string        `yaml:"engine"`
-	Gen    SQLCGenConfig `yaml:"gen"`
+	Gen    sqlcGenConfig `yaml:"gen"`
 }
 
-// SQLCGenConfig represents the generation configuration in sqlc.yaml.
-type SQLCGenConfig struct {
-	Go SQLCGoConfig `yaml:"go"`
+// sqlcGenConfig represents the generation configuration in sqlc.yaml.
+type sqlcGenConfig struct {
+	Go sqlcGoConfig `yaml:"go"`
 }
 
-// SQLCGoConfig represents the Go-specific generation configuration.
-type SQLCGoConfig struct {
+// sqlcGoConfig represents the Go-specific generation configuration.
+type sqlcGoConfig struct {
 	Package string `yaml:"package"`
 	Out     string `yaml:"out"`
 }
@@ -138,8 +138,8 @@ func tryAddSQLCConfig(parentPath, filename string, configs map[string]string) {
 	}
 }
 
-// ParseSQLCConfig reads and parses a sqlc.yaml file.
-func ParseSQLCConfig(configPath string) (*SQLCConfig, *SQLCConfigError) {
+// parseSQLCConfig reads and parses a sqlc.yaml file.
+func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is from controlled source
 	if err != nil {
 		return nil, newSQLCConfigError(
@@ -149,7 +149,7 @@ func ParseSQLCConfig(configPath string) (*SQLCConfig, *SQLCConfigError) {
 		)
 	}
 
-	var config SQLCConfig
+	var config sqlcConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, newSQLCConfigError("parse", "parsing sqlc config", err)
 	}
@@ -172,7 +172,7 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 	var outputDirs []string
 
 	for configPath, projectRoot := range configPaths {
-		config, err := ParseSQLCConfig(configPath)
+		config, err := parseSQLCConfig(configPath)
 		if err != nil {
 			return nil, newSQLCConfigError(
 				"collect-output-dirs",
