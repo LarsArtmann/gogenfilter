@@ -321,21 +321,17 @@ func TestShouldFilterIntegration(t *testing.T) {
 	}
 }
 
-//nolint:funlen
-func shouldFilterTestCases() []struct {
+type shouldFilterTestCase struct {
 	name         string
 	fileName     string
 	content      string
 	opts         []FilterOption
 	shouldFilter bool
-} {
-	return []struct {
-		name         string
-		fileName     string
-		content      string
-		opts         []FilterOption
-		shouldFilter bool
-	}{
+}
+
+//nolint:funlen
+func shouldFilterTestCases() []shouldFilterTestCase {
+	return []shouldFilterTestCase{
 		{
 			name:         "filters sqlc file",
 			fileName:     "models.go",
