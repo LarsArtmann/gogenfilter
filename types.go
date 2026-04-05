@@ -18,7 +18,7 @@ type FilterOption string
 
 func (o FilterOption) String() string { return string(o) }
 
-// ensure FilterOption implements stringer
+// ensure FilterOption implements stringer.
 var _ stringer = FilterOption("")
 
 const (
@@ -54,7 +54,7 @@ type FilterReason string
 
 func (r FilterReason) String() string { return string(r) }
 
-// ensure FilterReason implements stringer
+// ensure FilterReason implements stringer.
 var _ stringer = FilterReason("")
 
 // FilterReason values for each supported generator and special filter outcomes.

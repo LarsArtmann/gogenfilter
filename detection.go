@@ -102,6 +102,7 @@ func matchesAnySuffix(filename string, suffixes ...string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -116,6 +117,7 @@ func matchesAnyContains(filename string, substrings ...string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
