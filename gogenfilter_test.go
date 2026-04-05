@@ -128,7 +128,7 @@ func TestNewFilter(t *testing.T) {
 			t.Error("Expected enabled filter")
 		}
 
-		for _, opt := range allSpecificOptions() {
+		for _, opt := range allSpecificOptions {
 			if !f.options[opt] {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
@@ -878,21 +878,14 @@ func TestHasSQLCCodePatterns(t *testing.T) {
 	}, HasSQLCCodePatterns, "HasSQLCCodePatterns")
 }
 
-func TestMatchesSQLCFilename(t *testing.T) {
-	t.Parallel()
+type sqlcFilenameTestCase struct {
+	name     string
+	path     string
+	expected bool
+}
 
-	tests := []struct {
-		name     string
-		path     string
-		expected bool
-	}{
-		{name: "models.go", path: "db/models.go", expected: true},
-		{name: "querier.go", path: "db/querier.go", expected: true},
-		{name: "query.sql.go", path: "db/query.sql.go", expected: true},
-		{name: "batch.go", path: "db/batch.go", expected: true},
-		{name: "users.sql.go", path: "db/users.sql.go", expected: true},
-		{name: "regular file", path: "db/main.go", expected: false},
-	}
+func runSQLCFilenameTests(t *testing.T, tests []sqlcFilenameTestCase) {
+	t.Helper()
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -904,6 +897,21 @@ func TestMatchesSQLCFilename(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestMatchesSQLCFilename(t *testing.T) {
+	t.Parallel()
+
+	tests := []sqlcFilenameTestCase{
+		{name: "models.go", path: "db/models.go", expected: true},
+		{name: "querier.go", path: "db/querier.go", expected: true},
+		{name: "query.sql.go", path: "db/query.sql.go", expected: true},
+		{name: "batch.go", path: "db/batch.go", expected: true},
+		{name: "users.sql.go", path: "db/users.sql.go", expected: true},
+		{name: "regular file", path: "db/main.go", expected: false},
+	}
+
+	runSQLCFilenameTests(t, tests)
 }
 
 func TestDetectGenerated(t *testing.T) {
@@ -1147,26 +1155,13 @@ func TestEmptyContent(t *testing.T) {
 func TestMatchesSQLCFilenameFalsePositives(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name     string
-		path     string
-		expected bool
-	}{
+	tests := []sqlcFilenameTestCase{
 		{name: "user_models.go is not sqlc", path: "db/user_models.go", expected: false},
 		{name: "myquerier.go is not sqlc", path: "db/myquerier.go", expected: false},
 		{name: "batch_processor.go is not sqlc", path: "db/batch_processor.go", expected: false},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := MatchesSQLCFilename(tt.path)
-			if got != tt.expected {
-				t.Errorf("MatchesSQLCFilename(%q) = %v, want %v", tt.path, got, tt.expected)
-			}
-		})
-	}
+	runSQLCFilenameTests(t, tests)
 }
 
 func benchmarkShouldFilter(b *testing.B, enabled bool) {
