@@ -6,20 +6,22 @@ import (
 	"testing"
 )
 
-func assertStringField(t *testing.T, fieldName, actual, expected string) {
+func assertFieldEqual[T comparable](t *testing.T, name string, got, want T, format string) {
 	t.Helper()
 
-	if actual != expected {
-		t.Errorf("%s = %q, want %q", fieldName, actual, expected)
+	if got != want {
+		t.Errorf("%s = "+format+", want "+format, name, got, want)
 	}
+}
+
+func assertStringField(t *testing.T, fieldName, actual, expected string) {
+	t.Helper()
+	assertFieldEqual(t, fieldName, actual, expected, "%q")
 }
 
 func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 	t.Helper()
-
-	if got != want {
-		t.Errorf("%s = %v, want %v", name, got, want)
-	}
+	assertFieldEqual(t, name, got, want, "%v")
 }
 
 func writeFile(t *testing.T, path, content string) {
