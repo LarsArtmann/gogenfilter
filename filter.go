@@ -71,11 +71,6 @@ func (f *Filter) ShouldFilter(filePath string) bool {
 	return f.shouldFilterWithExcludes(filePath)
 }
 
-// GetMetrics returns the filter metrics tracker. Returns nil if metrics are disabled.
-func (f *Filter) GetMetrics() *Metrics {
-	return f.metrics
-}
-
 // GetStats returns a snapshot of filter statistics.
 func (f *Filter) GetStats() FilterStats {
 	if f.metrics == nil {
