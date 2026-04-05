@@ -755,9 +755,7 @@ func TestFindProjectRoot(t *testing.T) {
 		tmpDir := t.TempDir()
 
 		childDir := filepath.Join(tmpDir, "subdir", "deep")
-		if err := os.MkdirAll(childDir, 0o750); err != nil {
-			t.Fatal(err)
-		}
+		mkdirAll(t, childDir)
 
 		writeFile(t, filepath.Join(tmpDir, "go.mod"), "module test\n")
 
