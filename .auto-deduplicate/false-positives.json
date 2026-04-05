@@ -1,0 +1,11 @@
+[
+  {
+    "fingerprint": "868b12c642afca975788fa0f36ded75570baa54243d753e950a89386f8dc8240",
+    "files": [
+      "/Users/larsartmann/projects/gogenfilter/gogenfilter_test.go"
+    ],
+    "reason": "These benchmark functions test different detection functions (`IsProtobufGenerated` vs `IsGenericGenerated`) with intentionally different input content representing different code generators. The structural pattern (content variable → loop → call) is coincidental boilerplate required for each independent benchmark, not duplicated logic. The content strings are semantically meaningful test fixtures, not interchangeable values.\n\n{\"strategy\": \"false_positive\", \"files_modified\": [], \"new_abstraction\": null, \"confidence\": 1.0}\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=af171a6e-cf6d-43a2-9428-44d3f88ef121\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/05 03:27:07 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 18s app duration in seconds 18]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
+    "marked_at": "2026-04-05T03:27:15.697973+02:00",
+    "marked_by": "auto-deduplicate"
+  }
+]
