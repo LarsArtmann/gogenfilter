@@ -25,7 +25,6 @@ linters:
         - copyloopvar
         - cyclop
         - decorder
-        - depguard
         - dogsled
         - dupl
         - dupword
@@ -42,10 +41,8 @@ linters:
         - fatcontext
         - forbidigo
         - forcetypeassert
-        - funlen
         - ginkgolinter
         - gocheckcompilerdirectives
-        - gochecknoglobals
         - gochecknoinits
         - gochecksumtype
         - gocognit
@@ -59,7 +56,6 @@ linters:
         - gomoddirectives
         - gomodguard
         - goprintffuncname
-        - gosec
         - gosmopolitan
         - govet
         - grouper
@@ -86,11 +82,9 @@ linters:
         - nilnil
         - nlreturn
         - noctx
-        - noinlineerr
         - nolintlint
         - nonamedreturns
         - nosprintfhostport
-        - paralleltest
         - perfsprint
         - prealloc
         - predeclared
@@ -98,7 +92,6 @@ linters:
         - protogetter
         - reassign
         - recvcheck
-        - revive
         - rowserrcheck
         - sloglint
         - spancheck
@@ -108,16 +101,13 @@ linters:
         - tagliatelle
         - testableexamples
         - testifylint
-        - testpackage
         - thelper
-        - tparallel
         - unconvert
         - unparam
         - unqueryvet
         - unused
         - usestdlibvars
         - usetesting
-        - varnamelen
         - wastedassign
         - whitespace
         - wrapcheck
@@ -132,3 +122,21 @@ formatters:
 issues:
     max-issues-per-linter: 50
     max-same-issues: 10
+    exclude-rules:
+        - path: _test\.go
+          linters:
+            - exhaustruct
+
+linters-settings:
+    depguard:
+        rules:
+            Main:
+                allow:
+                    - $gostd
+                    - $gopkg
+                    - golang.org
+                    - github.com/LarsArtmann/gogenfilter/pkg/errors
+                    - github.com/go-faster/yaml
+    exhaustruct:
+        allow-empty-returns: true
+        allow-empty-declarations: true

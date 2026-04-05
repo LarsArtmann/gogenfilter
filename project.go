@@ -41,5 +41,6 @@ func FindProjectRoot(startPath string, markers []string) (string, error) {
 	return "", &errors.ProjectRootError{
 		StartPath: startPath,
 		Markers:   markers,
+		Cause:     nil,
 	}
 }
