@@ -41,7 +41,7 @@ func mkdirAll(t *testing.T, dir string) {
 	}
 }
 
-func TestHandleDirectoryWalk(t *testing.T) {
+func TestShouldSkipDirectory(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -60,11 +60,9 @@ func TestHandleDirectoryWalk(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := handleDirectoryWalk(tt.dirName)
-
-			gotSkip := err != nil
+			gotSkip := shouldSkipDirectory(tt.dirName)
 			if gotSkip != tt.wantSkip {
-				t.Errorf("handleDirectoryWalk(%q) = %v, want skip=%v", tt.dirName, err, tt.wantSkip)
+				t.Errorf("shouldSkipDirectory(%q) = %v, want %v", tt.dirName, gotSkip, tt.wantSkip)
 			}
 		})
 	}
