@@ -32,9 +32,9 @@ func NewMetrics() *Metrics {
 	}
 }
 
-// Record records that a file was processed by the filter.
+// record records that a file was processed by the filter.
 // If reason is not ReasonNotFiltered, the file is also counted as filtered.
-func (m *Metrics) Record(filePath string, reason FilterReason) {
+func (m *Metrics) record(filePath string, reason FilterReason) {
 	if m == nil {
 		return
 	}
@@ -52,12 +52,12 @@ func (m *Metrics) Record(filePath string, reason FilterReason) {
 
 // RecordChecked records that a file was checked but not filtered.
 func (m *Metrics) RecordChecked(filePath string) {
-	m.Record(filePath, ReasonNotFiltered)
+	m.record(filePath, ReasonNotFiltered)
 }
 
 // RecordFiltered records that a file was filtered for a given reason.
 func (m *Metrics) RecordFiltered(filePath string, reason FilterReason) {
-	m.Record(filePath, reason)
+	m.record(filePath, reason)
 }
 
 // GetStats returns the current filter statistics.

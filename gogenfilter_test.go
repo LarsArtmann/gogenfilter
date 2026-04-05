@@ -172,18 +172,15 @@ func TestMatchPattern(t *testing.T) {
 	}
 }
 
-func matchPatternTestCases() []struct {
+type matchPatternTestCase struct {
 	name     string
 	path     string
 	pattern  string
 	expected bool
-} {
-	return []struct {
-		name     string
-		path     string
-		pattern  string
-		expected bool
-	}{
+}
+
+func matchPatternTestCases() []matchPatternTestCase {
+	return []matchPatternTestCase{
 		{name: "exact match", path: "file.go", pattern: "file.go", expected: true},
 		{name: "wildcard match", path: "test.go", pattern: "*.go", expected: true},
 		{name: "wildcard no match", path: "test.txt", pattern: "*.go", expected: false},
@@ -659,10 +656,10 @@ func TestFilterMetrics(t *testing.T) {
 		t.Parallel()
 
 		metrics := NewMetrics()
-		metrics.Record("db/models.go", ReasonSQLC)
-		metrics.Record("db/query.sql.go", ReasonSQLC)
-		metrics.Record("components/header_templ.go", ReasonTempl)
-		metrics.Record("vendor/lib.go", ReasonExcludePattern)
+		metrics.record("db/models.go", ReasonSQLC)
+		metrics.record("db/query.sql.go", ReasonSQLC)
+		metrics.record("components/header_templ.go", ReasonTempl)
+		metrics.record("vendor/lib.go", ReasonExcludePattern)
 
 		stats := metrics.GetStats()
 		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 4)
@@ -675,9 +672,9 @@ func TestFilterMetrics(t *testing.T) {
 		t.Parallel()
 
 		metrics := NewMetrics()
-		metrics.Record("db/models.go", ReasonSQLC)
-		metrics.Record("main.go", ReasonNotFiltered)
-		metrics.Record("service/user.go", ReasonNotFiltered)
+		metrics.record("db/models.go", ReasonSQLC)
+		metrics.record("main.go", ReasonNotFiltered)
+		metrics.record("service/user.go", ReasonNotFiltered)
 
 		stats := metrics.GetStats()
 		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
@@ -688,7 +685,7 @@ func TestFilterMetrics(t *testing.T) {
 		t.Parallel()
 
 		var metrics *Metrics
-		metrics.Record("test.go", ReasonSQLC)
+		metrics.record("test.go", ReasonSQLC)
 
 		stats := metrics.GetStats()
 		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
