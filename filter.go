@@ -21,7 +21,7 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 
 	for _, opt := range options {
 		if opt == FilterAll {
-			for _, specific := range allSpecificOptions {
+			for _, specific := range allSpecificOptions() {
 				f.options[specific] = true
 			}
 

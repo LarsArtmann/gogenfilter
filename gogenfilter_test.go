@@ -87,7 +87,7 @@ func TestNewFilter(t *testing.T) {
 			t.Error("Expected enabled filter")
 		}
 
-		for _, opt := range allSpecificOptions {
+		for _, opt := range allSpecificOptions() {
 			if !f.options[opt] {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
@@ -111,6 +111,8 @@ func TestShouldFilter(t *testing.T) {
 }
 
 func TestMatchPattern(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		path     string
@@ -131,6 +133,8 @@ func TestMatchPattern(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := MatchPattern(tt.path, tt.pattern)
 			if got != tt.expected {
 				t.Errorf(
@@ -267,7 +271,25 @@ func assertFilterBehavior(
 }
 
 func TestShouldFilterIntegration(t *testing.T) {
-	tests := []struct {
+	t.Parallel()
+
+	for _, tt := range shouldFilterTestCases() {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			assertFilterBehavior(t, tt.fileName, tt.content, tt.opts, tt.shouldFilter)
+		})
+	}
+}
+
+//nolint:funlen
+func shouldFilterTestCases() []struct {
+	name         string
+	fileName     string
+	content      string
+	opts         []FilterOption
+	shouldFilter bool
+} {
+	return []struct {
 		name         string
 		fileName     string
 		content      string
@@ -345,16 +367,11 @@ func TestShouldFilterIntegration(t *testing.T) {
 			shouldFilter: false,
 		},
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			assertFilterBehavior(t, tt.fileName, tt.content, tt.opts, tt.shouldFilter)
-		})
-	}
 }
 
 func TestIsSQLCGenerated(t *testing.T) {
+	t.Parallel()
+
 	tests := []generatedFileTest{
 		{
 			name:     "sqlc models with comment",
@@ -638,7 +655,7 @@ func TestFilterWithMetrics(t *testing.T) {
 		for name, content := range files {
 			dir := filepath.Join(tmpDir, filepath.Dir(name))
 
-			err := os.MkdirAll(dir, 0o755)
+			err := os.MkdirAll(dir, 0o750)
 			if err != nil {
 				t.Fatalf("Failed to create dir: %v", err)
 			}
@@ -646,7 +663,7 @@ func TestFilterWithMetrics(t *testing.T) {
 			err = os.WriteFile(
 				filepath.Join(tmpDir, name),
 				[]byte(content),
-				0o644,
+				0o600,
 			)
 			if err != nil {
 				t.Fatalf("Failed to write file: %v", err)
@@ -721,7 +738,7 @@ func TestFindProjectRoot(t *testing.T) {
 		tmpDir := t.TempDir()
 
 		childDir := filepath.Join(tmpDir, "subdir", "deep")
-		if err := os.MkdirAll(childDir, 0o755); err != nil {
+		if err := os.MkdirAll(childDir, 0o750); err != nil {
 			t.Fatal(err)
 		}
 
@@ -764,6 +781,8 @@ func TestHasSQLCCodePatterns(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := HasSQLCCodePatterns(tt.content)
 			if got != tt.expected {
 				t.Errorf("HasSQLCCodePatterns() = %v, want %v", got, tt.expected)
@@ -790,6 +809,8 @@ func TestMatchesSQLCFilename(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := MatchesSQLCFilename(tt.path)
 			if got != tt.expected {
 				t.Errorf("MatchesSQLCFilename(%q) = %v, want %v", tt.path, got, tt.expected)
@@ -801,7 +822,25 @@ func TestMatchesSQLCFilename(t *testing.T) {
 func TestDetectGenerated(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	for _, tc := range detectGeneratedTestCases() {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			reason := getFilenameBasedReason(tc.filename, tc.options)
+			if reason != tc.expected {
+				t.Errorf("Expected %v, got %v", tc.expected, reason)
+			}
+		})
+	}
+}
+
+func detectGeneratedTestCases() []struct {
+	name     string
+	filename string
+	options  map[FilterOption]bool
+	expected FilterReason
+} {
+	return []struct {
 		name     string
 		filename string
 		options  map[FilterOption]bool
@@ -855,17 +894,6 @@ func TestDetectGenerated(t *testing.T) {
 			map[FilterOption]bool{FilterSQLC: true},
 			ReasonNotFiltered,
 		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-
-			reason := getFilenameBasedReason(tc.filename, tc.options)
-			if reason != tc.expected {
-				t.Errorf("Expected %v, got %v", tc.expected, reason)
-			}
-		})
 	}
 }
 

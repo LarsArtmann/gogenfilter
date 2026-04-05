@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/LarsArtmann/gogenfilter/pkg/errors"
 	"github.com/go-faster/yaml"
 )
 
@@ -44,7 +43,7 @@ func FindSQLCConfigs(paths []string) (map[string]string, error) {
 	for _, path := range paths {
 		err := findSQLCConfigsInPath(path, configs)
 		if err != nil {
-			return nil, &errors.SQLCConfigError{
+			return nil, &SQLCConfigError{
 				ConfigPath: "",
 				Operation:  "find",
 				Cause:      fmt.Errorf("searching path %q: %w", path, err),
@@ -129,7 +128,7 @@ func tryAddSQLCConfig(parentPath, filename string, configs map[string]string) {
 func ParseSQLCConfig(configPath string) (*SQLCConfig, error) {
 	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is from controlled source
 	if err != nil {
-		return nil, &errors.SQLCConfigError{
+		return nil, &SQLCConfigError{
 			ConfigPath: configPath,
 			Operation:  "read",
 			Cause:      fmt.Errorf("reading sqlc config %q: %w", configPath, err),
@@ -138,7 +137,7 @@ func ParseSQLCConfig(configPath string) (*SQLCConfig, error) {
 
 	var config SQLCConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, &errors.SQLCConfigError{
+		return nil, &SQLCConfigError{
 			ConfigPath: configPath,
 			Operation:  "parse",
 			Cause:      fmt.Errorf("parsing sqlc config: %w", err),
@@ -165,7 +164,7 @@ func GetSQLOutputDirs(paths []string) ([]string, error) {
 	for configPath, projectRoot := range configPaths {
 		config, err := ParseSQLCConfig(configPath)
 		if err != nil {
-			return nil, &errors.SQLCConfigError{
+			return nil, &SQLCConfigError{
 				ConfigPath: configPath,
 				Operation:  "collect-output-dirs",
 				Cause:      err,
