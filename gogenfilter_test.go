@@ -154,7 +154,31 @@ func TestShouldFilter(t *testing.T) {
 func TestMatchPattern(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	for _, tt := range matchPatternTestCases() {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := MatchPattern(tt.path, tt.pattern)
+			if got != tt.expected {
+				t.Errorf(
+					"MatchPattern(%q, %q) = %v, want %v",
+					tt.path,
+					tt.pattern,
+					got,
+					tt.expected,
+				)
+			}
+		})
+	}
+}
+
+func matchPatternTestCases() []struct {
+	name     string
+	path     string
+	pattern  string
+	expected bool
+} {
+	return []struct {
 		name     string
 		path     string
 		pattern  string
@@ -200,23 +224,6 @@ func TestMatchPattern(t *testing.T) {
 			pattern:  "vendor/*.go",
 			expected: false,
 		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := MatchPattern(tt.path, tt.pattern)
-			if got != tt.expected {
-				t.Errorf(
-					"MatchPattern(%q, %q) = %v, want %v",
-					tt.path,
-					tt.pattern,
-					got,
-					tt.expected,
-				)
-			}
-		})
 	}
 }
 
@@ -817,14 +824,18 @@ func TestFindProjectRoot(t *testing.T) {
 			t.Error("Expected error when no marker found")
 		}
 	})
+}
 
-	t.Run("ProjectRootError unwraps cause", func(t *testing.T) {
+func TestProjectRootError(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unwraps cause", func(t *testing.T) {
 		t.Parallel()
 
 		err := &ProjectRootError{
 			StartPath: "/some/path",
 			Markers:   []string{"go.mod"},
-			Cause:     errors.New("inner error"), //nolint:goerr113 // test-only sentinel error
+			Cause:     fmt.Errorf("inner error: %w", errors.ErrUnsupported),
 		}
 
 		if err.Error() == "" {
@@ -836,7 +847,7 @@ func TestFindProjectRoot(t *testing.T) {
 		}
 	})
 
-	t.Run("ProjectRootError without cause", func(t *testing.T) {
+	t.Run("nil cause", func(t *testing.T) {
 		t.Parallel()
 
 		err := &ProjectRootError{
@@ -1082,7 +1093,7 @@ func TestSQLCConfigError(t *testing.T) {
 		err := &SQLCConfigError{
 			ConfigPath: "/path/to/sqlc.yaml",
 			Operation:  "read",
-			Cause:      fmt.Errorf("permission denied"),
+			Cause:      fmt.Errorf("permission denied: %w", os.ErrPermission),
 		}
 
 		if err.Error() == "" {
@@ -1100,7 +1111,7 @@ func TestSQLCConfigError(t *testing.T) {
 		err := &SQLCConfigError{
 			ConfigPath: "",
 			Operation:  "find",
-			Cause:      fmt.Errorf("not found"),
+			Cause:      fmt.Errorf("not found: %w", os.ErrNotExist),
 		}
 
 		if err.Error() == "" {
