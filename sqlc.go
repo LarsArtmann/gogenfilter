@@ -59,6 +59,7 @@ func findSQLCConfigsInPath(path string, configs map[string]string) *SQLCConfigEr
 	err := walkPathForSQLCConfigs(path, configs)
 	if err != nil {
 		return &SQLCConfigError{
+			ConfigPath: "",
 			Operation: "find",
 			Cause:     fmt.Errorf("finding sqlc configs in %q: %w", path, err),
 		}
@@ -86,6 +87,7 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigE
 	})
 	if err != nil {
 		return &SQLCConfigError{
+			ConfigPath: "",
 			Operation: "walk",
 			Cause:     fmt.Errorf("walking %q for sqlc configs: %w", path, err),
 		}
