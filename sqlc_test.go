@@ -33,6 +33,14 @@ func writeFile(t *testing.T, path, content string) {
 	}
 }
 
+func mkdirAll(t *testing.T, dir string) {
+	t.Helper()
+
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestHandleDirectoryWalk(t *testing.T) {
 	t.Parallel()
 
@@ -166,9 +174,7 @@ func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
 	t.Helper()
 
-	if err := os.MkdirAll(dir, 0o750); err != nil {
-		t.Fatal(err)
-	}
+	mkdirAll(t, dir)
 
 	writeSQLCConfigFile(t, dir, "sqlc.yaml")
 
@@ -212,9 +218,7 @@ func TestFindSQLCConfigs_FindsInNestedDirectory(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	nestedDir := filepath.Join(tmpDir, "internal", "db")
-	if err := os.MkdirAll(nestedDir, 0o750); err != nil {
-		t.Fatal(err)
-	}
+	mkdirAll(t, nestedDir)
 
 	writeSQLCConfigFile(t, nestedDir, "sqlc.yaml")
 
