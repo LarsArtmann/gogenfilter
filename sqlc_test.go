@@ -25,13 +25,15 @@ func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 func writeFile(t *testing.T, path, content string) {
 	t.Helper()
 
-	err := os.WriteFile(path, []byte(content), 0o644)
+	err := os.WriteFile(path, []byte(content), 0o600)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestHandleDirectoryWalk(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		dirName  string
@@ -59,6 +61,8 @@ func TestHandleDirectoryWalk(t *testing.T) {
 }
 
 func TestRecordSQLCConfig(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		filePath string
@@ -160,7 +164,7 @@ func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
 	t.Helper()
 
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		t.Fatal(err)
 	}
 
@@ -174,87 +178,88 @@ func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
 	assertEqual(t, "len(configs)", len(configs), 0)
 }
 
-func TestFindSQLCConfigs(t *testing.T) {
-	t.Run("finds config in directory", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
+func TestFindSQLCConfigs_FindsInDirectory(t *testing.T) {
+	t.Parallel()
+	tmpDir := t.TempDir()
+	writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
 
-		configs, err := FindSQLCConfigs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
-
-		assertEqual(t, "len(configs)", len(configs), 1)
-	})
-
-	t.Run("finds both yaml and yml", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-		writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
-		writeSQLCConfigFile(t, tmpDir, "sqlc.yml")
-
-		configs, err := FindSQLCConfigs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
-
-		assertEqual(t, "len(configs)", len(configs), 2)
-	})
-
-	t.Run("finds config in nested directory", func(t *testing.T) {
-		t.Parallel()
-		tmpDir := t.TempDir()
-
-		nestedDir := filepath.Join(tmpDir, "internal", "db")
-		if err := os.MkdirAll(nestedDir, 0o755); err != nil {
-			t.Fatal(err)
-		}
-
-		writeSQLCConfigFile(t, nestedDir, "sqlc.yaml")
-
-		configs, err := FindSQLCConfigs([]string{tmpDir})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
-
-		assertEqual(t, "len(configs)", len(configs), 1)
-	})
-
-	for _, dir := range []string{".git", "vendor"} {
-		t.Run("skips "+dir, func(t *testing.T) {
-			t.Parallel()
-			tmpDir := t.TempDir()
-			testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, dir))
-		})
+	configs, err := FindSQLCConfigs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("FindSQLCConfigs() error = %v", err)
 	}
 
-	t.Run("empty paths", func(t *testing.T) {
-		t.Parallel()
+	assertEqual(t, "len(configs)", len(configs), 1)
+}
 
-		configs, err := FindSQLCConfigs([]string{})
-		if err != nil {
-			t.Fatalf("FindSQLCConfigs() error = %v", err)
-		}
+func TestFindSQLCConfigs_FindsBothYamlAndYml(t *testing.T) {
+	t.Parallel()
+	tmpDir := t.TempDir()
+	writeSQLCConfigFile(t, tmpDir, "sqlc.yaml")
+	writeSQLCConfigFile(t, tmpDir, "sqlc.yml")
 
-		assertEqual(t, "len(configs)", len(configs), 0)
-	})
+	configs, err := FindSQLCConfigs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("FindSQLCConfigs() error = %v", err)
+	}
 
-	t.Run("non-existent path", func(t *testing.T) {
-		t.Parallel()
+	assertEqual(t, "len(configs)", len(configs), 2)
+}
 
-		configs, err := FindSQLCConfigs([]string{"/nonexistent/path"})
-		if err == nil {
-			t.Error("FindSQLCConfigs() expected error for non-existent path, got nil")
-		}
+func TestFindSQLCConfigs_FindsInNestedDirectory(t *testing.T) {
+	t.Parallel()
+	tmpDir := t.TempDir()
 
-		assertEqual(t, "len(configs)", len(configs), 0)
-	})
+	nestedDir := filepath.Join(tmpDir, "internal", "db")
+	if err := os.MkdirAll(nestedDir, 0o750); err != nil {
+		t.Fatal(err)
+	}
+
+	writeSQLCConfigFile(t, nestedDir, "sqlc.yaml")
+
+	configs, err := FindSQLCConfigs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("FindSQLCConfigs() error = %v", err)
+	}
+
+	assertEqual(t, "len(configs)", len(configs), 1)
+}
+
+func TestFindSQLCConfigs_SkipsGitDir(t *testing.T) {
+	t.Parallel()
+	tmpDir := t.TempDir()
+	testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, ".git"))
+}
+
+func TestFindSQLCConfigs_SkipsVendorDir(t *testing.T) {
+	t.Parallel()
+	tmpDir := t.TempDir()
+	testSQLCConfigInSkippedDir(t, tmpDir, filepath.Join(tmpDir, "vendor"))
+}
+
+func TestFindSQLCConfigs_EmptyPaths(t *testing.T) {
+	t.Parallel()
+
+	configs, err := FindSQLCConfigs([]string{})
+	if err != nil {
+		t.Fatalf("FindSQLCConfigs() error = %v", err)
+	}
+
+	assertEqual(t, "len(configs)", len(configs), 0)
+}
+
+func TestFindSQLCConfigs_NonExistentPath(t *testing.T) {
+	t.Parallel()
+
+	configs, err := FindSQLCConfigs([]string{"/nonexistent/path"})
+	if err == nil {
+		t.Error("FindSQLCConfigs() expected error for non-existent path, got nil")
+	}
+
+	assertEqual(t, "len(configs)", len(configs), 0)
 }
 
 func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
 	t.Helper()
-	t.Parallel()
 
 	tmpDir := t.TempDir()
 	writeFile(t, filepath.Join(tmpDir, "sqlc.yaml"), yamlContent)
@@ -308,6 +313,8 @@ sql:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			testSQLOutputDirs(t, tt.yaml, tt.wantDirs)
 		})
 	}

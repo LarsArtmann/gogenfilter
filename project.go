@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/LarsArtmann/gogenfilter/pkg/errors"
 )
 
 // FindProjectRoot searches parent directories for project marker files.
@@ -13,7 +11,7 @@ import (
 func FindProjectRoot(startPath string, markers []string) (string, error) {
 	absPath, err := filepath.Abs(startPath)
 	if err != nil {
-		return "", &errors.ProjectRootError{
+		return "", &ProjectRootError{
 			StartPath: startPath,
 			Markers:   markers,
 			Cause:     fmt.Errorf("getting absolute path for %q: %w", startPath, err),
@@ -38,7 +36,7 @@ func FindProjectRoot(startPath string, markers []string) (string, error) {
 		current = parent
 	}
 
-	return "", &errors.ProjectRootError{
+	return "", &ProjectRootError{
 		StartPath: startPath,
 		Markers:   markers,
 		Cause:     nil,

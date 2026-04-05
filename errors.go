@@ -1,44 +1,6 @@
-// Package errors provides structured error types for the gogenfilter library.
-package errors
+package gogenfilter
 
 import "fmt"
-
-// BaseError is a fundamental error type with message, code, and optional cause.
-type BaseError struct {
-	Message string
-	Code    string
-	Cause   error
-}
-
-func (e *BaseError) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("%s: %v", e.Message, e.Cause)
-	}
-
-	return e.Message
-}
-
-func (e *BaseError) Unwrap() error {
-	return e.Cause
-}
-
-// New creates a new BaseError with the given message and code.
-func New(message, code string) *BaseError {
-	return &BaseError{
-		Message: message,
-		Code:    code,
-		Cause:   nil,
-	}
-}
-
-// Wrap creates a new BaseError wrapping an existing error with a message and code.
-func Wrap(cause error, message, code string) *BaseError {
-	return &BaseError{
-		Message: message,
-		Code:    code,
-		Cause:   cause,
-	}
-}
 
 // ProjectRootError is returned when the project root cannot be found.
 type ProjectRootError struct {
