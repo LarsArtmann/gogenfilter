@@ -27,18 +27,17 @@ func contentChecks() []contentCheck {
 	}
 }
 
-// filenameChecks returns filter options with their reasons and filename-based detection functions.
-// Ordered from most specific to least specific.
-func filenameChecks() []struct {
+// filenameCheck represents a filter option with its reason and filename-based detection function.
+type filenameCheck struct {
 	option FilterOption
 	reason FilterReason
 	match  func(string) bool
-} {
-	return []struct {
-		option FilterOption
-		reason FilterReason
-		match  func(string) bool
-	}{
+}
+
+// filenameChecks returns filter options with their reasons and filename-based detection functions.
+// Ordered from most specific to least specific.
+func filenameChecks() []filenameCheck {
+	return []filenameCheck{
 		{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern},
 		{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go")},
 		{FilterGoEnum, ReasonGoEnum, matchesSuffixPattern("_enum.go")},
