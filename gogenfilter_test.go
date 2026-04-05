@@ -689,32 +689,39 @@ func TestFilterWithMetrics(t *testing.T) {
 	})
 }
 
-func TestWithIncludePatterns(t *testing.T) {
-	t.Run("patterns test", func(t *testing.T) {
-		t.Parallel()
-
-		f := NewFilter(true, []FilterOption{FilterAll})
-		testPatternSetter(
-			t, f,
-			func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
-			func(f *Filter) []string { return f.includePatterns },
-			2,
-		)
-	})
+type patternTestCase struct {
+	name     string
+	setter   func(*Filter)
+	getter   func(*Filter) []string
+	patterns []string
 }
 
-func TestWithExcludePatterns(t *testing.T) {
-	t.Run("patterns test", func(t *testing.T) {
-		t.Parallel()
+func TestWithPatterns(t *testing.T) {
+	t.Parallel()
 
-		f := NewFilter(true, []FilterOption{FilterAll})
-		testPatternSetter(
-			t, f,
-			func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
-			func(f *Filter) []string { return f.excludePatterns },
-			2,
-		)
-	})
+	testCases := []patternTestCase{
+		{
+			name:     "include patterns",
+			setter:   func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
+			getter:   func(f *Filter) []string { return f.includePatterns },
+			patterns: []string{"vendor/*", "generated/keep.go"},
+		},
+		{
+			name:     "exclude patterns",
+			setter:   func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
+			getter:   func(f *Filter) []string { return f.excludePatterns },
+			patterns: []string{"test/*", "*.pb.go"},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			f := NewFilter(true, []FilterOption{FilterAll})
+			testPatternSetter(t, f, tc.setter, tc.getter, len(tc.patterns))
+		})
+	}
 }
 
 func TestFindProjectRoot(t *testing.T) {
@@ -903,7 +910,8 @@ func detectGeneratedTestCases() []struct {
 func testStringer[T any](t *testing.T, name string, cases []struct {
 	value    T
 	expected string
-}) {
+},
+) {
 	for _, tt := range cases {
 		t.Run(fmt.Sprintf("%s/%v", name, tt.value), func(t *testing.T) {
 			t.Parallel()
