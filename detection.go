@@ -179,7 +179,7 @@ func IsProtobufGenerated(filePath, content string) bool {
 }
 
 // hasGeneratedMarker checks if content contains a specific generated code marker.
-func hasGeneratedMarker(_, content string, marker string) bool {
+func hasGeneratedMarker(_, content, marker string) bool {
 	return strings.Contains(content, marker)
 }
 
