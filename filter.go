@@ -1,5 +1,7 @@
 package gogenfilter
 
+import "slices"
+
 // Filter provides smart filtering of auto-generated Go code.
 type Filter struct {
 	options         map[FilterOption]bool
@@ -101,13 +103,9 @@ func (f *Filter) recordFiltered(filePath string, reason FilterReason) {
 }
 
 func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
-	for _, pattern := range patterns {
-		if MatchPattern(filePath, pattern) {
-			return true
-		}
-	}
-
-	return false
+	return slices.ContainsFunc(patterns, func(pattern string) bool {
+		return MatchPattern(filePath, pattern)
+	})
 }
 
 func (f *Filter) shouldFilterWithIncludes(filePath string) bool {
