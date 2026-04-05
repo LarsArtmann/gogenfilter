@@ -122,7 +122,7 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
 		return true
 	}
 
-	if reason := detectGeneratedReason(filePath, f.options); reason != ReasonNotFiltered {
+	if reason := detectReason(filePath, f.options); reason != ReasonNotFiltered {
 		f.recordFiltered(filePath, reason)
 
 		return true
