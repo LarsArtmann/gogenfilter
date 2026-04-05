@@ -34,6 +34,28 @@ type SQLCGoConfig struct {
 	Out     string `yaml:"out"`
 }
 
+// newSQLCConfigError creates a new SQLCConfigError with consistent formatting.
+// Use the specialized functions below for specific operations to satisfy err113.
+func newSQLCConfigError(operation, message string, err error) *SQLCConfigError {
+	return &SQLCConfigError{
+		ConfigPath: "",
+		Operation:  operation,
+		Cause:      fmt.Errorf("%s: %w", message, err),
+	}
+}
+
+func sqlcFindConfigError(path string, err error) *SQLCConfigError {
+	return newSQLCConfigError("find", fmt.Sprintf("searching path %q", path), err)
+}
+
+func sqlcFindInPathError(path string, err error) *SQLCConfigError {
+	return newSQLCConfigError("find", fmt.Sprintf("finding sqlc configs in %q", path), err)
+}
+
+func sqlcWalkError(path string, err error) *SQLCConfigError {
+	return newSQLCConfigError("walk", fmt.Sprintf("walking %q for sqlc configs", path), err)
+}
+
 // FindSQLCConfigs searches for sqlc.yaml or sqlc.yml files in the given paths.
 // Searches both the provided paths and their parent directories (up to 3 levels up).
 // Returns a map of config file path to project root directory.
@@ -43,11 +65,7 @@ func FindSQLCConfigs(paths []string) (map[string]string, *SQLCConfigError) {
 	for _, path := range paths {
 		err := findSQLCConfigsInPath(path, configs)
 		if err != nil {
-			return nil, &SQLCConfigError{
-				ConfigPath: "",
-				Operation:  "find",
-				Cause:      fmt.Errorf("searching path %q: %w", path, err),
-			}
+			return nil, sqlcFindConfigError(path, err)
 		}
 	}
 
@@ -58,11 +76,7 @@ func FindSQLCConfigs(paths []string) (map[string]string, *SQLCConfigError) {
 func findSQLCConfigsInPath(path string, configs map[string]string) *SQLCConfigError {
 	err := walkPathForSQLCConfigs(path, configs)
 	if err != nil {
-		return &SQLCConfigError{
-			ConfigPath: "",
-			Operation:  "find",
-			Cause:      fmt.Errorf("finding sqlc configs in %q: %w", path, err),
-		}
+		return sqlcFindInPathError(path, err)
 	}
 
 	findSQLCConfigsInParent(path, configs)
@@ -72,12 +86,12 @@ func findSQLCConfigsInPath(path string, configs map[string]string) *SQLCConfigEr
 
 // walkPathForSQLCConfigs walks a path to find sqlc config files.
 func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigError {
-	err := filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
+	err := filepath.WalkDir(path, func(filePath string, d os.DirEntry, err error) error {
 		if err != nil {
 			return fmt.Errorf("accessing %q: %w", filePath, err)
 		}
 
-		if info.IsDir() && shouldSkipDirectory(info.Name()) {
+		if d.IsDir() && shouldSkipDirectory(d.Name()) {
 			return filepath.SkipDir
 		}
 
@@ -86,11 +100,7 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigE
 		return nil
 	})
 	if err != nil {
-		return &SQLCConfigError{
-			ConfigPath: "",
-			Operation:  "walk",
-			Cause:      fmt.Errorf("walking %q for sqlc configs: %w", path, err),
-		}
+		return sqlcWalkError(path, err)
 	}
 
 	return nil
@@ -132,20 +142,16 @@ func tryAddSQLCConfig(parentPath, filename string, configs map[string]string) {
 func ParseSQLCConfig(configPath string) (*SQLCConfig, *SQLCConfigError) {
 	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is from controlled source
 	if err != nil {
-		return nil, &SQLCConfigError{
-			ConfigPath: configPath,
-			Operation:  "read",
-			Cause:      fmt.Errorf("reading sqlc config %q: %w", configPath, err),
-		}
+		return nil, newSQLCConfigError(
+			"read",
+			fmt.Sprintf("reading sqlc config %q", configPath),
+			err,
+		)
 	}
 
 	var config SQLCConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, &SQLCConfigError{
-			ConfigPath: configPath,
-			Operation:  "parse",
-			Cause:      fmt.Errorf("parsing sqlc config: %w", err),
-		}
+		return nil, newSQLCConfigError("parse", "parsing sqlc config", err)
 	}
 
 	return &config, nil
@@ -168,11 +174,11 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 	for configPath, projectRoot := range configPaths {
 		config, err := ParseSQLCConfig(configPath)
 		if err != nil {
-			return nil, &SQLCConfigError{
-				ConfigPath: configPath,
-				Operation:  "collect-output-dirs",
-				Cause:      err,
-			}
+			return nil, newSQLCConfigError(
+				"collect-output-dirs",
+				fmt.Sprintf("processing %q", configPath),
+				err,
+			)
 		}
 
 		for _, sqlEngine := range config.SQL {

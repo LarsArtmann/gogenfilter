@@ -16,6 +16,8 @@ type contentCheck struct {
 
 // contentChecks lists filter options with their reasons and content-based detection functions.
 // Ordered from most specific to least specific; FilterGeneric must be last.
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
 var contentChecks = []contentCheck{
 	{FilterSQLC, ReasonSQLC, IsSQLCGenerated},
 	{FilterTempl, ReasonTempl, IsTemplGenerated},
@@ -35,6 +37,8 @@ type filenameCheck struct {
 
 // filenameChecks lists filter options with their reasons and filename-based detection functions.
 // Ordered from most specific to least specific.
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
 var filenameChecks = []filenameCheck{
 	{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern},
 	{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go")},
@@ -44,6 +48,8 @@ var filenameChecks = []filenameCheck{
 }
 
 // sqlcFilePatterns are the standard filename patterns for sqlc.dev generated files.
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
 var sqlcFilePatterns = []string{
 	"models.go",
 	"querier.go",
@@ -52,6 +58,8 @@ var sqlcFilePatterns = []string{
 }
 
 // sqlcCodePatterns are code patterns specific to sqlc-generated files.
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
 var sqlcCodePatterns = []string{
 	"sqlc.Arg",
 	"sqlc.NamedArg",
