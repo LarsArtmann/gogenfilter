@@ -231,6 +231,8 @@ func TestFindSQLCConfigs_FindsInNestedDirectory(t *testing.T) {
 }
 
 func TestFindSQLCConfigs_SkipsDirectories(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		dir  string

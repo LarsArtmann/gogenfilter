@@ -411,6 +411,7 @@ type generatorTestCase struct {
 	tests []generatedFileTest
 }
 
+//nolint:gochecknoglobals
 var generatedTestCases = []generatorTestCase{
 	{
 		name: "SQLC",
@@ -565,6 +566,8 @@ var generatedTestCases = []generatorTestCase{
 }
 
 func TestIsGenerated(t *testing.T) {
+	t.Parallel()
+
 	for _, gen := range generatedTestCases {
 		t.Run(gen.name, func(t *testing.T) {
 			t.Parallel()
@@ -903,6 +906,8 @@ func testStringer[T any](t *testing.T, name string, cases []struct {
 	expected string
 },
 ) {
+	t.Helper()
+
 	for _, tt := range cases {
 		t.Run(fmt.Sprintf("%s/%v", name, tt.value), func(t *testing.T) {
 			t.Parallel()
@@ -960,6 +965,8 @@ func TestFilterReasonString(t *testing.T) {
 }
 
 func benchmarkShouldFilter(b *testing.B, enabled bool) {
+	b.Helper()
+
 	f := NewFilter(enabled, []FilterOption{FilterAll})
 
 	for b.Loop() {
@@ -984,6 +991,8 @@ func BenchmarkDetectGenerated(b *testing.B) {
 }
 
 func benchmarkIsGenerated(b *testing.B, content string, fn func(string, string) bool) {
+	b.Helper()
+
 	for b.Loop() {
 		_ = fn("file.go", content)
 	}
