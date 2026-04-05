@@ -7,44 +7,29 @@ import (
 	"strings"
 )
 
-// contentCheck represents a filter option with its reason and content-based detection function.
-type contentCheck struct {
-	option FilterOption
-	reason FilterReason
-	check  func(string, string) bool
+// detector represents a code generator with optional filename and content detection.
+// matchFilename is used in phase 1 (zero I/O); checkContent in phase 2 (reads file).
+type detector struct {
+	option        FilterOption
+	reason        FilterReason
+	matchFilename func(string) bool
+	checkContent  func(string, string) bool
 }
 
-// contentChecks lists filter options with their reasons and content-based detection functions.
+// detectors lists all code generator detectors.
 // Ordered from most specific to least specific; FilterGeneric must be last.
+// Each detector may have a filename matcher (phase 1, zero I/O), a content checker
+// (phase 2, reads file), or both.
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
-var contentChecks = []contentCheck{
-	{FilterSQLC, ReasonSQLC, IsSQLCGenerated},
-	{FilterTempl, ReasonTempl, IsTemplGenerated},
-	{FilterGoEnum, ReasonGoEnum, IsGoEnumGenerated},
-	{FilterProtobuf, ReasonProtobuf, IsProtobufGenerated},
-	{FilterMockgen, ReasonMockgen, IsMockgenGenerated},
-	{FilterStringer, ReasonStringer, IsStringerGenerated},
-	{FilterGeneric, ReasonGeneric, IsGenericGenerated},
-}
-
-// filenameCheck represents a filter option with its reason and filename-based detection function.
-type filenameCheck struct {
-	option FilterOption
-	reason FilterReason
-	match  func(string) bool
-}
-
-// filenameChecks lists filter options with their reasons and filename-based detection functions.
-// Ordered from most specific to least specific.
-//
-//nolint:gochecknoglobals // immutable lookup table, never mutated
-var filenameChecks = []filenameCheck{
-	{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern},
-	{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go")},
-	{FilterGoEnum, ReasonGoEnum, matchesSuffixPattern("_enum.go")},
-	{FilterProtobuf, ReasonProtobuf, matchesProtobufFilename},
-	{FilterMockgen, ReasonMockgen, matchesMockgenFilename},
+var detectors = []detector{
+	{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern, IsSQLCGenerated},
+	{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go"), IsTemplGenerated},
+	{FilterGoEnum, ReasonGoEnum, matchesSuffixPattern("_enum.go"), IsGoEnumGenerated},
+	{FilterProtobuf, ReasonProtobuf, matchesProtobufFilename, IsProtobufGenerated},
+	{FilterMockgen, ReasonMockgen, matchesMockgenFilename, IsMockgenGenerated},
+	{FilterStringer, ReasonStringer, nil, IsStringerGenerated},
+	{FilterGeneric, ReasonGeneric, nil, IsGenericGenerated},
 }
 
 // sqlcFilePatterns are the standard filename patterns for sqlc.dev generated files.
@@ -217,10 +202,10 @@ func detectGeneratedReason(filePath string, options map[FilterOption]bool) Filte
 	return getContentBasedReason(filePath, contentStr, options)
 }
 
-// needsContentCheck returns true if any enabled filter option requires reading file content.
+// needsContentCheck returns true if any enabled detector requires reading file content.
 func needsContentCheck(options map[FilterOption]bool) bool {
-	for _, cc := range contentChecks {
-		if options[cc.option] {
+	for _, d := range detectors {
+		if options[d.option] && d.checkContent != nil {
 			return true
 		}
 	}
@@ -231,9 +216,9 @@ func needsContentCheck(options map[FilterOption]bool) bool {
 // getContentBasedReason checks content for generator-specific markers.
 // Uses a table-driven approach: specific generators are checked first, FilterGeneric is the fallback.
 func getContentBasedReason(filePath, content string, options map[FilterOption]bool) FilterReason {
-	for _, cc := range contentChecks {
-		if options[cc.option] && cc.check(filePath, content) {
-			return cc.reason
+	for _, d := range detectors {
+		if options[d.option] && d.checkContent != nil && d.checkContent(filePath, content) {
+			return d.reason
 		}
 	}
 
@@ -244,9 +229,9 @@ func getContentBasedReason(filePath, content string, options map[FilterOption]bo
 func getFilenameBasedReason(filePath string, options map[FilterOption]bool) FilterReason {
 	filename := filepath.Base(filePath)
 
-	for _, fc := range filenameChecks {
-		if options[fc.option] && fc.match(filename) {
-			return fc.reason
+	for _, d := range detectors {
+		if options[d.option] && d.matchFilename != nil && d.matchFilename(filename) {
+			return d.reason
 		}
 	}
 
