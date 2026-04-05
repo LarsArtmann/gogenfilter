@@ -24,6 +24,25 @@ func testPatternSetter(
 	}
 }
 
+func runBoolTableTest[T any](t *testing.T, tests []struct {
+	name     string
+	input    T
+	expected bool
+}, fn func(T) bool, fnName string) {
+	t.Helper()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := fn(tt.input)
+			if got != tt.expected {
+				t.Errorf("%s() = %v, want %v", fnName, got, tt.expected)
+			}
+		})
+	}
+}
+
 type generatedFileTest struct {
 	name     string
 	filePath string
@@ -562,41 +581,32 @@ func TestNeedsContentCheck(t *testing.T) {
 
 	tests := []struct {
 		name     string
-		options  map[FilterOption]bool
+		input    map[FilterOption]bool
 		expected bool
 	}{
 		{
 			name:     "empty options",
-			options:  map[FilterOption]bool{},
+			input:    map[FilterOption]bool{},
 			expected: false,
 		},
 		{
 			name:     "only content-based filter",
-			options:  map[FilterOption]bool{FilterGeneric: true},
+			input:    map[FilterOption]bool{FilterGeneric: true},
 			expected: true,
 		},
 		{
 			name:     "sqlc filter requires content",
-			options:  map[FilterOption]bool{FilterSQLC: true},
+			input:    map[FilterOption]bool{FilterSQLC: true},
 			expected: true,
 		},
 		{
 			name:     "no filters enabled",
-			options:  map[FilterOption]bool{FilterSQLC: false, FilterGeneric: false},
+			input:    map[FilterOption]bool{FilterSQLC: false, FilterGeneric: false},
 			expected: false,
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := needsContentCheck(tt.options)
-			if got != tt.expected {
-				t.Errorf("needsContentCheck() = %v, want %v", got, tt.expected)
-			}
-		})
-	}
+	runBoolTableTest(t, tests, needsContentCheck, "needsContentCheck")
 }
 
 func TestFilterMetrics(t *testing.T) {
@@ -778,27 +788,16 @@ func TestFindProjectRoot(t *testing.T) {
 func TestHasSQLCCodePatterns(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	runBoolTableTest(t, []struct {
 		name     string
-		content  string
+		input    string
 		expected bool
 	}{
-		{name: "sqlc.Arg", content: "id := sqlc.Arg(\"user_id\")", expected: true},
-		{name: "sqlc.Narg", content: "id := sqlc.Narg(\"user_id\")", expected: true},
-		{name: "query method", content: "row := q.query(ctx, sql)", expected: true},
-		{name: "no pattern", content: "package main\nfunc main() {}", expected: false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := HasSQLCCodePatterns(tt.content)
-			if got != tt.expected {
-				t.Errorf("HasSQLCCodePatterns() = %v, want %v", got, tt.expected)
-			}
-		})
-	}
+		{name: "sqlc.Arg", input: "id := sqlc.Arg(\"user_id\")", expected: true},
+		{name: "sqlc.Narg", input: "id := sqlc.Narg(\"user_id\")", expected: true},
+		{name: "query method", input: "row := q.query(ctx, sql)", expected: true},
+		{name: "no pattern", input: "package main\nfunc main() {}", expected: false},
+	}, HasSQLCCodePatterns, "HasSQLCCodePatterns")
 }
 
 func TestMatchesSQLCFilename(t *testing.T) {
