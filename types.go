@@ -8,10 +8,18 @@
 // (reads file). This optimization avoids unnecessary file reads.
 package gogenfilter
 
+// stringer is a common interface for string-based types with String() method.
+type stringer interface {
+	String() string
+}
+
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
 func (o FilterOption) String() string { return string(o) }
+
+// ensure FilterOption implements stringer
+var _ stringer = FilterOption("")
 
 const (
 	// FilterSQLC filters sqlc.dev generated files.
@@ -45,6 +53,9 @@ const (
 type FilterReason string
 
 func (r FilterReason) String() string { return string(r) }
+
+// ensure FilterReason implements stringer
+var _ stringer = FilterReason("")
 
 // FilterReason values for each supported generator and special filter outcomes.
 const (
