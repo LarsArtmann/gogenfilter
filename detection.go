@@ -80,7 +80,7 @@ func IsSQLCGenerated(filePath, content string) bool {
 // matchesSQLCFilenamePattern checks if a base filename matches sqlc.dev naming patterns.
 func matchesSQLCFilenamePattern(filename string) bool {
 	for _, pattern := range sqlcFilePatterns() {
-		if strings.Contains(filename, pattern) {
+		if filename == pattern {
 			return true
 		}
 	}

@@ -1,6 +1,7 @@
 package gogenfilter
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -823,7 +824,7 @@ func TestFindProjectRoot(t *testing.T) {
 		err := &ProjectRootError{
 			StartPath: "/some/path",
 			Markers:   []string{"go.mod"},
-			Cause:     fmt.Errorf("inner error"),
+			Cause:     errors.New("inner error"), //nolint:goerr113 // test-only sentinel error
 		}
 
 		if err.Error() == "" {
