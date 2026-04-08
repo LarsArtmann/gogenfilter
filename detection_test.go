@@ -145,6 +145,20 @@ func TestDetectReasonNoIO(t *testing.T) {
 	})
 }
 
+func TestDetectReasonFilenameOnlyNoContentCheck(t *testing.T) {
+	t.Parallel()
+
+	reason := DetectReason(
+		"regular.go",
+		"",
+		map[FilterOption]bool{FilterTempl: true},
+	)
+
+	if reason != ReasonNotFiltered {
+		t.Errorf("Expected %v, got %v", ReasonNotFiltered, reason)
+	}
+}
+
 func TestEmptyContent(t *testing.T) {
 	t.Parallel()
 

@@ -72,7 +72,6 @@ func TestParseSQLCConfig_Valid(t *testing.T) {
 
 	tmpDir := t.TempDir()
 	configPath := filepath.Join(tmpDir, "sqlc.yaml")
-
 	content := `version: "2"
 sql:
   - schema: "schema.sql"
@@ -163,7 +162,6 @@ func TestFindSQLCConfigs_FindsInNestedDirectory(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
-
 	nestedDir := filepath.Join(tmpDir, "internal", "db")
 	mkdirAll(t, nestedDir)
 
@@ -279,4 +277,24 @@ sql:
 
 		assertEqual(t, "len(dirs)", len(dirs), 0)
 	})
+}
+
+func TestGetSQLOutputDirsMultipleConfigsWarning(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	dir1 := filepath.Join(tmpDir, "svc1")
+	dir2 := filepath.Join(tmpDir, "svc2")
+
+	mkdirAll(t, dir1)
+	mkdirAll(t, dir2)
+	writeSQLCConfigFile(t, dir1, "sqlc.yaml")
+	writeSQLCConfigFile(t, dir2, "sqlc.yaml")
+
+	dirs, err := GetSQLOutputDirs([]string{tmpDir})
+	if err != nil {
+		t.Fatalf("GetSQLOutputDirs() error = %v", err)
+	}
+
+	assertEqual(t, "len(dirs)", len(dirs), 0)
 }
