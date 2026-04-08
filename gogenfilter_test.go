@@ -1111,6 +1111,12 @@ func detectGeneratedTestCases() []filenameTestCase {
 			ReasonMockgen,
 		},
 		{
+			"does not match mock_ in middle of filename",
+			"remove_mock_data.go",
+			map[FilterOption]bool{FilterMockgen: true},
+			ReasonNotFiltered,
+		},
+		{
 			"returns not filtered for regular file",
 			"main.go",
 			map[FilterOption]bool{FilterSQLC: true},
