@@ -59,6 +59,24 @@ func TestFindProjectRoot(t *testing.T) {
 	})
 }
 
+func TestFindProjectRootDepthExhausted(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+
+	deepDir := tmpDir
+	for range maxProjectRootDepth + 2 {
+		deepDir = filepath.Join(deepDir, "sub")
+	}
+
+	mkdirAll(t, deepDir)
+
+	_, err := FindProjectRoot(deepDir, []string{"go.mod"})
+	if err == nil {
+		t.Error("Expected error when depth exhausted")
+	}
+}
+
 func TestProjectRootError(t *testing.T) {
 	t.Parallel()
 

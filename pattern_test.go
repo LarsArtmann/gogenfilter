@@ -77,3 +77,30 @@ func matchPatternTestCases() []matchPatternTestCase {
 		{name: "question mark no match empty", path: ".go", pattern: "?.go", expected: false},
 	}
 }
+
+func TestMatchPatternInvalidPattern(t *testing.T) {
+	t.Parallel()
+
+	got := MatchPattern("file.go", "[")
+	if got {
+		t.Error("expected invalid pattern to return false")
+	}
+}
+
+func TestMatchSegmentsDoublestarNoMatch(t *testing.T) {
+	t.Parallel()
+
+	got := MatchPattern("a/b/c", "x/**/y")
+	if got {
+		t.Error("expected doublestar pattern with no matching segments to return false")
+	}
+}
+
+func TestMatchSegmentsPathShorterThanPattern(t *testing.T) {
+	t.Parallel()
+
+	got := MatchPattern("a/b", "a/b/c")
+	if got {
+		t.Error("expected path shorter than pattern to return false")
+	}
+}
