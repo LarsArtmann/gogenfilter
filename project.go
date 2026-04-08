@@ -7,12 +7,9 @@ import (
 )
 
 func fileExists(path string) bool {
-	stat, err := os.Stat(path)
-	if err != nil {
-		return false
-	}
+	_, err := os.Stat(path)
 
-	return stat != nil
+	return err == nil
 }
 
 // FindProjectRoot searches parent directories for project marker files.
