@@ -818,6 +818,17 @@ func TestFilterWithMetrics(t *testing.T) {
 	})
 }
 
+func TestGetStatsDisabledFilter(t *testing.T) {
+	t.Parallel()
+
+	f := NewFilter(false, nil)
+	stats := f.GetStats()
+
+	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
+	assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 0)
+	assertEqual(t, "FilteredBy SQLC", stats.FilteredBy(ReasonSQLC), 0)
+}
+
 type patternTestCase struct {
 	name     string
 	setter   func(*Filter)
