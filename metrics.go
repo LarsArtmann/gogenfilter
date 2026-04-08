@@ -1,7 +1,10 @@
 package gogenfilter
 
 import (
+	"fmt"
 	"maps"
+	"sort"
+	"strings"
 	"sync"
 )
 
@@ -104,4 +107,25 @@ func (fs FilterStats) TotalFiltered() int {
 // Returns 0 if no files were filtered for that reason.
 func (fs FilterStats) FilteredBy(reason FilterReason) int {
 	return fs.filteredByReason[reason]
+}
+
+func (fs FilterStats) String() string {
+	if fs.TotalFilesChecked == 0 {
+		return "FilterStats(checked=0, filtered=0)"
+	}
+
+	reasons := make([]string, 0, len(fs.filteredByReason))
+	for reason := range fs.filteredByReason {
+		reasons = append(reasons, string(reason))
+	}
+
+	sort.Strings(reasons)
+
+	parts := make([]string, 0, len(reasons))
+	for _, r := range reasons {
+		parts = append(parts, fmt.Sprintf("%s=%d", r, fs.filteredByReason[FilterReason(r)]))
+	}
+
+	return fmt.Sprintf("FilterStats(checked=%d, filtered=%d, {%s})",
+		fs.TotalFilesChecked, fs.TotalFiltered(), strings.Join(parts, ", "))
 }

@@ -21,26 +21,26 @@ The previous sprint (13 items, 22 commits: `43ce330`..`ebe678b`) brought the lib
 
 ### HOW_TO_GOLANG.md Compliance
 
-| # | Rule | Source | Current State | Status |
-|---|------|--------|---------------|--------|
-| 1 | Files must not exceed 300 lines | §1 Non-Negotiables | `gogenfilter_test.go` is **1,448 lines** | **VIOLATION** |
-| 2 | Functions must not exceed 30 lines | §1 Non-Negotiables | Some test helpers exceed 30 lines | **NEEDS REVIEW** |
-| 3 | No `any` types | §1 Non-Negotiables | Compliant — all types are concrete | OK |
-| 4 | No magic strings/numbers | §1 Non-Negotiables | Compliant — constants extracted | OK |
-| 5 | No duplicated code >3 instances | §1 Non-Negotiables | Compliant after refactoring | OK |
-| 6 | Error handling: `uniflow` or `cockroachdb/errors` | §2 Required Libraries | Custom `errors.go` with typed structs | **GAP** (see note) |
-| 7 | Testing: Ginkgo/Gomega or testify allowed | §2, §3 | Uses stdlib `testing` only | OK (stdlib fine for library) |
-| 8 | YAML: `go-faster/yaml` required | §2, §3 Banned | Uses `go-faster/yaml v0.4.6` | OK |
-| 9 | Errors: `pkg/errors` banned | §3 Banned | Our custom types are in main package, not `pkg/errors` | OK |
-| 10 | Domain types: branded IDs | §1 Domain Types | `FilterOption`/`FilterReason` as `string` | OK (appropriate here) |
+| #   | Rule                                              | Source                | Current State                                          | Status                       |
+| --- | ------------------------------------------------- | --------------------- | ------------------------------------------------------ | ---------------------------- |
+| 1   | Files must not exceed 300 lines                   | §1 Non-Negotiables    | `gogenfilter_test.go` is **1,448 lines**               | **VIOLATION**                |
+| 2   | Functions must not exceed 30 lines                | §1 Non-Negotiables    | Some test helpers exceed 30 lines                      | **NEEDS REVIEW**             |
+| 3   | No `any` types                                    | §1 Non-Negotiables    | Compliant — all types are concrete                     | OK                           |
+| 4   | No magic strings/numbers                          | §1 Non-Negotiables    | Compliant — constants extracted                        | OK                           |
+| 5   | No duplicated code >3 instances                   | §1 Non-Negotiables    | Compliant after refactoring                            | OK                           |
+| 6   | Error handling: `uniflow` or `cockroachdb/errors` | §2 Required Libraries | Custom `errors.go` with typed structs                  | **GAP** (see note)           |
+| 7   | Testing: Ginkgo/Gomega or testify allowed         | §2, §3                | Uses stdlib `testing` only                             | OK (stdlib fine for library) |
+| 8   | YAML: `go-faster/yaml` required                   | §2, §3 Banned         | Uses `go-faster/yaml v0.4.6`                           | OK                           |
+| 9   | Errors: `pkg/errors` banned                       | §3 Banned             | Our custom types are in main package, not `pkg/errors` | OK                           |
+| 10  | Domain types: branded IDs                         | §1 Domain Types       | `FilterOption`/`FilterReason` as `string`              | OK (appropriate here)        |
 
 ### library-policy.yaml Compliance
 
-| Policy | Our State | Status |
-|--------|-----------|--------|
-| YAML: `go-faster/yaml` | `v0.4.6` | OK |
-| No `pkg/errors` dependency | Custom in-package types | OK |
-| No testify for new code | stdlib `testing` | OK |
+| Policy                     | Our State               | Status |
+| -------------------------- | ----------------------- | ------ |
+| YAML: `go-faster/yaml`     | `v0.4.6`                | OK     |
+| No `pkg/errors` dependency | Custom in-package types | OK     |
+| No testify for new code    | stdlib `testing`        | OK     |
 
 ### Note on Error Handling (Item 6)
 
@@ -52,29 +52,29 @@ The previous sprint (13 items, 22 commits: `43ce330`..`ebe678b`) brought the lib
 
 ### File Sizes (300-line limit)
 
-| File | Lines | Status |
-|------|-------|--------|
+| File                  | Lines | Status              |
+| --------------------- | ----- | ------------------- |
 | `gogenfilter_test.go` | 1,448 | **4.8x over limit** |
-| `detection.go` | 248 | OK |
-| `sqlc_test.go` | 367 | **1.2x over limit** |
-| `sqlc.go` | 194 | OK |
-| `filter.go` | 139 | OK |
-| `metrics.go` | 107 | OK |
-| `pattern.go` | 79 | OK |
-| `types.go` | 96 | OK |
-| `project.go` | 50 | OK |
-| `errors.go` | 41 | OK |
+| `detection.go`        | 248   | OK                  |
+| `sqlc_test.go`        | 367   | **1.2x over limit** |
+| `sqlc.go`             | 194   | OK                  |
+| `filter.go`           | 139   | OK                  |
+| `metrics.go`          | 107   | OK                  |
+| `pattern.go`          | 79    | OK                  |
+| `types.go`            | 96    | OK                  |
+| `project.go`          | 50    | OK                  |
+| `errors.go`           | 41    | OK                  |
 
 ### Coverage Gaps
 
-| Function | Coverage | Missing Branch |
-|----------|----------|----------------|
-| `shouldFilterWithExcludes` | 75.0% | Exclude match → then generated detection path |
-| `DetectReason` (public) | 80.0% | Early return when no content check needed |
-| `MatchPattern` | 83.3% | `filepath.Match` error branch |
-| `matchSegments` | 89.5% | Doublestar expansion edge case |
-| `GetSQLOutputDirs` | 81.2% | Multiple configs warning path |
-| `FindProjectRoot` | 92.9% | Early return paths |
+| Function                   | Coverage | Missing Branch                                |
+| -------------------------- | -------- | --------------------------------------------- |
+| `shouldFilterWithExcludes` | 75.0%    | Exclude match → then generated detection path |
+| `DetectReason` (public)    | 80.0%    | Early return when no content check needed     |
+| `MatchPattern`             | 83.3%    | `filepath.Match` error branch                 |
+| `matchSegments`            | 89.5%    | Doublestar expansion edge case                |
+| `GetSQLOutputDirs`         | 81.2%    | Multiple configs warning path                 |
+| `FindProjectRoot`          | 92.9%    | Early return paths                            |
 
 ### README Issues
 
@@ -245,17 +245,18 @@ Plus test in the new `types_test.go` (after split) or in `gogenfilter_test.go` (
 
 **Split strategy by domain:**
 
-| Target File | Contents | Est. Lines |
-|-------------|----------|------------|
-| `filter_test.go` | `NewFilter`, `ShouldFilter`, `ShouldFilterWithIncludes`, `ShouldFilterWithExcludes`, `GetStats`, `IsEnabled`, pattern setters | ~250 |
-| `detection_test.go` | `DetectReason`, `IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`, `IsMockgenGenerated`, `IsStringerGenerated`, `IsGenericGenerated`, `HasSQLCContent`, `HasSQLCCodePatterns`, `MatchesSQLCFilename`, `matchesSQLCFilenamePattern`, `matchesMockgenFilename`, `matchesProtobufFilename` | ~350 |
-| `pattern_test.go` | `MatchPattern`, `matchSegments`, `?` wildcard tests | ~200 |
-| `metrics_test.go` | `Metrics`, `FilterStats`, `FilteredBy`, `TotalFiltered`, `RecordChecked`, `RecordFiltered` | ~150 |
-| `types_test.go` | `FilterOption.String`, `FilterOption.Reason`, `FilterOption.IsValid`, `FilterReason.IsValid`, `FilterReason.String` | ~150 |
+| Target File         | Contents                                                                                                                                                                                                                                                                                                                | Est. Lines |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `filter_test.go`    | `NewFilter`, `ShouldFilter`, `ShouldFilterWithIncludes`, `ShouldFilterWithExcludes`, `GetStats`, `IsEnabled`, pattern setters                                                                                                                                                                                           | ~250       |
+| `detection_test.go` | `DetectReason`, `IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`, `IsMockgenGenerated`, `IsStringerGenerated`, `IsGenericGenerated`, `HasSQLCContent`, `HasSQLCCodePatterns`, `MatchesSQLCFilename`, `matchesSQLCFilenamePattern`, `matchesMockgenFilename`, `matchesProtobufFilename` | ~350       |
+| `pattern_test.go`   | `MatchPattern`, `matchSegments`, `?` wildcard tests                                                                                                                                                                                                                                                                     | ~200       |
+| `metrics_test.go`   | `Metrics`, `FilterStats`, `FilteredBy`, `TotalFiltered`, `RecordChecked`, `RecordFiltered`                                                                                                                                                                                                                              | ~150       |
+| `types_test.go`     | `FilterOption.String`, `FilterOption.Reason`, `FilterOption.IsValid`, `FilterReason.IsValid`, `FilterReason.String`                                                                                                                                                                                                     | ~150       |
 
 **Shared test helpers** (`runBoolTableTest`, `testPatternSetter`) move to a `test_helpers_test.go` file (~40 lines).
 
 **Rules:**
+
 - Each file gets `package gogenfilter` and `import` block
 - `t.Parallel()` within `t.Run()` preserved everywhere
 - No test name collisions (all `TestXxx` names are unique across files)
@@ -272,10 +273,10 @@ Plus test in the new `types_test.go` (after split) or in `gogenfilter_test.go` (
 **Risk:** Low  
 **Breaking:** No
 
-| Target File | Contents | Est. Lines |
-|-------------|----------|------------|
-| `sqlc_config_test.go` | `FindSQLCConfigs`, config discovery, `walkPathForSQLCConfigs`, `shouldSkipDirectory` | ~200 |
-| `sqlc_detection_test.go` | `GetSQLOutputDirs`, SQLC content detection, YAML parsing | ~200 |
+| Target File              | Contents                                                                             | Est. Lines |
+| ------------------------ | ------------------------------------------------------------------------------------ | ---------- |
+| `sqlc_config_test.go`    | `FindSQLCConfigs`, config discovery, `walkPathForSQLCConfigs`, `shouldSkipDirectory` | ~200       |
+| `sqlc_detection_test.go` | `GetSQLOutputDirs`, SQLC content detection, YAML parsing                             | ~200       |
 
 **Verification:** Same as B1.
 
@@ -321,6 +322,7 @@ Wait — both branches ARE covered individually. The 75% means something else. L
 **Breaking:** No
 
 `DetectReason` at `detection.go:183` accepts `(path, content string, options map[FilterOption]bool)`. The early return path at 80% is likely when `needsContentCheck()` returns false — meaning only filename-based detection is needed and we skip content analysis. Need a test case where:
+
 - Options contain only filename-based detectors (e.g., `FilterProtobuf`)
 - File matches by filename alone
 - Content is empty or irrelevant
@@ -412,13 +414,13 @@ git push origin v0.1.0
 
 ## Risk Register
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Test split breaks coverage | Low | High | Run coverage before and after, compare line-by-line |
-| `funlen` violations after split | Medium | Low | Split large test functions into separate top-level functions |
-| `wsl_v5` violations after split | Medium | Low | Run `golangci-lint run --fix` after each file operation |
-| README changes misrepresent API | Low | Medium | Verify every code example compiles mentally or via scratch file |
-| Coverage tests need temp files | Low | Low | Use `t.TempDir()` for isolation |
+| Risk                            | Likelihood | Impact | Mitigation                                                      |
+| ------------------------------- | ---------- | ------ | --------------------------------------------------------------- |
+| Test split breaks coverage      | Low        | High   | Run coverage before and after, compare line-by-line             |
+| `funlen` violations after split | Medium     | Low    | Split large test functions into separate top-level functions    |
+| `wsl_v5` violations after split | Medium     | Low    | Run `golangci-lint run --fix` after each file operation         |
+| README changes misrepresent API | Low        | Medium | Verify every code example compiles mentally or via scratch file |
+| Coverage tests need temp files  | Low        | Low    | Use `t.TempDir()` for isolation                                 |
 
 ---
 
@@ -426,12 +428,12 @@ git push origin v0.1.0
 
 These were considered but deliberately excluded from this sprint:
 
-| Item | Why Deferred |
-|------|-------------|
-| Migrate errors to `cockroachdb/errors` | Adds dependency; current errors are idiomatic and work with `errors.Is`/`errors.As` |
-| Migrate to `encoding/json/v2` | Library doesn't use JSON directly |
-| Add `cmd/`, `internal/`, `scripts/` dirs | This is a single-package library, not a service; `go-structure-linter` compliance is aspirational |
-| Add Ginkgo/Gomega tests | stdlib `testing` is appropriate for a utility library |
+| Item                                          | Why Deferred                                                                                            |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Migrate errors to `cockroachdb/errors`        | Adds dependency; current errors are idiomatic and work with `errors.Is`/`errors.As`                     |
+| Migrate to `encoding/json/v2`                 | Library doesn't use JSON directly                                                                       |
+| Add `cmd/`, `internal/`, `scripts/` dirs      | This is a single-package library, not a service; `go-structure-linter` compliance is aspirational       |
+| Add Ginkgo/Gomega tests                       | stdlib `testing` is appropriate for a utility library                                                   |
 | Branded IDs for `FilterOption`/`FilterReason` | String-based types are correct for this domain — these are configuration labels, not entity identifiers |
 
 ---
