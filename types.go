@@ -18,6 +18,18 @@ func (o FilterOption) String() string { return string(o) }
 // this is a direct type conversion. For example, FilterSQLC.Reason() == ReasonSQLC.
 func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
 
+// IsValid reports whether the FilterOption is a recognized value.
+func (o FilterOption) IsValid() bool {
+	switch o {
+	case FilterSQLC, FilterTempl, FilterGoEnum, FilterProtobuf,
+		FilterMockgen, FilterStringer, FilterGeneric, FilterAll:
+		return true
+
+	default:
+		return false
+	}
+}
+
 const (
 	// FilterSQLC filters sqlc.dev generated files.
 	FilterSQLC FilterOption = "sqlc"
