@@ -1194,6 +1194,32 @@ func TestFilterOptionReason(t *testing.T) {
 	}
 }
 
+func TestFilterOptionIsValid(t *testing.T) {
+	t.Parallel()
+
+	validOptions := []FilterOption{
+		FilterSQLC, FilterTempl, FilterGoEnum, FilterProtobuf,
+		FilterMockgen, FilterStringer, FilterGeneric, FilterAll,
+	}
+
+	for _, opt := range validOptions {
+		if !opt.IsValid() {
+			t.Errorf("FilterOption(%q).IsValid() = false, want true", opt)
+		}
+	}
+
+	invalidOptions := []FilterOption{
+		"unknown", "", "SQLC", "mock",
+		FilterOption("not-a-real-option"),
+	}
+
+	for _, opt := range invalidOptions {
+		if opt.IsValid() {
+			t.Errorf("FilterOption(%q).IsValid() = true, want false", opt)
+		}
+	}
+}
+
 func TestFilterReasonString(t *testing.T) {
 	t.Parallel()
 
