@@ -56,6 +56,11 @@ func (f *Filter) withPatterns(target *[]string, patterns []string) *Filter {
 	return f
 }
 
+// IsEnabled returns whether the filter is active.
+func (f *Filter) IsEnabled() bool {
+	return f.enabled
+}
+
 // ShouldFilter determines if a file should be filtered out (excluded from analysis).
 func (f *Filter) ShouldFilter(filePath string) bool {
 	if !f.enabled {
