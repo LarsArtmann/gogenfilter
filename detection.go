@@ -11,7 +11,6 @@ import (
 // matchFilename is used in phase 1 (zero I/O); checkContent in phase 2 (reads file).
 type detector struct {
 	option        FilterOption
-	reason        FilterReason
 	matchFilename func(string) bool
 	checkContent  func(string, string) bool
 }
@@ -23,13 +22,13 @@ type detector struct {
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
 var detectors = []detector{
-	{FilterSQLC, ReasonSQLC, matchesSQLCFilenamePattern, IsSQLCGenerated},
-	{FilterTempl, ReasonTempl, matchesSuffixPattern("_templ.go"), IsTemplGenerated},
-	{FilterGoEnum, ReasonGoEnum, matchesSuffixPattern("_enum.go"), IsGoEnumGenerated},
-	{FilterProtobuf, ReasonProtobuf, matchesProtobufFilename, IsProtobufGenerated},
-	{FilterMockgen, ReasonMockgen, matchesMockgenFilename, IsMockgenGenerated},
-	{FilterStringer, ReasonStringer, nil, IsStringerGenerated},
-	{FilterGeneric, ReasonGeneric, nil, IsGenericGenerated},
+	{FilterSQLC, matchesSQLCFilenamePattern, IsSQLCGenerated},
+	{FilterTempl, matchesSuffixPattern("_templ.go"), IsTemplGenerated},
+	{FilterGoEnum, matchesSuffixPattern("_enum.go"), IsGoEnumGenerated},
+	{FilterProtobuf, matchesProtobufFilename, IsProtobufGenerated},
+	{FilterMockgen, matchesMockgenFilename, IsMockgenGenerated},
+	{FilterStringer, nil, IsStringerGenerated},
+	{FilterGeneric, nil, IsGenericGenerated},
 }
 
 // sqlcFilePatterns are the standard filename patterns for sqlc.dev generated files.
@@ -224,7 +223,7 @@ func needsContentCheck(options map[FilterOption]bool) bool {
 func getContentBasedReason(filePath, content string, options map[FilterOption]bool) FilterReason {
 	for _, d := range detectors {
 		if options[d.option] && d.checkContent != nil && d.checkContent(filePath, content) {
-			return d.reason
+			return d.option.Reason()
 		}
 	}
 
@@ -237,7 +236,7 @@ func getFilenameBasedReason(filePath string, options map[FilterOption]bool) Filt
 
 	for _, d := range detectors {
 		if options[d.option] && d.matchFilename != nil && d.matchFilename(filename) {
-			return d.reason
+			return d.option.Reason()
 		}
 	}
 

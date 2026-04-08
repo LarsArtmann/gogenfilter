@@ -1155,6 +1155,30 @@ func TestFilterOptionString(t *testing.T) {
 	})
 }
 
+func TestFilterOptionReason(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		option FilterOption
+		reason FilterReason
+	}{
+		{FilterSQLC, ReasonSQLC},
+		{FilterTempl, ReasonTempl},
+		{FilterGoEnum, ReasonGoEnum},
+		{FilterProtobuf, ReasonProtobuf},
+		{FilterMockgen, ReasonMockgen},
+		{FilterStringer, ReasonStringer},
+		{FilterGeneric, ReasonGeneric},
+	}
+
+	for _, tc := range tests {
+		if got := tc.option.Reason(); got != tc.reason {
+			t.Errorf("FilterOption(%q).Reason() = %q, want %q",
+				tc.option, got, tc.reason)
+		}
+	}
+}
+
 func TestFilterReasonString(t *testing.T) {
 	t.Parallel()
 

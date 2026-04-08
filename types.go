@@ -13,6 +13,11 @@ type FilterOption string
 
 func (o FilterOption) String() string { return string(o) }
 
+// Reason returns the FilterReason corresponding to this FilterOption.
+// Since FilterOption and FilterReason share the same underlying string values,
+// this is a direct type conversion. For example, FilterSQLC.Reason() == ReasonSQLC.
+func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
+
 const (
 	// FilterSQLC filters sqlc.dev generated files.
 	FilterSQLC FilterOption = "sqlc"
