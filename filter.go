@@ -1,6 +1,11 @@
 package gogenfilter
 
-import "slices"
+import (
+	"fmt"
+	"slices"
+	"sort"
+	"strings"
+)
 
 // Filter provides smart filtering of auto-generated Go code.
 type Filter struct {
@@ -136,4 +141,34 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
 	f.recordChecked(filePath)
 
 	return false
+}
+
+func (f *Filter) String() string {
+	if !f.enabled {
+		return "Filter(disabled)"
+	}
+
+	opts := make([]string, 0, len(f.options))
+	for opt := range f.options {
+		opts = append(opts, string(opt))
+	}
+
+	sort.Strings(opts)
+
+	parts := []string{fmt.Sprintf("options=[%s]", strings.Join(opts, ","))}
+
+	if len(f.includePatterns) > 0 {
+		parts = append(parts, fmt.Sprintf("includes=%v", f.includePatterns))
+	}
+
+	if len(f.excludePatterns) > 0 {
+		parts = append(parts, fmt.Sprintf("excludes=%v", f.excludePatterns))
+	}
+
+	if f.metrics != nil {
+		stats := f.metrics.GetStats()
+		parts = append(parts, fmt.Sprintf("stats=%s", stats.String()))
+	}
+
+	return fmt.Sprintf("Filter(%s)", strings.Join(parts, ", "))
 }
