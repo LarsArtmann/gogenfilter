@@ -31,7 +31,6 @@ func writeFile(t *testing.T, path, content string) {
 	t.Helper()
 
 	err := os.WriteFile(path, []byte(content), 0o600)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +52,6 @@ func createTempFile(t *testing.T, name, content string) string {
 	filePath := filepath.Join(tmpDir, name)
 
 	err := os.WriteFile(filePath, []byte(content), 0o600)
-
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
@@ -275,7 +273,6 @@ func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {
 	writeSQLCConfigFile(t, dir, "sqlc.yaml")
 
 	configs, err := FindSQLCConfigs([]string{tmpDir})
-
 	if err != nil {
 		t.Fatalf("FindSQLCConfigs() error = %v", err)
 	}
@@ -291,7 +288,6 @@ func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
 	writeFile(t, filepath.Join(tmpDir, "sqlc.yaml"), yamlContent)
 
 	dirs, err := GetSQLOutputDirs([]string{tmpDir})
-
 	if err != nil {
 		t.Fatalf("GetSQLOutputDirs() error = %v", err)
 	}
