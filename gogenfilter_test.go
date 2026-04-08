@@ -221,6 +221,15 @@ func matchPatternTestCases() []matchPatternTestCase {
 			pattern:  "vendor/*.go",
 			expected: false,
 		},
+		{name: "question mark single char match", path: "a.go", pattern: "?.go", expected: true},
+		{
+			name:     "question mark no match multi char",
+			path:     "ab.go",
+			pattern:  "?.go",
+			expected: false,
+		},
+		{name: "question mark in path", path: "dir/a.go", pattern: "dir/?.go", expected: true},
+		{name: "question mark no match empty", path: ".go", pattern: "?.go", expected: false},
 	}
 }
 
