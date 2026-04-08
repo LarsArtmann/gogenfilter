@@ -560,9 +560,24 @@ var generatedTestCases = []generatorTestCase{
 				expected: true,
 			},
 			{
+				name:     "templ with Render method",
+				filePath: "page_templ.go",
+				content: "package main\n\n" +
+					"import (\n\t\"context\"\n\t\"io\"\n)\n\n" +
+					"func Page() string {\n\treturn \"\"\n}\n\n" +
+					"func (p *Page) Render(ctx context.Context, w io.Writer) error {\n\treturn nil\n}",
+				expected: true,
+			},
+			{
 				name:     "not templ - regular file",
 				filePath: "components/helper.go",
 				content:  "package components\n\nfunc Helper() string {\n\treturn \"helper\"\n}",
+				expected: false,
+			},
+			{
+				name:     "templ suffix but no templ content",
+				filePath: "utils_templ.go",
+				content:  "package utils\n\nfunc Process() string {\n\treturn \"\"\n}",
 				expected: false,
 			},
 		},
