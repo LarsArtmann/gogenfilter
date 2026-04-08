@@ -144,8 +144,8 @@ f.ShouldFilter("main.go")               // regular file
 
 stats := f.GetStats()
 // stats.TotalFilesChecked == 3
-// stats.FilteredByReason[gogenfilter.ReasonSQLC] == 1
-// stats.FilteredByReason[gogenfilter.ReasonTempl] == 1
+// stats.FilteredBy(gogenfilter.ReasonSQLC) == 1
+// stats.FilteredBy(gogenfilter.ReasonTempl) == 1
 // stats.TotalFiltered() == 2
 ```
 
