@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/gogenfilter
 
-go 1.26.1
+go 1.26.0
 
 require github.com/go-faster/yaml v0.4.6
 

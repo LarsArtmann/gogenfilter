@@ -315,6 +315,71 @@ func TestExcludePatternProperty(t *testing.T) {
 	})
 }
 
+func TestShouldFilterWithIncludes(t *testing.T) {
+	t.Parallel()
+
+	t.Run("matching include pattern is not filtered", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(true, []FilterOption{FilterSQLC})
+		filter.WithIncludePatterns([]string{"models.go"})
+
+		if filter.ShouldFilter("models.go") {
+			t.Error("expected matching include pattern to not be filtered")
+		}
+	})
+
+	t.Run("non-matching path is filtered with include reason", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(true, nil)
+		filter.WithIncludePatterns([]string{"pkg/*.go"})
+
+		if !filter.ShouldFilter("other/file.go") {
+			t.Error("expected non-matching path to be filtered")
+		}
+
+		stats := filter.GetStats()
+		if stats.FilteredByReason == nil {
+			t.Fatal("expected FilteredByReason to be populated")
+		}
+
+		if stats.FilteredByReason[ReasonIncludePattern] != 1 {
+			t.Errorf("expected 1 include-pattern filter, got %d", stats.FilteredByReason[ReasonIncludePattern])
+		}
+	})
+
+	t.Run("include pattern with wildcard", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(true, nil)
+		filter.WithIncludePatterns([]string{"*.go"})
+
+		if filter.ShouldFilter("main.go") {
+			t.Error("expected *.go to match main.go")
+		}
+	})
+
+	t.Run("multiple include patterns", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(true, nil)
+		filter.WithIncludePatterns([]string{"keep.go", "safe.go"})
+
+		if filter.ShouldFilter("keep.go") {
+			t.Error("expected keep.go to match")
+		}
+
+		if filter.ShouldFilter("safe.go") {
+			t.Error("expected safe.go to match")
+		}
+
+		if !filter.ShouldFilter("remove.go") {
+			t.Error("expected remove.go to be filtered")
+		}
+	})
+}
+
 func createTempFile(t *testing.T, name, content string) string {
 	t.Helper()
 	tmpDir := t.TempDir()
