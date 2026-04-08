@@ -87,3 +87,58 @@ func TestFilterReasonString(t *testing.T) {
 		{ReasonNotFiltered, "not-filtered"},
 	})
 }
+
+func TestFilterReasonIsValid(t *testing.T) {
+	t.Parallel()
+
+	validReasons := []FilterReason{
+		ReasonSQLC, ReasonTempl, ReasonGoEnum, ReasonProtobuf,
+		ReasonMockgen, ReasonStringer, ReasonGeneric,
+		ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered,
+	}
+
+	for _, r := range validReasons {
+		if !r.IsValid() {
+			t.Errorf("FilterReason(%q).IsValid() = false, want true", r)
+		}
+	}
+
+	invalidReasons := []FilterReason{
+		"unknown", "", "SQLC", "mock",
+		FilterReason("not-a-real-reason"),
+	}
+
+	for _, r := range invalidReasons {
+		if r.IsValid() {
+			t.Errorf("FilterReason(%q).IsValid() = true, want false", r)
+		}
+	}
+}
+
+func TestAllFilterOptions(t *testing.T) {
+	t.Parallel()
+
+	opts := AllFilterOptions()
+
+	assertEqual(t, "len(AllFilterOptions())", len(opts), 8)
+
+	for _, opt := range opts {
+		if !opt.IsValid() {
+			t.Errorf("AllFilterOptions() contains invalid option %q", opt)
+		}
+	}
+}
+
+func TestAllFilterReasons(t *testing.T) {
+	t.Parallel()
+
+	reasons := AllFilterReasons()
+
+	assertEqual(t, "len(AllFilterReasons())", len(reasons), 10)
+
+	for _, r := range reasons {
+		if !r.IsValid() {
+			t.Errorf("AllFilterReasons() contains invalid reason %q", r)
+		}
+	}
+}
