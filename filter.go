@@ -77,7 +77,7 @@ func (f *Filter) GetStats() FilterStats {
 		return FilterStats{
 			MetricsMixin: MetricsMixin{
 				TotalFilesChecked: 0,
-				FilteredByReason:  nil,
+				filteredByReason:  nil,
 			},
 		}
 	}

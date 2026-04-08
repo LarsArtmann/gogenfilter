@@ -340,12 +340,11 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 		}
 
 		stats := filter.GetStats()
-		if stats.FilteredByReason == nil {
-			t.Fatal("expected FilteredByReason to be populated")
-		}
-
-		if stats.FilteredByReason[ReasonIncludePattern] != 1 {
-			t.Errorf("expected 1 include-pattern filter, got %d", stats.FilteredByReason[ReasonIncludePattern])
+		if stats.FilteredBy(ReasonIncludePattern) != 1 {
+			t.Errorf(
+				"expected 1 include-pattern filter, got %d",
+				stats.FilteredBy(ReasonIncludePattern),
+			)
 		}
 	})
 
@@ -359,25 +358,25 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			t.Error("expected *.go to match main.go")
 		}
 	})
+}
 
-	t.Run("multiple include patterns", func(t *testing.T) {
-		t.Parallel()
+func TestShouldFilterWithIncludesMultiple(t *testing.T) {
+	t.Parallel()
 
-		filter := NewFilter(true, nil)
-		filter.WithIncludePatterns([]string{"keep.go", "safe.go"})
+	filter := NewFilter(true, nil)
+	filter.WithIncludePatterns([]string{"keep.go", "safe.go"})
 
-		if filter.ShouldFilter("keep.go") {
-			t.Error("expected keep.go to match")
-		}
+	if filter.ShouldFilter("keep.go") {
+		t.Error("expected keep.go to match")
+	}
 
-		if filter.ShouldFilter("safe.go") {
-			t.Error("expected safe.go to match")
-		}
+	if filter.ShouldFilter("safe.go") {
+		t.Error("expected safe.go to match")
+	}
 
-		if !filter.ShouldFilter("remove.go") {
-			t.Error("expected remove.go to be filtered")
-		}
-	})
+	if !filter.ShouldFilter("remove.go") {
+		t.Error("expected remove.go to be filtered")
+	}
 }
 
 func createTempFile(t *testing.T, name, content string) string {
@@ -728,8 +727,8 @@ func TestFilterMetrics(t *testing.T) {
 
 		stats := metrics.GetStats()
 		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 4)
-		assertEqual(t, "SQLC count", stats.FilteredByReason[ReasonSQLC], 2)
-		assertEqual(t, "Templ count", stats.FilteredByReason[ReasonTempl], 1)
+		assertEqual(t, "SQLC count", stats.FilteredBy(ReasonSQLC), 2)
+		assertEqual(t, "Templ count", stats.FilteredBy(ReasonTempl), 1)
 		assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 4)
 	})
 
@@ -797,9 +796,9 @@ func TestFilterWithMetrics(t *testing.T) {
 
 		stats := fltr.GetStats()
 		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 4)
-		assertEqual(t, "SQLC filtered", stats.FilteredByReason[ReasonSQLC], 1)
-		assertEqual(t, "Templ filtered", stats.FilteredByReason[ReasonTempl], 1)
-		assertEqual(t, "GoEnum filtered", stats.FilteredByReason[ReasonGoEnum], 1)
+		assertEqual(t, "SQLC filtered", stats.FilteredBy(ReasonSQLC), 1)
+		assertEqual(t, "Templ filtered", stats.FilteredBy(ReasonTempl), 1)
+		assertEqual(t, "GoEnum filtered", stats.FilteredBy(ReasonGoEnum), 1)
 		assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 3)
 	})
 }
