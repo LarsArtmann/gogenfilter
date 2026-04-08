@@ -8,7 +8,7 @@ import (
 // MetricsMixin provides common fields for filter metrics.
 type MetricsMixin struct {
 	TotalFilesChecked int
-	FilteredByReason  map[FilterReason]int
+	filteredByReason  map[FilterReason]int
 }
 
 // Metrics tracks filter statistics for analysis and debugging.
@@ -25,7 +25,7 @@ func NewMetrics() *Metrics {
 	return &Metrics{
 		MetricsMixin: MetricsMixin{
 			TotalFilesChecked: 0,
-			FilteredByReason:  make(map[FilterReason]int),
+			filteredByReason:  make(map[FilterReason]int),
 		},
 		mu:            sync.RWMutex{},
 		FilteredFiles: make(map[FilterReason][]string),
@@ -45,7 +45,7 @@ func (m *Metrics) record(filePath string, reason FilterReason) {
 	m.TotalFilesChecked++
 
 	if reason != ReasonNotFiltered {
-		m.FilteredByReason[reason]++
+		m.filteredByReason[reason]++
 		m.FilteredFiles[reason] = append(m.FilteredFiles[reason], filePath)
 	}
 }
@@ -66,7 +66,7 @@ func (m *Metrics) GetStats() FilterStats {
 		return FilterStats{
 			MetricsMixin: MetricsMixin{
 				TotalFilesChecked: 0,
-				FilteredByReason:  nil,
+				filteredByReason:  nil,
 			},
 		}
 	}
@@ -74,12 +74,12 @@ func (m *Metrics) GetStats() FilterStats {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	filteredByReason := maps.Clone(m.FilteredByReason)
+	filteredByReason := maps.Clone(m.filteredByReason)
 
 	return FilterStats{
 		MetricsMixin: MetricsMixin{
 			TotalFilesChecked: m.TotalFilesChecked,
-			FilteredByReason:  filteredByReason,
+			filteredByReason:  filteredByReason,
 		},
 	}
 }
@@ -93,9 +93,15 @@ type FilterStats struct {
 func (fs FilterStats) TotalFiltered() int {
 	total := 0
 
-	for _, count := range fs.FilteredByReason {
+	for _, count := range fs.filteredByReason {
 		total += count
 	}
 
 	return total
+}
+
+// FilteredBy returns the count of files filtered for a specific reason.
+// Returns 0 if no files were filtered for that reason.
+func (fs FilterStats) FilteredBy(reason FilterReason) int {
+	return fs.filteredByReason[reason]
 }
