@@ -91,7 +91,11 @@ func matchesProtobufFilename(filename string) bool {
 
 // matchesMockgenFilename checks if a base filename matches mockgen naming patterns.
 func matchesMockgenFilename(filename string) bool {
-	return matchAnyWith(filename, []string{"_mock.go", "mock_"}, strings.Contains)
+	if strings.HasSuffix(filename, "_mock.go") {
+		return true
+	}
+
+	return strings.HasPrefix(filename, "mock_")
 }
 
 // MatchesSQLCFilename checks if filename matches sqlc.dev naming patterns.
