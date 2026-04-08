@@ -63,8 +63,8 @@ gogenfilter.MatchesSQLCFilename("db/query.sql.go") // true
 gogenfilter.HasSQLCContent(content)
 gogenfilter.HasSQLCCodePatterns(content)
 
-// Combined detection (returns reason)
-reason := gogenfilter.DetectGenerated("file.go", map[gogenfilter.FilterOption]bool{
+// Combined detection (returns reason, zero I/O)
+reason := gogenfilter.DetectReason("file.go", content, map[gogenfilter.FilterOption]bool{
     gogenfilter.FilterSQLC:      true,
     gogenfilter.FilterTempl:     true,
     gogenfilter.FilterGoEnum:    true,
@@ -123,9 +123,6 @@ Find sqlc output directories from config files:
 ```go
 // Find all sqlc.yaml/sqlc.yml files
 configs, err := gogenfilter.FindSQLCConfigs([]string{"./..."})
-
-// Parse a specific config
-config, err := gogenfilter.ParseSQLCConfig("sqlc.yaml")
 
 // Get output directories directly
 dirs, err := gogenfilter.GetSQLOutputDirs([]string{"."})
