@@ -95,11 +95,17 @@ func testPatternSetter(
 	}
 }
 
-func runBoolTableTest[T any](t *testing.T, tests []struct {
+type boolTestCase[T any] struct {
 	name     string
 	input    T
 	expected bool
-}, fn func(T) bool, fnName string,
+}
+
+func runBoolTableTest[T any](
+	t *testing.T,
+	tests []boolTestCase[T],
+	fn func(T) bool,
+	fnName string,
 ) {
 	t.Helper()
 
