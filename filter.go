@@ -167,7 +167,7 @@ func (f *Filter) String() string {
 
 	if f.metrics != nil {
 		stats := f.metrics.GetStats()
-		parts = append(parts, fmt.Sprintf("stats=%s", stats.String()))
+		parts = append(parts, "stats="+stats.String())
 	}
 
 	return fmt.Sprintf("Filter(%s)", strings.Join(parts, ", "))
