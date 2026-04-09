@@ -9,7 +9,7 @@ import (
 // Supports * (matches non-separator characters) and ** (matches any path segments).
 // Patterns without path separators match against the filename only.
 func MatchPattern(path, pattern string) bool {
-	if !strings.Contains(pattern, "/") && !strings.Contains(pattern, string(filepath.Separator)) {
+	if !strings.ContainsAny(pattern, "/\\") {
 		matched, err := filepath.Match(pattern, filepath.Base(path))
 		if err != nil {
 			return false
@@ -23,7 +23,7 @@ func MatchPattern(path, pattern string) bool {
 
 // normalizePattern converts a pattern to use forward slashes consistently.
 func normalizePattern(pattern string) string {
-	return strings.ReplaceAll(pattern, string(filepath.Separator), "/")
+	return strings.ReplaceAll(pattern, "\\", "/")
 }
 
 // matchPathPattern matches a slash-normalized path against a pattern with path segments.

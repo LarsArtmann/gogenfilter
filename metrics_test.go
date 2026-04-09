@@ -1,49 +1,97 @@
 package gogenfilter
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestFilterMetrics(t *testing.T) {
 	t.Parallel()
 
-	t.Run("tracks filtered files by reason", func(t *testing.T) {
-		t.Parallel()
+	t.Run("tracks filtered files by reason", testTracksFilteredByReason)
+	t.Run("tracks not filtered files", testTracksNotFiltered)
+	t.Run("nil metrics handler", testNilMetricsHandler)
+	t.Run("String with zero state", testStringWithZeroState)
+	t.Run("String with data", testStringWithData)
+}
 
-		metrics := NewMetrics()
-		metrics.record("db/models.go", ReasonSQLC)
-		metrics.record("db/query.sql.go", ReasonSQLC)
-		metrics.record("components/header_templ.go", ReasonTempl)
-		metrics.record("vendor/lib.go", ReasonExcludePattern)
+func testTracksFilteredByReason(t *testing.T) {
+	t.Parallel()
 
-		stats := metrics.GetStats()
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+	metrics.record("db/query.sql.go", ReasonSQLC)
+	metrics.record("components/header_templ.go", ReasonTempl)
+	metrics.record("vendor/lib.go", ReasonExcludePattern)
 
-		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 4)
-		assertEqual(t, "SQLC count", stats.FilteredBy(ReasonSQLC), 2)
-		assertEqual(t, "Templ count", stats.FilteredBy(ReasonTempl), 1)
-		assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 4)
-	})
+	stats := metrics.GetStats()
 
-	t.Run("tracks not filtered files", func(t *testing.T) {
-		t.Parallel()
+	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 4)
+	assertEqual(t, "SQLC count", stats.FilteredBy(ReasonSQLC), 2)
+	assertEqual(t, "Templ count", stats.FilteredBy(ReasonTempl), 1)
+	assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 4)
+}
 
-		metrics := NewMetrics()
-		metrics.record("db/models.go", ReasonSQLC)
-		metrics.record("main.go", ReasonNotFiltered)
-		metrics.record("service/user.go", ReasonNotFiltered)
+func testTracksNotFiltered(t *testing.T) {
+	t.Parallel()
 
-		stats := metrics.GetStats()
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+	metrics.record("main.go", ReasonNotFiltered)
+	metrics.record("service/user.go", ReasonNotFiltered)
 
-		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
-		assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 1)
-	})
+	stats := metrics.GetStats()
 
-	t.Run("nil metrics handler", func(t *testing.T) {
-		t.Parallel()
+	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
+	assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 1)
+}
 
-		var metrics *Metrics
-		metrics.record("test.go", ReasonSQLC)
+func testNilMetricsHandler(t *testing.T) {
+	t.Parallel()
 
-		stats := metrics.GetStats()
+	var metrics *Metrics
+	metrics.record("test.go", ReasonSQLC)
 
-		assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
-	})
+	stats := metrics.GetStats()
+
+	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
+}
+
+func testStringWithZeroState(t *testing.T) {
+	t.Parallel()
+
+	stats := FilterStats{
+		MetricsMixin: MetricsMixin{}, //nolint:exhaustruct // testing zero-value behavior
+	}
+	got := stats.String()
+
+	assertEqual(t, "zero state", got, "FilterStats(checked=0, filtered=0)")
+}
+
+func testStringWithData(t *testing.T) {
+	t.Parallel()
+
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+	metrics.record("db/query.sql.go", ReasonSQLC)
+	metrics.record("header_templ.go", ReasonTempl)
+
+	stats := metrics.GetStats()
+	got := stats.String()
+
+	if !strings.Contains(got, "checked=3") {
+		t.Errorf("String() = %q, want to contain checked=3", got)
+	}
+
+	if !strings.Contains(got, "filtered=3") {
+		t.Errorf("String() = %q, want to contain filtered=3", got)
+	}
+
+	if !strings.Contains(got, "sqlc=2") {
+		t.Errorf("String() = %q, want to contain sqlc=2", got)
+	}
+
+	if !strings.Contains(got, "templ=1") {
+		t.Errorf("String() = %q, want to contain templ=1", got)
+	}
 }

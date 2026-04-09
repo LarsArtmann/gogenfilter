@@ -2,6 +2,7 @@ package gogenfilter
 
 import (
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -108,6 +109,10 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigE
 
 // shouldSkipDirectory returns true if a directory should be skipped during walk.
 func shouldSkipDirectory(name string) bool {
+	if name == "." || name == "" {
+		return false
+	}
+
 	return strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor"
 }
 
@@ -157,6 +162,21 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	return &config, nil
 }
 
+// extractOutputDirs extracts output directories from a sqlc config's SQL engines.
+func extractOutputDirs(config *sqlcConfig, projectRoot string) []string {
+	var outputDirs []string
+
+	for _, sqlEngine := range config.SQL {
+		if sqlEngine.Gen.Go.Out != "" {
+			outDir := filepath.Join(projectRoot, sqlEngine.Gen.Go.Out)
+			outDir = filepath.Clean(outDir)
+			outputDirs = append(outputDirs, outDir)
+		}
+	}
+
+	return outputDirs
+}
+
 // GetSQLOutputDirs returns a list of output directories from sqlc configuration files.
 // Uses slog for any warnings about multiple or unparseable configs.
 func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
@@ -181,13 +201,85 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 			)
 		}
 
-		for _, sqlEngine := range config.SQL {
-			if sqlEngine.Gen.Go.Out != "" {
-				outDir := filepath.Join(projectRoot, sqlEngine.Gen.Go.Out)
-				outDir = filepath.Clean(outDir)
-				outputDirs = append(outputDirs, outDir)
+		outputDirs = append(outputDirs, extractOutputDirs(config, projectRoot)...)
+	}
+
+	return outputDirs, nil
+}
+
+// FindSQLCConfigsFS searches for sqlc.yaml or sqlc.yml files using the provided filesystem.
+// Paths must be valid within fsys (relative to the FS root).
+// Unlike FindSQLCConfigs, this does not search parent directories.
+func FindSQLCConfigsFS(fsys fs.FS, paths []string) (map[string]string, *SQLCConfigError) {
+	configs := make(map[string]string)
+
+	for _, path := range paths {
+		err := fs.WalkDir(fsys, path, func(filePath string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return fmt.Errorf("accessing %q: %w", filePath, err)
 			}
+
+			if d.IsDir() && shouldSkipDirectory(d.Name()) {
+				return fs.SkipDir
+			}
+
+			recordSQLCConfig(filePath, configs)
+
+			return nil
+		})
+		if err != nil {
+			return nil, sqlcWalkError(path, err)
 		}
+	}
+
+	return configs, nil
+}
+
+// parseSQLCConfigFS reads and parses a sqlc.yaml file from the given filesystem.
+func parseSQLCConfigFS(fsys fs.FS, configPath string) (*sqlcConfig, *SQLCConfigError) {
+	data, err := fs.ReadFile(fsys, configPath)
+	if err != nil {
+		return nil, newSQLCConfigError(
+			"read",
+			fmt.Sprintf("reading sqlc config %q", configPath),
+			err,
+		)
+	}
+
+	var config sqlcConfig
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		return nil, newSQLCConfigError("parse", "parsing sqlc config", err)
+	}
+
+	return &config, nil
+}
+
+// GetSQLOutputDirsFS returns output directories from sqlc configs using the provided filesystem.
+// Paths must be valid within fsys (relative to the FS root).
+// Uses slog for any warnings about multiple or unparseable configs.
+func GetSQLOutputDirsFS(fsys fs.FS, paths []string) ([]string, *SQLCConfigError) {
+	configPaths, err := FindSQLCConfigsFS(fsys, paths)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(configPaths) > 1 {
+		slog.Warn("multiple sqlc config files found", "count", len(configPaths))
+	}
+
+	var outputDirs []string
+
+	for configPath, projectRoot := range configPaths {
+		config, cfgErr := parseSQLCConfigFS(fsys, configPath)
+		if cfgErr != nil {
+			return nil, newSQLCConfigError(
+				"collect-output-dirs",
+				fmt.Sprintf("processing %q", configPath),
+				cfgErr,
+			)
+		}
+
+		outputDirs = append(outputDirs, extractOutputDirs(config, projectRoot)...)
 	}
 
 	return outputDirs, nil
