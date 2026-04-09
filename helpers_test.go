@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"testing/fstest"
 )
 
 func assertFieldEqual[T comparable](t *testing.T, name string, got, want T, format string) {
@@ -69,8 +70,9 @@ func assertFilterBehavior(
 
 	tmpFile := createTempFile(t, name, content)
 	f := NewFilter(true, opts)
+	f.WithFS(os.DirFS(filepath.Dir(tmpFile)))
 
-	got := f.ShouldFilter(tmpFile)
+	got := f.ShouldFilter(filepath.Base(tmpFile))
 
 	if got != shouldFilter {
 		t.Errorf("ShouldFilter() = %v, want %v", got, shouldFilter)
@@ -300,3 +302,27 @@ func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
 
 	assertEqual(t, "len(dirs)", len(dirs), wantDirs)
 }
+
+func newMapFile(content string) *fstest.MapFile {
+	return &fstest.MapFile{ //nolint:exhaustruct // test helper, zero-value fields are intentional
+		Data: []byte(content),
+	}
+}
+
+const validSQLCConfig = "version: \"2\"\n" +
+	"sql:\n" +
+	"  - engine: \"postgresql\"\n" +
+	"    schema: \"schema/\"\n" +
+	"    gen:\n" +
+	"      go:\n" +
+	"        package: \"db\"\n" +
+	"        out: \"db\"\n"
+
+const validSQLCConfigMySQL = "version: \"2\"\n" +
+	"sql:\n" +
+	"  - engine: \"mysql\"\n" +
+	"    schema: \"schema/\"\n" +
+	"    gen:\n" +
+	"      go:\n" +
+	"        package: \"db\"\n" +
+	"        out: \"db\"\n"

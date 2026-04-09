@@ -2,6 +2,8 @@ package gogenfilter
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
 	"slices"
 	"sort"
 	"strings"
@@ -14,6 +16,7 @@ type Filter struct {
 	includePatterns []string
 	excludePatterns []string
 	metrics         *Metrics
+	fsys            fs.FS
 }
 
 // NewFilter creates a new filter with specified options.
@@ -24,6 +27,7 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
 		metrics:         nil,
+		fsys:            os.DirFS("."),
 	}
 
 	for _, opt := range options {
@@ -40,6 +44,17 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 
 	if enabled {
 		f.metrics = NewMetrics()
+	}
+
+	return f
+}
+
+// WithFS sets a custom filesystem for the filter.
+// Defaults to os.DirFS(".") if not called.
+// Pass nil to keep the current filesystem.
+func (f *Filter) WithFS(fsys fs.FS) *Filter {
+	if fsys != nil {
+		f.fsys = fsys
 	}
 
 	return f
@@ -132,7 +147,7 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
 		return true
 	}
 
-	if reason := detectReason(filePath, f.options); reason != ReasonNotFiltered {
+	if reason := detectReason(f.fsys, filePath, f.options); reason != ReasonNotFiltered {
 		f.recordFiltered(filePath, reason)
 
 		return true
