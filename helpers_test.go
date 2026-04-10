@@ -30,6 +30,18 @@ func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 	assertFieldEqual(t, name, got, want, "%v")
 }
 
+func assertCallResult[T comparable](t *testing.T, fnName string, arg any, got, want T) {
+	t.Helper()
+
+	if got != want {
+		if arg == nil {
+			t.Errorf("%s() = %v, want %v", fnName, got, want)
+		} else {
+			t.Errorf("%s(%v) = %v, want %v", fnName, arg, got, want)
+		}
+	}
+}
+
 func assertContains(t *testing.T, got, substr string) {
 	t.Helper()
 
@@ -108,9 +120,7 @@ func assertFilterBehavior(
 
 	got := f.ShouldFilter(filepath.Base(tmpFile))
 
-	if got != shouldFilter {
-		t.Errorf("ShouldFilter() = %v, want %v", got, shouldFilter)
-	}
+	assertCallResult(t, "ShouldFilter", nil, got, shouldFilter)
 }
 
 func testPatternSetter(
@@ -285,9 +295,7 @@ func runSQLCFilenameTests(t *testing.T, tests []sqlcFilenameTestCase) {
 
 			got := MatchesSQLCFilename(tt.path)
 
-			if got != tt.expected {
-				t.Errorf("MatchesSQLCFilename(%q) = %v, want %v", tt.path, got, tt.expected)
-			}
+			assertCallResult(t, "MatchesSQLCFilename", tt.path, got, tt.expected)
 		})
 	}
 }
