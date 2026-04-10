@@ -122,21 +122,43 @@ type SQLCConfigError struct {
 	Code       ErrorCode
 	ConfigPath string
 	Operation  string
+	Message    string
 	Cause      error
 }
 
 func (e *SQLCConfigError) Error() string {
 	if e.ConfigPath != "" {
+		if e.Cause != nil {
+			return fmt.Sprintf(
+				"[gogenfilter:%s] sqlc config %s %q: %s: %v",
+				e.Code,
+				e.Operation,
+				e.ConfigPath,
+				e.Message,
+				e.Cause,
+			)
+		}
+
 		return fmt.Sprintf(
-			"[gogenfilter:%s] sqlc config %s %q: %v",
+			"[gogenfilter:%s] sqlc config %s %q: %s",
 			e.Code,
 			e.Operation,
 			e.ConfigPath,
+			e.Message,
+		)
+	}
+
+	if e.Cause != nil {
+		return fmt.Sprintf(
+			"[gogenfilter:%s] sqlc config %s: %s: %v",
+			e.Code,
+			e.Operation,
+			e.Message,
 			e.Cause,
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %v", e.Code, e.Operation, e.Cause)
+	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, e.Operation, e.Message)
 }
 
 func (e *SQLCConfigError) Unwrap() error { return e.Cause }
