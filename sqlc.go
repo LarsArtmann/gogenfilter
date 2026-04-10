@@ -50,22 +50,32 @@ func newSQLCConfigError(
 	}
 }
 
-func sqlcFindError(path string, err error) *SQLCConfigError {
+func sqlcConfigError(code ErrorCode, operation, message string, path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
-		CodeSQLCConfigFind,
+		code,
 		path,
+		operation,
+		message,
+		err,
+	)
+}
+
+func sqlcFindError(path string, err error) *SQLCConfigError {
+	return sqlcConfigError(
+		CodeSQLCConfigFind,
 		"find",
 		fmt.Sprintf("finding sqlc configs in %q", path),
+		path,
 		err,
 	)
 }
 
 func sqlcWalkError(path string, err error) *SQLCConfigError {
-	return newSQLCConfigError(
+	return sqlcConfigError(
 		CodeSQLCConfigWalk,
-		path,
 		"walk",
 		fmt.Sprintf("walking %q for sqlc configs", path),
+		path,
 		err,
 	)
 }
