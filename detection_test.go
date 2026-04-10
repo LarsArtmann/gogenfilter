@@ -11,6 +11,8 @@ func testDetectReasonNotFiltered(
 	filename, content string,
 	filterOpts map[FilterOption]bool,
 ) {
+	t.Helper()
+
 	reason := DetectReason(filename, content, filterOpts)
 
 	if reason != ReasonNotFiltered {
@@ -133,6 +135,8 @@ func testDetectReason(
 	filterOpts map[FilterOption]bool,
 	expectedReason FilterReason,
 ) {
+	t.Helper()
+
 	reason := DetectReason(filename, content, filterOpts)
 
 	if reason != expectedReason {
