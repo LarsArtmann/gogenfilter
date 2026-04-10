@@ -50,7 +50,7 @@ func newSQLCConfigError(
 	}
 }
 
-func sqlcConfigError(code ErrorCode, operation, message string, path string, err error) *SQLCConfigError {
+func sqlcConfigError(code ErrorCode, operation, message, path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		code,
 		path,

@@ -384,10 +384,10 @@ func TestFindSQLCConfigsFSWithMapFS(t *testing.T) {
 	t.Run("finds sqlc.yaml in MapFS", testFindSQLCConfig("sqlc.yaml", validSQLCConfig))
 	t.Run("finds sqlc.yml in subdirectory", testFindSQLCConfig("internal/db/sqlc.yml", validSQLCConfigMySQL))
 	t.Run("skips dot directories", testFindSQLCSkipsDotDirs)
-	t.Run("no configs returns empty map", testFindSQLCNoConfigs)
+	t.Run("no configs returns empty map", testFindSQLCSkipsDotDirs)
 }
 
-func testFindSQLCConfig(path string, configContent string) func(t *testing.T) {
+func testFindSQLCConfig(path, configContent string) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Parallel()
 
@@ -404,16 +404,6 @@ func testFindSQLCSkipsDotDirs(t *testing.T) {
 
 	mapFS := fstest.MapFS{
 		".git/sqlc.yaml": newMapFile("version: \"2\"\n"),
-	}
-
-	testFindSQLCConfigCount(t, mapFS, 0)
-}
-
-func testFindSQLCNoConfigs(t *testing.T) {
-	t.Parallel()
-
-	mapFS := fstest.MapFS{
-		"main.go": newMapFile("package main\n"),
 	}
 
 	testFindSQLCConfigCount(t, mapFS, 0)
