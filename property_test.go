@@ -11,7 +11,7 @@ func TestFilterIdempotentProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
-		f := func(filePath string) bool {
+		propertyFn := func(filePath string) bool {
 			if filePath == "" || len(filePath) < 1 {
 				return true
 			}
@@ -22,7 +22,7 @@ func TestFilterIdempotentProperty(t *testing.T) {
 			return filter1.ShouldFilter(filePath) == filter2.ShouldFilter(filePath)
 		}
 
-		err := quick.Check(f, nil)
+		err := quick.Check(propertyFn, nil)
 		if err != nil {
 			t.Errorf("Idempotent property failed: %v", err)
 		}
@@ -35,7 +35,7 @@ func TestDisabledFilterProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
-		f := func(filePath string) bool {
+		propertyFn := func(filePath string) bool {
 			if filePath == "" {
 				return true
 			}
@@ -43,7 +43,7 @@ func TestDisabledFilterProperty(t *testing.T) {
 			return !NewFilter(false, nil).ShouldFilter(filePath)
 		}
 
-		err := quick.Check(f, nil)
+		err := quick.Check(propertyFn, nil)
 		if err != nil {
 			t.Errorf("Disabled filter property failed: %v", err)
 		}
@@ -56,7 +56,7 @@ func TestIncludePatternProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
-		f := func(includePattern, filePath string) bool {
+		propertyFn := func(includePattern, filePath string) bool {
 			if includePattern == "" || filePath == "" {
 				return true
 			}
@@ -71,7 +71,7 @@ func TestIncludePatternProperty(t *testing.T) {
 			return !filter.ShouldFilter(filePath)
 		}
 
-		err := quick.Check(f, nil)
+		err := quick.Check(propertyFn, nil)
 		if err != nil {
 			t.Errorf("Include pattern property failed: %v", err)
 		}
@@ -84,7 +84,7 @@ func TestExcludePatternProperty(t *testing.T) {
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
-		f := func(excludePattern, filePath string) bool {
+		propertyFn := func(excludePattern, filePath string) bool {
 			if excludePattern == "" || filePath == "" {
 				return true
 			}
@@ -97,7 +97,7 @@ func TestExcludePatternProperty(t *testing.T) {
 			return shouldFilter == isFiltered
 		}
 
-		err := quick.Check(f, nil)
+		err := quick.Check(propertyFn, nil)
 		if err != nil {
 			t.Errorf("Exclude pattern property failed: %v", err)
 		}

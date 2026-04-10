@@ -20,7 +20,7 @@ type Filter struct {
 
 // NewFilter creates a new filter with specified options.
 func NewFilter(enabled bool, options []FilterOption) *Filter {
-	f := &Filter{
+	filter := &Filter{
 		enabled:         enabled,
 		options:         make(map[FilterOption]bool),
 		includePatterns: make([]string, 0),
@@ -32,20 +32,20 @@ func NewFilter(enabled bool, options []FilterOption) *Filter {
 	for _, opt := range options {
 		if opt == FilterAll {
 			for _, specific := range allSpecificOptions {
-				f.options[specific] = true
+				filter.options[specific] = true
 			}
 
-			f.options[FilterGeneric] = true
+			filter.options[FilterGeneric] = true
 		} else {
-			f.options[opt] = true
+			filter.options[opt] = true
 		}
 	}
 
 	if enabled {
-		f.metrics = NewMetrics()
+		filter.metrics = NewMetrics()
 	}
 
-	return f
+	return filter
 }
 
 // WithFS sets a custom filesystem for the filter.

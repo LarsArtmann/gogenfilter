@@ -7,24 +7,24 @@ import (
 )
 
 func ExampleNewFilter() {
-	f := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
+	filter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
 		gogenfilter.FilterSQLC,
 		gogenfilter.FilterTempl,
 		gogenfilter.FilterGeneric,
 	})
 
-	fmt.Println(f.IsEnabled())
+	fmt.Println(filter.IsEnabled())
 	// Output: true
 }
 
 func ExampleNewFilter_withExcludePatterns() {
-	f := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
+	filter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
 		gogenfilter.FilterAll,
 	}).WithExcludePatterns([]string{
 		"**/db/*.go",
 	})
 
-	fmt.Println(f.IsEnabled())
+	fmt.Println(filter.IsEnabled())
 	// Output: true
 }
 
