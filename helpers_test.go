@@ -60,12 +60,6 @@ func assertMapLen[K, V comparable](t *testing.T, name string, got map[K]V, want 
 	assertLen(t, name, len(got), want)
 }
 
-func checkLen(t *testing.T, name string, gotLen int, want int) {
-	if gotLen != want {
-		t.Errorf("expected %d %s, got %d", want, name, gotLen)
-	}
-}
-
 func assertStringContainsAll(t *testing.T, got string, substrs ...string) {
 	t.Helper()
 
