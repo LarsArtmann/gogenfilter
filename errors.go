@@ -99,6 +99,11 @@ func (e *ProjectRootError) Error() string {
 		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
 }
 
+// Causable defines the interface for errors that wrap an underlying cause.
+type Causable interface {
+	Unwrap() error
+}
+
 func (e *ProjectRootError) Unwrap() error { return e.Cause }
 
 // CodeEqual compares two error codes for equality.
