@@ -19,11 +19,19 @@ func benchmarkShouldFilter(b *testing.B, enabled bool) {
 }
 
 func BenchmarkShouldFilter(b *testing.B) {
-	benchmarkShouldFilter(b, true)
-}
+	tests := []struct {
+		name    string
+		enabled bool
+	}{
+		{name: "enabled", enabled: true},
+		{name: "disabled", enabled: false},
+	}
 
-func BenchmarkShouldFilterDisabled(b *testing.B) {
-	benchmarkShouldFilter(b, false)
+	for _, tt := range tests {
+		b.Run(tt.name, func(b *testing.B) {
+			benchmarkShouldFilter(b, tt.enabled)
+		})
+	}
 }
 
 func BenchmarkDetectGenerated(b *testing.B) {
