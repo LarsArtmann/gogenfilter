@@ -170,6 +170,16 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 	})
 }
 
+func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
+	t.Helper()
+	return &ProjectRootError{
+		Code:      CodeProjectRootNotFound,
+		StartPath: "/path",
+		Markers:   []string{"go.mod"},
+		Cause:     nil,
+	}
+}
+
 func TestProjectRootErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
@@ -192,12 +202,7 @@ func TestProjectRootErrorUnwrap(t *testing.T) {
 	t.Run("returns nil for nil cause", func(t *testing.T) {
 		t.Parallel()
 
-		err := &ProjectRootError{
-			Code:      CodeProjectRootNotFound,
-			StartPath: "/path",
-			Markers:   []string{"go.mod"},
-			Cause:     nil,
-		}
+		err := testProjectRootErrorNotFound(t)
 
 		if err.Unwrap() != nil {
 			t.Error("Expected nil unwrap for nil cause")
@@ -259,12 +264,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 	t.Run("extracts ErrorCoder interface", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &ProjectRootError{
-			Code:      CodeProjectRootNotFound,
-			StartPath: "/path",
-			Markers:   []string{"go.mod"},
-			Cause:     nil,
-		}
+		realErr := testProjectRootErrorNotFound(t)
 
 		var coder ErrorCoder
 		if !errors.As(realErr, &coder) {
@@ -277,12 +277,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 	t.Run("extracts Helper interface", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &ProjectRootError{
-			Code:      CodeProjectRootNotFound,
-			StartPath: "/path",
-			Markers:   []string{"go.mod"},
-			Cause:     nil,
-		}
+		realErr := testProjectRootErrorNotFound(t)
 
 		var helper Helper
 		if !errors.As(realErr, &helper) {
@@ -301,12 +296,7 @@ func TestProjectRootErrorSentinelMatching(t *testing.T) {
 	t.Run("matches sentinel by code", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &ProjectRootError{
-			Code:      CodeProjectRootNotFound,
-			StartPath: "/path",
-			Markers:   []string{"go.mod"},
-			Cause:     nil,
-		}
+		realErr := testProjectRootErrorNotFound(t)
 
 		if !errors.Is(realErr, ErrProjectRootNotFound) {
 			t.Error("errors.Is failed to match ErrProjectRootNotFound")
