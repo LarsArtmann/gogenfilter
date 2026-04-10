@@ -27,7 +27,6 @@ linters:
         - copyloopvar
         - cyclop
         - decorder
-        - depguard
         - dogsled
         - dupl
         - dupword
@@ -110,7 +109,6 @@ linters:
         - tagliatelle
         - testableexamples
         - testifylint
-        - testpackage
         - thelper
         - tparallel
         - unconvert

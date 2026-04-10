@@ -203,6 +203,7 @@ func testProjectRootErrorWithCause(
 	t.Helper()
 
 	innerErr := fmt.Errorf("inner: %w", sentinel)
+
 	return &ProjectRootError{
 		Code:      code,
 		StartPath: path,

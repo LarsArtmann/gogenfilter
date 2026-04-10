@@ -80,7 +80,8 @@ func writeFile(t *testing.T, path, content string) {
 func mkdirAll(t *testing.T, dir string) {
 	t.Helper()
 
-	if err := os.MkdirAll(dir, 0o750); err != nil {
+	err := os.MkdirAll(dir, 0o750)
+	if err != nil {
 		t.Fatal(err)
 	}
 }
