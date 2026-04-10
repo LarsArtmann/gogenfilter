@@ -101,6 +101,11 @@ func (e *ProjectRootError) Error() string {
 
 func (e *ProjectRootError) Unwrap() error { return e.Cause }
 
+// CodeEqual compares two error codes for equality.
+func CodeEqual[T interface{ ErrorCode() ErrorCode }](e, target T) bool {
+	return e.ErrorCode() == target.ErrorCode()
+}
+
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *ProjectRootError) Is(target error) bool {
 	t, ok := target.(*ProjectRootError)
@@ -108,7 +113,7 @@ func (e *ProjectRootError) Is(target error) bool {
 		return false
 	}
 
-	return e.Code == t.Code
+	return CodeEqual(e, t)
 }
 
 // ErrorCode returns the error code for programmatic matching.
@@ -170,7 +175,7 @@ func (e *SQLCConfigError) Is(target error) bool {
 		return false
 	}
 
-	return e.Code == t.Code
+	return CodeEqual(e, t)
 }
 
 // ErrorCode returns the error code for programmatic matching.
