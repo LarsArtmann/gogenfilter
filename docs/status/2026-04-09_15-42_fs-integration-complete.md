@@ -14,36 +14,36 @@ Successfully integrated Go's `io/fs` filesystem abstraction into gogenfilter. Al
 
 ### Core `fs.FS` Integration
 
-| File | Change | Status |
-|------|--------|--------|
-| `detection.go` | `detectReason` accepts `fs.FS` instead of using `os.ReadFile` directly | ✅ Done |
-| `filter.go` | `Filter` struct has `fsys fs.FS` field (default: `os.DirFS(".")`) + `WithFS()` builder | ✅ Done |
-| `pattern.go` | `strings.ContainsAny(pattern, "/\\")` replaces dual `strings.Contains` calls | ✅ Done |
-| `sqlc.go` | New `FindSQLCConfigsFS`, `parseSQLCConfigFS`, `GetSQLOutputDirsFS` functions | ✅ Done |
-| `sqlc.go` | `shouldSkipDirectory` fixed to not skip `"."` and `""` | ✅ Done |
-| `sqlc.go` | `extractOutputDirs` helper extracted to reduce duplication | ✅ Done |
+| File           | Change                                                                                 | Status  |
+| -------------- | -------------------------------------------------------------------------------------- | ------- |
+| `detection.go` | `detectReason` accepts `fs.FS` instead of using `os.ReadFile` directly                 | ✅ Done |
+| `filter.go`    | `Filter` struct has `fsys fs.FS` field (default: `os.DirFS(".")`) + `WithFS()` builder | ✅ Done |
+| `pattern.go`   | `strings.ContainsAny(pattern, "/\\")` replaces dual `strings.Contains` calls           | ✅ Done |
+| `sqlc.go`      | New `FindSQLCConfigsFS`, `parseSQLCConfigFS`, `GetSQLOutputDirsFS` functions           | ✅ Done |
+| `sqlc.go`      | `shouldSkipDirectory` fixed to not skip `"."` and `""`                                 | ✅ Done |
+| `sqlc.go`      | `extractOutputDirs` helper extracted to reduce duplication                             | ✅ Done |
 
 ### Test Coverage Additions
 
-| Test | What It Covers | Status |
-|------|----------------|--------|
-| `metrics_test.go` | `FilterStats.String()` — zero state and data branches (was 0%) | ✅ Done |
-| `filter_test.go` | `fstest.MapFS` tests for Filter: sqlc detection, non-generated, non-existent, nil FS, multiple generators | ✅ Done |
-| `filter_test.go` | `fstest.MapFS` tests for `FindSQLCConfigsFS`: find yaml, find yml in subdir, skip dot dirs, no configs | ✅ Done |
-| `filter_test.go` | `fstest.MapFS` tests for `GetSQLOutputDirsFS`: extract dirs, no configs, invalid yaml | ✅ Done |
-| `filter_test.go` | `fstest.MapFS` tests for `parseSQLCConfigFS`: valid config, non-existent file | ✅ Done |
-| `detection_test.go` | All `detectReason` calls updated to pass `os.DirFS()` + relative paths | ✅ Done |
-| `helpers_test.go` | `newMapFile` helper to avoid `exhaustruct` lint issues | ✅ Done |
-| `helpers_test.go` | `validSQLCConfig` / `validSQLCConfigMySQL` constants for DRY test data | ✅ Done |
+| Test                | What It Covers                                                                                            | Status  |
+| ------------------- | --------------------------------------------------------------------------------------------------------- | ------- |
+| `metrics_test.go`   | `FilterStats.String()` — zero state and data branches (was 0%)                                            | ✅ Done |
+| `filter_test.go`    | `fstest.MapFS` tests for Filter: sqlc detection, non-generated, non-existent, nil FS, multiple generators | ✅ Done |
+| `filter_test.go`    | `fstest.MapFS` tests for `FindSQLCConfigsFS`: find yaml, find yml in subdir, skip dot dirs, no configs    | ✅ Done |
+| `filter_test.go`    | `fstest.MapFS` tests for `GetSQLOutputDirsFS`: extract dirs, no configs, invalid yaml                     | ✅ Done |
+| `filter_test.go`    | `fstest.MapFS` tests for `parseSQLCConfigFS`: valid config, non-existent file                             | ✅ Done |
+| `detection_test.go` | All `detectReason` calls updated to pass `os.DirFS()` + relative paths                                    | ✅ Done |
+| `helpers_test.go`   | `newMapFile` helper to avoid `exhaustruct` lint issues                                                    | ✅ Done |
+| `helpers_test.go`   | `validSQLCConfig` / `validSQLCConfigMySQL` constants for DRY test data                                    | ✅ Done |
 
 ### Quality
 
-| Metric | Value |
-|--------|-------|
-| Test coverage | 93.1% |
-| Lint issues | **0** |
-| Build | ✅ Clean |
-| All tests | ✅ Pass |
+| Metric        | Value    |
+| ------------- | -------- |
+| Test coverage | 93.1%    |
+| Lint issues   | **0**    |
+| Build         | ✅ Clean |
+| All tests     | ✅ Pass  |
 
 ---
 
@@ -98,53 +98,53 @@ Nothing partially done — all started work is complete.
 
 ### High Impact, Low Effort (Quick Wins)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 1 | Commit current changes and push | Ships the feature | 1 min |
-| 2 | Run `go-structure-linter . --fix -p` and fix issues | Code quality | 5 min |
-| 3 | Add `Unwrap()` to `SQLCConfigError` | Error chain support | 5 min |
-| 4 | Add `go:generate stringer` for `FilterOption` and `FilterReason` | Remove manual `String()` methods | 10 min |
-| 5 | Document `fs.FS` limitation (no symlinks) in README | User awareness | 5 min |
+| #   | Task                                                             | Impact                           | Effort |
+| --- | ---------------------------------------------------------------- | -------------------------------- | ------ |
+| 1   | Commit current changes and push                                  | Ships the feature                | 1 min  |
+| 2   | Run `go-structure-linter . --fix -p` and fix issues              | Code quality                     | 5 min  |
+| 3   | Add `Unwrap()` to `SQLCConfigError`                              | Error chain support              | 5 min  |
+| 4   | Add `go:generate stringer` for `FilterOption` and `FilterReason` | Remove manual `String()` methods | 10 min |
+| 5   | Document `fs.FS` limitation (no symlinks) in README              | User awareness                   | 5 min  |
 
 ### High Impact, Medium Effort
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 6 | Make `*FS` variants the primary API, wrap old ones | Cleaner API | 30 min |
-| 7 | Add functional options to `NewFilter` | Idiomatic API | 30 min |
-| 8 | Add `FilterAll` tests with `fstest.MapFS` for all generators | Coverage | 20 min |
-| 9 | Benchmark `FindSQLCConfigsFS` vs `FindSQLCConfigs` | Performance validation | 15 min |
-| 10 | Add integration test: full `fstest.MapFS` project tree | Confidence | 20 min |
+| #   | Task                                                         | Impact                 | Effort |
+| --- | ------------------------------------------------------------ | ---------------------- | ------ |
+| 6   | Make `*FS` variants the primary API, wrap old ones           | Cleaner API            | 30 min |
+| 7   | Add functional options to `NewFilter`                        | Idiomatic API          | 30 min |
+| 8   | Add `FilterAll` tests with `fstest.MapFS` for all generators | Coverage               | 20 min |
+| 9   | Benchmark `FindSQLCConfigsFS` vs `FindSQLCConfigs`           | Performance validation | 15 min |
+| 10  | Add integration test: full `fstest.MapFS` project tree       | Confidence             | 20 min |
 
 ### Medium Impact, Low Effort
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 11 | Extract `validSQLCConfig` to test constants file | Organization | 5 min |
-| 12 | Add `Example_*` test functions for godoc | Documentation | 15 min |
-| 13 | Add `FilterStats.String()` benchmark | Micro-optimization | 5 min |
-| 14 | Test `shouldSkipDirectory` directly (unit test) | Coverage | 5 min |
-| 15 | Add `//go:build` constraints if needed for platform-specific tests | Robustness | 10 min |
+| #   | Task                                                               | Impact             | Effort |
+| --- | ------------------------------------------------------------------ | ------------------ | ------ |
+| 11  | Extract `validSQLCConfig` to test constants file                   | Organization       | 5 min  |
+| 12  | Add `Example_*` test functions for godoc                           | Documentation      | 15 min |
+| 13  | Add `FilterStats.String()` benchmark                               | Micro-optimization | 5 min  |
+| 14  | Test `shouldSkipDirectory` directly (unit test)                    | Coverage           | 5 min  |
+| 15  | Add `//go:build` constraints if needed for platform-specific tests | Robustness         | 10 min |
 
 ### Medium Impact, Medium Effort
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 16 | Create a `testfs` internal test package for FS test helpers | Reusability | 30 min |
-| 17 | Add CHANGELOG entry for `fs.FS` integration | Release notes | 10 min |
-| 18 | Add `FindProjectRootFS` that works with `fs.FS` | Full FS abstraction | 30 min |
-| 19 | Refactor `walkPathForSQLCConfigs` and `FindSQLCConfigsFS` to share walk logic | DRY | 30 min |
-| 20 | Add CI workflow with `golangci-lint` and `go test` | Automation | 20 min |
+| #   | Task                                                                          | Impact              | Effort |
+| --- | ----------------------------------------------------------------------------- | ------------------- | ------ |
+| 16  | Create a `testfs` internal test package for FS test helpers                   | Reusability         | 30 min |
+| 17  | Add CHANGELOG entry for `fs.FS` integration                                   | Release notes       | 10 min |
+| 18  | Add `FindProjectRootFS` that works with `fs.FS`                               | Full FS abstraction | 30 min |
+| 19  | Refactor `walkPathForSQLCConfigs` and `FindSQLCConfigsFS` to share walk logic | DRY                 | 30 min |
+| 20  | Add CI workflow with `golangci-lint` and `go test`                            | Automation          | 20 min |
 
 ### Lower Priority
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 21 | Explore `fs.FS` wrapper for walking with symlink support | Feature parity | 1 hr |
-| 22 | Add Windows path testing in CI | Cross-platform | 30 min |
-| 23 | Create a `gogenfilter/cmd` tool for CLI usage | Usability | 2 hr |
-| 24 | Add `goreleaser` configuration | Release automation | 1 hr |
-| 25 | Write a blog post / README section about the `io/fs` integration pattern | Community | 1 hr |
+| #   | Task                                                                     | Impact             | Effort |
+| --- | ------------------------------------------------------------------------ | ------------------ | ------ |
+| 21  | Explore `fs.FS` wrapper for walking with symlink support                 | Feature parity     | 1 hr   |
+| 22  | Add Windows path testing in CI                                           | Cross-platform     | 30 min |
+| 23  | Create a `gogenfilter/cmd` tool for CLI usage                            | Usability          | 2 hr   |
+| 24  | Add `goreleaser` configuration                                           | Release automation | 1 hr   |
+| 25  | Write a blog post / README section about the `io/fs` integration pattern | Community          | 1 hr   |
 
 ---
 
