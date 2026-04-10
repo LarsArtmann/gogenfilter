@@ -8,6 +8,26 @@ import (
 	"testing"
 )
 
+func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message string) {
+	t.Helper()
+
+	if !strings.HasPrefix(msg, "[gogenfilter:") {
+		t.Errorf("Error() missing branded prefix: %q", msg)
+	}
+
+	if !strings.Contains(msg, errorCode) {
+		t.Errorf("Error() missing error code: %q", msg)
+	}
+
+	if path != "" && !strings.Contains(msg, path) {
+		t.Errorf("Error() missing path: %q", msg)
+	}
+
+	if message != "" && !strings.Contains(msg, message) {
+		t.Errorf("Error() missing message: %q", msg)
+	}
+}
+
 func TestErrorCode(t *testing.T) {
 	t.Parallel()
 
@@ -80,17 +100,7 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 
 		msg := err.Error()
 
-		if !strings.HasPrefix(msg, "[gogenfilter:") {
-			t.Errorf("Error() missing branded prefix: %q", msg)
-		}
-
-		if !strings.Contains(msg, "project_root_invalid_path") {
-			t.Errorf("Error() missing error code: %q", msg)
-		}
-
-		if !strings.Contains(msg, "/some/path") {
-			t.Errorf("Error() missing start path: %q", msg)
-		}
+		assertBrandedErrorMessage(t, msg, "project_root_invalid_path", "/some/path", "")
 	})
 
 	t.Run("branded error message without cause", func(t *testing.T) {
@@ -294,21 +304,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		msg := err.Error()
 
-		if !strings.HasPrefix(msg, "[gogenfilter:") {
-			t.Errorf("Error() missing branded prefix: %q", msg)
-		}
-
-		if !strings.Contains(msg, "sqlc_config_read") {
-			t.Errorf("Error() missing error code: %q", msg)
-		}
-
-		if !strings.Contains(msg, "/path/to/sqlc.yaml") {
-			t.Errorf("Error() missing config path: %q", msg)
-		}
-
-		if !strings.Contains(msg, "reading sqlc config") {
-			t.Errorf("Error() missing message: %q", msg)
-		}
+		assertBrandedErrorMessage(t, msg, "sqlc_config_read", "/path/to/sqlc.yaml", "reading sqlc config")
 	})
 
 	t.Run("branded error message without config path", func(t *testing.T) {
@@ -324,17 +320,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		msg := err.Error()
 
-		if !strings.HasPrefix(msg, "[gogenfilter:") {
-			t.Errorf("Error() missing branded prefix: %q", msg)
-		}
-
-		if !strings.Contains(msg, "sqlc_config_find") {
-			t.Errorf("Error() missing error code: %q", msg)
-		}
-
-		if !strings.Contains(msg, "finding sqlc configs") {
-			t.Errorf("Error() missing message: %q", msg)
-		}
+		assertBrandedErrorMessage(t, msg, "sqlc_config_find", "", "finding sqlc configs")
 	})
 }
 
