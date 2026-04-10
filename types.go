@@ -11,6 +11,11 @@ package gogenfilter
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
+// Validatable is implemented by types that can validate themselves.
+type Validatable interface {
+	IsValid() bool
+}
+
 func (o FilterOption) String() string { return string(o) }
 
 // Reason returns the FilterReason corresponding to this FilterOption.

@@ -89,11 +89,7 @@ func TestFilterOptionIsValid(t *testing.T) {
 		FilterOption("not-a-real-option"),
 	}
 
-	for _, opt := range invalidOptions {
-		if opt.IsValid() {
-			t.Errorf("FilterOption(%q).IsValid() = true, want false", opt)
-		}
-	}
+	assertAllInvalid(t, "invalidOptions", invalidOptions)
 }
 
 func TestFilterReasonString(t *testing.T) {
@@ -122,11 +118,7 @@ func TestFilterReasonIsValid(t *testing.T) {
 		FilterReason("not-a-real-reason"),
 	}
 
-	for _, r := range invalidReasons {
-		if r.IsValid() {
-			t.Errorf("FilterReason(%q).IsValid() = true, want false", r)
-		}
-	}
+	assertAllInvalid(t, "invalidReasons", invalidReasons)
 }
 
 func assertAllValid[T any](t *testing.T, name string, items []T, isValid func(T) bool) {
@@ -135,6 +127,16 @@ func assertAllValid[T any](t *testing.T, name string, items []T, isValid func(T)
 	for _, item := range items {
 		if !isValid(item) {
 			t.Errorf("%s contains invalid item %v", name, item)
+		}
+	}
+}
+
+func assertAllInvalid[T Validatable](t *testing.T, name string, items []T) {
+	t.Helper()
+
+	for _, item := range items {
+		if item.IsValid() {
+			t.Errorf("%s contains valid item %v", name, item)
 		}
 	}
 }
