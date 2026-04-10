@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func testDetectReasonNotFiltered(t *testing.T, filename, content string, filterOpts map[FilterOption]bool) {
+	reason := DetectReason(filename, content, filterOpts)
+
+	if reason != ReasonNotFiltered {
+		t.Errorf("Expected %v, got %v", ReasonNotFiltered, reason)
+	}
+}
+
 func TestIsGenerated(t *testing.T) {
 	t.Parallel()
 
@@ -142,16 +150,7 @@ func TestDetectReasonNoIO(t *testing.T) {
 
 	t.Run("returns not filtered for non-matching content", func(t *testing.T) {
 		t.Parallel()
-
-		reason := DetectReason(
-			"file.go",
-			"package main",
-			map[FilterOption]bool{FilterGeneric: true},
-		)
-
-		if reason != ReasonNotFiltered {
-			t.Errorf("Expected %v, got %v", ReasonNotFiltered, reason)
-		}
+		testDetectReasonNotFiltered(t, "file.go", "package main", map[FilterOption]bool{FilterGeneric: true})
 	})
 }
 
@@ -230,16 +229,7 @@ func TestDetectorPriorityWithFilterAll(t *testing.T) {
 
 func TestDetectReasonFilenameOnlyNoContentCheck(t *testing.T) {
 	t.Parallel()
-
-	reason := DetectReason(
-		"regular.go",
-		"",
-		map[FilterOption]bool{FilterTempl: true},
-	)
-
-	if reason != ReasonNotFiltered {
-		t.Errorf("Expected %v, got %v", ReasonNotFiltered, reason)
-	}
+	testDetectReasonNotFiltered(t, "regular.go", "", map[FilterOption]bool{FilterTempl: true})
 }
 
 func TestEmptyContent(t *testing.T) {
