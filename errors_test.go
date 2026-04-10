@@ -328,13 +328,13 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 	t.Run("branded error message with config path", func(t *testing.T) {
 		t.Parallel()
 
-		err := &SQLCConfigError{
-			Code:       CodeSQLCConfigRead,
-			ConfigPath: "/path/to/sqlc.yaml",
-			Operation:  "read",
-			Message:    "reading sqlc config",
-			Cause:      os.ErrPermission,
-		}
+		err := newSQLCConfigError(
+			CodeSQLCConfigRead,
+			"/path/to/sqlc.yaml",
+			"read",
+			"reading sqlc config",
+			os.ErrPermission,
+		)
 
 		msg := err.Error()
 
@@ -344,13 +344,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 	t.Run("branded error message without config path", func(t *testing.T) {
 		t.Parallel()
 
-		err := &SQLCConfigError{
-			Code:       CodeSQLCConfigFind,
-			ConfigPath: "",
-			Operation:  "find",
-			Message:    "finding sqlc configs",
-			Cause:      os.ErrNotExist,
-		}
+		err := newSQLCConfigError(CodeSQLCConfigFind, "", "find", "finding sqlc configs", os.ErrNotExist)
 
 		msg := err.Error()
 
@@ -361,13 +355,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 func TestSQLCConfigErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
-	err := &SQLCConfigError{
-		Code:       CodeSQLCConfigRead,
-		ConfigPath: "",
-		Operation:  "read",
-		Message:    "reading sqlc config",
-		Cause:      os.ErrPermission,
-	}
+	err := newSQLCConfigError(CodeSQLCConfigRead, "", "read", "reading sqlc config", os.ErrPermission)
 
 	if !errors.Is(err, os.ErrPermission) {
 		t.Error("errors.Is failed to unwrap to os.ErrPermission")
@@ -404,13 +392,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 	t.Run("extracts domain fields", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &SQLCConfigError{
-			Code:       CodeSQLCConfigRead,
-			ConfigPath: "/config/sqlc.yaml",
-			Operation:  "read",
-			Message:    "reading sqlc config",
-			Cause:      os.ErrPermission,
-		}
+		realErr := newSQLCConfigError(CodeSQLCConfigRead, "/config/sqlc.yaml", "read", "reading sqlc config", os.ErrPermission)
 
 		var sqlcErr *SQLCConfigError
 		if !errors.As(realErr, &sqlcErr) {
@@ -426,13 +408,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 	t.Run("extracts ErrorCoder interface", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &SQLCConfigError{
-			Code:       CodeSQLCConfigParse,
-			ConfigPath: "",
-			Operation:  "parse",
-			Message:    "parsing sqlc config",
-			Cause:      os.ErrInvalid,
-		}
+		realErr := newSQLCConfigError(CodeSQLCConfigParse, "", "parse", "parsing sqlc config", os.ErrInvalid)
 
 		var coder ErrorCoder
 		if !errors.As(realErr, &coder) {
@@ -449,13 +425,7 @@ func TestSQLCConfigErrorSentinelMatching(t *testing.T) {
 	t.Run("matches sentinel by code", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := &SQLCConfigError{
-			Code:       CodeSQLCConfigWalk,
-			ConfigPath: "",
-			Operation:  "walk",
-			Message:    "walking directory",
-			Cause:      os.ErrNotExist,
-		}
+		realErr := newSQLCConfigError(CodeSQLCConfigWalk, "", "walk", "walking directory", os.ErrNotExist)
 
 		if !errors.Is(realErr, ErrSQLCConfigWalk) {
 			t.Error("errors.Is failed to match ErrSQLCConfigWalk")
