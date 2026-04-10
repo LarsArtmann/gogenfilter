@@ -38,6 +38,22 @@ func assertContains(t *testing.T, got, substr string) {
 	}
 }
 
+func assertLen[T any](t *testing.T, name string, got []T, want int) {
+	t.Helper()
+
+	if len(got) != want {
+		t.Errorf("expected %d %s, got %d", want, name, len(got))
+	}
+}
+
+func assertMapLen(t *testing.T, name string, got map[string]string, want int) {
+	t.Helper()
+
+	if len(got) != want {
+		t.Errorf("expected %d %s, got %d", want, name, len(got))
+	}
+}
+
 func assertStringContainsAll(t *testing.T, got string, substrs ...string) {
 	t.Helper()
 
@@ -110,9 +126,7 @@ func testPatternSetter(
 
 	patterns := getPatterns(f)
 
-	if len(patterns) != expectedLen {
-		t.Errorf("Expected %d patterns, got %d", expectedLen, len(patterns))
-	}
+	assertLen(t, "patterns", patterns, expectedLen)
 }
 
 type boolTestCase[T any] struct {
