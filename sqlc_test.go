@@ -10,29 +10,15 @@ import (
 func TestShouldSkipDirectory(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name     string
-		dirName  string
-		wantSkip bool
-	}{
-		{name: "regular directory", dirName: "src", wantSkip: false},
-		{name: "hidden directory", dirName: ".git", wantSkip: true},
-		{name: "hidden directory with dot", dirName: ".cache", wantSkip: true},
-		{name: "node_modules", dirName: "node_modules", wantSkip: true},
-		{name: "vendor", dirName: "vendor", wantSkip: true},
+	tests := []boolTestCase[string]{
+		{name: "regular directory", input: "src", expected: false},
+		{name: "hidden directory", input: ".git", expected: true},
+		{name: "hidden directory with dot", input: ".cache", expected: true},
+		{name: "node_modules", input: "node_modules", expected: true},
+		{name: "vendor", input: "vendor", expected: true},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			gotSkip := shouldSkipDirectory(tt.dirName)
-
-			if gotSkip != tt.wantSkip {
-				t.Errorf("shouldSkipDirectory(%q) = %v, want %v", tt.dirName, gotSkip, tt.wantSkip)
-			}
-		})
-	}
+	runBoolTableTest(t, tests, shouldSkipDirectory, "shouldSkipDirectory")
 }
 
 func TestRecordSQLCConfig(t *testing.T) {

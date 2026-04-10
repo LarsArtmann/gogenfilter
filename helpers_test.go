@@ -212,6 +212,8 @@ func runGeneratedFileTest(
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := fn(tt.filePath, tt.content)
 
 			if got != tt.expected {
