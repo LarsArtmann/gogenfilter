@@ -217,9 +217,7 @@ func TestDetectorPriorityWithFilterAll(t *testing.T) {
 
 			reason := DetectReason(tt.path, tt.content, allOpts)
 
-			if reason != tt.expected {
-				t.Errorf("DetectReason(%q) = %v, want %v", tt.path, reason, tt.expected)
-			}
+			assertCallResult(t, "DetectReason", tt.path, reason, tt.expected)
 		})
 	}
 }
