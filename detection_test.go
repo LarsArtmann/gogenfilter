@@ -295,18 +295,19 @@ func sqlcPatternAndContentTests() ([]boolTestCase[string], []boolTestCase[string
 	return codePatternTests, contentTests
 }
 
+func runSQLCSubTest(t *testing.T, name string, tests []boolTestCase[string], fn func(string) bool) {
+	t.Helper()
+	t.Run(name, func(t *testing.T) {
+		t.Parallel()
+		runBoolTableTest(t, tests, fn, name)
+	})
+}
+
 func TestSQLCDetection(t *testing.T) {
 	t.Parallel()
 
 	codePatternTests, contentTests := sqlcPatternAndContentTests()
 
-	t.Run("HasSQLCCodePatterns", func(t *testing.T) {
-		t.Parallel()
-		runBoolTableTest(t, codePatternTests, HasSQLCCodePatterns, "HasSQLCCodePatterns")
-	})
-
-	t.Run("HasSQLCContent", func(t *testing.T) {
-		t.Parallel()
-		runBoolTableTest(t, contentTests, HasSQLCContent, "HasSQLCContent")
-	})
+	runSQLCSubTest(t, "HasSQLCCodePatterns", codePatternTests, HasSQLCCodePatterns)
+	runSQLCSubTest(t, "HasSQLCContent", contentTests, HasSQLCContent)
 }
