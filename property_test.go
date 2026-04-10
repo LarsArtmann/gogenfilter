@@ -6,6 +6,8 @@ import (
 )
 
 func TestFilterIdempotentProperty(t *testing.T) {
+	t.Parallel()
+
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
@@ -28,6 +30,8 @@ func TestFilterIdempotentProperty(t *testing.T) {
 }
 
 func TestDisabledFilterProperty(t *testing.T) {
+	t.Parallel()
+
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
@@ -47,6 +51,8 @@ func TestDisabledFilterProperty(t *testing.T) {
 }
 
 func TestIncludePatternProperty(t *testing.T) {
+	t.Parallel()
+
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 
@@ -73,6 +79,8 @@ func TestIncludePatternProperty(t *testing.T) {
 }
 
 func TestExcludePatternProperty(t *testing.T) {
+	t.Parallel()
+
 	t.Run("property test", func(t *testing.T) {
 		t.Parallel()
 

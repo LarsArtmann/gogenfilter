@@ -206,6 +206,8 @@ func TestFindSQLCConfigs_NonExistentPath(t *testing.T) {
 }
 
 func TestGetSQLOutputDirs(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		yaml     string
