@@ -418,9 +418,7 @@ func testFindSQLCConfigCount(t *testing.T, mapFS fstest.MapFS, expected int) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if len(configs) != expected {
-		t.Errorf("expected %d configs, got %d", expected, len(configs))
-	}
+	assertMapLen(t, "configs", configs, expected)
 }
 
 func TestGetSQLOutputDirsFSWithMapFS(t *testing.T) {
