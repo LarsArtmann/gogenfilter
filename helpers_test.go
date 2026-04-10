@@ -141,6 +141,14 @@ func runBoolTableTest[T any](
 	}
 }
 
+func addBoolTestCase(tests []boolTestCase[string], name, code string, expected bool) []boolTestCase[string] {
+	return append(tests, boolTestCase[string]{
+		name,
+		code,
+		expected,
+	})
+}
+
 type generatedFileTest struct {
 	name     string
 	filePath string
