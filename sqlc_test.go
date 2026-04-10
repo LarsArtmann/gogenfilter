@@ -1,7 +1,9 @@
 package gogenfilter
 
 import (
+	"errors"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -297,4 +299,115 @@ func TestGetSQLOutputDirsMultipleConfigsWarning(t *testing.T) {
 	}
 
 	assertEqual(t, "len(dirs)", len(dirs), 0)
+}
+
+func TestParseSQLCConfig_NonExistent_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	_, err := parseSQLCConfig("/nonexistent/sqlc.yaml")
+	if err == nil {
+		t.Fatal("parseSQLCConfig() expected error for non-existent file")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigRead)
+
+	if !errors.Is(err, ErrSQLCConfigRead) {
+		t.Error("errors.Is should match ErrSQLCConfigRead")
+	}
+
+	help := err.Help()
+	if help == "" {
+		t.Error("Help() should return non-empty guidance")
+	}
+
+	if !strings.HasPrefix(err.Error(), "[gogenfilter:") {
+		t.Errorf("Error() missing branded prefix: %q", err.Error())
+	}
+}
+
+func TestParseSQLCConfig_InvalidYAML_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	configPath := filepath.Join(tmpDir, "sqlc.yaml")
+	writeFile(t, configPath, "version: \"2\"\nsql:\n  - [invalid yaml structure\n")
+
+	_, err := parseSQLCConfig(configPath)
+	if err == nil {
+		t.Fatal("parseSQLCConfig() expected error for invalid YAML")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
+
+	if !errors.Is(err, ErrSQLCConfigParse) {
+		t.Error("errors.Is should match ErrSQLCConfigParse")
+	}
+
+	help := err.Help()
+	if help == "" {
+		t.Error("Help() should return non-empty guidance")
+	}
+}
+
+func TestFindSQLCConfigs_NonExistentPath_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	_, err := FindSQLCConfigs([]string{"/nonexistent/path"})
+	if err == nil {
+		t.Fatal("FindSQLCConfigs() expected error for non-existent path")
+	}
+
+	if !strings.HasPrefix(err.Error(), "[gogenfilter:") {
+		t.Errorf("Error() missing branded prefix: %q", err.Error())
+	}
+
+	if !errors.Is(err, ErrSQLCConfigFind) {
+		t.Error("errors.Is should match ErrSQLCConfigFind")
+	}
+
+	help := err.Help()
+	if help == "" {
+		t.Error("Help() should return non-empty guidance")
+	}
+}
+
+func TestParseSQLCConfigFS_NonExistent_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	fsys := createFSWithFile(t, "sqlc.yaml", "version: \"2\"")
+
+	_, err := parseSQLCConfigFS(fsys, "nonexistent/sqlc.yaml")
+	if err == nil {
+		t.Fatal("parseSQLCConfigFS() expected error for non-existent file")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigRead)
+
+	if !errors.Is(err, ErrSQLCConfigRead) {
+		t.Error("errors.Is should match ErrSQLCConfigRead")
+	}
+}
+
+func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	fsys := createFSWithFile(t, "sqlc.yaml", "version: \"2\"\nsql:\n  - [invalid\n")
+
+	_, err := GetSQLOutputDirsFS(fsys, []string{"."})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirsFS() expected error for invalid YAML")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigCollect)
+
+	if !errors.Is(err, ErrSQLCConfigCollect) {
+		t.Error("errors.Is should match ErrSQLCConfigCollect")
+	}
+
+	var inner *SQLCConfigError
+	if !errors.As(err.Unwrap(), &inner) {
+		t.Fatal("unwrap should expose inner SQLCConfigError")
+	}
+
+	assertEqual(t, "inner ErrorCode", inner.ErrorCode(), CodeSQLCConfigParse)
 }

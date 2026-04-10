@@ -1,9 +1,83 @@
 package gogenfilter
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+// ErrorCode identifies a specific error condition in the gogenfilter library.
+// Codes use snake_case naming and can be used for programmatic error handling.
+type ErrorCode string
+
+// Error codes identify specific error conditions for programmatic handling.
+const (
+	CodeProjectRootNotFound    ErrorCode = "project_root_not_found"    // project root not found from start path
+	CodeProjectRootInvalidPath ErrorCode = "project_root_invalid_path" // start path could not be resolved
+	CodeSQLCConfigRead         ErrorCode = "sqlc_config_read"          // sqlc config file could not be read
+	CodeSQLCConfigParse        ErrorCode = "sqlc_config_parse"         // sqlc config file has invalid YAML
+	CodeSQLCConfigWalk         ErrorCode = "sqlc_config_walk"          // directory walk for sqlc configs failed
+	CodeSQLCConfigCollect      ErrorCode = "sqlc_config_collect"       // collecting output dirs from sqlc configs failed
+	CodeSQLCConfigFind         ErrorCode = "sqlc_config_find"          // finding sqlc config files failed
+)
+
+// AllErrorCodes returns all defined error codes.
+func AllErrorCodes() []ErrorCode {
+	return []ErrorCode{
+		CodeProjectRootNotFound,
+		CodeProjectRootInvalidPath,
+		CodeSQLCConfigRead,
+		CodeSQLCConfigParse,
+		CodeSQLCConfigWalk,
+		CodeSQLCConfigCollect,
+		CodeSQLCConfigFind,
+	}
+}
+
+// helpText maps error codes to actionable user guidance.
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
+var helpText = map[ErrorCode]string{
+	CodeProjectRootNotFound:    "Ensure the directory is within a Go project containing a go.mod file or other project marker file.",
+	CodeProjectRootInvalidPath: "Verify the start path exists and is a valid directory.",
+	CodeSQLCConfigRead:         "Check that the sqlc config file exists and has appropriate read permissions.",
+	CodeSQLCConfigParse:        "Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format.",
+	CodeSQLCConfigWalk:         "Ensure the search path exists and is accessible for directory traversal.",
+	CodeSQLCConfigCollect:      "Verify that all sqlc config files are valid and accessible.",
+	CodeSQLCConfigFind:         "Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file.",
+}
+
+// CodeHelp returns the user-friendly help text for the given error code.
+func CodeHelp(code ErrorCode) string {
+	return helpText[code]
+}
+
+// ErrorCoder is implemented by all gogenfilter errors for programmatic code access.
+type ErrorCoder interface {
+	ErrorCode() ErrorCode
+}
+
+// Helper is implemented by errors that provide user-friendly guidance.
+type Helper interface {
+	Help() string
+}
+
+// Sentinel errors for use with errors.Is.
+// These have zero-value domain fields; matching is by ErrorCode only.
+//
+//nolint:exhaustruct
+var (
+	ErrProjectRootNotFound    = &ProjectRootError{Code: CodeProjectRootNotFound}
+	ErrProjectRootInvalidPath = &ProjectRootError{Code: CodeProjectRootInvalidPath}
+	ErrSQLCConfigRead         = &SQLCConfigError{Code: CodeSQLCConfigRead}
+	ErrSQLCConfigParse        = &SQLCConfigError{Code: CodeSQLCConfigParse}
+	ErrSQLCConfigWalk         = &SQLCConfigError{Code: CodeSQLCConfigWalk}
+	ErrSQLCConfigCollect      = &SQLCConfigError{Code: CodeSQLCConfigCollect}
+	ErrSQLCConfigFind         = &SQLCConfigError{Code: CodeSQLCConfigFind}
+)
 
 // ProjectRootError is returned when the project root cannot be found.
 type ProjectRootError struct {
+	Code      ErrorCode
 	StartPath string
 	Markers   []string
 	Cause     error
@@ -11,18 +85,39 @@ type ProjectRootError struct {
 
 func (e *ProjectRootError) Error() string {
 	if e.Cause != nil {
-		return fmt.Sprintf("project root not found from %q: %v", e.StartPath, e.Cause)
+		return fmt.Sprintf(
+			"[gogenfilter:%s] project root not found from %q: %v",
+			e.Code,
+			e.StartPath,
+			e.Cause,
+		)
 	}
 
-	return fmt.Sprintf("project root not found from %q (searched for %v)", e.StartPath, e.Markers)
+	return fmt.Sprintf("[gogenfilter:%s] project root not found from %q (searched for: %s)",
+		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
 }
 
-func (e *ProjectRootError) Unwrap() error {
-	return e.Cause
+func (e *ProjectRootError) Unwrap() error { return e.Cause }
+
+// Is supports errors.Is by comparing error codes with sentinel errors.
+func (e *ProjectRootError) Is(target error) bool {
+	t, ok := target.(*ProjectRootError)
+	if !ok {
+		return false
+	}
+
+	return e.Code == t.Code
 }
+
+// ErrorCode returns the error code for programmatic matching.
+func (e *ProjectRootError) ErrorCode() ErrorCode { return e.Code }
+
+// Help returns user-friendly guidance for resolving the error.
+func (e *ProjectRootError) Help() string { return CodeHelp(e.Code) }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
+	Code       ErrorCode
 	ConfigPath string
 	Operation  string
 	Cause      error
@@ -30,12 +125,32 @@ type SQLCConfigError struct {
 
 func (e *SQLCConfigError) Error() string {
 	if e.ConfigPath != "" {
-		return fmt.Sprintf("sqlc config %s %q: %v", e.Operation, e.ConfigPath, e.Cause)
+		return fmt.Sprintf(
+			"[gogenfilter:%s] sqlc config %s %q: %v",
+			e.Code,
+			e.Operation,
+			e.ConfigPath,
+			e.Cause,
+		)
 	}
 
-	return fmt.Sprintf("sqlc config %s: %v", e.Operation, e.Cause)
+	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %v", e.Code, e.Operation, e.Cause)
 }
 
-func (e *SQLCConfigError) Unwrap() error {
-	return e.Cause
+func (e *SQLCConfigError) Unwrap() error { return e.Cause }
+
+// Is supports errors.Is by comparing error codes with sentinel errors.
+func (e *SQLCConfigError) Is(target error) bool {
+	t, ok := target.(*SQLCConfigError)
+	if !ok {
+		return false
+	}
+
+	return e.Code == t.Code
 }
+
+// ErrorCode returns the error code for programmatic matching.
+func (e *SQLCConfigError) ErrorCode() ErrorCode { return e.Code }
+
+// Help returns user-friendly guidance for resolving the error.
+func (e *SQLCConfigError) Help() string { return CodeHelp(e.Code) }
