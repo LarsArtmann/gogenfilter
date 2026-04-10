@@ -28,6 +28,38 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 	}
 }
 
+func testCrossTypeMismatch(
+	t *testing.T,
+	errType string,
+	code ErrorCode,
+	sentinelName string,
+	sentinel error,
+) {
+	t.Helper()
+
+	var err error
+
+	switch errType {
+	case "ProjectRoot":
+		err = &ProjectRootError{
+			Code: code, //nolint:exhaustruct
+		}
+	case "SQLCConfig":
+		err = &SQLCConfigError{
+			Code: code, //nolint:exhaustruct
+		}
+	default:
+		t.Fatalf("unknown error type: %s", errType)
+	}
+
+	if errors.Is(err, sentinel) {
+		t.Errorf(
+			"errors.Is should not match across different error types: %s vs %s",
+			errType, sentinelName,
+		)
+	}
+}
+
 func TestErrorCode(t *testing.T) {
 	t.Parallel()
 
@@ -279,12 +311,10 @@ func TestProjectRootErrorSentinelMatching(t *testing.T) {
 	t.Run("does not match across types", func(t *testing.T) {
 		t.Parallel()
 
-		err := &ProjectRootError{ //nolint:exhaustruct // testing cross-type rejection, fields irrelevant
-			Code: CodeProjectRootNotFound,
-		}
-		if errors.Is(err, ErrSQLCConfigRead) {
-			t.Error("errors.Is should not match across different error types")
-		}
+		testCrossTypeMismatch(
+			t, "ProjectRoot", CodeProjectRootNotFound,
+			"ErrSQLCConfigRead", ErrSQLCConfigRead,
+		)
 	})
 }
 
@@ -439,12 +469,10 @@ func TestSQLCConfigErrorSentinelMatching(t *testing.T) {
 	t.Run("does not match across types", func(t *testing.T) {
 		t.Parallel()
 
-		err := &SQLCConfigError{ //nolint:exhaustruct // testing cross-type rejection, fields irrelevant
-			Code: CodeSQLCConfigRead,
-		}
-		if errors.Is(err, ErrProjectRootNotFound) {
-			t.Error("errors.Is should not match across different error types")
-		}
+		testCrossTypeMismatch(
+			t, "SQLCConfig", CodeSQLCConfigRead,
+			"ErrProjectRootNotFound", ErrProjectRootNotFound,
+		)
 	})
 }
 
