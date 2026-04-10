@@ -1,7 +1,6 @@
 package gogenfilter
 
 import (
-	"errors"
 	"path/filepath"
 	"testing"
 )
@@ -91,9 +90,7 @@ func TestFindProjectRootErrorCode(t *testing.T) {
 
 		assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
 
-		if !errors.Is(err, ErrProjectRootNotFound) {
-			t.Error("errors.Is should match ErrProjectRootNotFound")
-		}
+		assertErrorsIs(t, err, ErrProjectRootNotFound)
 
 		help := err.Help()
 		if help == "" {

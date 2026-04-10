@@ -297,9 +297,7 @@ func TestParseSQLCConfig_NonExistent_ErrorCode(t *testing.T) {
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigRead)
 
-	if !errors.Is(err, ErrSQLCConfigRead) {
-		t.Error("errors.Is should match ErrSQLCConfigRead")
-	}
+	assertErrorsIs(t, err, ErrSQLCConfigRead)
 
 	help := err.Help()
 	if help == "" {
@@ -325,9 +323,7 @@ func TestParseSQLCConfig_InvalidYAML_ErrorCode(t *testing.T) {
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
 
-	if !errors.Is(err, ErrSQLCConfigParse) {
-		t.Error("errors.Is should match ErrSQLCConfigParse")
-	}
+	assertErrorsIs(t, err, ErrSQLCConfigParse)
 
 	help := err.Help()
 	if help == "" {
@@ -347,9 +343,7 @@ func TestFindSQLCConfigs_NonExistentPath_ErrorCode(t *testing.T) {
 		t.Errorf("Error() missing branded prefix: %q", err.Error())
 	}
 
-	if !errors.Is(err, ErrSQLCConfigFind) {
-		t.Error("errors.Is should match ErrSQLCConfigFind")
-	}
+	assertErrorsIs(t, err, ErrSQLCConfigFind)
 
 	help := err.Help()
 	if help == "" {
@@ -369,9 +363,7 @@ func TestParseSQLCConfigFS_NonExistent_ErrorCode(t *testing.T) {
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigRead)
 
-	if !errors.Is(err, ErrSQLCConfigRead) {
-		t.Error("errors.Is should match ErrSQLCConfigRead")
-	}
+	assertErrorsIs(t, err, ErrSQLCConfigRead)
 }
 
 func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
@@ -386,9 +378,7 @@ func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigCollect)
 
-	if !errors.Is(err, ErrSQLCConfigCollect) {
-		t.Error("errors.Is should match ErrSQLCConfigCollect")
-	}
+	assertErrorsIs(t, err, ErrSQLCConfigCollect)
 
 	var inner *SQLCConfigError
 	if !errors.As(err.Unwrap(), &inner) {

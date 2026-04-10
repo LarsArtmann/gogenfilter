@@ -1,6 +1,7 @@
 package gogenfilter
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -394,6 +395,14 @@ func createFSWithFile(t *testing.T, filename, content string) fstest.MapFS {
 
 	return fstest.MapFS{
 		filename: newMapFile(content),
+	}
+}
+
+func assertErrorsIs(t *testing.T, err, sentinel error) {
+	t.Helper()
+
+	if !errors.Is(err, sentinel) {
+		t.Errorf("errors.Is should match %v", sentinel)
 	}
 }
 
