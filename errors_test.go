@@ -52,7 +52,7 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 	}
 }
 
-func testErrorUnwrapsTo(t *testing.T, err error, sentinel error) {
+func testErrorUnwrapsTo(t *testing.T, err, sentinel error) {
 	t.Helper()
 
 	if !errors.Is(err, sentinel) {
@@ -304,9 +304,7 @@ func TestProjectRootErrorSentinelMatching(t *testing.T) {
 
 		realErr := testProjectRootErrorNotFound(t)
 
-		if !errors.Is(realErr, ErrProjectRootNotFound) {
-			t.Error("errors.Is failed to match ErrProjectRootNotFound")
-		}
+		assertErrorsIs(t, realErr, ErrProjectRootNotFound)
 
 		if errors.Is(realErr, ErrProjectRootInvalidPath) {
 			t.Error("errors.Is should not match different code")
@@ -420,9 +418,7 @@ func TestSQLCConfigErrorSentinelMatching(t *testing.T) {
 
 		realErr := newSQLCConfigError(CodeSQLCConfigWalk, "", "walk", "walking directory", os.ErrNotExist)
 
-		if !errors.Is(realErr, ErrSQLCConfigWalk) {
-			t.Error("errors.Is failed to match ErrSQLCConfigWalk")
-		}
+		assertErrorsIs(t, realErr, ErrSQLCConfigWalk)
 
 		if errors.Is(realErr, ErrSQLCConfigRead) {
 			t.Error("errors.Is should not match different code")
