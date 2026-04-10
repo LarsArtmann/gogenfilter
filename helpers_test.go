@@ -150,6 +150,41 @@ func simpleGeneratedFileTests(
 	}
 }
 
+func generatedFileTests4(
+	name string,
+	mainPath, mainContent string,
+	altPath, altContent string,
+	noCommentPath, noCommentContent string,
+	wrongExtPath, wrongExtContent string,
+) []generatedFileTest {
+	return []generatedFileTest{
+		{
+			name:     name + " " + mainPath,
+			filePath: mainPath,
+			content:  mainContent,
+			expected: true,
+		},
+		{
+			name:     name + " " + altPath,
+			filePath: altPath,
+			content:  altContent,
+			expected: true,
+		},
+		{
+			name:     name + " without comment",
+			filePath: noCommentPath,
+			content:  noCommentContent,
+			expected: false,
+		},
+		{
+			name:     "not " + name + " - wrong extension",
+			filePath: wrongExtPath,
+			content:  wrongExtContent,
+			expected: false,
+		},
+	}
+}
+
 func runGeneratedFileTest(
 	t *testing.T,
 	tests []generatedFileTest,
