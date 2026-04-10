@@ -129,6 +129,16 @@ func TestFilterReasonIsValid(t *testing.T) {
 	}
 }
 
+func assertAllValid[T any](t *testing.T, name string, items []T, isValid func(T) bool) {
+	t.Helper()
+
+	for _, item := range items {
+		if !isValid(item) {
+			t.Errorf("%s contains invalid item %v", name, item)
+		}
+	}
+}
+
 func TestAllFilterOptions(t *testing.T) {
 	t.Parallel()
 
@@ -136,11 +146,12 @@ func TestAllFilterOptions(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterOptions())", len(opts), 8)
 
-	for _, opt := range opts {
-		if !opt.IsValid() {
-			t.Errorf("AllFilterOptions() contains invalid option %q", opt)
-		}
-	}
+	assertAllValid(
+		t,
+		"AllFilterOptions()",
+		opts,
+		func(o FilterOption) bool { return o.IsValid() },
+	)
 }
 
 func TestAllFilterReasons(t *testing.T) {
@@ -150,9 +161,10 @@ func TestAllFilterReasons(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterReasons())", len(reasons), 10)
 
-	for _, r := range reasons {
-		if !r.IsValid() {
-			t.Errorf("AllFilterReasons() contains invalid reason %q", r)
-		}
-	}
+	assertAllValid(
+		t,
+		"AllFilterReasons()",
+		reasons,
+		func(r FilterReason) bool { return r.IsValid() },
+	)
 }
