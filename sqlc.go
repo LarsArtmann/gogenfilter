@@ -220,6 +220,7 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 			err,
 		)
 	}
+
 	return &config, nil
 }
 

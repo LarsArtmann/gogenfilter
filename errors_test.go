@@ -30,6 +30,7 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 
 func assertBrandedPrefix(t *testing.T, msg string) {
 	t.Helper()
+
 	if !strings.HasPrefix(msg, "[gogenfilter:") {
 		t.Errorf("missing branded prefix: %q", msg)
 	}
@@ -37,10 +38,12 @@ func assertBrandedPrefix(t *testing.T, msg string) {
 
 func assertErrorsAs[T any](t *testing.T, err error) T {
 	t.Helper()
+
 	var result T
 	if !errors.As(err, &result) {
 		t.Fatalf("errors.As failed to extract %T", result)
 	}
+
 	return result
 }
 
@@ -74,11 +77,11 @@ func testCrossTypeMismatch(
 	switch errType {
 	case "ProjectRoot":
 		err = &ProjectRootError{
-			Code: code, //nolint:exhaustruct
+			Code: code,
 		}
 	case "SQLCConfig":
 		err = &SQLCConfigError{
-			Code: code, //nolint:exhaustruct
+			Code: code,
 		}
 	default:
 		t.Fatalf("unknown error type: %s", errType)
@@ -189,6 +192,7 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 
 func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 	t.Helper()
+
 	return &ProjectRootError{
 		Code:      CodeProjectRootNotFound,
 		StartPath: "/path",
@@ -337,13 +341,25 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		msg := err.Error()
 
-		assertBrandedErrorMessage(t, msg, "sqlc_config_read", "/path/to/sqlc.yaml", "reading sqlc config")
+		assertBrandedErrorMessage(
+			t,
+			msg,
+			"sqlc_config_read",
+			"/path/to/sqlc.yaml",
+			"reading sqlc config",
+		)
 	})
 
 	t.Run("branded error message without config path", func(t *testing.T) {
 		t.Parallel()
 
-		err := newSQLCConfigError(CodeSQLCConfigFind, "", "find", "finding sqlc configs", os.ErrNotExist)
+		err := newSQLCConfigError(
+			CodeSQLCConfigFind,
+			"",
+			"find",
+			"finding sqlc configs",
+			os.ErrNotExist,
+		)
 
 		msg := err.Error()
 
@@ -354,7 +370,13 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 func TestSQLCConfigErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
-	err := newSQLCConfigError(CodeSQLCConfigRead, "", "read", "reading sqlc config", os.ErrPermission)
+	err := newSQLCConfigError(
+		CodeSQLCConfigRead,
+		"",
+		"read",
+		"reading sqlc config",
+		os.ErrPermission,
+	)
 
 	testErrorUnwrapsTo(t, err, os.ErrPermission)
 }
@@ -389,7 +411,13 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 	t.Run("extracts domain fields", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := newSQLCConfigError(CodeSQLCConfigRead, "/config/sqlc.yaml", "read", "reading sqlc config", os.ErrPermission)
+		realErr := newSQLCConfigError(
+			CodeSQLCConfigRead,
+			"/config/sqlc.yaml",
+			"read",
+			"reading sqlc config",
+			os.ErrPermission,
+		)
 
 		sqlcErr := assertErrorsAs[*SQLCConfigError](t, realErr)
 
@@ -402,7 +430,13 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 	t.Run("extracts ErrorCoder interface", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := newSQLCConfigError(CodeSQLCConfigParse, "", "parse", "parsing sqlc config", os.ErrInvalid)
+		realErr := newSQLCConfigError(
+			CodeSQLCConfigParse,
+			"",
+			"parse",
+			"parsing sqlc config",
+			os.ErrInvalid,
+		)
 
 		coder := assertErrorsAs[ErrorCoder](t, realErr)
 
@@ -416,7 +450,13 @@ func TestSQLCConfigErrorSentinelMatching(t *testing.T) {
 	t.Run("matches sentinel by code", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := newSQLCConfigError(CodeSQLCConfigWalk, "", "walk", "walking directory", os.ErrNotExist)
+		realErr := newSQLCConfigError(
+			CodeSQLCConfigWalk,
+			"",
+			"walk",
+			"walking directory",
+			os.ErrNotExist,
+		)
 
 		assertErrorsIs(t, realErr, ErrSQLCConfigWalk)
 

@@ -164,7 +164,11 @@ func runBoolTableTest[T any](
 	}
 }
 
-func addBoolTestCase(tests []boolTestCase[string], name, code string, expected bool) []boolTestCase[string] {
+func addBoolTestCase(
+	tests []boolTestCase[string],
+	name, code string,
+	expected bool,
+) []boolTestCase[string] {
 	return append(tests, boolTestCase[string]{
 		name,
 		code,
