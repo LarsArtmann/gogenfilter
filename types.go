@@ -11,12 +11,15 @@ package gogenfilter
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
+// stringFrom returns the string representation of a string-based type.
+func stringFrom[T ~string](t T) string { return string(t) }
+
 // Validatable is implemented by types that can validate themselves.
 type Validatable interface {
 	IsValid() bool
 }
 
-func (o FilterOption) String() string { return string(o) }
+func (o FilterOption) String() string { return stringFrom(o) }
 
 // Reason returns the FilterReason corresponding to this FilterOption.
 // Since FilterOption and FilterReason share the same underlying string values,
@@ -66,7 +69,7 @@ const (
 // FilterReason represents the reason a file was filtered.
 type FilterReason string
 
-func (r FilterReason) String() string { return string(r) }
+func (r FilterReason) String() string { return stringFrom(r) }
 
 // IsValid reports whether the FilterReason is a recognized value.
 func (r FilterReason) IsValid() bool {

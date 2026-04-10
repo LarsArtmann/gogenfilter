@@ -9,7 +9,7 @@ import (
 // Codes use snake_case naming and can be used for programmatic error handling.
 type ErrorCode string
 
-func (c ErrorCode) String() string { return string(c) }
+func (c ErrorCode) String() string { return stringFrom(c) }
 
 // Error codes identify specific error conditions for programmatic handling.
 const (
