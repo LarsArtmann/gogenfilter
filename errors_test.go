@@ -31,11 +31,11 @@ func TestErrorCode(t *testing.T) {
 			t.Run(tc.expected, func(t *testing.T) {
 				t.Parallel()
 
-				if string(tc.code) != tc.expected {
+				if tc.code.String() != tc.expected {
 					t.Errorf(
 						"ErrorCode(%q).String() = %q, want %q",
 						tc.code,
-						string(tc.code),
+						tc.code.String(),
 						tc.expected,
 					)
 				}
