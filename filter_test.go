@@ -7,6 +7,25 @@ import (
 	"testing/fstest"
 )
 
+func assertFilterStats(
+	t *testing.T,
+	stats FilterStats,
+	reason FilterReason,
+	expected int,
+	name string,
+) {
+	t.Helper()
+
+	if stats.FilteredBy(reason) != expected {
+		t.Errorf(
+			"expected %d %s filter, got %d",
+			expected,
+			name,
+			stats.FilteredBy(reason),
+		)
+	}
+}
+
 func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
@@ -99,12 +118,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 
 		stats := filter.GetStats()
 
-		if stats.FilteredBy(ReasonIncludePattern) != 1 {
-			t.Errorf(
-				"expected 1 include-pattern filter, got %d",
-				stats.FilteredBy(ReasonIncludePattern),
-			)
-		}
+		assertFilterStats(t, stats, ReasonIncludePattern, 1, "include-pattern")
 	})
 
 	t.Run("include pattern with wildcard", func(t *testing.T) {
@@ -232,12 +246,7 @@ func TestShouldFilterExcludePattern(t *testing.T) {
 
 	stats := filter.GetStats()
 
-	if stats.FilteredBy(ReasonExcludePattern) != 1 {
-		t.Errorf(
-			"expected 1 exclude-pattern filter, got %d",
-			stats.FilteredBy(ReasonExcludePattern),
-		)
-	}
+	assertFilterStats(t, stats, ReasonExcludePattern, 1, "exclude-pattern")
 }
 
 func TestWithPatterns(t *testing.T) {
