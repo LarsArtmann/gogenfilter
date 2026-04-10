@@ -56,14 +56,6 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 	}
 }
 
-func testErrorUnwrapsTo(t *testing.T, err, sentinel error) {
-	t.Helper()
-
-	if !errors.Is(err, sentinel) {
-		t.Errorf("errors.Is failed to unwrap to %v", sentinel)
-	}
-}
-
 func testCrossTypeMismatch(
 	t *testing.T,
 	errType string,
