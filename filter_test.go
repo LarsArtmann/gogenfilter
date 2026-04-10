@@ -244,18 +244,8 @@ func TestWithPatterns(t *testing.T) {
 	t.Parallel()
 
 	testCases := []patternTestCase{
-		{
-			name:     "include patterns",
-			setter:   func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
-			getter:   func(f *Filter) []string { return f.includePatterns },
-			patterns: []string{"vendor/*", "generated/keep.go"},
-		},
-		{
-			name:     "exclude patterns",
-			setter:   func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
-			getter:   func(f *Filter) []string { return f.excludePatterns },
-			patterns: []string{"test/*", "*.pb.go"},
-		},
+		includePatternsTestCase(),
+		excludePatternsTestCase(),
 	}
 
 	for _, tc := range testCases {
