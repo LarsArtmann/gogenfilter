@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"slices"
 	"sort"
 	"strings"
 )
@@ -123,9 +122,7 @@ func (f *Filter) recordFiltered(filePath string, reason FilterReason) {
 }
 
 func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
-	return slices.ContainsFunc(patterns, func(pattern string) bool {
-		return MatchPattern(filePath, pattern)
-	})
+	return matchAnyWith(filePath, patterns, MatchPattern)
 }
 
 func (f *Filter) shouldFilterWithIncludes(filePath string) bool {
