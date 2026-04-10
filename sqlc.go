@@ -211,7 +211,9 @@ func warnMultipleSQLCConfigs(configPaths map[string]string) {
 
 func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var config sqlcConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
+
+	err := yaml.Unmarshal(data, &config)
+	if err != nil {
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigParse,
 			configPath,
