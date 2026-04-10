@@ -27,6 +27,8 @@ func assertFilterStats(
 }
 
 func TestNewFilter(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 
@@ -81,6 +83,8 @@ func TestNewFilter(t *testing.T) {
 }
 
 func TestShouldFilter(t *testing.T) {
+	t.Parallel()
+
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
 
