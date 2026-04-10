@@ -34,20 +34,20 @@ func TestRecordSQLCConfig(t *testing.T) {
 		{name: "go file", filePath: "/project/main.go", wantLen: 0},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
 			configs := make(map[string]string)
-			recordSQLCConfig(tt.filePath, configs)
+			recordSQLCConfig(testCase.filePath, configs)
 
-			assertEqual(t, "len(configs)", len(configs), tt.wantLen)
+			assertEqual(t, "len(configs)", len(configs), testCase.wantLen)
 
-			if tt.wantLen > 0 {
-				dir := filepath.Dir(tt.filePath)
+			if testCase.wantLen > 0 {
+				dir := filepath.Dir(testCase.filePath)
 
-				if configs[tt.filePath] != dir {
-					t.Errorf("config dir = %q, want %q", configs[tt.filePath], dir)
+				if configs[testCase.filePath] != dir {
+					t.Errorf("config dir = %q, want %q", configs[testCase.filePath], dir)
 				}
 			}
 		})

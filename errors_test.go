@@ -107,16 +107,16 @@ func TestErrorCode(t *testing.T) {
 			{CodeSQLCConfigFind, "sqlc_config_find"},
 		}
 
-		for _, tc := range cases {
-			t.Run(tc.expected, func(t *testing.T) {
+		for _, testCase := range cases {
+			t.Run(testCase.expected, func(t *testing.T) {
 				t.Parallel()
 
-				if tc.code.String() != tc.expected {
+				if testCase.code.String() != testCase.expected {
 					t.Errorf(
 						"ErrorCode(%q).String() = %q, want %q",
-						tc.code,
-						tc.code.String(),
-						tc.expected,
+						testCase.code,
+						testCase.code.String(),
+						testCase.expected,
 					)
 				}
 			})

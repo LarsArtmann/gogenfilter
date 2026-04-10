@@ -32,31 +32,31 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter(false, nil)
+		filter := NewFilter(false, nil)
 
-		if f.IsEnabled() {
+		if filter.IsEnabled() {
 			t.Error("Expected disabled filter")
 		}
 
-		if len(f.options) != 0 {
-			t.Errorf("Expected empty options, got %v", f.options)
+		if len(filter.options) != 0 {
+			t.Errorf("Expected empty options, got %v", filter.options)
 		}
 	})
 
 	t.Run("creates enabled filter with options", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter(true, []FilterOption{FilterSQLC, FilterTempl})
+		filter := NewFilter(true, []FilterOption{FilterSQLC, FilterTempl})
 
-		if !f.IsEnabled() {
+		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
 		}
 
-		if !f.options[FilterSQLC] {
+		if !filter.options[FilterSQLC] {
 			t.Error("Expected SQLC option enabled")
 		}
 
-		if !f.options[FilterTempl] {
+		if !filter.options[FilterTempl] {
 			t.Error("Expected Templ option enabled")
 		}
 	})
@@ -64,19 +64,19 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter(true, []FilterOption{FilterAll})
+		filter := NewFilter(true, []FilterOption{FilterAll})
 
-		if !f.IsEnabled() {
+		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
 		}
 
 		for _, opt := range allSpecificOptions {
-			if !f.options[opt] {
+			if !filter.options[opt] {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
 		}
 
-		if !f.options[FilterGeneric] {
+		if !filter.options[FilterGeneric] {
 			t.Error("Expected Generic option enabled for FilterAll")
 		}
 	})

@@ -241,13 +241,13 @@ func TestDetectorPriorityWithFilterAll(t *testing.T) {
 		FilterGeneric: true,
 	}
 
-	for _, tt := range detectorPriorityTests() {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range detectorPriorityTests() {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			reason := DetectReason(tt.path, tt.content, allOpts)
+			reason := DetectReason(testCase.path, testCase.content, allOpts)
 
-			assertCallResult(t, "DetectReason", tt.path, reason, tt.expected)
+			assertCallResult(t, "DetectReason", testCase.path, reason, testCase.expected)
 		})
 	}
 }

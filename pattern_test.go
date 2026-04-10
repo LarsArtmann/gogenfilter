@@ -5,19 +5,19 @@ import "testing"
 func TestMatchPattern(t *testing.T) {
 	t.Parallel()
 
-	for _, tt := range matchPatternTestCases() {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range matchPatternTestCases() {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := MatchPattern(tt.path, tt.pattern)
+			got := MatchPattern(testCase.path, testCase.pattern)
 
-			if got != tt.expected {
+			if got != testCase.expected {
 				t.Errorf(
 					"MatchPattern(%q, %q) = %v, want %v",
-					tt.path,
-					tt.pattern,
+					testCase.path,
+					testCase.pattern,
 					got,
-					tt.expected,
+					testCase.expected,
 				)
 			}
 		})

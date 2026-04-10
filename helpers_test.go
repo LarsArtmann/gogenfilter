@@ -124,16 +124,16 @@ func assertFilterBehavior(
 
 func testPatternSetter(
 	t *testing.T,
-	f *Filter,
+	filter *Filter,
 	setter func(*Filter),
 	getPatterns func(*Filter) []string,
 	expectedLen int,
 ) {
 	t.Helper()
 
-	setter(f)
+	setter(filter)
 
-	patterns := getPatterns(f)
+	patterns := getPatterns(filter)
 
 	assertLen(t, "patterns", len(patterns), expectedLen)
 }
@@ -147,18 +147,18 @@ type boolTestCase[T any] struct {
 func runBoolTableTest[T any](
 	t *testing.T,
 	tests []boolTestCase[T],
-	fn func(T) bool,
+	predicate func(T) bool,
 	fnName string,
 ) {
 	t.Helper()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := fn(tt.input)
+			got := predicate(testCase.input)
 
-			assertEqual(t, fnName+"()", got, tt.expected)
+			assertEqual(t, fnName+"()", got, testCase.expected)
 		})
 	}
 }
@@ -239,18 +239,18 @@ func generatedFileTests4(
 func runGeneratedFileTest(
 	t *testing.T,
 	tests []generatedFileTest,
-	fn func(string, string) bool,
+	matchFn func(string, string) bool,
 	fnName string,
 ) {
 	t.Helper()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := fn(tt.filePath, tt.content)
+			got := matchFn(testCase.filePath, testCase.content)
 
-			assertEqual(t, fmt.Sprintf("%s(%q)", fnName, tt.filePath), got, tt.expected)
+			assertEqual(t, fmt.Sprintf("%s(%q)", fnName, testCase.filePath), got, testCase.expected)
 		})
 	}
 }
@@ -262,13 +262,13 @@ func testStringer[T any](t *testing.T, name string, cases []struct {
 ) {
 	t.Helper()
 
-	for _, tt := range cases {
-		t.Run(fmt.Sprintf("%s/%v", name, tt.value), func(t *testing.T) {
+	for _, testCase := range cases {
+		t.Run(fmt.Sprintf("%s/%v", name, testCase.value), func(t *testing.T) {
 			t.Parallel()
 
 			var got string
 
-			if s, ok := any(tt.value).(interface{ String() string }); ok {
+			if s, ok := any(testCase.value).(interface{ String() string }); ok {
 				got = s.String()
 			} else {
 				t.Skip("type does not implement String()")
@@ -276,8 +276,11 @@ func testStringer[T any](t *testing.T, name string, cases []struct {
 				return
 			}
 
-			if got != tt.expected {
-				t.Errorf("%s(%v).String() = %q, want %q", name, tt.value, got, tt.expected)
+			if got != testCase.expected {
+				t.Errorf(
+					"%s(%v).String() = %q, want %q",
+					name, testCase.value, got, testCase.expected,
+				)
 			}
 		})
 	}
@@ -292,13 +295,13 @@ type sqlcFilenameTestCase struct {
 func runSQLCFilenameTests(t *testing.T, tests []sqlcFilenameTestCase) {
 	t.Helper()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := MatchesSQLCFilename(tt.path)
+			got := MatchesSQLCFilename(testCase.path)
 
-			assertCallResult(t, "MatchesSQLCFilename", tt.path, got, tt.expected)
+			assertCallResult(t, "MatchesSQLCFilename", testCase.path, got, testCase.expected)
 		})
 	}
 }
