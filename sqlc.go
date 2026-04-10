@@ -120,6 +120,26 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigE
 	return nil
 }
 
+// walkDirForSQLCConfigs is a helper that records sqlc config files during directory walking.
+// Returns true if the directory should be skipped.
+func walkDirForSQLCConfigs(
+	filePath, dirName string,
+	err error,
+	configs map[string]string,
+) (bool, error) {
+	if err != nil {
+		return false, fmt.Errorf("accessing %q: %w", filePath, err)
+	}
+
+	if shouldSkipDirectory(dirName) {
+		return true, nil
+	}
+
+	recordSQLCConfig(filePath, configs)
+
+	return false, nil
+}
+
 // shouldSkipDirectory returns true if a directory should be skipped during walk.
 func shouldSkipDirectory(name string) bool {
 	if name == "." || name == "" {
@@ -238,17 +258,12 @@ func FindSQLCConfigsFS(fsys fs.FS, paths []string) (map[string]string, *SQLCConf
 
 	for _, path := range paths {
 		err := fs.WalkDir(fsys, path, func(filePath string, d fs.DirEntry, err error) error {
-			if err != nil {
-				return fmt.Errorf("accessing %q: %w", filePath, err)
-			}
-
-			if d.IsDir() && shouldSkipDirectory(d.Name()) {
+			skip, walkErr := walkDirForSQLCConfigs(filePath, d.Name(), err, configs)
+			if skip {
 				return fs.SkipDir
 			}
 
-			recordSQLCConfig(filePath, configs)
-
-			return nil
+			return walkErr
 		})
 		if err != nil {
 			return nil, sqlcWalkError(path, err)
