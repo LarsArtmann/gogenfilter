@@ -202,6 +202,13 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	return unmarshalSQLCConfig(data, configPath)
 }
 
+// warnMultipleSQLCConfigs logs a warning if multiple sqlc config files were found.
+func warnMultipleSQLCConfigs(configPaths map[string]string) {
+	if len(configPaths) > 1 {
+		slog.Warn("multiple sqlc config files found", "count", len(configPaths))
+	}
+}
+
 func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var config sqlcConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
@@ -239,9 +246,7 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 		return nil, err
 	}
 
-	if len(configPaths) > 1 {
-		slog.Warn("multiple sqlc config files found", "count", len(configPaths))
-	}
+	warnMultipleSQLCConfigs(configPaths)
 
 	var outputDirs []string
 
@@ -311,9 +316,7 @@ func GetSQLOutputDirsFS(fsys fs.FS, paths []string) ([]string, *SQLCConfigError)
 		return nil, err
 	}
 
-	if len(configPaths) > 1 {
-		slog.Warn("multiple sqlc config files found", "count", len(configPaths))
-	}
+	warnMultipleSQLCConfigs(configPaths)
 
 	var outputDirs []string
 
