@@ -416,6 +416,14 @@ func assertErrorsIs(t *testing.T, err, sentinel error) {
 	}
 }
 
+func assertErrorHasBrandedPrefix(t *testing.T, err error) {
+	t.Helper()
+
+	if !strings.HasPrefix(err.Error(), "[gogenfilter:") {
+		t.Errorf("Error() missing branded prefix: %q", err.Error())
+	}
+}
+
 func ValidSQLCConfig(engine string) string {
 	return "version: \"2\"\n" +
 		"sql:\n" +
