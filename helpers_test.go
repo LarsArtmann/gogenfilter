@@ -371,20 +371,13 @@ func createFSWithFile(t *testing.T, filename, content string) fstest.MapFS {
 	}
 }
 
-const validSQLCConfig = "version: \"2\"\n" +
-	"sql:\n" +
-	"  - engine: \"postgresql\"\n" +
-	"    schema: \"schema/\"\n" +
-	"    gen:\n" +
-	"      go:\n" +
-	"        package: \"db\"\n" +
-	"        out: \"db\"\n"
-
-const validSQLCConfigMySQL = "version: \"2\"\n" +
-	"sql:\n" +
-	"  - engine: \"mysql\"\n" +
-	"    schema: \"schema/\"\n" +
-	"    gen:\n" +
-	"      go:\n" +
-	"        package: \"db\"\n" +
-	"        out: \"db\"\n"
+func ValidSQLCConfig(engine string) string {
+	return "version: \"2\"\n" +
+		"sql:\n" +
+		"  - engine: \"" + engine + "\"\n" +
+		"    schema: \"schema/\"\n" +
+		"    gen:\n" +
+		"      go:\n" +
+		"        package: \"db\"\n" +
+		"        out: \"db\"\n"
+}

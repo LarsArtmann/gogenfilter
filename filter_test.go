@@ -381,8 +381,10 @@ func testMapFSMultipleGenerators(t *testing.T) {
 func TestFindSQLCConfigsFSWithMapFS(t *testing.T) {
 	t.Parallel()
 
-	t.Run("finds sqlc.yaml in MapFS", testFindSQLCConfig("sqlc.yaml", validSQLCConfig))
-	t.Run("finds sqlc.yml in subdirectory", testFindSQLCConfig("internal/db/sqlc.yml", validSQLCConfigMySQL))
+	t.Run("finds sqlc.yaml in MapFS",
+		testFindSQLCConfig("sqlc.yaml", ValidSQLCConfig("postgresql")))
+	t.Run("finds sqlc.yml in subdirectory",
+		testFindSQLCConfig("internal/db/sqlc.yml", ValidSQLCConfig("mysql")))
 	t.Run("skips dot directories", testFindSQLCSkipsDotDirs)
 	t.Run("no configs returns empty map", testFindSQLCSkipsDotDirs)
 }
@@ -434,7 +436,7 @@ func testOutputDirsFromConfig(t *testing.T) {
 	t.Parallel()
 
 	mapFS := fstest.MapFS{
-		"sqlc.yaml": newMapFile(validSQLCConfig),
+		"sqlc.yaml": newMapFile(ValidSQLCConfig("postgresql")),
 	}
 
 	dirs, err := GetSQLOutputDirsFS(mapFS, []string{"."})
