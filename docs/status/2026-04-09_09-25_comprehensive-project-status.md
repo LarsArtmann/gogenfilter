@@ -12,47 +12,47 @@
 
 ### Core Library (8 source files)
 
-| File | Lines | Status | Notes |
-|------|-------|--------|-------|
-| detection.go | 248 | Complete | 7 detectors, two-phase detection, table-driven |
-| filter.go | 174 | Complete | Filter struct, include/exclude patterns, String() |
-| types.go | 126 | Complete | FilterOption, FilterReason, IsValid, All*, package doc |
-| sqlc.go | 194 | Complete | SQLC config discovery, YAML parsing, WalkDir |
-| metrics.go | 131 | Complete | Thread-safe metrics, snapshots, String() |
-| pattern.go | 79 | Complete | Glob matching with ** support |
-| project.go | 50 | Complete | Project root discovery |
-| errors.go | 41 | Complete | Typed errors with Unwrap |
+| File         | Lines | Status   | Notes                                                   |
+| ------------ | ----- | -------- | ------------------------------------------------------- |
+| detection.go | 248   | Complete | 7 detectors, two-phase detection, table-driven          |
+| filter.go    | 174   | Complete | Filter struct, include/exclude patterns, String()       |
+| types.go     | 126   | Complete | FilterOption, FilterReason, IsValid, All\*, package doc |
+| sqlc.go      | 194   | Complete | SQLC config discovery, YAML parsing, WalkDir            |
+| metrics.go   | 131   | Complete | Thread-safe metrics, snapshots, String()                |
+| pattern.go   | 79    | Complete | Glob matching with \*\* support                         |
+| project.go   | 50    | Complete | Project root discovery                                  |
+| errors.go    | 41    | Complete | Typed errors with Unwrap                                |
 
 ### Test Suite (13 test files)
 
-| File | Lines | Status |
-|------|-------|--------|
-| detection_test.go | 335 | Complete — detector priority tests, 2-phase tests |
-| helpers_test.go | 302 | Complete — generic boolTestCase[T], table helpers |
-| sqlc_test.go | 300 | Complete |
-| testdata_test.go | 297 | Complete |
-| filter_test.go | 267 | Complete |
-| types_test.go | 144 | Complete |
-| project_test.go | 118 | Complete |
-| bench_test.go | 117 | Complete — MatchPattern, ShouldFilter, DetectReason, Is*Generated |
-| pattern_test.go | 106 | Complete |
-| property_test.go | 97 | Complete — 4 property tests with testing/quick |
-| example_test.go | 95 | Complete — 9 runnable Go examples |
-| fuzz_test.go | 70 | Complete — FuzzMatchPattern, FuzzDetectReason |
-| errors_test.go | 67 | Complete |
-| metrics_test.go | 49 | Complete |
+| File              | Lines | Status                                                             |
+| ----------------- | ----- | ------------------------------------------------------------------ |
+| detection_test.go | 335   | Complete — detector priority tests, 2-phase tests                  |
+| helpers_test.go   | 302   | Complete — generic boolTestCase[T], table helpers                  |
+| sqlc_test.go      | 300   | Complete                                                           |
+| testdata_test.go  | 297   | Complete                                                           |
+| filter_test.go    | 267   | Complete                                                           |
+| types_test.go     | 144   | Complete                                                           |
+| project_test.go   | 118   | Complete                                                           |
+| bench_test.go     | 117   | Complete — MatchPattern, ShouldFilter, DetectReason, Is\*Generated |
+| pattern_test.go   | 106   | Complete                                                           |
+| property_test.go  | 97    | Complete — 4 property tests with testing/quick                     |
+| example_test.go   | 95    | Complete — 9 runnable Go examples                                  |
+| fuzz_test.go      | 70    | Complete — FuzzMatchPattern, FuzzDetectReason                      |
+| errors_test.go    | 67    | Complete                                                           |
+| metrics_test.go   | 49    | Complete                                                           |
 
 ### Infrastructure
 
-| Item | Status |
-|------|--------|
+| Item                                           | Status   |
+| ---------------------------------------------- | -------- |
 | Justfile (test, lint, coverage, ci, fmt, tidy) | Complete |
-| golangci-lint v2 (80+ linters) | Complete |
-| CHANGELOG.md (Keep a Changelog format) | Complete |
-| README.md (full API docs, examples) | Complete |
-| TODO_LIST.md (prioritized backlog) | Complete |
-| AGENTS.md (project instructions) | Complete |
-| go-structure-linter config | Complete |
+| golangci-lint v2 (80+ linters)                 | Complete |
+| CHANGELOG.md (Keep a Changelog format)         | Complete |
+| README.md (full API docs, examples)            | Complete |
+| TODO_LIST.md (prioritized backlog)             | Complete |
+| AGENTS.md (project instructions)               | Complete |
+| go-structure-linter config                     | Complete |
 
 ---
 
@@ -66,35 +66,35 @@ Nothing. All work is either fully complete or not started.
 
 ### HIGH Priority
 
-| # | Item | Effort | Why Important |
-|---|------|--------|---------------|
-| 1 | **`io/fs.FS` abstraction** — Accept `fs.FS` instead of direct `os.ReadFile`/`filepath.WalkDir` | Medium | Enables in-memory testing, `embed.FS`, custom FS. Core architectural gap. |
-| 2 | Replace `slog.Warn` with configurable logging or return warnings | Medium | Library code should never impose logging on consumers |
-| 3 | Resolve include patterns bypassing generated-code detection | High | Design decision needed — current behavior is semantically misleading |
-| 4 | GitHub Actions CI workflow | Medium | No CI exists. All testing is local. |
+| #   | Item                                                                                           | Effort | Why Important                                                             |
+| --- | ---------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
+| 1   | **`io/fs.FS` abstraction** — Accept `fs.FS` instead of direct `os.ReadFile`/`filepath.WalkDir` | Medium | Enables in-memory testing, `embed.FS`, custom FS. Core architectural gap. |
+| 2   | Replace `slog.Warn` with configurable logging or return warnings                               | Medium | Library code should never impose logging on consumers                     |
+| 3   | Resolve include patterns bypassing generated-code detection                                    | High   | Design decision needed — current behavior is semantically misleading      |
+| 4   | GitHub Actions CI workflow                                                                     | Medium | No CI exists. All testing is local.                                       |
 
 ### MEDIUM Priority
 
-| # | Item | Effort |
-|---|------|--------|
-| 5 | Remove/document `!needsContentCheck` dead branch in DetectReason | Small |
-| 6 | Explicit FilterReason <-> FilterOption mapping (break shared-string coupling) | Medium |
-| 7 | Expand detector list (oapi-codegen, deepcopy-gen, protoc-gen-go-grpc) | Large |
-| 8 | Replace `\x00` sentinel with cleaner expansion in pattern.go | Small |
-| 9 | Update CHANGELOG.md with all recent session work | Small |
+| #   | Item                                                                          | Effort |
+| --- | ----------------------------------------------------------------------------- | ------ |
+| 5   | Remove/document `!needsContentCheck` dead branch in DetectReason              | Small  |
+| 6   | Explicit FilterReason <-> FilterOption mapping (break shared-string coupling) | Medium |
+| 7   | Expand detector list (oapi-codegen, deepcopy-gen, protoc-gen-go-grpc)         | Large  |
+| 8   | Replace `\x00` sentinel with cleaner expansion in pattern.go                  | Small  |
+| 9   | Update CHANGELOG.md with all recent session work                              | Small  |
 
 ### LOW Priority
 
-| # | Item | Effort |
-|---|------|--------|
-| 10 | Document API stability guarantees | Small |
-| 11 | Consider `//go:generate` for detector table generation | Medium |
-| 12 | Create CONTRIBUTING.md | Small |
-| 13 | Add Codecov or similar coverage tracking | Medium |
-| 14 | Test against real-world generated files (integration tests) | Medium |
-| 15 | Performance profile hot paths | Medium |
-| 16 | Add FilteredBy() examples to example_test.go | Small |
-| 17 | Add Metrics usage examples | Small |
+| #   | Item                                                        | Effort |
+| --- | ----------------------------------------------------------- | ------ |
+| 10  | Document API stability guarantees                           | Small  |
+| 11  | Consider `//go:generate` for detector table generation      | Medium |
+| 12  | Create CONTRIBUTING.md                                      | Small  |
+| 13  | Add Codecov or similar coverage tracking                    | Medium |
+| 14  | Test against real-world generated files (integration tests) | Medium |
+| 15  | Performance profile hot paths                               | Medium |
+| 16  | Add FilteredBy() examples to example_test.go                | Small  |
+| 17  | Add Metrics usage examples                                  | Small  |
 
 ---
 
@@ -185,33 +185,33 @@ Nothing. All work is either fully complete or not started.
 
 ## F) Top 25 Things to Do Next
 
-| Priority | # | Item | Impact | Effort | Category |
-|----------|---|------|--------|--------|----------|
-| **P0** | 1 | **Add `fs.FS` abstraction** — Accept `fs.FS` in Filter/SQLC/project functions, default to `os.DirFS` | Critical | M | Architecture |
-| **P0** | 2 | **Add `fs.FS` tests with `fstest.MapFS`** — Replace temp-dir-dependent tests | Critical | M | Testing |
-| **P0** | 3 | **Test `FilterStats.String()`** — 0.0% coverage on an exported method | High | S | Testing |
-| **P1** | 4 | **Replace `slog.Warn`** with return value or configurable logger | High | M | Architecture |
-| **P1** | 5 | **GitHub Actions CI** workflow (test + lint + coverage) | High | M | CI/CD |
-| **P1** | 6 | **Resolve include patterns bypass** — design doc + implementation | High | L | Architecture |
-| **P1** | 7 | **Remove/document `!needsContentCheck` dead branch** | Medium | S | Code health |
-| **P1** | 8 | **Explicit `FilterReason` <-> `FilterOption` mapping** | Medium | M | Architecture |
-| **P2** | 9 | **Expand detector list** (oapi-codegen, deepcopy-gen, protoc-gen-go-grpc) | Medium | L | Features |
-| **P2** | 10 | **Replace `\x00` sentinel** with cleaner pattern expansion | Low | S | Code health |
-| **P2** | 11 | **Update CHANGELOG.md** with session work | Low | S | Documentation |
-| **P2** | 12 | **Add `FilteredBy()` examples** to example_test.go | Low | S | Documentation |
-| **P2** | 13 | **Add Metrics usage examples** to example_test.go | Low | S | Documentation |
-| **P2** | 14 | **Use `strings.Cut`** where applicable (Go 1.18+ stdlib optimization) | Low | S | Code quality |
-| **P2** | 15 | **Add property-based tests** for MatchPattern invariants | Medium | M | Testing |
-| **P3** | 16 | **Performance profile** hot paths with real workloads | Low | M | Performance |
-| **P3** | 17 | **Document API stability guarantees** | Low | S | Documentation |
-| **P3** | 18 | **Add Codecov** or similar coverage tracking | Low | M | CI/CD |
-| **P3** | 19 | **Test against real-world generated files** (integration tests) | Medium | M | Testing |
-| **P3** | 20 | **Add `go vet` and `staticcheck`** to CI beyond golangci-lint | Low | S | CI/CD |
-| **P4** | 21 | **Create CONTRIBUTING.md** | Low | S | Documentation |
-| **P4** | 22 | **Consider `//go:generate`** for detector table generation | Low | M | Code health |
-| **P4** | 23 | **Evaluate `filepath.WalkDir`** — already uses it, mark TODO as done | Low | XS | Cleanup |
-| **P4** | 24 | **Mark stale TODOs** in TODO_LIST.md as completed/wontfix | Low | XS | Cleanup |
-| **P4** | 25 | **Add detector extensibility API** — `RegisterDetector` function | Low | M | API |
+| Priority | #   | Item                                                                                                 | Impact   | Effort | Category      |
+| -------- | --- | ---------------------------------------------------------------------------------------------------- | -------- | ------ | ------------- |
+| **P0**   | 1   | **Add `fs.FS` abstraction** — Accept `fs.FS` in Filter/SQLC/project functions, default to `os.DirFS` | Critical | M      | Architecture  |
+| **P0**   | 2   | **Add `fs.FS` tests with `fstest.MapFS`** — Replace temp-dir-dependent tests                         | Critical | M      | Testing       |
+| **P0**   | 3   | **Test `FilterStats.String()`** — 0.0% coverage on an exported method                                | High     | S      | Testing       |
+| **P1**   | 4   | **Replace `slog.Warn`** with return value or configurable logger                                     | High     | M      | Architecture  |
+| **P1**   | 5   | **GitHub Actions CI** workflow (test + lint + coverage)                                              | High     | M      | CI/CD         |
+| **P1**   | 6   | **Resolve include patterns bypass** — design doc + implementation                                    | High     | L      | Architecture  |
+| **P1**   | 7   | **Remove/document `!needsContentCheck` dead branch**                                                 | Medium   | S      | Code health   |
+| **P1**   | 8   | **Explicit `FilterReason` <-> `FilterOption` mapping**                                               | Medium   | M      | Architecture  |
+| **P2**   | 9   | **Expand detector list** (oapi-codegen, deepcopy-gen, protoc-gen-go-grpc)                            | Medium   | L      | Features      |
+| **P2**   | 10  | **Replace `\x00` sentinel** with cleaner pattern expansion                                           | Low      | S      | Code health   |
+| **P2**   | 11  | **Update CHANGELOG.md** with session work                                                            | Low      | S      | Documentation |
+| **P2**   | 12  | **Add `FilteredBy()` examples** to example_test.go                                                   | Low      | S      | Documentation |
+| **P2**   | 13  | **Add Metrics usage examples** to example_test.go                                                    | Low      | S      | Documentation |
+| **P2**   | 14  | **Use `strings.Cut`** where applicable (Go 1.18+ stdlib optimization)                                | Low      | S      | Code quality  |
+| **P2**   | 15  | **Add property-based tests** for MatchPattern invariants                                             | Medium   | M      | Testing       |
+| **P3**   | 16  | **Performance profile** hot paths with real workloads                                                | Low      | M      | Performance   |
+| **P3**   | 17  | **Document API stability guarantees**                                                                | Low      | S      | Documentation |
+| **P3**   | 18  | **Add Codecov** or similar coverage tracking                                                         | Low      | M      | CI/CD         |
+| **P3**   | 19  | **Test against real-world generated files** (integration tests)                                      | Medium   | M      | Testing       |
+| **P3**   | 20  | **Add `go vet` and `staticcheck`** to CI beyond golangci-lint                                        | Low      | S      | CI/CD         |
+| **P4**   | 21  | **Create CONTRIBUTING.md**                                                                           | Low      | S      | Documentation |
+| **P4**   | 22  | **Consider `//go:generate`** for detector table generation                                           | Low      | M      | Code health   |
+| **P4**   | 23  | **Evaluate `filepath.WalkDir`** — already uses it, mark TODO as done                                 | Low      | XS     | Cleanup       |
+| **P4**   | 24  | **Mark stale TODOs** in TODO_LIST.md as completed/wontfix                                            | Low      | XS     | Cleanup       |
+| **P4**   | 25  | **Add detector extensibility API** — `RegisterDetector` function                                     | Low      | M      | API           |
 
 ---
 
@@ -240,29 +240,29 @@ This is a product/API design decision. Option C seems cleanest for the `Filter` 
 
 ### Currently Used
 
-| Package | Functions/Types Used | Could Use More? |
-|---------|---------------------|-----------------|
-| `os` | `ReadFile`, `Stat`, `DirEntry` (indirect) | Yes — `os.DirFS` |
-| `path/filepath` | `Base`, `Match`, `WalkDir`, `Join`, `Dir`, `Abs`, `SkipDir`, `ToSlash`, `Separator`, `Clean` | No — fully utilized |
-| `slices` | `Contains`, `ContainsFunc` | No |
-| `strings` | `Contains`, `HasSuffix`, `HasPrefix`, `Join`, `Split`, `ReplaceAll` | Yes — `Cut`, `CutPrefix`, `CutSuffix` (1.20+) |
-| `fmt` | `Sprintf`, `Errorf`, `Println` | No |
-| `sort` | `Strings` | No |
-| `sync` | `RWMutex` | No |
-| `maps` | `Clone` | No |
-| `log/slog` | `Warn` | Should be removed (library shouldn't log) |
-| `testing` | `T`, `B`, `F` | No |
-| `testing/quick` | `Check` | No |
+| Package         | Functions/Types Used                                                                         | Could Use More?                               |
+| --------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `os`            | `ReadFile`, `Stat`, `DirEntry` (indirect)                                                    | Yes — `os.DirFS`                              |
+| `path/filepath` | `Base`, `Match`, `WalkDir`, `Join`, `Dir`, `Abs`, `SkipDir`, `ToSlash`, `Separator`, `Clean` | No — fully utilized                           |
+| `slices`        | `Contains`, `ContainsFunc`                                                                   | No                                            |
+| `strings`       | `Contains`, `HasSuffix`, `HasPrefix`, `Join`, `Split`, `ReplaceAll`                          | Yes — `Cut`, `CutPrefix`, `CutSuffix` (1.20+) |
+| `fmt`           | `Sprintf`, `Errorf`, `Println`                                                               | No                                            |
+| `sort`          | `Strings`                                                                                    | No                                            |
+| `sync`          | `RWMutex`                                                                                    | No                                            |
+| `maps`          | `Clone`                                                                                      | No                                            |
+| `log/slog`      | `Warn`                                                                                       | Should be removed (library shouldn't log)     |
+| `testing`       | `T`, `B`, `F`                                                                                | No                                            |
+| `testing/quick` | `Check`                                                                                      | No                                            |
 
 ### NOT Used But Should Be
 
-| Package | What | Why |
-|---------|------|-----|
-| `io/fs` | `fs.FS`, `fs.ReadFileFS`, `fs.WalkDir`, `fs.DirEntry`, `fs.FileInfo` | Pluggable filesystem, testability, embed.FS compatibility |
-| `testing/fstest` | `fstest.MapFS`, `fstest.TestFS` | In-memory test filesystem, eliminate temp dir dependency |
-| `os` | `os.DirFS(root)` | Convert OS path to `fs.FS` for default parameter |
-| `strings` | `Cut`, `CutPrefix`, `CutSuffix` | Cleaner than Contains+Split patterns (Go 1.20+) |
-| `errors` | Sentinel errors for `errors.Is` matching | Better error handling patterns |
+| Package          | What                                                                 | Why                                                       |
+| ---------------- | -------------------------------------------------------------------- | --------------------------------------------------------- |
+| `io/fs`          | `fs.FS`, `fs.ReadFileFS`, `fs.WalkDir`, `fs.DirEntry`, `fs.FileInfo` | Pluggable filesystem, testability, embed.FS compatibility |
+| `testing/fstest` | `fstest.MapFS`, `fstest.TestFS`                                      | In-memory test filesystem, eliminate temp dir dependency  |
+| `os`             | `os.DirFS(root)`                                                     | Convert OS path to `fs.FS` for default parameter          |
+| `strings`        | `Cut`, `CutPrefix`, `CutSuffix`                                      | Cleaner than Contains+Split patterns (Go 1.20+)           |
+| `errors`         | Sentinel errors for `errors.Is` matching                             | Better error handling patterns                            |
 
 ### Assessment
 
