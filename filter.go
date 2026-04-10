@@ -155,6 +155,14 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
 	return false
 }
 
+func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {
+	if len(patterns) > 0 {
+		return append(parts, fmt.Sprintf("%s=%v", label, patterns))
+	}
+
+	return parts
+}
+
 func (f *Filter) String() string {
 	if !f.enabled {
 		return "Filter(disabled)"
@@ -169,13 +177,8 @@ func (f *Filter) String() string {
 
 	parts := []string{fmt.Sprintf("options=[%s]", strings.Join(opts, ","))}
 
-	if len(f.includePatterns) > 0 {
-		parts = append(parts, fmt.Sprintf("includes=%v", f.includePatterns))
-	}
-
-	if len(f.excludePatterns) > 0 {
-		parts = append(parts, fmt.Sprintf("excludes=%v", f.excludePatterns))
-	}
+	parts = f.appendPatternPart(parts, "includes", f.includePatterns)
+	parts = f.appendPatternPart(parts, "excludes", f.excludePatterns)
 
 	if f.metrics != nil {
 		stats := f.metrics.GetStats()
