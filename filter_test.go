@@ -381,30 +381,22 @@ func testMapFSMultipleGenerators(t *testing.T) {
 func TestFindSQLCConfigsFSWithMapFS(t *testing.T) {
 	t.Parallel()
 
-	t.Run("finds sqlc.yaml in MapFS", testFindSQLCYamlInMapFS)
-	t.Run("finds sqlc.yml in subdirectory", testFindSQLCYmlInSubdir)
+	t.Run("finds sqlc.yaml in MapFS", testFindSQLCConfig("sqlc.yaml", validSQLCConfig))
+	t.Run("finds sqlc.yml in subdirectory", testFindSQLCConfig("internal/db/sqlc.yml", validSQLCConfigMySQL))
 	t.Run("skips dot directories", testFindSQLCSkipsDotDirs)
 	t.Run("no configs returns empty map", testFindSQLCNoConfigs)
 }
 
-func testFindSQLCYamlInMapFS(t *testing.T) {
-	t.Parallel()
+func testFindSQLCConfig(path string, configContent string) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Parallel()
 
-	mapFS := fstest.MapFS{
-		"sqlc.yaml": newMapFile(validSQLCConfig),
+		mapFS := fstest.MapFS{
+			path: newMapFile(configContent),
+		}
+
+		testFindSQLCConfigCount(t, mapFS, 1)
 	}
-
-	testFindSQLCConfigCount(t, mapFS, 1)
-}
-
-func testFindSQLCYmlInSubdir(t *testing.T) {
-	t.Parallel()
-
-	mapFS := fstest.MapFS{
-		"internal/db/sqlc.yml": newMapFile(validSQLCConfigMySQL),
-	}
-
-	testFindSQLCConfigCount(t, mapFS, 1)
 }
 
 func testFindSQLCSkipsDotDirs(t *testing.T) {
