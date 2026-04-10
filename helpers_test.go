@@ -321,6 +321,24 @@ type patternTestCase struct {
 	patterns []string
 }
 
+func includePatternsTestCase() patternTestCase {
+	return patternTestCase{
+		name:     "include patterns",
+		setter:   func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
+		getter:   func(f *Filter) []string { return f.includePatterns },
+		patterns: []string{"vendor/*", "generated/keep.go"},
+	}
+}
+
+func excludePatternsTestCase() patternTestCase {
+	return patternTestCase{
+		name:     "exclude patterns",
+		setter:   func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
+		getter:   func(f *Filter) []string { return f.excludePatterns },
+		patterns: []string{"test/*", "*.pb.go"},
+	}
+}
+
 func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 	t.Helper()
 
