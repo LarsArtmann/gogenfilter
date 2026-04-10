@@ -2,10 +2,11 @@ package gogenfilter
 
 import "testing"
 
-func TestFilterOptionString(t *testing.T) {
-	t.Parallel()
-
-	testStringer(t, "FilterOption", []struct {
+func filterOptionStringCases() []struct {
+	value    FilterOption
+	expected string
+} {
+	return []struct {
 		value    FilterOption
 		expected string
 	}{
@@ -17,7 +18,32 @@ func TestFilterOptionString(t *testing.T) {
 		{FilterStringer, "stringer"},
 		{FilterGeneric, "generic"},
 		{FilterAll, "all"},
-	})
+	}
+}
+
+func filterReasonStringCases() []struct {
+	value    FilterReason
+	expected string
+} {
+	return []struct {
+		value    FilterReason
+		expected string
+	}{
+		{ReasonSQLC, "sqlc"},
+		{ReasonTempl, "templ"},
+		{ReasonGoEnum, "go-enum"},
+		{ReasonProtobuf, "protobuf"},
+		{ReasonMockgen, "mockgen"},
+		{ReasonStringer, "stringer"},
+		{ReasonGeneric, "generic"},
+		{ReasonNotFiltered, "not-filtered"},
+	}
+}
+
+func TestFilterOptionString(t *testing.T) {
+	t.Parallel()
+
+	testStringer(t, "FilterOption", filterOptionStringCases())
 }
 
 func TestFilterOptionReason(t *testing.T) {
@@ -73,19 +99,7 @@ func TestFilterOptionIsValid(t *testing.T) {
 func TestFilterReasonString(t *testing.T) {
 	t.Parallel()
 
-	testStringer(t, "FilterReason", []struct {
-		value    FilterReason
-		expected string
-	}{
-		{ReasonSQLC, "sqlc"},
-		{ReasonTempl, "templ"},
-		{ReasonGoEnum, "go-enum"},
-		{ReasonProtobuf, "protobuf"},
-		{ReasonMockgen, "mockgen"},
-		{ReasonStringer, "stringer"},
-		{ReasonGeneric, "generic"},
-		{ReasonNotFiltered, "not-filtered"},
-	})
+	testStringer(t, "FilterReason", filterReasonStringCases())
 }
 
 func TestFilterReasonIsValid(t *testing.T) {
