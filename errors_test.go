@@ -28,6 +28,14 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 	}
 }
 
+func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode ErrorCode) {
+	t.Helper()
+
+	if err.ErrorCode() != expectedCode {
+		t.Errorf("ErrorCode() = %q, want %q", err.ErrorCode(), expectedCode)
+	}
+}
+
 func testCrossTypeMismatch(
 	t *testing.T,
 	errType string,
@@ -198,12 +206,8 @@ func TestProjectRootErrorAccessors(t *testing.T) {
 	t.Run("ErrorCode returns code", func(t *testing.T) {
 		t.Parallel()
 
-		err := &ProjectRootError{ //nolint:exhaustruct // testing specific field, others irrelevant
-			Code: CodeProjectRootNotFound,
-		}
-		if err.ErrorCode() != CodeProjectRootNotFound {
-			t.Errorf("ErrorCode() = %q, want %q", err.ErrorCode(), CodeProjectRootNotFound)
-		}
+		err := &ProjectRootError{Code: CodeProjectRootNotFound}
+		testErrorCodeReturnsCode(t, err, CodeProjectRootNotFound)
 	})
 
 	t.Run("Help returns guidance", func(t *testing.T) {
@@ -376,12 +380,8 @@ func TestSQLCConfigErrorAccessors(t *testing.T) {
 	t.Run("ErrorCode returns code", func(t *testing.T) {
 		t.Parallel()
 
-		err := &SQLCConfigError{ //nolint:exhaustruct // testing specific field, others irrelevant
-			Code: CodeSQLCConfigParse,
-		}
-		if err.ErrorCode() != CodeSQLCConfigParse {
-			t.Errorf("ErrorCode() = %q, want %q", err.ErrorCode(), CodeSQLCConfigParse)
-		}
+		err := &SQLCConfigError{Code: CodeSQLCConfigParse}
+		testErrorCodeReturnsCode(t, err, CodeSQLCConfigParse)
 	})
 
 	t.Run("Help returns guidance", func(t *testing.T) {
