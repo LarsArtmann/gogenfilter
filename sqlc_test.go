@@ -3,7 +3,6 @@ package gogenfilter
 import (
 	"errors"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -304,9 +303,7 @@ func TestParseSQLCConfig_NonExistent_ErrorCode(t *testing.T) {
 		t.Error("Help() should return non-empty guidance")
 	}
 
-	if !strings.HasPrefix(err.Error(), "[gogenfilter:") {
-		t.Errorf("Error() missing branded prefix: %q", err.Error())
-	}
+	assertErrorHasBrandedPrefix(t, err)
 }
 
 func TestParseSQLCConfig_InvalidYAML_ErrorCode(t *testing.T) {
@@ -339,9 +336,7 @@ func TestFindSQLCConfigs_NonExistentPath_ErrorCode(t *testing.T) {
 		t.Fatal("FindSQLCConfigs() expected error for non-existent path")
 	}
 
-	if !strings.HasPrefix(err.Error(), "[gogenfilter:") {
-		t.Errorf("Error() missing branded prefix: %q", err.Error())
-	}
+	assertErrorHasBrandedPrefix(t, err)
 
 	assertErrorsIs(t, err, ErrSQLCConfigFind)
 
