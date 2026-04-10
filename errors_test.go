@@ -288,7 +288,8 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 			Code:       CodeSQLCConfigRead,
 			ConfigPath: "/path/to/sqlc.yaml",
 			Operation:  "read",
-			Cause:      fmt.Errorf("permission denied: %w", os.ErrPermission),
+			Message:    "reading sqlc config",
+			Cause:      os.ErrPermission,
 		}
 
 		msg := err.Error()
@@ -304,6 +305,10 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 		if !strings.Contains(msg, "/path/to/sqlc.yaml") {
 			t.Errorf("Error() missing config path: %q", msg)
 		}
+
+		if !strings.Contains(msg, "reading sqlc config") {
+			t.Errorf("Error() missing message: %q", msg)
+		}
 	})
 
 	t.Run("branded error message without config path", func(t *testing.T) {
@@ -313,7 +318,8 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 			Code:       CodeSQLCConfigFind,
 			ConfigPath: "",
 			Operation:  "find",
-			Cause:      fmt.Errorf("not found: %w", os.ErrNotExist),
+			Message:    "finding sqlc configs",
+			Cause:      os.ErrNotExist,
 		}
 
 		msg := err.Error()
@@ -325,18 +331,22 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 		if !strings.Contains(msg, "sqlc_config_find") {
 			t.Errorf("Error() missing error code: %q", msg)
 		}
+
+		if !strings.Contains(msg, "finding sqlc configs") {
+			t.Errorf("Error() missing message: %q", msg)
+		}
 	})
 }
 
 func TestSQLCConfigErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
-	innerErr := fmt.Errorf("inner: %w", os.ErrPermission)
 	err := &SQLCConfigError{
 		Code:       CodeSQLCConfigRead,
 		ConfigPath: "",
 		Operation:  "read",
-		Cause:      innerErr,
+		Message:    "reading sqlc config",
+		Cause:      os.ErrPermission,
 	}
 
 	if !errors.Is(err, os.ErrPermission) {
@@ -382,6 +392,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 			Code:       CodeSQLCConfigRead,
 			ConfigPath: "/config/sqlc.yaml",
 			Operation:  "read",
+			Message:    "reading sqlc config",
 			Cause:      os.ErrPermission,
 		}
 
@@ -392,6 +403,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 
 		assertEqual(t, "ConfigPath", sqlcErr.ConfigPath, "/config/sqlc.yaml")
 		assertEqual(t, "Operation", sqlcErr.Operation, "read")
+		assertEqual(t, "Message", sqlcErr.Message, "reading sqlc config")
 		assertEqual(t, "Code", sqlcErr.Code, CodeSQLCConfigRead)
 	})
 
@@ -402,6 +414,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 			Code:       CodeSQLCConfigParse,
 			ConfigPath: "",
 			Operation:  "parse",
+			Message:    "parsing sqlc config",
 			Cause:      os.ErrInvalid,
 		}
 
@@ -424,6 +437,7 @@ func TestSQLCConfigErrorSentinelMatching(t *testing.T) {
 			Code:       CodeSQLCConfigWalk,
 			ConfigPath: "",
 			Operation:  "walk",
+			Message:    "walking directory",
 			Cause:      os.ErrNotExist,
 		}
 
