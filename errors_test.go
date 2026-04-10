@@ -36,6 +36,7 @@ func assertBrandedPrefix(t *testing.T, msg string) {
 	}
 }
 
+//nolint:ireturn // Generic helper function that extracts typed errors from error chain
 func assertErrorsAs[T any](t *testing.T, err error) T {
 	t.Helper()
 
@@ -76,11 +77,11 @@ func testCrossTypeMismatch(
 
 	switch errType {
 	case "ProjectRoot":
-		err = &ProjectRootError{
+		err = &ProjectRootError{ //nolint:exhaustruct // testing Is() across types, Code is the only field that matters
 			Code: code,
 		}
 	case "SQLCConfig":
-		err = &SQLCConfigError{
+		err = &SQLCConfigError{ //nolint:exhaustruct // testing Is() across types, Code is the only field that matters
 			Code: code,
 		}
 	default:
@@ -215,7 +216,7 @@ func TestProjectRootErrorUnwrap(t *testing.T) {
 			Cause:     innerErr,
 		}
 
-		testErrorUnwrapsTo(t, err, os.ErrInvalid)
+		assertErrorsIs(t, err, os.ErrInvalid)
 	})
 
 	t.Run("returns nil for nil cause", func(t *testing.T) {
@@ -235,7 +236,9 @@ func TestProjectRootErrorAccessors(t *testing.T) {
 	t.Run("ErrorCode returns code", func(t *testing.T) {
 		t.Parallel()
 
-		err := &ProjectRootError{Code: CodeProjectRootNotFound}
+		err := &ProjectRootError{ //nolint:exhaustruct // testing specific field for accessor, others irrelevant
+			Code: CodeProjectRootNotFound,
+		}
 		testErrorCodeReturnsCode(t, err, CodeProjectRootNotFound)
 	})
 
@@ -378,7 +381,7 @@ func TestSQLCConfigErrorUnwrap(t *testing.T) {
 		os.ErrPermission,
 	)
 
-	testErrorUnwrapsTo(t, err, os.ErrPermission)
+	assertErrorsIs(t, err, os.ErrPermission)
 }
 
 func TestSQLCConfigErrorAccessors(t *testing.T) {
@@ -387,7 +390,9 @@ func TestSQLCConfigErrorAccessors(t *testing.T) {
 	t.Run("ErrorCode returns code", func(t *testing.T) {
 		t.Parallel()
 
-		err := &SQLCConfigError{Code: CodeSQLCConfigParse}
+		err := &SQLCConfigError{ //nolint:exhaustruct // testing specific field for accessor, others irrelevant
+			Code: CodeSQLCConfigParse,
+		}
 		testErrorCodeReturnsCode(t, err, CodeSQLCConfigParse)
 	})
 
