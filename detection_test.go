@@ -64,14 +64,14 @@ func TestNeedsContentCheck(t *testing.T) {
 func TestDetectGenerated(t *testing.T) {
 	t.Parallel()
 
-	for _, tc := range detectGeneratedTestCases() {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, testCase := range detectGeneratedTestCases() {
+		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			reason := getFilenameBasedReason(tc.filename, tc.options)
+			reason := getFilenameBasedReason(testCase.filename, testCase.options)
 
-			if reason != tc.expected {
-				t.Errorf("Expected %v, got %v", tc.expected, reason)
+			if reason != testCase.expected {
+				t.Errorf("Expected %v, got %v", testCase.expected, reason)
 			}
 		})
 	}
