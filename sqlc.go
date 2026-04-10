@@ -199,6 +199,10 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 		)
 	}
 
+	return unmarshalSQLCConfig(data, configPath)
+}
+
+func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var config sqlcConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, newSQLCConfigError(
@@ -209,7 +213,6 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 			err,
 		)
 	}
-
 	return &config, nil
 }
 
@@ -296,18 +299,7 @@ func parseSQLCConfigFS(fsys fs.FS, configPath string) (*sqlcConfig, *SQLCConfigE
 		)
 	}
 
-	var config sqlcConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, newSQLCConfigError(
-			CodeSQLCConfigParse,
-			configPath,
-			"parse",
-			"parsing sqlc config",
-			err,
-		)
-	}
-
-	return &config, nil
+	return unmarshalSQLCConfig(data, configPath)
 }
 
 // GetSQLOutputDirsFS returns output directories from sqlc configs using the provided filesystem.
