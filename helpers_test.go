@@ -309,6 +309,14 @@ func newMapFile(content string) *fstest.MapFile {
 	}
 }
 
+func createFSWithFile(t *testing.T, filename, content string) fstest.MapFS {
+	t.Helper()
+
+	return fstest.MapFS{
+		filename: newMapFile(content),
+	}
+}
+
 const validSQLCConfig = "version: \"2\"\n" +
 	"sql:\n" +
 	"  - engine: \"postgresql\"\n" +

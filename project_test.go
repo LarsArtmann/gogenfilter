@@ -2,7 +2,6 @@ package gogenfilter
 
 import (
 	"errors"
-	"fmt"
 	"path/filepath"
 	"testing"
 )
@@ -77,42 +76,28 @@ func TestFindProjectRootDepthExhausted(t *testing.T) {
 	}
 }
 
-func TestProjectRootError(t *testing.T) {
+func TestFindProjectRootErrorCode(t *testing.T) {
 	t.Parallel()
 
-	t.Run("unwraps cause", func(t *testing.T) {
+	t.Run("not found returns correct code and matches sentinel", func(t *testing.T) {
 		t.Parallel()
 
-		err := &ProjectRootError{
-			StartPath: "/some/path",
-			Markers:   []string{"go.mod"},
-			Cause:     fmt.Errorf("inner error: %w", errors.ErrUnsupported),
+		tmpDir := t.TempDir()
+
+		_, err := FindProjectRoot(tmpDir, []string{"nonexistent.marker"})
+		if err == nil {
+			t.Fatal("Expected error when no marker found")
 		}
 
-		if err.Error() == "" {
-			t.Error("Expected non-empty error message")
+		assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
+
+		if !errors.Is(err, ErrProjectRootNotFound) {
+			t.Error("errors.Is should match ErrProjectRootNotFound")
 		}
 
-		if err.Unwrap() == nil {
-			t.Error("Expected non-nil unwrap")
-		}
-	})
-
-	t.Run("nil cause", func(t *testing.T) {
-		t.Parallel()
-
-		err := &ProjectRootError{
-			StartPath: "/some/path",
-			Markers:   []string{"go.mod"},
-			Cause:     nil,
-		}
-
-		if err.Error() == "" {
-			t.Error("Expected non-empty error message")
-		}
-
-		if err.Unwrap() != nil {
-			t.Error("Expected nil unwrap for nil cause")
+		help := err.Help()
+		if help == "" {
+			t.Error("Help() should return non-empty guidance")
 		}
 	})
 }

@@ -18,6 +18,7 @@ func FindProjectRoot(startPath string, markers []string) (string, *ProjectRootEr
 	absPath, err := filepath.Abs(startPath)
 	if err != nil {
 		return "", &ProjectRootError{
+			Code:      CodeProjectRootInvalidPath,
 			StartPath: startPath,
 			Markers:   markers,
 			Cause:     fmt.Errorf("getting absolute path for %q: %w", startPath, err),
@@ -43,6 +44,7 @@ func FindProjectRoot(startPath string, markers []string) (string, *ProjectRootEr
 	}
 
 	return "", &ProjectRootError{
+		Code:      CodeProjectRootNotFound,
 		StartPath: startPath,
 		Markers:   markers,
 		Cause:     nil,
