@@ -35,6 +35,15 @@ func assertBrandedPrefix(t *testing.T, msg string) {
 	}
 }
 
+func assertErrorsAs[T any](t *testing.T, err error) T {
+	t.Helper()
+	var result T
+	if !errors.As(err, &result) {
+		t.Fatalf("errors.As failed to extract %T", result)
+	}
+	return result
+}
+
 func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode ErrorCode) {
 	t.Helper()
 
@@ -258,10 +267,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 			Cause:     innerErr,
 		}
 
-		var projErr *ProjectRootError
-		if !errors.As(realErr, &projErr) {
-			t.Fatal("errors.As failed to extract ProjectRootError")
-		}
+		projErr := assertErrorsAs[*ProjectRootError](t, realErr)
 
 		assertEqual(t, "StartPath", projErr.StartPath, "/deep/path")
 		assertEqual(t, "Code", projErr.Code, CodeProjectRootInvalidPath)
@@ -272,10 +278,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 
 		realErr := testProjectRootErrorNotFound(t)
 
-		var coder ErrorCoder
-		if !errors.As(realErr, &coder) {
-			t.Fatal("errors.As failed to extract ErrorCoder")
-		}
+		coder := assertErrorsAs[ErrorCoder](t, realErr)
 
 		assertEqual(t, "ErrorCode", coder.ErrorCode(), CodeProjectRootNotFound)
 	})
@@ -285,10 +288,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 
 		realErr := testProjectRootErrorNotFound(t)
 
-		var helper Helper
-		if !errors.As(realErr, &helper) {
-			t.Fatal("errors.As failed to extract Helper")
-		}
+		helper := assertErrorsAs[Helper](t, realErr)
 
 		if helper.Help() == "" {
 			t.Error("Help() returned empty string")
@@ -393,10 +393,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 
 		realErr := newSQLCConfigError(CodeSQLCConfigRead, "/config/sqlc.yaml", "read", "reading sqlc config", os.ErrPermission)
 
-		var sqlcErr *SQLCConfigError
-		if !errors.As(realErr, &sqlcErr) {
-			t.Fatal("errors.As failed to extract SQLCConfigError")
-		}
+		sqlcErr := assertErrorsAs[*SQLCConfigError](t, realErr)
 
 		assertEqual(t, "ConfigPath", sqlcErr.ConfigPath, "/config/sqlc.yaml")
 		assertEqual(t, "Operation", sqlcErr.Operation, "read")
@@ -409,10 +406,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 
 		realErr := newSQLCConfigError(CodeSQLCConfigParse, "", "parse", "parsing sqlc config", os.ErrInvalid)
 
-		var coder ErrorCoder
-		if !errors.As(realErr, &coder) {
-			t.Fatal("errors.As failed to extract ErrorCoder")
-		}
+		coder := assertErrorsAs[ErrorCoder](t, realErr)
 
 		assertEqual(t, "ErrorCode", coder.ErrorCode(), CodeSQLCConfigParse)
 	})
