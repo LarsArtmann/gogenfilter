@@ -194,19 +194,25 @@ func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 	}
 }
 
+func testProjectRootErrorWithCause(t *testing.T, code ErrorCode, path string, sentinel error) *ProjectRootError {
+	t.Helper()
+
+	innerErr := fmt.Errorf("inner: %w", sentinel)
+	return &ProjectRootError{
+		Code:      code,
+		StartPath: path,
+		Markers:   []string{"go.mod"},
+		Cause:     innerErr,
+	}
+}
+
 func TestProjectRootErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
 	t.Run("returns cause", func(t *testing.T) {
 		t.Parallel()
 
-		innerErr := fmt.Errorf("inner: %w", os.ErrInvalid)
-		err := &ProjectRootError{
-			Code:      CodeProjectRootInvalidPath,
-			StartPath: "/path",
-			Markers:   []string{"go.mod"},
-			Cause:     innerErr,
-		}
+		err := testProjectRootErrorWithCause(t, CodeProjectRootInvalidPath, "/path", os.ErrInvalid)
 
 		assertErrorsIs(t, err, os.ErrInvalid)
 	})
@@ -258,13 +264,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 	t.Run("extracts domain fields", func(t *testing.T) {
 		t.Parallel()
 
-		innerErr := fmt.Errorf("inner: %w", os.ErrPermission)
-		realErr := &ProjectRootError{
-			Code:      CodeProjectRootInvalidPath,
-			StartPath: "/deep/path",
-			Markers:   []string{"go.mod"},
-			Cause:     innerErr,
-		}
+		realErr := testProjectRootErrorWithCause(t, CodeProjectRootInvalidPath, "/deep/path", os.ErrPermission)
 
 		projErr := assertErrorsAs[*ProjectRootError](t, realErr)
 

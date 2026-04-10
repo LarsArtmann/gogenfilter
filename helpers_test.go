@@ -50,19 +50,19 @@ func assertContains(t *testing.T, got, substr string) {
 	}
 }
 
-func assertLen[T any](t *testing.T, name string, got []T, want int) {
-	t.Helper()
-
-	if len(got) != want {
-		t.Errorf("expected %d %s, got %d", want, name, len(got))
+func assertLen(t *testing.T, name string, got, want int) {
+	if got != want {
+		t.Errorf("expected %d %s, got %d", want, name, got)
 	}
 }
 
-func assertMapLen(t *testing.T, name string, got map[string]string, want int) {
-	t.Helper()
+func assertMapLen[K, V comparable](t *testing.T, name string, got map[K]V, want int) {
+	assertLen(t, name, len(got), want)
+}
 
-	if len(got) != want {
-		t.Errorf("expected %d %s, got %d", want, name, len(got))
+func checkLen(t *testing.T, name string, gotLen int, want int) {
+	if gotLen != want {
+		t.Errorf("expected %d %s, got %d", want, name, gotLen)
 	}
 }
 
@@ -136,7 +136,7 @@ func testPatternSetter(
 
 	patterns := getPatterns(f)
 
-	assertLen(t, "patterns", patterns, expectedLen)
+	assertLen(t, "patterns", len(patterns), expectedLen)
 }
 
 type boolTestCase[T any] struct {
