@@ -149,9 +149,7 @@ func runBoolTableTest[T any](
 
 			got := fn(tt.input)
 
-			if got != tt.expected {
-				t.Errorf("%s() = %v, want %v", fnName, got, tt.expected)
-			}
+			assertEqual(t, fnName+"()", got, tt.expected)
 		})
 	}
 }
@@ -239,9 +237,7 @@ func runGeneratedFileTest(
 
 			got := fn(tt.filePath, tt.content)
 
-			if got != tt.expected {
-				t.Errorf("%s(%q) = %v, want %v", fnName, tt.filePath, got, tt.expected)
-			}
+			assertEqual(t, fmt.Sprintf("%s(%q)", fnName, tt.filePath), got, tt.expected)
 		})
 	}
 }
