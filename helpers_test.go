@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -26,6 +27,22 @@ func assertEqual[T comparable](t *testing.T, name string, got, want T) {
 	t.Helper()
 
 	assertFieldEqual(t, name, got, want, "%v")
+}
+
+func assertContains(t *testing.T, got, substr string) {
+	t.Helper()
+
+	if !strings.Contains(got, substr) {
+		t.Errorf("String() = %q, want to contain %s", got, substr)
+	}
+}
+
+func assertStringContainsAll(t *testing.T, got string, substrs ...string) {
+	t.Helper()
+
+	for _, substr := range substrs {
+		assertContains(t, got, substr)
+	}
 }
 
 func writeFile(t *testing.T, path, content string) {

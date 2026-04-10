@@ -1,7 +1,6 @@
 package gogenfilter
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -79,19 +78,5 @@ func testStringWithData(t *testing.T) {
 	stats := metrics.GetStats()
 	got := stats.String()
 
-	if !strings.Contains(got, "checked=3") {
-		t.Errorf("String() = %q, want to contain checked=3", got)
-	}
-
-	if !strings.Contains(got, "filtered=3") {
-		t.Errorf("String() = %q, want to contain filtered=3", got)
-	}
-
-	if !strings.Contains(got, "sqlc=2") {
-		t.Errorf("String() = %q, want to contain sqlc=2", got)
-	}
-
-	if !strings.Contains(got, "templ=1") {
-		t.Errorf("String() = %q, want to contain templ=1", got)
-	}
+	assertStringContainsAll(t, got, "checked=3", "filtered=3", "sqlc=2", "templ=1")
 }
