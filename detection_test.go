@@ -154,18 +154,15 @@ func TestDetectReasonNoIO(t *testing.T) {
 	})
 }
 
-func detectorPriorityTests() []struct {
+type detectorPriorityTest struct {
 	name     string
 	path     string
 	content  string
 	expected FilterReason
-} {
-	return []struct {
-		name     string
-		path     string
-		content  string
-		expected FilterReason
-	}{
+}
+
+func detectorPriorityTests() []detectorPriorityTest {
+	return []detectorPriorityTest{
 		{
 			name:     "stringer beats generic",
 			path:     "status_string.go",
