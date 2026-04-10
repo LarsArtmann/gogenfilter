@@ -51,12 +51,16 @@ func assertContains(t *testing.T, got, substr string) {
 }
 
 func assertLen(t *testing.T, name string, got, want int) {
+	t.Helper()
+
 	if got != want {
 		t.Errorf("expected %d %s, got %d", want, name, got)
 	}
 }
 
 func assertMapLen[K, V comparable](t *testing.T, name string, got map[K]V, want int) {
+	t.Helper()
+
 	assertLen(t, name, len(got), want)
 }
 
