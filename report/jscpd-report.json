@@ -1,12 +1,12 @@
 {
   "statistics": {
-    "detectionDate": "2026-04-05T05:07:19.360Z",
+    "detectionDate": "2026-04-10T03:47:45.357Z",
     "formats": {
       "markdown": {
         "sources": {
-          "docs/status/2026-04-05_07-00_refactoring-and-clone-elimination.md": {
-            "lines": 139,
-            "tokens": 1990,
+          "docs/status/2026-04-09_15-42_fs-integration-complete.md": {
+            "lines": 150,
+            "tokens": 2381,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -16,9 +16,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-05_02-33_full-comprehensive-status.md": {
-            "lines": 145,
-            "tokens": 3072,
+          "docs/status/2026-04-09_09-25_comprehensive-project-status.md": {
+            "lines": 272,
+            "tokens": 3629,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -28,9 +28,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-05_02-33_full-comprehensive-project-status.md": {
-            "lines": 206,
-            "tokens": 4119,
+          "docs/status/2026-04-09_06-07_session-status.md": {
+            "lines": 163,
+            "tokens": 2783,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -40,9 +40,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-05_01-10_deduplication-and-project-health.md": {
-            "lines": 184,
-            "tokens": 2576,
+          "docs/status/2026-04-08_23-06_comprehensive-project-status.md": {
+            "lines": 226,
+            "tokens": 3831,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -52,9 +52,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-05_01-10_comprehensive-project-status.md": {
-            "lines": 292,
-            "tokens": 3660,
+          "docs/status/2026-04-08_20-37_comprehensive-project-status.md": {
+            "lines": 255,
+            "tokens": 3357,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -64,9 +64,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-04_20-05_error-types-and-violation-fixes.md": {
-            "lines": 149,
-            "tokens": 1797,
+          "docs/planning/2026-04-08_21-26_policy-compliance-sprint.md": {
+            "lines": 459,
+            "tokens": 4342,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -76,33 +76,9 @@
             "newDuplicatedLines": 0,
             "newClones": 0
           },
-          "docs/status/2026-04-04_20-05_error-context-and-detection-overhaul.md": {
-            "lines": 167,
-            "tokens": 2265,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "docs/status/2026-04-02_19-24_post-fix-comprehensive-status.md": {
-            "lines": 253,
-            "tokens": 2942,
-            "sources": 1,
-            "clones": 0,
-            "duplicatedLines": 0,
-            "duplicatedTokens": 0,
-            "percentage": 0,
-            "percentageTokens": 0,
-            "newDuplicatedLines": 0,
-            "newClones": 0
-          },
-          "docs/status/2026-04-02_17-45_structure-linter-fixes.md": {
-            "lines": 229,
-            "tokens": 2171,
+          "TODO_LIST.md": {
+            "lines": 36,
+            "tokens": 741,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -113,8 +89,8 @@
             "newClones": 0
           },
           "README.md": {
-            "lines": 166,
-            "tokens": 1086,
+            "lines": 163,
+            "tokens": 1073,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -125,8 +101,8 @@
             "newClones": 0
           },
           "CHANGELOG.md": {
-            "lines": 24,
-            "tokens": 70,
+            "lines": 36,
+            "tokens": 542,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -150,9 +126,9 @@
           }
         },
         "total": {
-          "lines": 2002,
-          "tokens": 26042,
-          "sources": 12,
+          "lines": 1808,
+          "tokens": 22973,
+          "sources": 10,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -164,9 +140,21 @@
       },
       "json": {
         "sources": {
+          "report/jscpd-report.json": {
+            "lines": 359,
+            "tokens": 2318,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           ".auto-deduplicate/false-positives.json": {
-            "lines": 8,
-            "tokens": 44,
+            "lines": 20,
+            "tokens": 99,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -178,9 +166,9 @@
           }
         },
         "total": {
-          "lines": 8,
-          "tokens": 44,
-          "sources": 1,
+          "lines": 379,
+          "tokens": 2417,
+          "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -192,9 +180,33 @@
       },
       "go": {
         "sources": {
+          "types_test.go": {
+            "lines": 143,
+            "tokens": 1037,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "types.go": {
-            "lines": 81,
-            "tokens": 383,
+            "lines": 125,
+            "tokens": 671,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "testdata_test.go": {
+            "lines": 296,
+            "tokens": 1584,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -205,8 +217,8 @@
             "newClones": 0
           },
           "sqlc_test.go": {
-            "lines": 366,
-            "tokens": 2905,
+            "lines": 412,
+            "tokens": 3048,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -217,8 +229,32 @@
             "newClones": 0
           },
           "sqlc.go": {
-            "lines": 187,
-            "tokens": 1373,
+            "lines": 318,
+            "tokens": 2195,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 48,
+            "duplicatedTokens": 256,
+            "percentage": 15.09,
+            "percentageTokens": 11.66,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "property_test.go": {
+            "lines": 96,
+            "tokens": 749,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "project_test.go": {
+            "lines": 102,
+            "tokens": 763,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -229,8 +265,20 @@
             "newClones": 0
           },
           "project.go": {
-            "lines": 52,
-            "tokens": 342,
+            "lines": 51,
+            "tokens": 337,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "pattern_test.go": {
+            "lines": 105,
+            "tokens": 784,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -242,7 +290,19 @@
           },
           "pattern.go": {
             "lines": 78,
-            "tokens": 542,
+            "tokens": 519,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "metrics_test.go": {
+            "lines": 96,
+            "tokens": 740,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -253,8 +313,44 @@
             "newClones": 0
           },
           "metrics.go": {
-            "lines": 100,
-            "tokens": 580,
+            "lines": 130,
+            "tokens": 840,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "helpers_test.go": {
+            "lines": 335,
+            "tokens": 2419,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "fuzz_test.go": {
+            "lines": 75,
+            "tokens": 604,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "filter_test.go": {
+            "lines": 538,
+            "tokens": 4056,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -265,8 +361,32 @@
             "newClones": 0
           },
           "filter.go": {
-            "lines": 140,
-            "tokens": 998,
+            "lines": 188,
+            "tokens": 1386,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "example_test.go": {
+            "lines": 94,
+            "tokens": 588,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "errors_test.go": {
+            "lines": 540,
+            "tokens": 3926,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -277,8 +397,20 @@
             "newClones": 0
           },
           "errors.go": {
-            "lines": 40,
-            "tokens": 278,
+            "lines": 179,
+            "tokens": 1150,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "detection_test.go": {
+            "lines": 348,
+            "tokens": 2621,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -289,8 +421,20 @@
             "newClones": 0
           },
           "detection.go": {
-            "lines": 272,
-            "tokens": 1734,
+            "lines": 247,
+            "tokens": 1638,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "bench_test.go": {
+            "lines": 117,
+            "tokens": 865,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -302,14 +446,14 @@
           }
         },
         "total": {
-          "lines": 1316,
-          "tokens": 9135,
-          "sources": 9,
-          "clones": 0,
-          "duplicatedLines": 0,
-          "duplicatedTokens": 0,
-          "percentage": 0,
-          "percentageTokens": 0,
+          "lines": 4613,
+          "tokens": 32520,
+          "sources": 22,
+          "clones": 1,
+          "duplicatedLines": 24,
+          "duplicatedTokens": 128,
+          "percentage": 0.52,
+          "percentageTokens": 0.39,
           "newDuplicatedLines": 0,
           "newClones": 0
         }
@@ -344,17 +488,54 @@
       }
     },
     "total": {
-      "lines": 3454,
-      "tokens": 35861,
-      "sources": 23,
-      "clones": 0,
-      "duplicatedLines": 0,
-      "duplicatedTokens": 0,
-      "percentage": 0,
-      "percentageTokens": 0,
+      "lines": 6928,
+      "tokens": 58550,
+      "sources": 35,
+      "clones": 1,
+      "duplicatedLines": 24,
+      "duplicatedTokens": 128,
+      "percentage": 0.35,
+      "percentageTokens": 0.22,
       "newDuplicatedLines": 0,
       "newClones": 0
     }
   },
-  "duplicates": []
+  "duplicates": [
+    {
+      "format": "go",
+      "lines": 25,
+      "fragment": "if err != nil {\n\t\treturn nil, newSQLCConfigError(\n\t\t\tCodeSQLCConfigRead,\n\t\t\tconfigPath,\n\t\t\t\"read\",\n\t\t\t\"reading sqlc config\",\n\t\t\terr,\n\t\t)\n\t}\n\n\tvar config sqlcConfig\n\tif err := yaml.Unmarshal(data, &config); err != nil {\n\t\treturn nil, newSQLCConfigError(\n\t\t\tCodeSQLCConfigParse,\n\t\t\tconfigPath,\n\t\t\t\"parse\",\n\t\t\t\"parsing sqlc config\",\n\t\t\terr,\n\t\t)\n\t}\n\n\treturn &config, nil\n}\n\n// GetSQLOutputDirsFS returns output directories from sqlc configs using the provided filesystem.",
+      "tokens": 0,
+      "firstFile": {
+        "name": "sqlc.go",
+        "start": 264,
+        "end": 288,
+        "startLoc": {
+          "line": 264,
+          "column": 2,
+          "position": 1836
+        },
+        "endLoc": {
+          "line": 288,
+          "column": 98,
+          "position": 1964
+        }
+      },
+      "secondFile": {
+        "name": "sqlc.go",
+        "start": 162,
+        "end": 186,
+        "startLoc": {
+          "line": 162,
+          "column": 2,
+          "position": 1079
+        },
+        "endLoc": {
+          "line": 186,
+          "column": 83,
+          "position": 1207
+        }
+      }
+    }
+  ]
 }
