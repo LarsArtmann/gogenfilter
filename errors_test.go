@@ -194,7 +194,12 @@ func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 	}
 }
 
-func testProjectRootErrorWithCause(t *testing.T, code ErrorCode, path string, sentinel error) *ProjectRootError {
+func testProjectRootErrorWithCause(
+	t *testing.T,
+	code ErrorCode,
+	path string,
+	sentinel error,
+) *ProjectRootError {
 	t.Helper()
 
 	innerErr := fmt.Errorf("inner: %w", sentinel)
@@ -264,7 +269,12 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 	t.Run("extracts domain fields", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := testProjectRootErrorWithCause(t, CodeProjectRootInvalidPath, "/deep/path", os.ErrPermission)
+		realErr := testProjectRootErrorWithCause(
+			t,
+			CodeProjectRootInvalidPath,
+			"/deep/path",
+			os.ErrPermission,
+		)
 
 		projErr := assertErrorsAs[*ProjectRootError](t, realErr)
 
