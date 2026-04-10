@@ -43,6 +43,14 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 	}
 }
 
+func testErrorUnwrapsTo(t *testing.T, err error, sentinel error) {
+	t.Helper()
+
+	if !errors.Is(err, sentinel) {
+		t.Errorf("errors.Is failed to unwrap to %v", sentinel)
+	}
+}
+
 func testCrossTypeMismatch(
 	t *testing.T,
 	errType string,
@@ -194,9 +202,7 @@ func TestProjectRootErrorUnwrap(t *testing.T) {
 			Cause:     innerErr,
 		}
 
-		if !errors.Is(err, os.ErrInvalid) {
-			t.Error("errors.Is failed to unwrap to os.ErrInvalid")
-		}
+		testErrorUnwrapsTo(t, err, os.ErrInvalid)
 	})
 
 	t.Run("returns nil for nil cause", func(t *testing.T) {
@@ -352,9 +358,7 @@ func TestSQLCConfigErrorUnwrap(t *testing.T) {
 
 	err := newSQLCConfigError(CodeSQLCConfigRead, "", "read", "reading sqlc config", os.ErrPermission)
 
-	if !errors.Is(err, os.ErrPermission) {
-		t.Error("errors.Is failed to unwrap to os.ErrPermission")
-	}
+	testErrorUnwrapsTo(t, err, os.ErrPermission)
 }
 
 func TestSQLCConfigErrorAccessors(t *testing.T) {
