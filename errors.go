@@ -9,6 +9,8 @@ import (
 // Codes use snake_case naming and can be used for programmatic error handling.
 type ErrorCode string
 
+func (c ErrorCode) String() string { return string(c) }
+
 // Error codes identify specific error conditions for programmatic handling.
 const (
 	CodeProjectRootNotFound    ErrorCode = "project_root_not_found"    // project root not found from start path
