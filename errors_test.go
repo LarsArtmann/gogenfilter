@@ -188,7 +188,7 @@ func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 
 	return &ProjectRootError{
 		Code:      CodeProjectRootNotFound,
-		StartPath: "/path",
+		StartPath: StartPath("/path"),
 		Markers:   []string{"go.mod"},
 		Cause:     nil,
 	}
@@ -206,7 +206,7 @@ func testProjectRootErrorWithCause(
 
 	return &ProjectRootError{
 		Code:      code,
-		StartPath: path,
+		StartPath: StartPath(path),
 		Markers:   []string{"go.mod"},
 		Cause:     innerErr,
 	}
@@ -339,9 +339,9 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		err := newSQLCConfigError(
 			CodeSQLCConfigRead,
-			"/path/to/sqlc.yaml",
-			"read",
-			"reading sqlc config",
+			ConfigPath("/path/to/sqlc.yaml"),
+			Operation("read"),
+			ErrorMessage("reading sqlc config"),
 			os.ErrPermission,
 		)
 
@@ -361,9 +361,9 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		err := newSQLCConfigError(
 			CodeSQLCConfigFind,
-			"",
-			"find",
-			"finding sqlc configs",
+			ConfigPath(""),
+			Operation("find"),
+			ErrorMessage("finding sqlc configs"),
 			os.ErrNotExist,
 		)
 
@@ -378,9 +378,9 @@ func TestSQLCConfigErrorUnwrap(t *testing.T) {
 
 	err := newSQLCConfigError(
 		CodeSQLCConfigRead,
-		"",
-		"read",
-		"reading sqlc config",
+		ConfigPath(""),
+		Operation("read"),
+		ErrorMessage("reading sqlc config"),
 		os.ErrPermission,
 	)
 

@@ -38,7 +38,9 @@ type sqlcGoConfig struct {
 // newSQLCConfigError creates a new SQLCConfigError with consistent formatting.
 func newSQLCConfigError(
 	code ErrorCode,
-	configPath, operation, message string,
+	configPath ConfigPath,
+	operation Operation,
+	message ErrorMessage,
 	err error,
 ) *SQLCConfigError {
 	return &SQLCConfigError{
@@ -50,12 +52,12 @@ func newSQLCConfigError(
 	}
 }
 
-func sqlcConfigError(code ErrorCode, operation, message, path string, err error) *SQLCConfigError {
+func sqlcConfigError(code ErrorCode, operation string, message string, path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		code,
-		path,
-		operation,
-		message,
+		ConfigPath(path),
+		Operation(operation),
+		ErrorMessage(message),
 		err,
 	)
 }
@@ -169,7 +171,7 @@ func recordSQLCConfig(filePath string, configs map[string]string) {
 
 // findSQLCConfigsInParent searches parent directories for sqlc config.
 func findSQLCConfigsInParent(path string, configs map[string]string) {
-	parentPath, err := FindProjectRoot(path, []string{"sqlc.yaml", "sqlc.yml"})
+	parentPath, err := FindProjectRoot(StartPath(path), []string{"sqlc.yaml", "sqlc.yml"})
 	if err != nil || parentPath == "" {
 		return
 	}
@@ -192,9 +194,9 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	if err != nil {
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigRead,
-			configPath,
-			"read",
-			"reading sqlc config",
+			ConfigPath(configPath),
+			Operation("read"),
+			ErrorMessage("reading sqlc config"),
 			err,
 		)
 	}
@@ -216,9 +218,9 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 	if err != nil {
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigParse,
-			configPath,
-			"parse",
-			"parsing sqlc config",
+			ConfigPath(configPath),
+			Operation("parse"),
+			ErrorMessage("parsing sqlc config"),
 			err,
 		)
 	}
@@ -258,9 +260,9 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 		if err != nil {
 			return nil, newSQLCConfigError(
 				CodeSQLCConfigCollect,
-				configPath,
-				"collect-output-dirs",
-				"processing sqlc config",
+				ConfigPath(configPath),
+				Operation("collect-output-dirs"),
+				ErrorMessage("processing sqlc config"),
 				err,
 			)
 		}
@@ -300,9 +302,9 @@ func parseSQLCConfigFS(fsys fs.FS, configPath string) (*sqlcConfig, *SQLCConfigE
 	if err != nil {
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigRead,
-			configPath,
-			"read",
-			"reading sqlc config",
+			ConfigPath(configPath),
+			Operation("read"),
+			ErrorMessage("reading sqlc config"),
 			err,
 		)
 	}
@@ -328,9 +330,9 @@ func GetSQLOutputDirsFS(fsys fs.FS, paths []string) ([]string, *SQLCConfigError)
 		if cfgErr != nil {
 			return nil, newSQLCConfigError(
 				CodeSQLCConfigCollect,
-				configPath,
-				"collect-output-dirs",
-				"processing sqlc config",
+				ConfigPath(configPath),
+				Operation("collect-output-dirs"),
+				ErrorMessage("processing sqlc config"),
 				cfgErr,
 			)
 		}
