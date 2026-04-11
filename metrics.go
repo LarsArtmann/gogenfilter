@@ -10,7 +10,7 @@ import (
 
 // MetricsMixin provides common fields for filter metrics.
 type MetricsMixin struct {
-	TotalFilesChecked int
+	TotalFilesChecked TotalFilesChecked
 	filteredByReason  map[FilterReason]int
 }
 
@@ -127,5 +127,5 @@ func (fs FilterStats) String() string {
 	}
 
 	return fmt.Sprintf("FilterStats(checked=%d, filtered=%d, {%s})",
-		fs.TotalFilesChecked, fs.TotalFiltered(), strings.Join(parts, ", "))
+		int(fs.TotalFilesChecked), fs.TotalFiltered(), strings.Join(parts, ", "))
 }

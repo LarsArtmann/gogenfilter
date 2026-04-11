@@ -80,23 +80,24 @@ var (
 // ProjectRootError is returned when the project root cannot be found.
 type ProjectRootError struct {
 	Code      ErrorCode
-	StartPath string
+	StartPath StartPath
 	Markers   []string
 	Cause     error
 }
 
 func (e *ProjectRootError) Error() string {
+	startPathStr := string(e.StartPath)
 	if e.Cause != nil {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] project root not found from %q: %v",
 			e.Code,
-			e.StartPath,
+			startPathStr,
 			e.Cause,
 		)
 	}
 
 	return fmt.Sprintf("[gogenfilter:%s] project root not found from %q (searched for: %s)",
-		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
+		e.Code, startPathStr, strings.Join(e.Markers, ", "))
 }
 
 // Causable defines the interface for errors that wrap an underlying cause.
@@ -130,21 +131,25 @@ func (e *ProjectRootError) Help() string { return CodeHelp(e.Code) }
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
 	Code       ErrorCode
-	ConfigPath string
-	Operation  string
-	Message    string
+	ConfigPath ConfigPath
+	Operation  Operation
+	Message    ErrorMessage
 	Cause      error
 }
 
 func (e *SQLCConfigError) Error() string {
-	if e.ConfigPath != "" {
+	configPathStr := string(e.ConfigPath)
+	operationStr := string(e.Operation)
+	messageStr := string(e.Message)
+
+	if configPathStr != "" {
 		if e.Cause != nil {
 			return fmt.Sprintf(
 				"[gogenfilter:%s] sqlc config %s %q: %s: %v",
 				e.Code,
-				e.Operation,
-				e.ConfigPath,
-				e.Message,
+				operationStr,
+				configPathStr,
+				messageStr,
 				e.Cause,
 			)
 		}
@@ -152,9 +157,9 @@ func (e *SQLCConfigError) Error() string {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] sqlc config %s %q: %s",
 			e.Code,
-			e.Operation,
-			e.ConfigPath,
-			e.Message,
+			operationStr,
+			configPathStr,
+			messageStr,
 		)
 	}
 
@@ -162,13 +167,13 @@ func (e *SQLCConfigError) Error() string {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] sqlc config %s: %s: %v",
 			e.Code,
-			e.Operation,
-			e.Message,
+			operationStr,
+			messageStr,
 			e.Cause,
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, e.Operation, e.Message)
+	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, operationStr, messageStr)
 }
 
 func (e *SQLCConfigError) Unwrap() error { return e.Cause }

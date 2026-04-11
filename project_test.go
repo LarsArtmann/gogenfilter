@@ -15,7 +15,7 @@ func TestFindProjectRoot(t *testing.T) {
 
 		writeFile(t, filepath.Join(tmpDir, "go.mod"), "module test\n")
 
-		root, err := FindProjectRoot(tmpDir, []string{"go.mod"})
+		root, err := FindProjectRoot(StartPath(tmpDir), []string{"go.mod"})
 		if err != nil {
 			t.Fatalf("FindProjectRoot() error: %v", err)
 		}
@@ -35,7 +35,7 @@ func TestFindProjectRoot(t *testing.T) {
 
 		writeFile(t, filepath.Join(tmpDir, "go.mod"), "module test\n")
 
-		root, err := FindProjectRoot(childDir, []string{"go.mod"})
+		root, err := FindProjectRoot(StartPath(childDir), []string{"go.mod"})
 		if err != nil {
 			t.Fatalf("FindProjectRoot() error: %v", err)
 		}
@@ -50,7 +50,7 @@ func TestFindProjectRoot(t *testing.T) {
 
 		tmpDir := t.TempDir()
 
-		_, err := FindProjectRoot(tmpDir, []string{"nonexistent.marker"})
+		_, err := FindProjectRoot(StartPath(tmpDir), []string{"nonexistent.marker"})
 		if err == nil {
 			t.Error("Expected error when no marker found")
 		}
@@ -69,7 +69,7 @@ func TestFindProjectRootDepthExhausted(t *testing.T) {
 
 	mkdirAll(t, deepDir)
 
-	_, err := FindProjectRoot(deepDir, []string{"go.mod"})
+	_, err := FindProjectRoot(StartPath(deepDir), []string{"go.mod"})
 	if err == nil {
 		t.Error("Expected error when depth exhausted")
 	}
@@ -83,7 +83,7 @@ func TestFindProjectRootErrorCode(t *testing.T) {
 
 		tmpDir := t.TempDir()
 
-		_, err := FindProjectRoot(tmpDir, []string{"nonexistent.marker"})
+		_, err := FindProjectRoot(StartPath(tmpDir), []string{"nonexistent.marker"})
 		if err == nil {
 			t.Fatal("Expected error when no marker found")
 		}
