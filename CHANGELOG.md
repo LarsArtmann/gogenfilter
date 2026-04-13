@@ -8,6 +8,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Error system** — centralized, branded, user-friendly error architecture:
+  - `ErrorCode` string type with `String()` via generic `stringFrom[T ~string]` helper
+  - 7 error code constants: `CodeProjectRootNotFound`, `CodeProjectRootInvalidPath`, `CodeSQLCConfigRead`, `CodeSQLCConfigParse`, `CodeSQLCConfigWalk`, `CodeSQLCConfigCollect`, `CodeSQLCConfigFind`
+  - `AllErrorCodes()` function returning all defined error codes
+  - `CodeHelp(code)` function returning user-friendly guidance for each error code
+  - Branded `[gogenfilter:<code>]` prefix in every `Error()` message for library identification
+  - 7 sentinel errors for use with `errors.Is`: `ErrProjectRootNotFound`, `ErrProjectRootInvalidPath`, `ErrSQLCConfigRead`, `ErrSQLCConfigParse`, `ErrSQLCConfigWalk`, `ErrSQLCConfigCollect`, `ErrSQLCConfigFind`
+  - `ErrorCoder` interface for programmatic error code access
+  - `Helper` interface for user-friendly guidance
+  - `Causable` interface for errors that wrap an underlying cause
+  - `CodeEqual[T]` generic function consolidating `Is()` comparison logic
+  - `ProjectRootError` struct with `Code`, `StartPath`, `Markers`, `Cause` fields
+  - `SQLCConfigError` struct with `Code`, `ConfigPath`, `Operation`, `Message`, `Cause` fields
+  - Both error types implement `Error()`, `Unwrap()`, `Is()`, `ErrorCode()`, `Help()`
+- **Phantom types** — type-safe wrappers at API boundaries:
+  - `StartPath` for project root search starting point
+  - `ConfigPath` for sqlc config file paths
+  - `Operation` for error operation descriptions
+  - `ErrorMessage` for error message text
+  - `TotalFilesChecked` for metrics counter
+- `stringFrom[T ~string]` — generic helper consolidating `String()` methods for all string-based types
+- `Validatable` interface for types with `IsValid()`
+- `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types
+- `sqlcConfigError(...)` bridge function converting raw strings to phantom types for internal callers
+- `sqlcFindError` and `sqlcWalkError` helper constructors
+- `unmarshalSQLCConfig` extracted from `parseSQLCConfig`/`parseSQLCConfigFS` for shared YAML parsing
+- `walkDirForSQLCConfigs` extracted walk callback shared between OS and FS variants
+- `warnMultipleSQLCConfigs` extracted from `GetSQLOutputDirs` and `GetSQLOutputDirsFS`
+- `isGeneratedBy` and `matchAnyContentPattern` extracted from detection logic
+- Comprehensive `errors_test.go` with generic test helpers (`assertErrorsAs[T]`, `assertBrandedErrorMessage`, `testErrorCodeReturnsCode`, `assertErrorsIs`, `testCrossTypeMismatch`)
+- `sqlc_test.go` error code verification tests
+- `TestFindProjectRootErrorCode` in `project_test.go`
 - `FilterOption.Reason()` — derives the corresponding `FilterReason` from any `FilterOption` via type conversion
 - `FilterOption.IsValid()` — reports whether a `FilterOption` is a recognized value
 - `Filter.IsEnabled()` — reports whether the filter is enabled without accessing internal fields
