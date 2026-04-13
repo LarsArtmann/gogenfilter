@@ -57,7 +57,7 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 }
 
 func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
-	innerErr = newSQLCConfigError(
+	innerErr := newSQLCConfigError(
 		CodeSQLCConfigParse,
 		ConfigPath("sqlc.yaml"),
 		Operation("parse"),
@@ -65,7 +65,7 @@ func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
 		os.ErrInvalid,
 	)
 
-	collectErr = newSQLCConfigError(
+	collectErr := newSQLCConfigError(
 		CodeSQLCConfigCollect,
 		ConfigPath(""),
 		Operation("collect"),
@@ -73,7 +73,7 @@ func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
 		innerErr,
 	)
 
-	return
+	return innerErr, collectErr
 }
 
 func testCrossTypeMismatch(
