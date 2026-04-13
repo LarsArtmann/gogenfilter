@@ -52,7 +52,13 @@ func newSQLCConfigError(
 	}
 }
 
-func sqlcConfigError(code ErrorCode, operation string, message string, path string, err error) *SQLCConfigError {
+func sqlcConfigError(
+	code ErrorCode,
+	operation string,
+	message string,
+	path string,
+	err error,
+) *SQLCConfigError {
 	return newSQLCConfigError(
 		code,
 		ConfigPath(path),
