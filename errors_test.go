@@ -76,16 +76,6 @@ func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
 	return innerErr, collectErr
 }
 
-func newSQLCConfigErrorForTest(
-	code ErrorCode,
-	configPath ConfigPath,
-	operation string,
-	msg string,
-	cause error,
-) *SQLCConfigError {
-	return newSQLCConfigError(code, configPath, Operation(operation), ErrorMessage(msg), cause)
-}
-
 func newSQLCConfigErrorParse(configPath ConfigPath, msg string) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigParse,
