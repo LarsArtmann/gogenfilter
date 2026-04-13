@@ -420,13 +420,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 func TestSQLCConfigErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
-	err := newSQLCConfigError(
-		CodeSQLCConfigRead,
-		ConfigPath(""),
-		Operation("read"),
-		ErrorMessage("reading sqlc config"),
-		os.ErrPermission,
-	)
+	err := newSQLCConfigErrorRead(ConfigPath(""), "reading sqlc config")
 
 	assertErrorsIs(t, err, os.ErrPermission)
 }
