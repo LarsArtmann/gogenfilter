@@ -46,6 +46,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `FilterStats.FilteredBy(reason)` — accessor for per-reason counts without exposing the internal map
 - `DetectReason(path, content, options)` — public zero-I/O API that accepts content as a parameter
 - Comprehensive test coverage for `ShouldFilterWithIncludes`, `IsTemplGenerated` Render path, `HasSQLCContent` versions block, `GetStats` nil metrics branch, `?` wildcard in `MatchPattern`, and `FilterOption.Reason()`
+- `fmt.Stringer` compile-time compliance test for `ErrorCode`
+- Unwrap chain integration tests verifying `errors.Is` traverses nested error layers for both `ProjectRootError` and `SQLCConfigError`
+- Benchmarks for error construction, `Error()` formatting, and `errors.Is` matching
 
 ### Changed
 
