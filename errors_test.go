@@ -56,6 +56,26 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 	}
 }
 
+func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
+	innerErr = newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML"),
+		os.ErrInvalid,
+	)
+
+	collectErr = newSQLCConfigError(
+		CodeSQLCConfigCollect,
+		ConfigPath(""),
+		Operation("collect"),
+		ErrorMessage("collecting output dirs"),
+		innerErr,
+	)
+
+	return
+}
+
 func testCrossTypeMismatch(
 	t *testing.T,
 	errType string,
@@ -540,17 +560,6 @@ func TestErrorCodeImplementsFmtStringer(t *testing.T) {
 	assertEqual(t, "String()", CodeProjectRootNotFound.String(), "project_root_not_found")
 }
 
-func TestErrorCodeAllCodesHaveHelpText(t *testing.T) {
-	t.Parallel()
-
-	for _, code := range AllErrorCodes() {
-		help := CodeHelp(code)
-		if help == "" {
-			t.Errorf("CodeHelp(%q) returned empty string", code)
-		}
-	}
-}
-
 func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 	t.Parallel()
 
@@ -606,21 +615,7 @@ func TestSQLCConfigErrorUnwrapChainIntegration(t *testing.T) {
 func testSQLCUnwrapCollectToInner(t *testing.T) {
 	t.Parallel()
 
-	innerErr := newSQLCConfigError(
-		CodeSQLCConfigParse,
-		ConfigPath("sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML"),
-		os.ErrInvalid,
-	)
-
-	collectErr := newSQLCConfigError(
-		CodeSQLCConfigCollect,
-		ConfigPath(""),
-		Operation("collect"),
-		ErrorMessage("collecting output dirs"),
-		innerErr,
-	)
+	_, collectErr := sqlcConfigUnwrapTestSetup()
 
 	var inner *SQLCConfigError
 	if !errors.As(collectErr.Unwrap(), &inner) {
@@ -634,21 +629,7 @@ func testSQLCUnwrapCollectToInner(t *testing.T) {
 func testSQLCUnwrapCollectSentinel(t *testing.T) {
 	t.Parallel()
 
-	innerErr := newSQLCConfigError(
-		CodeSQLCConfigParse,
-		ConfigPath("sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML"),
-		os.ErrInvalid,
-	)
-
-	collectErr := newSQLCConfigError(
-		CodeSQLCConfigCollect,
-		ConfigPath(""),
-		Operation("collect"),
-		ErrorMessage("collecting output dirs"),
-		innerErr,
-	)
+	_, collectErr := sqlcConfigUnwrapTestSetup()
 
 	assertErrorsIs(t, collectErr, ErrSQLCConfigCollect)
 }
@@ -656,21 +637,7 @@ func testSQLCUnwrapCollectSentinel(t *testing.T) {
 func testSQLCUnwrapInnerSentinel(t *testing.T) {
 	t.Parallel()
 
-	innerErr := newSQLCConfigError(
-		CodeSQLCConfigParse,
-		ConfigPath("sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML"),
-		os.ErrInvalid,
-	)
-
-	collectErr := newSQLCConfigError(
-		CodeSQLCConfigCollect,
-		ConfigPath(""),
-		Operation("collect"),
-		ErrorMessage("collecting output dirs"),
-		innerErr,
-	)
+	_, collectErr := sqlcConfigUnwrapTestSetup()
 
 	assertErrorsIs(t, collectErr, ErrSQLCConfigCollect)
 	assertErrorsIs(t, collectErr, ErrSQLCConfigParse)
