@@ -532,6 +532,226 @@ func TestSentinelErrors(t *testing.T) {
 	})
 }
 
+func TestErrorCodeImplementsFmtStringer(t *testing.T) {
+	t.Parallel()
+
+	var _ fmt.Stringer = ErrorCode("")
+
+	assertEqual(t, "String()", CodeProjectRootNotFound.String(), "project_root_not_found")
+}
+
+func TestErrorCodeAllCodesHaveHelpText(t *testing.T) {
+	t.Parallel()
+
+	for _, code := range AllErrorCodes() {
+		help := CodeHelp(code)
+		if help == "" {
+			t.Errorf("CodeHelp(%q) returned empty string", code)
+		}
+	}
+}
+
+func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unwraps through nested fmt.Errorf to sentinel", func(t *testing.T) {
+		t.Parallel()
+
+		inner := &ProjectRootError{
+			Code:      CodeProjectRootInvalidPath,
+			StartPath: "/path",
+			Markers:   []string{"go.mod"},
+			Cause:     os.ErrPermission,
+		}
+
+		wrapped := fmt.Errorf("layer2: %w", fmt.Errorf("layer1: %w", inner))
+
+		var extracted *ProjectRootError
+
+		if !errors.As(wrapped, &extracted) {
+			t.Fatal("errors.As should find ProjectRootError through nested wrapping")
+		}
+
+		assertEqual(t, "ErrorCode", extracted.ErrorCode(), CodeProjectRootInvalidPath)
+		assertEqual(t, "StartPath", extracted.StartPath, StartPath("/path"))
+	})
+
+	t.Run("errors.Is reaches sentinel through multiple wraps", func(t *testing.T) {
+		t.Parallel()
+
+		inner := &ProjectRootError{
+			Code:      CodeProjectRootNotFound,
+			StartPath: "/path",
+			Markers:   []string{"go.mod"},
+			Cause:     nil,
+		}
+
+		wrapped := fmt.Errorf("outer: %w", inner)
+
+		assertErrorsIs(t, wrapped, ErrProjectRootNotFound)
+	})
+}
+
+func TestSQLCConfigErrorUnwrapChainIntegration(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unwraps collect error to inner parse error", testSQLCUnwrapCollectToInner)
+	t.Run("errors.Is matches collect sentinel", testSQLCUnwrapCollectSentinel)
+	t.Run(
+		"errors.Is reaches inner parse sentinel through Unwrap chain",
+		testSQLCUnwrapInnerSentinel,
+	)
+}
+
+func testSQLCUnwrapCollectToInner(t *testing.T) {
+	t.Parallel()
+
+	innerErr := newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML"),
+		os.ErrInvalid,
+	)
+
+	collectErr := newSQLCConfigError(
+		CodeSQLCConfigCollect,
+		ConfigPath(""),
+		Operation("collect"),
+		ErrorMessage("collecting output dirs"),
+		innerErr,
+	)
+
+	var inner *SQLCConfigError
+	if !errors.As(collectErr.Unwrap(), &inner) {
+		t.Fatal("Unwrap() should expose inner SQLCConfigError")
+	}
+
+	assertEqual(t, "inner ErrorCode", inner.ErrorCode(), CodeSQLCConfigParse)
+	assertEqual(t, "inner ConfigPath", inner.ConfigPath, ConfigPath("sqlc.yaml"))
+}
+
+func testSQLCUnwrapCollectSentinel(t *testing.T) {
+	t.Parallel()
+
+	innerErr := newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML"),
+		os.ErrInvalid,
+	)
+
+	collectErr := newSQLCConfigError(
+		CodeSQLCConfigCollect,
+		ConfigPath(""),
+		Operation("collect"),
+		ErrorMessage("collecting output dirs"),
+		innerErr,
+	)
+
+	assertErrorsIs(t, collectErr, ErrSQLCConfigCollect)
+}
+
+func testSQLCUnwrapInnerSentinel(t *testing.T) {
+	t.Parallel()
+
+	innerErr := newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML"),
+		os.ErrInvalid,
+	)
+
+	collectErr := newSQLCConfigError(
+		CodeSQLCConfigCollect,
+		ConfigPath(""),
+		Operation("collect"),
+		ErrorMessage("collecting output dirs"),
+		innerErr,
+	)
+
+	assertErrorsIs(t, collectErr, ErrSQLCConfigCollect)
+	assertErrorsIs(t, collectErr, ErrSQLCConfigParse)
+}
+
+func BenchmarkNewProjectRootError(b *testing.B) {
+	for b.Loop() {
+		_ = &ProjectRootError{
+			Code:      CodeProjectRootNotFound,
+			StartPath: "/some/path/to/project",
+			Markers:   []string{"go.mod"},
+			Cause:     os.ErrNotExist,
+		}
+	}
+}
+
+func BenchmarkNewSQLCConfigError(b *testing.B) {
+	for b.Loop() {
+		_ = newSQLCConfigError(
+			CodeSQLCConfigParse,
+			ConfigPath("/path/to/sqlc.yaml"),
+			Operation("parse"),
+			ErrorMessage("invalid YAML syntax"),
+			os.ErrInvalid,
+		)
+	}
+}
+
+func BenchmarkProjectRootErrorError(b *testing.B) {
+	err := &ProjectRootError{
+		Code:      CodeProjectRootNotFound,
+		StartPath: "/some/path/to/project",
+		Markers:   []string{"go.mod"},
+		Cause:     os.ErrNotExist,
+	}
+
+	for b.Loop() {
+		_ = err.Error()
+	}
+}
+
+func BenchmarkSQLCConfigErrorError(b *testing.B) {
+	err := newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("/path/to/sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML syntax"),
+		os.ErrInvalid,
+	)
+
+	for b.Loop() {
+		_ = err.Error()
+	}
+}
+
+func BenchmarkProjectRootErrorIs(b *testing.B) {
+	err := &ProjectRootError{ //nolint:exhaustruct // benchmark only needs Code for Is() comparison
+		Code:      CodeProjectRootNotFound,
+		StartPath: "/some/path",
+		Markers:   []string{"go.mod"},
+	}
+
+	for b.Loop() {
+		_ = errors.Is(err, ErrProjectRootNotFound)
+	}
+}
+
+func BenchmarkSQLCConfigErrorIs(b *testing.B) {
+	err := newSQLCConfigError(
+		CodeSQLCConfigParse,
+		ConfigPath("/path/to/sqlc.yaml"),
+		Operation("parse"),
+		ErrorMessage("invalid YAML"),
+		os.ErrInvalid,
+	)
+
+	for b.Loop() {
+		_ = errors.Is(err, ErrSQLCConfigParse)
+	}
+}
+
 func TestTryAddSQLCConfig(t *testing.T) {
 	t.Parallel()
 
