@@ -76,6 +76,36 @@ func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
 	return innerErr, collectErr
 }
 
+func newSQLCConfigErrorForTest(
+	code ErrorCode,
+	configPath ConfigPath,
+	operation string,
+	msg string,
+	cause error,
+) *SQLCConfigError {
+	return newSQLCConfigError(code, configPath, Operation(operation), ErrorMessage(msg), cause)
+}
+
+func newSQLCConfigErrorParse(configPath ConfigPath, msg string) *SQLCConfigError {
+	return newSQLCConfigError(
+		CodeSQLCConfigParse,
+		configPath,
+		Operation("parse"),
+		ErrorMessage(msg),
+		os.ErrInvalid,
+	)
+}
+
+func newSQLCConfigErrorRead(configPath ConfigPath, msg string) *SQLCConfigError {
+	return newSQLCConfigError(
+		CodeSQLCConfigRead,
+		configPath,
+		Operation("read"),
+		ErrorMessage(msg),
+		os.ErrPermission,
+	)
+}
+
 func testCrossTypeMismatch(
 	t *testing.T,
 	errType string,
@@ -357,13 +387,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 	t.Run("branded error message with config path", func(t *testing.T) {
 		t.Parallel()
 
-		err := newSQLCConfigError(
-			CodeSQLCConfigRead,
-			ConfigPath("/path/to/sqlc.yaml"),
-			Operation("read"),
-			ErrorMessage("reading sqlc config"),
-			os.ErrPermission,
-		)
+		err := newSQLCConfigErrorRead(ConfigPath("/path/to/sqlc.yaml"), "reading sqlc config")
 
 		msg := err.Error()
 
@@ -656,13 +680,7 @@ func BenchmarkNewProjectRootError(b *testing.B) {
 
 func BenchmarkNewSQLCConfigError(b *testing.B) {
 	for b.Loop() {
-		_ = newSQLCConfigError(
-			CodeSQLCConfigParse,
-			ConfigPath("/path/to/sqlc.yaml"),
-			Operation("parse"),
-			ErrorMessage("invalid YAML syntax"),
-			os.ErrInvalid,
-		)
+		_ = newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML syntax")
 	}
 }
 
@@ -680,13 +698,7 @@ func BenchmarkProjectRootErrorError(b *testing.B) {
 }
 
 func BenchmarkSQLCConfigErrorError(b *testing.B) {
-	err := newSQLCConfigError(
-		CodeSQLCConfigParse,
-		ConfigPath("/path/to/sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML syntax"),
-		os.ErrInvalid,
-	)
+	err := newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML syntax")
 
 	for b.Loop() {
 		_ = err.Error()
@@ -706,13 +718,7 @@ func BenchmarkProjectRootErrorIs(b *testing.B) {
 }
 
 func BenchmarkSQLCConfigErrorIs(b *testing.B) {
-	err := newSQLCConfigError(
-		CodeSQLCConfigParse,
-		ConfigPath("/path/to/sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML"),
-		os.ErrInvalid,
-	)
+	err := newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML")
 
 	for b.Loop() {
 		_ = errors.Is(err, ErrSQLCConfigParse)
