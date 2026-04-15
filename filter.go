@@ -132,9 +132,7 @@ func (f *Filter) shouldFilterWithIncludes(filePath string) bool {
 		return true
 	}
 
-	if reason := detectReason(f.fsys, filePath, f.options); reason != ReasonNotFiltered {
-		f.recordFiltered(filePath, reason)
-
+	if f.shouldFilterByDetection(filePath) {
 		return true
 	}
 
@@ -150,13 +148,21 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
 		return true
 	}
 
+	if f.shouldFilterByDetection(filePath) {
+		return true
+	}
+
+	f.recordChecked(filePath)
+
+	return false
+}
+
+func (f *Filter) shouldFilterByDetection(filePath string) bool {
 	if reason := detectReason(f.fsys, filePath, f.options); reason != ReasonNotFiltered {
 		f.recordFiltered(filePath, reason)
 
 		return true
 	}
-
-	f.recordChecked(filePath)
 
 	return false
 }
