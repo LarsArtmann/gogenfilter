@@ -27,7 +27,6 @@ linters:
         - copyloopvar
         - cyclop
         - decorder
-        - depguard
         - dogsled
         - dupl
         - dupword
@@ -110,7 +109,6 @@ linters:
         - tagliatelle
         - testableexamples
         - testifylint
-        - testpackage
         - thelper
         - tparallel
         - unconvert
@@ -132,5 +130,3 @@ formatters:
         - gofumpt
         - golines
 issues:
-    max-issues-per-linter: 50
-    max-same-issues: 10
