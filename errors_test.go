@@ -28,13 +28,6 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 	}
 }
 
-func assertBrandedPrefix(t *testing.T, msg string) {
-	t.Helper()
-
-	if !strings.HasPrefix(msg, "[gogenfilter:") {
-		t.Errorf("missing branded prefix: %q", msg)
-	}
-}
 
 //nolint:ireturn // Generic helper function that extracts typed errors from error chain
 func assertErrorsAs[T any](t *testing.T, err error) T {
@@ -215,7 +208,7 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 
 		msg := err.Error()
 
-		assertBrandedPrefix(t, msg)
+		assertErrorHasBrandedPrefix(t, err)
 
 		if !strings.Contains(msg, "go.mod, go.sum") {
 			t.Errorf("Error() missing markers: %q", msg)
@@ -555,7 +548,7 @@ func TestSentinelErrors(t *testing.T) {
 		}
 
 		for _, sentinel := range sentinels {
-			assertBrandedPrefix(t, sentinel.Error())
+			assertErrorHasBrandedPrefix(t, sentinel)
 		}
 	})
 }
