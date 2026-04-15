@@ -21,18 +21,19 @@ Phantom types have been successfully implemented across the codebase to address 
 
 Six phantom types introduced to replace primitive types in key contexts:
 
-| Type | Underlying | Purpose | Usage Context |
-|------|-----------|---------|---------------|
-| `StartPath` | `string` | Directory traversal starting point | `FindProjectRoot()` parameter, `ProjectRootError.StartPath` |
-| `ConfigPath` | `string` | Configuration file paths | `SQLCConfigError.ConfigPath` |
-| `Label` | `string` | Filter pattern labels | Defined but minimally used (future expansion) |
-| `Operation` | `string` | Operation identifiers ("read", "parse", etc.) | `SQLCConfigError.Operation` |
-| `ErrorMessage` | `string` | Error message content | `SQLCConfigError.Message` |
-| `TotalFilesChecked` | `int` | Metrics counting | `MetricsMixin.TotalFilesChecked` |
+| Type                | Underlying | Purpose                                       | Usage Context                                               |
+| ------------------- | ---------- | --------------------------------------------- | ----------------------------------------------------------- |
+| `StartPath`         | `string`   | Directory traversal starting point            | `FindProjectRoot()` parameter, `ProjectRootError.StartPath` |
+| `ConfigPath`        | `string`   | Configuration file paths                      | `SQLCConfigError.ConfigPath`                                |
+| `Label`             | `string`   | Filter pattern labels                         | Defined but minimally used (future expansion)               |
+| `Operation`         | `string`   | Operation identifiers ("read", "parse", etc.) | `SQLCConfigError.Operation`                                 |
+| `ErrorMessage`      | `string`   | Error message content                         | `SQLCConfigError.Message`                                   |
+| `TotalFilesChecked` | `int`      | Metrics counting                              | `MetricsMixin.TotalFilesChecked`                            |
 
 ### 2. File-by-File Changes Summary
 
 #### errors.go (Complete)
+
 - ✅ `ProjectRootError.StartPath` changed from `string` to `StartPath`
 - ✅ `SQLCConfigError.ConfigPath` changed from `string` to `ConfigPath`
 - ✅ `SQLCConfigError.Operation` changed from `string` to `Operation`
@@ -40,22 +41,27 @@ Six phantom types introduced to replace primitive types in key contexts:
 - ✅ `Error()` methods updated to convert phantom types back to strings for formatting
 
 #### metrics.go (Complete)
+
 - ✅ `MetricsMixin.TotalFilesChecked` changed from `int` to `TotalFilesChecked`
 - ✅ `String()` method updated to convert `TotalFilesChecked` to `int` for formatting
 
 #### project.go (Complete)
+
 - ✅ `FindProjectRoot()` parameter changed from `string` to `StartPath`
 - ✅ Internal conversions using `string(startPath)` where needed
 
 #### sqlc.go (Complete)
+
 - ✅ `newSQLCConfigError()` signature updated to accept phantom types
 - ✅ All callers updated to wrap strings: `ConfigPath(path)`, `Operation("read")`, etc.
 - ✅ `findSQLCConfigsInParent()` updated to use `StartPath(path)`
 
 #### project_test.go (Complete)
+
 - ✅ All `FindProjectRoot()` calls updated: `FindProjectRoot(StartPath(tmpDir), ...)`
 
 #### errors_test.go (Complete)
+
 - ✅ Test helper functions updated to use phantom type constructors
 - ✅ `testProjectRootErrorNotFound()`: `StartPath("/path")`
 - ✅ `testProjectRootErrorWithCause()`: `StartPath(path)`
@@ -85,11 +91,13 @@ All phantom type implementation work is 100% complete. No partial states remain.
 ## C) WORK NOT STARTED 🔴
 
 ### 1. Documentation Updates
+
 - Update README.md to document phantom types for API consumers
 - Add CHANGELOG.md entry under [Unreleased] section
 - Document breaking change: `FindProjectRoot()` now requires `StartPath` type
 
 ### 2. Additional Phantom Type Applications
+
 - `Label` type defined but not widely applied (filter pattern labels could use it)
 - Could apply phantom types to more path-related parameters in internal functions
 
@@ -102,8 +110,9 @@ All phantom type implementation work is 100% complete. No partial states remain.
 The phantom types implementation is clean and working. However, there's one **KNOWN ISSUE**:
 
 **LSP Panic in project_test.go**
+
 ```
-Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1 
+Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 [golangci_lint_ls] panic: runtime error: invalid memory address or nil pointer dereference
 ```
 
@@ -118,19 +127,23 @@ Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 ## E) WHAT WE SHOULD IMPROVE 📈
 
 ### 1. Documentation (High Priority)
+
 - Add documentation on when to use phantom types for contributors
 - Document the naming convention used (no "String" suffix, semantic names only)
 - Add examples showing phantom type usage in API consumers
 
 ### 2. API Consumer Experience (Medium Priority)
+
 - Consider adding helper functions for common conversions
 - Document migration path for users upgrading from string-based API
 
 ### 3. Testing (Low Priority)
+
 - Add specific tests for phantom type conversions
 - Verify error messages still format correctly after type conversions
 
 ### 4. Code Organization (Low Priority)
+
 - Consider if `phantom.go` should be `types.go` or if types should be distributed
 - Evaluate if any phantom types should have methods (String(), etc.)
 
@@ -190,11 +203,13 @@ Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 3. **Add helper package** - `phantom.FromString()` style conversions
 
 **Why I can't decide:**
+
 - Go best practices favor explicit type conversions for simple phantom types
 - Constructors might imply validation that doesn't exist
 - But it would make the API more discoverable for users
 
 **What would help me decide:**
+
 - Examples of how external consumers would actually use this API
 - Review of similar Go libraries (sqlc, templ, etc.) for patterns
 
@@ -202,15 +217,15 @@ Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 
 ## Technical Metrics
 
-| Metric | Value |
-|--------|-------|
-| Total Lines of Code | 4,820 |
-| Test Files | 17 |
-| Test Coverage | High (exact % not measured) |
-| Phantom Types | 6 |
-| Files Modified | 7 (in commit f4c31ca) |
-| Commits Today | 1 (already committed by Lars) |
-| Breaking Changes | 1 (FindProjectRoot signature) |
+| Metric              | Value                         |
+| ------------------- | ----------------------------- |
+| Total Lines of Code | 4,820                         |
+| Test Files          | 17                            |
+| Test Coverage       | High (exact % not measured)   |
+| Phantom Types       | 6                             |
+| Files Modified      | 7 (in commit f4c31ca)         |
+| Commits Today       | 1 (already committed by Lars) |
+| Breaking Changes    | 1 (FindProjectRoot signature) |
 
 ---
 
@@ -222,6 +237,7 @@ Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 **Message:** feat(core): add core modules for errors, metrics, and SQLC
 
 **Files Changed:**
+
 - errors.go (37 changes: error handling updates)
 - errors_test.go (22 changes: test helper updates)
 - metrics.go (4 changes: TotalFilesChecked type)
@@ -237,6 +253,7 @@ Error: /Users/larsartmann/projects/gogenfilter/project_test.go:1:1
 Phantom types implementation is **COMPLETE and COMMITTED**. The codebase now has improved type safety with 6 phantom types protecting key API boundaries. All tests pass. The work was done by Lars in commit f4c31ca.
 
 Next immediate priorities:
+
 1. Documentation updates for API consumers
 2. Investigate LSP panic (non-blocking)
 3. Continue with TODO_LIST.md items

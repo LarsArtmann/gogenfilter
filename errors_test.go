@@ -28,7 +28,6 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 	}
 }
 
-
 //nolint:ireturn // Generic helper function that extracts typed errors from error chain
 func assertErrorsAs[T any](t *testing.T, err error) T {
 	t.Helper()

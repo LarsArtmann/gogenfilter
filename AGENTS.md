@@ -22,17 +22,17 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 ### Key Source Files
 
-| File | Purpose |
-|------|---------|
-| `detection.go` | Core detection logic and detector table |
-| `filter.go` | `Filter` type with builder pattern (`WithFS`, `WithIncludePatterns`, `WithExcludePatterns`) |
-| `pattern.go` | Custom `**` glob pattern matching |
-| `sqlc.go` | SQLC config discovery and parsing |
-| `errors.go` | Branded error types with sentinel errors |
-| `types.go` | Phantom types and shared type definitions |
-| `project.go` | Project root discovery |
-| `metrics.go` | Detection metrics tracking |
-| `phantom.go` | Phantom type constructors |
+| File           | Purpose                                                                                     |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| `detection.go` | Core detection logic and detector table                                                     |
+| `filter.go`    | `Filter` type with builder pattern (`WithFS`, `WithIncludePatterns`, `WithExcludePatterns`) |
+| `pattern.go`   | Custom `**` glob pattern matching                                                           |
+| `sqlc.go`      | SQLC config discovery and parsing                                                           |
+| `errors.go`    | Branded error types with sentinel errors                                                    |
+| `types.go`     | Phantom types and shared type definitions                                                   |
+| `project.go`   | Project root discovery                                                                      |
+| `metrics.go`   | Detection metrics tracking                                                                  |
+| `phantom.go`   | Phantom type constructors                                                                   |
 
 ## Development Guidelines
 
