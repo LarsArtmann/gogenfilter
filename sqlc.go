@@ -143,12 +143,11 @@ func walkPathForSQLCConfigs(path string, configs map[string]string) *SQLCConfigE
 			return fmt.Errorf("accessing %q: %w", filePath, err)
 		}
 
-		skip, walkErr := walkDirForSQLCConfigs(filePath, d.Name(), nil, configs)
-		if skip {
+		if walkDirForSQLCConfigs(filePath, d.Name(), configs) {
 			return filepath.SkipDir
 		}
 
-		return walkErr
+		return nil
 	})
 	if err != nil {
 		return sqlcWalkError(path, err)
@@ -290,12 +289,11 @@ func FindSQLCConfigsFS(fsys fs.FS, paths []string) (map[string]string, *SQLCConf
 				return fmt.Errorf("accessing %q: %w", filePath, err)
 			}
 
-			skip, walkErr := walkDirForSQLCConfigs(filePath, d.Name(), nil, configs)
-			if skip {
+			if walkDirForSQLCConfigs(filePath, d.Name(), configs) {
 				return fs.SkipDir
 			}
 
-			return walkErr
+			return nil
 		})
 		if err != nil {
 			return nil, sqlcWalkError(path, err)
