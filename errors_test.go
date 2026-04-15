@@ -645,12 +645,7 @@ func testSQLCUnwrapInnerSentinel(t *testing.T) {
 
 func BenchmarkNewProjectRootError(b *testing.B) {
 	for b.Loop() {
-		result := &ProjectRootError{
-			Code:      CodeProjectRootNotFound,
-			StartPath: "/some/path/to/project",
-			Markers:   []string{"go.mod"},
-			Cause:     os.ErrNotExist,
-		}
+		result := newBenchmarkProjectRootError()
 		_ = result
 	}
 }
@@ -662,15 +657,19 @@ func BenchmarkNewSQLCConfigError(b *testing.B) {
 }
 
 func BenchmarkProjectRootErrorError(b *testing.B) {
-	err := &ProjectRootError{
+	err := newBenchmarkProjectRootError()
+
+	for b.Loop() {
+		_ = err.Error()
+	}
+}
+
+func newBenchmarkProjectRootError() *ProjectRootError {
+	return &ProjectRootError{
 		Code:      CodeProjectRootNotFound,
 		StartPath: "/some/path/to/project",
 		Markers:   []string{"go.mod"},
 		Cause:     os.ErrNotExist,
-	}
-
-	for b.Loop() {
-		_ = err.Error()
 	}
 }
 
