@@ -99,14 +99,25 @@ func TestShouldFilter(t *testing.T) {
 func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Parallel()
 
-	t.Run("matching include pattern is not filtered", func(t *testing.T) {
+	t.Run("matching include pattern still detects generated code", func(t *testing.T) {
 		t.Parallel()
 
 		filter := NewFilter(true, []FilterOption{FilterSQLC})
 		filter.WithIncludePatterns([]string{"models.go"})
 
-		if filter.ShouldFilter("models.go") {
-			t.Error("expected matching include pattern to not be filtered")
+		if !filter.ShouldFilter("models.go") {
+			t.Error("expected generated file matching include pattern to still be filtered")
+		}
+	})
+
+	t.Run("matching include pattern for non-generated file is not filtered", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(true, []FilterOption{FilterSQLC})
+		filter.WithIncludePatterns([]string{"main.go"})
+
+		if filter.ShouldFilter("main.go") {
+			t.Error("expected non-generated file matching include pattern to not be filtered")
 		}
 	})
 
