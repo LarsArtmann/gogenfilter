@@ -644,9 +644,11 @@ func testSQLCUnwrapInnerSentinel(t *testing.T) {
 	assertErrorsIs(t, collectErr, ErrSQLCConfigParse)
 }
 
+var benchmarkSink *ProjectRootError
+
 func BenchmarkNewProjectRootError(b *testing.B) {
 	for b.Loop() {
-		_ = &ProjectRootError{
+		benchmarkSink = &ProjectRootError{
 			Code:      CodeProjectRootNotFound,
 			StartPath: "/some/path/to/project",
 			Markers:   []string{"go.mod"},
