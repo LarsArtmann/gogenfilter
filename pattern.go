@@ -33,10 +33,14 @@ func matchPathPattern(path, pattern string) bool {
 	return matchSegments(strings.Split(path, "/"), strings.Split(expanded, "/"))
 }
 
+// doublestarSentinel is a placeholder for "**" in pattern matching.
+// Using NUL character ensures it cannot collide with real path segments.
+const doublestarSentinel = "\x00"
+
 // expandDoublestar replaces "**" with a sentinel that matches multiple segments.
 // "**/foo" matches "foo" at any depth, "foo/**" matches anything under "foo".
 func expandDoublestar(pattern string) string {
-	return strings.ReplaceAll(pattern, "**", "\x00")
+	return strings.ReplaceAll(pattern, "**", doublestarSentinel)
 }
 
 // matchSegments performs recursive segment matching.
@@ -50,7 +54,7 @@ func matchSegments(pathParts, patternParts []string) bool {
 			return false
 		}
 
-		isDoublestar := patternParts[0] == "\x00"
+		isDoublestar := patternParts[0] == doublestarSentinel
 
 		if isDoublestar {
 			patternParts = patternParts[1:]
