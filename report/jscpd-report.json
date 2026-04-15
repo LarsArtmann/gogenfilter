@@ -1,9 +1,57 @@
 {
   "statistics": {
-    "detectionDate": "2026-04-10T05:22:29.305Z",
+    "detectionDate": "2026-04-15T19:00:28.453Z",
     "formats": {
       "markdown": {
         "sources": {
+          "docs/status/2026-04-13_22-29_error-system-complete-and-next-steps.md": {
+            "lines": 274,
+            "tokens": 3928,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-13_22-16_comprehensive-project-status.md": {
+            "lines": 339,
+            "tokens": 2988,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-12_01-11_phantom-types-implementation-complete.md": {
+            "lines": 258,
+            "tokens": 2284,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "docs/status/2026-04-11_20-40_comprehensive-project-status.md": {
+            "lines": 336,
+            "tokens": 3090,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
           "docs/status/2026-04-09_15-42_fs-integration-complete.md": {
             "lines": 150,
             "tokens": 2381,
@@ -101,8 +149,8 @@
             "newClones": 0
           },
           "CHANGELOG.md": {
-            "lines": 36,
-            "tokens": 542,
+            "lines": 71,
+            "tokens": 1214,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -113,8 +161,8 @@
             "newClones": 0
           },
           "AGENTS.md": {
-            "lines": 48,
-            "tokens": 294,
+            "lines": 73,
+            "tokens": 639,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -126,9 +174,9 @@
           }
         },
         "total": {
-          "lines": 1808,
-          "tokens": 22973,
-          "sources": 10,
+          "lines": 3075,
+          "tokens": 36280,
+          "sources": 14,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -141,8 +189,8 @@
       "json": {
         "sources": {
           "report/jscpd-report.json": {
-            "lines": 540,
-            "tokens": 3481,
+            "lines": 503,
+            "tokens": 3266,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -166,8 +214,8 @@
           }
         },
         "total": {
-          "lines": 565,
-          "tokens": 3619,
+          "lines": 528,
+          "tokens": 3404,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -217,8 +265,8 @@
             "newClones": 0
           },
           "sqlc_test.go": {
-            "lines": 383,
-            "tokens": 2807,
+            "lines": 387,
+            "tokens": 2857,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -230,7 +278,7 @@
           },
           "sqlc.go": {
             "lines": 339,
-            "tokens": 2320,
+            "tokens": 2345,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -241,8 +289,8 @@
             "newClones": 0
           },
           "property_test.go": {
-            "lines": 96,
-            "tokens": 749,
+            "lines": 104,
+            "tokens": 781,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -254,7 +302,7 @@
           },
           "project_test.go": {
             "lines": 99,
-            "tokens": 745,
+            "tokens": 760,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -266,7 +314,19 @@
           },
           "project.go": {
             "lines": 51,
-            "tokens": 337,
+            "tokens": 343,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "phantom.go": {
+            "lines": 34,
+            "tokens": 84,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -289,8 +349,8 @@
             "newClones": 0
           },
           "pattern.go": {
-            "lines": 78,
-            "tokens": 519,
+            "lines": 82,
+            "tokens": 532,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -314,7 +374,7 @@
           },
           "metrics.go": {
             "lines": 130,
-            "tokens": 840,
+            "tokens": 843,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -325,8 +385,8 @@
             "newClones": 0
           },
           "helpers_test.go": {
-            "lines": 447,
-            "tokens": 3406,
+            "lines": 449,
+            "tokens": 3389,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -349,8 +409,8 @@
             "newClones": 0
           },
           "filter_test.go": {
-            "lines": 519,
-            "tokens": 3858,
+            "lines": 523,
+            "tokens": 3874,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -385,8 +445,8 @@
             "newClones": 0
           },
           "errors_test.go": {
-            "lines": 550,
-            "tokens": 3835,
+            "lines": 729,
+            "tokens": 5074,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -398,7 +458,7 @@
           },
           "errors.go": {
             "lines": 189,
-            "tokens": 1218,
+            "tokens": 1221,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -409,8 +469,8 @@
             "newClones": 0
           },
           "detection_test.go": {
-            "lines": 344,
-            "tokens": 2636,
+            "lines": 348,
+            "tokens": 2652,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -446,9 +506,9 @@
           }
         },
         "total": {
-          "lines": 4726,
-          "tokens": 33304,
-          "sources": 22,
+          "lines": 4965,
+          "tokens": 34789,
+          "sources": 23,
           "clones": 0,
           "duplicatedLines": 0,
           "duplicatedTokens": 0,
@@ -461,8 +521,8 @@
       "yaml": {
         "sources": {
           ".golangci.yaml": {
-            "lines": 128,
-            "tokens": 640,
+            "lines": 135,
+            "tokens": 675,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -474,8 +534,8 @@
           }
         },
         "total": {
-          "lines": 128,
-          "tokens": 640,
+          "lines": 135,
+          "tokens": 675,
           "sources": 1,
           "clones": 0,
           "duplicatedLines": 0,
@@ -488,9 +548,9 @@
       }
     },
     "total": {
-      "lines": 7227,
-      "tokens": 60536,
-      "sources": 35,
+      "lines": 8703,
+      "tokens": 75148,
+      "sources": 40,
       "clones": 0,
       "duplicatedLines": 0,
       "duplicatedTokens": 0,
