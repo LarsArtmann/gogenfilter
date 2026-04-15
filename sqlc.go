@@ -180,7 +180,7 @@ func walkDirForSQLCConfigs(
 
 // shouldSkipDirectory returns true if a directory should be skipped during walk.
 func shouldSkipDirectory(name string) bool {
-	if name == "." || name == "" {
+	if name == "." {
 		return false
 	}
 

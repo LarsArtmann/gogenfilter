@@ -10,6 +10,8 @@ func TestShouldSkipDirectory(t *testing.T) {
 	t.Parallel()
 
 	tests := []boolTestCase[string]{
+		{name: "root dot", input: ".", expected: false},
+		{name: "empty name", input: "", expected: false},
 		{name: "regular directory", input: "src", expected: false},
 		{name: "hidden directory", input: ".git", expected: true},
 		{name: "hidden directory with dot", input: ".cache", expected: true},
