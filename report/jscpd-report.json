@@ -1,6 +1,6 @@
 {
   "statistics": {
-    "detectionDate": "2026-04-15T19:00:28.453Z",
+    "detectionDate": "2026-04-15T20:52:57.454Z",
     "formats": {
       "markdown": {
         "sources": {
@@ -125,8 +125,8 @@
             "newClones": 0
           },
           "TODO_LIST.md": {
-            "lines": 36,
-            "tokens": 741,
+            "lines": 40,
+            "tokens": 732,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -174,8 +174,8 @@
           }
         },
         "total": {
-          "lines": 3075,
-          "tokens": 36280,
+          "lines": 3079,
+          "tokens": 36271,
           "sources": 14,
           "clones": 0,
           "duplicatedLines": 0,
@@ -189,8 +189,8 @@
       "json": {
         "sources": {
           "report/jscpd-report.json": {
-            "lines": 503,
-            "tokens": 3266,
+            "lines": 563,
+            "tokens": 3661,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -214,8 +214,8 @@
           }
         },
         "total": {
-          "lines": 528,
-          "tokens": 3404,
+          "lines": 588,
+          "tokens": 3799,
           "sources": 2,
           "clones": 0,
           "duplicatedLines": 0,
@@ -277,8 +277,8 @@
             "newClones": 0
           },
           "sqlc.go": {
-            "lines": 339,
-            "tokens": 2345,
+            "lines": 338,
+            "tokens": 2332,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -409,8 +409,8 @@
             "newClones": 0
           },
           "filter_test.go": {
-            "lines": 523,
-            "tokens": 3874,
+            "lines": 534,
+            "tokens": 3963,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -421,8 +421,8 @@
             "newClones": 0
           },
           "filter.go": {
-            "lines": 188,
-            "tokens": 1400,
+            "lines": 200,
+            "tokens": 1471,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -445,8 +445,8 @@
             "newClones": 0
           },
           "errors_test.go": {
-            "lines": 729,
-            "tokens": 5074,
+            "lines": 727,
+            "tokens": 5056,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -506,8 +506,8 @@
           }
         },
         "total": {
-          "lines": 4965,
-          "tokens": 34789,
+          "lines": 4985,
+          "tokens": 34918,
           "sources": 23,
           "clones": 0,
           "duplicatedLines": 0,
@@ -521,8 +521,8 @@
       "yaml": {
         "sources": {
           ".golangci.yaml": {
-            "lines": 135,
-            "tokens": 675,
+            "lines": 133,
+            "tokens": 666,
             "sources": 1,
             "clones": 0,
             "duplicatedLines": 0,
@@ -534,8 +534,8 @@
           }
         },
         "total": {
-          "lines": 135,
-          "tokens": 675,
+          "lines": 133,
+          "tokens": 666,
           "sources": 1,
           "clones": 0,
           "duplicatedLines": 0,
@@ -548,8 +548,8 @@
       }
     },
     "total": {
-      "lines": 8703,
-      "tokens": 75148,
+      "lines": 8785,
+      "tokens": 75654,
       "sources": 40,
       "clones": 0,
       "duplicatedLines": 0,
