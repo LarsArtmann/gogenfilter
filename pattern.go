@@ -18,7 +18,18 @@ func MatchPattern(path, pattern string) bool {
 		return matched
 	}
 
-	return matchPathPattern(filepath.ToSlash(path), normalizePattern(pattern))
+	normalizedPath := filepath.ToSlash(path)
+	normalizedPattern := normalizePattern(pattern)
+
+	// For absolute paths with relative patterns, prepend **/ to match at any depth.
+	// This ensures patterns like "pkg1/*" match "/tmp/project/pkg1/file.go".
+	if strings.HasPrefix(normalizedPath, "/") &&
+		!strings.HasPrefix(normalizedPattern, "/") &&
+		!strings.HasPrefix(normalizedPattern, "**") {
+		normalizedPattern = "**/" + normalizedPattern
+	}
+
+	return matchPathPattern(normalizedPath, normalizedPattern)
 }
 
 // normalizePattern converts a pattern to use forward slashes consistently.
@@ -29,8 +40,14 @@ func normalizePattern(pattern string) string {
 // matchPathPattern matches a slash-normalized path against a pattern with path segments.
 func matchPathPattern(path, pattern string) bool {
 	expanded := expandDoublestar(pattern)
+	pathParts := strings.Split(path, "/")
 
-	return matchSegments(strings.Split(path, "/"), strings.Split(expanded, "/"))
+	// Remove leading empty segment from absolute paths (e.g. "/a/b" → ["", "a", "b"]).
+	if len(pathParts) > 0 && pathParts[0] == "" {
+		pathParts = pathParts[1:]
+	}
+
+	return matchSegments(pathParts, strings.Split(expanded, "/"))
 }
 
 // doublestarSentinel is a placeholder for "**" in pattern matching.

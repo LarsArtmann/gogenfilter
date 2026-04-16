@@ -2,6 +2,7 @@ package gogenfilter
 
 import (
 	"io/fs"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -215,7 +216,12 @@ func detectReason(fsys fs.FS, filePath string, options map[FilterOption]bool) Fi
 
 	content, err := fs.ReadFile(fsys, filePath)
 	if err != nil {
-		return ReasonNotFiltered
+		// FS-based read failed (common with absolute paths and os.DirFS(".")).
+		// Fall back to direct OS read which handles both absolute and relative paths.
+		content, err = os.ReadFile(filePath)
+		if err != nil {
+			return ReasonNotFiltered
+		}
 	}
 
 	return getContentBasedReason(filePath, string(content), options)
