@@ -114,28 +114,31 @@ func assertFilterBehavior(
 	t.Helper()
 
 	tmpFile := createTempFile(t, name, content)
-	f := NewFilter(true, opts)
-	f.WithFS(os.DirFS(filepath.Dir(tmpFile)))
+	f := NewFilter(Enabled(), WithFilterOptions(opts...), WithFS(os.DirFS(filepath.Dir(tmpFile))))
 
-	got := f.ShouldFilter(filepath.Base(tmpFile))
+	got, err := f.ShouldFilter(filepath.Base(tmpFile))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	assertCallResult(t, "ShouldFilter", nil, got, shouldFilter)
 }
 
-func testPatternSetter(
-	t *testing.T,
-	filter *Filter,
-	setter func(*Filter),
-	getPatterns func(*Filter) []string,
-	expectedLen int,
-) {
+func mustShouldFilter(t *testing.T, f *Filter, filePath string) bool {
 	t.Helper()
 
-	setter(filter)
+	got, err := f.ShouldFilter(filePath)
+	if err != nil {
+		t.Fatalf("ShouldFilter(%q) error: %v", filePath, err)
+	}
 
-	patterns := getPatterns(filter)
+	return got
+}
 
-	assertLen(t, "patterns", len(patterns), expectedLen)
+func writeSQLCConfigFile(t *testing.T, dir, filename string) {
+	t.Helper()
+
+	writeFile(t, filepath.Join(dir, filename), "version: \"2\"")
 }
 
 type boolTestCase[T any] struct {
@@ -345,37 +348,6 @@ func newShouldFilterTest(
 		opts:         opts,
 		shouldFilter: true,
 	}
-}
-
-type patternTestCase struct {
-	name     string
-	setter   func(*Filter)
-	getter   func(*Filter) []string
-	patterns []string
-}
-
-func includePatternsTestCase() patternTestCase {
-	return patternTestCase{
-		name:     "include patterns",
-		setter:   func(f *Filter) { f.WithIncludePatterns([]string{"vendor/*", "generated/keep.go"}) },
-		getter:   func(f *Filter) []string { return f.includePatterns },
-		patterns: []string{"vendor/*", "generated/keep.go"},
-	}
-}
-
-func excludePatternsTestCase() patternTestCase {
-	return patternTestCase{
-		name:     "exclude patterns",
-		setter:   func(f *Filter) { f.WithExcludePatterns([]string{"test/*", "*.pb.go"}) },
-		getter:   func(f *Filter) []string { return f.excludePatterns },
-		patterns: []string{"test/*", "*.pb.go"},
-	}
-}
-
-func writeSQLCConfigFile(t *testing.T, dir, filename string) {
-	t.Helper()
-
-	writeFile(t, filepath.Join(dir, filename), "version: \"2\"")
 }
 
 func testSQLCConfigInSkippedDir(t *testing.T, tmpDir, dir string) {

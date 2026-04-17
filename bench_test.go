@@ -11,10 +11,15 @@ const (
 func benchmarkShouldFilter(b *testing.B, enabled bool) {
 	b.Helper()
 
-	f := NewFilter(enabled, []FilterOption{FilterAll})
+	var filter *Filter
+	if enabled {
+		filter = NewFilter(Enabled(), WithFilterOptions(FilterAll))
+	} else {
+		filter = NewFilter(Disabled(), WithFilterOptions(FilterAll))
+	}
 
 	for b.Loop() {
-		_ = f.ShouldFilter("db/models.go")
+		_, _ = filter.ShouldFilter("db/models.go")
 	}
 }
 
@@ -35,10 +40,10 @@ func BenchmarkShouldFilter(b *testing.B) {
 }
 
 func BenchmarkDetectGenerated(b *testing.B) {
-	options := map[FilterOption]bool{FilterAll: true}
+	opts := optionsMap(FilterAll)
 
 	for b.Loop() {
-		_ = getFilenameBasedReason("db/models.go", options)
+		_ = getFilenameBasedReason("db/models.go", opts)
 	}
 }
 
@@ -97,8 +102,6 @@ func BenchmarkMatchPattern(b *testing.B) {
 }
 
 func BenchmarkDetectReason(b *testing.B) {
-	allOpts := map[FilterOption]bool{FilterAll: true}
-
 	tests := []struct {
 		name    string
 		path    string
@@ -119,14 +122,14 @@ func BenchmarkDetectReason(b *testing.B) {
 	for _, tt := range tests {
 		b.Run(tt.name, func(b *testing.B) {
 			for b.Loop() {
-				_ = DetectReason(tt.path, tt.content, allOpts)
+				_ = DetectReason(tt.path, tt.content, FilterAll)
 			}
 		})
 	}
 
 	b.Run("not_filtered", func(b *testing.B) {
 		for b.Loop() {
-			_ = DetectReason("main.go", "package main\n", allOpts)
+			_ = DetectReason("main.go", "package main\n", FilterAll)
 		}
 	})
 }

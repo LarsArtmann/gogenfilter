@@ -3,6 +3,8 @@ package gogenfilter
 import (
 	"os"
 	"path/filepath"
+	"strings"
+	"sync"
 	"testing"
 	"testing/fstest"
 )
@@ -32,7 +34,7 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(false, nil)
+		filter := NewFilter(Disabled())
 
 		if filter.IsEnabled() {
 			t.Error("Expected disabled filter")
@@ -46,7 +48,7 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, []FilterOption{FilterSQLC, FilterTempl})
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
@@ -64,13 +66,13 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, []FilterOption{FilterAll})
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
 		}
 
-		for _, opt := range allSpecificOptions {
+		for _, opt := range allSpecificOptions() {
 			if !filter.options[opt] {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
@@ -82,15 +84,92 @@ func TestNewFilter(t *testing.T) {
 	})
 }
 
+func TestFilterReasons(t *testing.T) {
+	t.Parallel()
+
+	t.Run("returns reasons for enabled options", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
+		reasons := filter.FilterReasons()
+
+		if len(reasons) != 2 {
+			t.Fatalf("expected 2 reasons, got %d: %v", len(reasons), reasons)
+		}
+
+		got := make(map[FilterReason]bool, len(reasons))
+		for _, r := range reasons {
+			got[r] = true
+		}
+
+		if !got[ReasonSQLC] {
+			t.Error("expected ReasonSQLC in FilterReasons()")
+		}
+
+		if !got[ReasonTempl] {
+			t.Error("expected ReasonTempl in FilterReasons()")
+		}
+	})
+
+	t.Run("returns all reasons for FilterAll", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
+		reasons := filter.FilterReasons()
+
+		expected := len(allSpecificOptions()) + 1 // +1 for FilterGeneric
+		if len(reasons) != expected {
+			t.Errorf("expected %d reasons for FilterAll, got %d", expected, len(reasons))
+		}
+	})
+
+	t.Run("returns empty for no options", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled())
+		reasons := filter.FilterReasons()
+
+		if len(reasons) != 0 {
+			t.Errorf("expected 0 reasons, got %d", len(reasons))
+		}
+	})
+}
+
+func TestWithFilterOptionsPanicsOnInvalid(t *testing.T) {
+	t.Parallel()
+
+	t.Run("panics on invalid option", func(t *testing.T) {
+		t.Parallel()
+
+		defer func() {
+			recovered := recover()
+			if recovered == nil {
+				t.Fatal("expected panic for invalid FilterOption")
+			}
+
+			msg, ok := recovered.(string)
+			if !ok {
+				t.Fatalf("expected string panic, got %T: %v", recovered, recovered)
+			}
+
+			if !strings.Contains(msg, "invalid FilterOption") {
+				t.Errorf("panic message = %q, want to contain %q", msg, "invalid FilterOption")
+			}
+		}()
+
+		_ = NewFilter(Enabled(), WithFilterOptions(FilterOption("nonexistent")))
+	})
+}
+
 func TestShouldFilter(t *testing.T) {
 	t.Parallel()
 
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter(false, []FilterOption{FilterAll})
+		f := NewFilter(Disabled(), WithFilterOptions(FilterAll))
 
-		if f.ShouldFilter("any/file.go") {
+		if mustShouldFilter(t, f, "any/file.go") {
 			t.Error("Disabled filter should not filter")
 		}
 	})
@@ -102,10 +181,12 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("matching include pattern still detects generated code", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, []FilterOption{FilterSQLC})
-		filter.WithIncludePatterns([]string{"models.go"})
+		filter := NewFilter(Enabled(),
+			WithFilterOptions(FilterSQLC),
+			WithIncludePatterns("models.go"),
+		)
 
-		if !filter.ShouldFilter("models.go") {
+		if !mustShouldFilter(t, filter, "models.go") {
 			t.Error("expected generated file matching include pattern to still be filtered")
 		}
 	})
@@ -113,10 +194,17 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("matching include pattern for non-generated file is not filtered", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, []FilterOption{FilterSQLC})
-		filter.WithIncludePatterns([]string{"main.go"})
+		mapFS := fstest.MapFS{
+			"main.go": newMapFile("package main\nfunc main() {}"),
+		}
 
-		if filter.ShouldFilter("main.go") {
+		filter := NewFilter(Enabled(),
+			WithFilterOptions(FilterSQLC),
+			WithIncludePatterns("main.go"),
+			WithFS(mapFS),
+		)
+
+		if mustShouldFilter(t, filter, "main.go") {
 			t.Error("expected non-generated file matching include pattern to not be filtered")
 		}
 	})
@@ -124,10 +212,11 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("non-matching path is filtered with include reason", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, nil)
-		filter.WithIncludePatterns([]string{"pkg/*.go"})
+		filter := NewFilter(Enabled(),
+			WithIncludePatterns("pkg/*.go"),
+		)
 
-		if !filter.ShouldFilter("other/file.go") {
+		if !mustShouldFilter(t, filter, "other/file.go") {
 			t.Error("expected non-matching path to be filtered")
 		}
 
@@ -139,10 +228,11 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("include pattern with wildcard", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(true, nil)
-		filter.WithIncludePatterns([]string{"*.go"})
+		filter := NewFilter(Enabled(),
+			WithIncludePatterns("*.go"),
+		)
 
-		if filter.ShouldFilter("main.go") {
+		if mustShouldFilter(t, filter, "main.go") {
 			t.Error("expected *.go to match main.go")
 		}
 	})
@@ -151,18 +241,19 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 func TestShouldFilterWithIncludesMultiple(t *testing.T) {
 	t.Parallel()
 
-	filter := NewFilter(true, nil)
-	filter.WithIncludePatterns([]string{"keep.go", "safe.go"})
+	filter := NewFilter(Enabled(),
+		WithIncludePatterns("keep.go", "safe.go"),
+	)
 
-	if filter.ShouldFilter("keep.go") {
+	if mustShouldFilter(t, filter, "keep.go") {
 		t.Error("expected keep.go to match")
 	}
 
-	if filter.ShouldFilter("safe.go") {
+	if mustShouldFilter(t, filter, "safe.go") {
 		t.Error("expected safe.go to match")
 	}
 
-	if !filter.ShouldFilter("remove.go") {
+	if !mustShouldFilter(t, filter, "remove.go") {
 		t.Error("expected remove.go to be filtered")
 	}
 }
@@ -211,11 +302,13 @@ func TestFilterWithMetrics(t *testing.T) {
 		}
 	}
 
-	fltr := NewFilter(true, []FilterOption{FilterAll})
-	fltr.WithFS(os.DirFS(tmpDir))
+	fltr := NewFilter(Enabled(),
+		WithFilterOptions(FilterAll),
+		WithFS(os.DirFS(tmpDir)),
+	)
 
 	for name := range files {
-		_ = fltr.ShouldFilter(name)
+		_, _ = fltr.ShouldFilter(name)
 	}
 
 	stats := fltr.GetStats()
@@ -230,7 +323,7 @@ func TestFilterWithMetrics(t *testing.T) {
 func TestGetStatsDisabledFilter(t *testing.T) {
 	t.Parallel()
 
-	f := NewFilter(false, nil)
+	f := NewFilter(Disabled())
 	stats := f.GetStats()
 
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
@@ -241,9 +334,6 @@ func TestGetStatsDisabledFilter(t *testing.T) {
 func TestShouldFilterExcludePattern(t *testing.T) {
 	t.Parallel()
 
-	filter := NewFilter(true, []FilterOption{FilterSQLC})
-	filter.WithExcludePatterns([]string{"**/db/*.go"})
-
 	tmpDir := t.TempDir()
 
 	dbDir := filepath.Join(tmpDir, "db")
@@ -253,9 +343,13 @@ func TestShouldFilterExcludePattern(t *testing.T) {
 	tmpFile := filepath.Join(dbDir, "models.go")
 	writeFile(t, tmpFile, "// Code generated by sqlc. DO NOT EDIT.\npackage db\n")
 
-	filter.WithFS(os.DirFS(tmpDir))
+	filter := NewFilter(Enabled(),
+		WithFilterOptions(FilterSQLC),
+		WithExcludePatterns("**/db/*.go"),
+		WithFS(os.DirFS(tmpDir)),
+	)
 
-	if !filter.ShouldFilter(filepath.Join("db", "models.go")) {
+	if !mustShouldFilter(t, filter, filepath.Join("db", "models.go")) {
 		t.Error("expected exclude pattern match to be filtered")
 	}
 
@@ -264,31 +358,12 @@ func TestShouldFilterExcludePattern(t *testing.T) {
 	assertFilterStats(t, stats, ReasonExcludePattern, 1, "exclude-pattern")
 }
 
-func TestWithPatterns(t *testing.T) {
-	t.Parallel()
-
-	testCases := []patternTestCase{
-		includePatternsTestCase(),
-		excludePatternsTestCase(),
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-
-			f := NewFilter(true, []FilterOption{FilterAll})
-			testPatternSetter(t, f, tc.setter, tc.getter, len(tc.patterns))
-		})
-	}
-}
-
 func TestFilterWithMapFS(t *testing.T) {
 	t.Parallel()
 
 	t.Run("detects sqlc via fstest.MapFS", testMapFSDetectsSQLC)
 	t.Run("does not filter non-generated file", testMapFSNonGenerated)
 	t.Run("non-existent file returns not filtered", testMapFSNonExistent)
-	t.Run("WithFS ignores nil", testMapFSWithNilIgnored)
 	t.Run("multiple generators via MapFS", testMapFSMultipleGenerators)
 }
 
@@ -303,10 +378,12 @@ func testMapFSDetectsSQLC(t *testing.T) {
 		),
 	}
 
-	fltr := NewFilter(true, []FilterOption{FilterSQLC})
-	fltr.WithFS(mapFS)
+	fltr := NewFilter(Enabled(),
+		WithFilterOptions(FilterSQLC),
+		WithFS(mapFS),
+	)
 
-	if !fltr.ShouldFilter("db/models.go") {
+	if !mustShouldFilter(t, fltr, "db/models.go") {
 		t.Error("expected sqlc-generated file to be filtered")
 	}
 
@@ -321,10 +398,12 @@ func testMapFSNonGenerated(t *testing.T) {
 		"main.go": newMapFile("package main\nfunc main() {}"),
 	}
 
-	fltr := NewFilter(true, []FilterOption{FilterAll})
-	fltr.WithFS(mapFS)
+	fltr := NewFilter(Enabled(),
+		WithFilterOptions(FilterAll),
+		WithFS(mapFS),
+	)
 
-	if fltr.ShouldFilter("main.go") {
+	if mustShouldFilter(t, fltr, "main.go") {
 		t.Error("expected non-generated file to not be filtered")
 	}
 }
@@ -334,30 +413,14 @@ func testMapFSNonExistent(t *testing.T) {
 
 	mapFS := fstest.MapFS{}
 
-	fltr := NewFilter(true, []FilterOption{FilterSQLC})
-	fltr.WithFS(mapFS)
+	fltr := NewFilter(Enabled(),
+		WithFilterOptions(FilterSQLC),
+		WithFS(mapFS),
+	)
 
-	if fltr.ShouldFilter("nonexistent.go") {
-		t.Error("expected non-existent file to not be filtered")
-	}
-}
-
-func testMapFSWithNilIgnored(t *testing.T) {
-	t.Parallel()
-
-	mapFS := fstest.MapFS{
-		"models.go": newMapFile(
-			"// Code generated by sqlc. DO NOT EDIT.\n" +
-				"package db\n",
-		),
-	}
-
-	fltr := NewFilter(true, []FilterOption{FilterSQLC})
-	fltr.WithFS(mapFS)
-	fltr.WithFS(nil)
-
-	if !fltr.ShouldFilter("models.go") {
-		t.Error("expected WithFS(nil) to keep the previous filesystem")
+	_, err := fltr.ShouldFilter("nonexistent.go")
+	if err == nil {
+		t.Error("expected error for non-existent file")
 	}
 }
 
@@ -378,12 +441,14 @@ func testMapFSMultipleGenerators(t *testing.T) {
 		"main.go": newMapFile("package main\nfunc main() {}"),
 	}
 
-	fltr := NewFilter(true, []FilterOption{FilterAll})
-	fltr.WithFS(mapFS)
+	fltr := NewFilter(Enabled(),
+		WithFilterOptions(FilterAll),
+		WithFS(mapFS),
+	)
 
-	_ = fltr.ShouldFilter("db/models.go")
-	_ = fltr.ShouldFilter("components/header_templ.go")
-	_ = fltr.ShouldFilter("main.go")
+	_, _ = fltr.ShouldFilter("db/models.go")
+	_, _ = fltr.ShouldFilter("components/header_templ.go")
+	_, _ = fltr.ShouldFilter("main.go")
 
 	stats := fltr.GetStats()
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
@@ -532,4 +597,189 @@ func testParseNonExistent(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for missing file")
 	}
+}
+
+func TestShouldFilterConcurrent(t *testing.T) {
+	t.Parallel()
+
+	mapFS := fstest.MapFS{
+		"db/models.go": newMapFile("// Code generated by sqlc. DO NOT EDIT.\npackage db\n"),
+		"main.go":      newMapFile("package main\nfunc main() {}\n"),
+		"api.go":       newMapFile("package main\n"),
+	}
+
+	filter := NewFilter(
+		Enabled(),
+		WithFilterOptions(FilterAll),
+		WithFS(mapFS),
+	)
+
+	const goroutines = 100
+
+	var wg sync.WaitGroup
+	wg.Add(goroutines)
+
+	for i := range goroutines {
+		go func() {
+			defer wg.Done()
+
+			files := []string{"db/models.go", "main.go", "api.go"}
+			file := files[i%len(files)]
+
+			filtered, err := filter.ShouldFilter(file)
+			if err != nil {
+				t.Errorf("ShouldFilter(%q) error: %v", file, err)
+			}
+
+			switch file {
+			case "db/models.go":
+				if !filtered {
+					t.Error("expected db/models.go to be filtered")
+				}
+			case "main.go", "api.go":
+				if filtered {
+					t.Errorf("expected %s to not be filtered", file)
+				}
+			}
+		}()
+	}
+
+	wg.Wait()
+
+	stats := filter.GetStats()
+
+	assertEqual(t, "total checked", int(stats.TotalFilesChecked), goroutines)
+}
+
+func TestShouldFilterEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("empty path returns error", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
+
+		_, err := filter.ShouldFilter("")
+		if err == nil {
+			t.Error("expected error for empty path")
+		}
+	})
+
+	t.Run("path with spaces", func(t *testing.T) {
+		t.Parallel()
+
+		mapFS := fstest.MapFS{
+			"path with spaces/models.go": newMapFile("// Code generated by sqlc. DO NOT EDIT.\npackage db\n"),
+		}
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+
+		if !mustShouldFilter(t, filter, "path with spaces/models.go") {
+			t.Error("expected file with spaces in path to be filtered")
+		}
+	})
+
+	t.Run("unicode filename", func(t *testing.T) {
+		t.Parallel()
+
+		mapFS := fstest.MapFS{
+			"dönner/models.go": newMapFile("// Code generated by sqlc. DO NOT EDIT.\npackage db\n"),
+		}
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+
+		if !mustShouldFilter(t, filter, "dönner/models.go") {
+			t.Error("expected unicode filename to be filtered")
+		}
+	})
+
+	t.Run("very long filename", func(t *testing.T) {
+		t.Parallel()
+
+		longName := strings.Repeat("a", 200) + ".go"
+
+		mapFS := fstest.MapFS{
+			longName: newMapFile("package main\n"),
+		}
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+
+		filtered, err := filter.ShouldFilter(longName)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if filtered {
+			t.Error("expected long-named regular file to not be filtered")
+		}
+	})
+
+	t.Run("nil FS defaults to OS filesystem", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(nil))
+
+		filtered, err := filter.ShouldFilter("nonexistent_deffile_12345.go")
+		if err == nil {
+			t.Error("expected error for nonexistent file with OS FS")
+		}
+
+		if filtered {
+			t.Error("expected nonexistent file to not be filtered even on error")
+		}
+	})
+}
+
+func TestFilterString(t *testing.T) {
+	t.Parallel()
+
+	t.Run("disabled filter", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Disabled())
+		assertContains(t, filter.String(), "disabled")
+	})
+
+	t.Run("enabled with options", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
+		str := filter.String()
+
+		assertContains(t, str, "sqlc")
+		assertContains(t, str, "templ")
+		assertContains(t, str, "options=")
+	})
+
+	t.Run("enabled with include patterns", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithIncludePatterns("pkg/*.go"))
+		assertContains(t, filter.String(), "includes=")
+	})
+
+	t.Run("enabled with exclude patterns", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithExcludePatterns("vendor/**"))
+		assertContains(t, filter.String(), "excludes=")
+	})
+
+	t.Run("enabled with all options and patterns", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(
+			Enabled(),
+			WithFilterOptions(FilterAll),
+			WithIncludePatterns("pkg/*.go"),
+			WithExcludePatterns("vendor/**"),
+		)
+
+		str := filter.String()
+
+		assertContains(t, str, "options=")
+		assertContains(t, str, "includes=")
+		assertContains(t, str, "excludes=")
+		assertContains(t, str, "stats=")
+	})
 }

@@ -14,6 +14,10 @@ func filterOptionStringCases() []struct {
 		{FilterTempl, "templ"},
 		{FilterGoEnum, "go-enum"},
 		{FilterProtobuf, "protobuf"},
+		{FilterOapi, "oapi-codegen"},
+		{FilterDeepcopy, "deepcopy-gen"},
+		{FilterWire, "wire"},
+		{FilterMoq, "moq"},
 		{FilterMockgen, "mockgen"},
 		{FilterStringer, "stringer"},
 		{FilterGeneric, "generic"},
@@ -33,6 +37,10 @@ func filterReasonStringCases() []struct {
 		{ReasonTempl, "templ"},
 		{ReasonGoEnum, "go-enum"},
 		{ReasonProtobuf, "protobuf"},
+		{ReasonOapi, "oapi-codegen"},
+		{ReasonDeepcopy, "deepcopy-gen"},
+		{ReasonWire, "wire"},
+		{ReasonMoq, "moq"},
 		{ReasonMockgen, "mockgen"},
 		{ReasonStringer, "stringer"},
 		{ReasonGeneric, "generic"},
@@ -57,6 +65,10 @@ func TestFilterOptionReason(t *testing.T) {
 		{FilterTempl, ReasonTempl},
 		{FilterGoEnum, ReasonGoEnum},
 		{FilterProtobuf, ReasonProtobuf},
+		{FilterOapi, ReasonOapi},
+		{FilterDeepcopy, ReasonDeepcopy},
+		{FilterWire, ReasonWire},
+		{FilterMoq, ReasonMoq},
 		{FilterMockgen, ReasonMockgen},
 		{FilterStringer, ReasonStringer},
 		{FilterGeneric, ReasonGeneric},
@@ -75,6 +87,7 @@ func TestFilterOptionIsValid(t *testing.T) {
 
 	validOptions := []FilterOption{
 		FilterSQLC, FilterTempl, FilterGoEnum, FilterProtobuf,
+		FilterOapi, FilterDeepcopy, FilterWire, FilterMoq,
 		FilterMockgen, FilterStringer, FilterGeneric, FilterAll,
 	}
 
@@ -103,6 +116,7 @@ func TestFilterReasonIsValid(t *testing.T) {
 
 	validReasons := []FilterReason{
 		ReasonSQLC, ReasonTempl, ReasonGoEnum, ReasonProtobuf,
+		ReasonOapi, ReasonDeepcopy, ReasonWire, ReasonMoq,
 		ReasonMockgen, ReasonStringer, ReasonGeneric,
 		ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered,
 	}
@@ -146,7 +160,7 @@ func TestAllFilterOptions(t *testing.T) {
 
 	opts := AllFilterOptions()
 
-	assertEqual(t, "len(AllFilterOptions())", len(opts), 8)
+	assertEqual(t, "len(AllFilterOptions())", len(opts), 12)
 
 	assertAllValid(
 		t,
@@ -161,7 +175,7 @@ func TestAllFilterReasons(t *testing.T) {
 
 	reasons := AllFilterReasons()
 
-	assertEqual(t, "len(AllFilterReasons())", len(reasons), 10)
+	assertEqual(t, "len(AllFilterReasons())", len(reasons), 14)
 
 	assertAllValid(
 		t,
