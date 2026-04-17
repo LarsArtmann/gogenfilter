@@ -8,7 +8,74 @@ import (
 	"strings"
 )
 
+// FilterConfig is a functional option for configuring a Filter.
+type FilterConfig func(*Filter)
+
+// Enabled enables the filter. When enabled, files matching configured generators
+// are filtered out. Metrics collection is activated.
+func Enabled() FilterConfig {
+	return func(filter *Filter) { filter.enabled = true }
+}
+
+// Disabled creates a filter that does not filter any files.
+// This is the default if neither Enabled nor Disabled is passed.
+func Disabled() FilterConfig {
+	return func(f *Filter) { f.enabled = false }
+}
+
+// WithFilterOptions specifies which generated code types to filter.
+// FilterAll expands to all specific detectors plus FilterGeneric.
+// Panics if any option is not a valid FilterOption.
+func WithFilterOptions(opts ...FilterOption) FilterConfig {
+	for _, opt := range opts {
+		if !opt.IsValid() {
+			panic("gogenfilter: invalid FilterOption: " + opt.String())
+		}
+	}
+
+	return func(filter *Filter) {
+		for _, opt := range opts {
+			if opt == FilterAll {
+				for _, specific := range allSpecificOptions() {
+					filter.options[specific] = true
+				}
+
+				filter.options[FilterGeneric] = true
+			} else {
+				filter.options[opt] = true
+			}
+		}
+	}
+}
+
+// WithFS sets a custom filesystem for the filter.
+// Defaults to os.DirFS(".") if not provided.
+func WithFS(fsys fs.FS) FilterConfig {
+	return func(filter *Filter) {
+		if fsys != nil {
+			filter.fsys = fsys
+		}
+	}
+}
+
+// WithIncludePatterns adds include patterns. Only files matching at least one
+// include pattern are considered for filtering; all others are immediately filtered.
+func WithIncludePatterns(patterns ...string) FilterConfig {
+	return func(filter *Filter) {
+		filter.includePatterns = append(filter.includePatterns, patterns...)
+	}
+}
+
+// WithExcludePatterns adds exclude patterns. Files matching any exclude pattern
+// are filtered regardless of generated-code detection.
+func WithExcludePatterns(patterns ...string) FilterConfig {
+	return func(filter *Filter) {
+		filter.excludePatterns = append(filter.excludePatterns, patterns...)
+	}
+}
+
 // Filter provides smart filtering of auto-generated Go code.
+// A Filter is immutable after construction — all configuration is applied via NewFilter.
 type Filter struct {
 	options         map[FilterOption]bool
 	enabled         bool
@@ -18,61 +85,33 @@ type Filter struct {
 	fsys            fs.FS
 }
 
-// NewFilter creates a new filter with specified options.
-func NewFilter(enabled bool, options []FilterOption) *Filter {
+// NewFilter creates a new filter configured with the given functional options.
+// By default, the filter is disabled with no filter options.
+//
+// Examples:
+//
+//	NewFilter(Enabled(), WithFilterOptions(FilterAll))
+//	NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
+//	NewFilter(Disabled())
+func NewFilter(configs ...FilterConfig) *Filter {
 	filter := &Filter{
-		enabled:         enabled,
 		options:         make(map[FilterOption]bool),
+		enabled:         false,
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
 		metrics:         nil,
 		fsys:            os.DirFS("."),
 	}
 
-	for _, opt := range options {
-		if opt == FilterAll {
-			for _, specific := range allSpecificOptions {
-				filter.options[specific] = true
-			}
-
-			filter.options[FilterGeneric] = true
-		} else {
-			filter.options[opt] = true
-		}
+	for _, cfg := range configs {
+		cfg(filter)
 	}
 
-	if enabled {
+	if filter.enabled {
 		filter.metrics = NewMetrics()
 	}
 
 	return filter
-}
-
-// WithFS sets a custom filesystem for the filter.
-// Defaults to os.DirFS(".") if not called.
-// Pass nil to keep the current filesystem.
-func (f *Filter) WithFS(fsys fs.FS) *Filter {
-	if fsys != nil {
-		f.fsys = fsys
-	}
-
-	return f
-}
-
-// WithIncludePatterns adds custom include patterns to the filter.
-func (f *Filter) WithIncludePatterns(patterns []string) *Filter {
-	return f.withPatterns(&f.includePatterns, patterns)
-}
-
-// WithExcludePatterns adds custom exclude patterns to the filter.
-func (f *Filter) WithExcludePatterns(patterns []string) *Filter {
-	return f.withPatterns(&f.excludePatterns, patterns)
-}
-
-func (f *Filter) withPatterns(target *[]string, patterns []string) *Filter {
-	*target = append(*target, patterns...)
-
-	return f
 }
 
 // IsEnabled returns whether the filter is active.
@@ -80,12 +119,25 @@ func (f *Filter) IsEnabled() bool {
 	return f.enabled
 }
 
+// FilterReasons returns the FilterReason values that this filter will detect.
+// Each enabled FilterOption maps to its corresponding FilterReason.
+func (f *Filter) FilterReasons() []FilterReason {
+	reasons := make([]FilterReason, 0, len(f.options))
+
+	for opt := range f.options {
+		reasons = append(reasons, opt.Reason())
+	}
+
+	return reasons
+}
+
 // ShouldFilter determines if a file should be filtered out (excluded from analysis).
-func (f *Filter) ShouldFilter(filePath string) bool {
+// Returns an error if the file could not be read for content-based detection.
+func (f *Filter) ShouldFilter(filePath string) (bool, error) {
 	if !f.enabled {
 		f.recordChecked(filePath)
 
-		return false
+		return false, nil
 	}
 
 	if len(f.includePatterns) > 0 {
@@ -93,6 +145,17 @@ func (f *Filter) ShouldFilter(filePath string) bool {
 	}
 
 	return f.shouldFilterWithExcludes(filePath)
+}
+
+// MustShouldFilter is like ShouldFilter but panics on error.
+// Use this in property tests and benchmarks where errors are unexpected.
+func (f *Filter) MustShouldFilter(filePath string) bool {
+	filtered, err := f.ShouldFilter(filePath)
+	if err != nil {
+		panic("gogenfilter: ShouldFilter error: " + err.Error())
+	}
+
+	return filtered
 }
 
 // GetStats returns a snapshot of filter statistics.
@@ -122,49 +185,64 @@ func (f *Filter) recordFiltered(filePath string, reason FilterReason) {
 }
 
 func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
-	return matchAnyWith(filePath, patterns, MatchPattern)
+	return anyMatch(filePath, patterns, MatchPattern)
 }
 
-func (f *Filter) shouldFilterWithIncludes(filePath string) bool {
+func (f *Filter) shouldFilterWithIncludes(filePath string) (bool, error) {
 	if !f.matchesAnyPattern(filePath, f.includePatterns) {
 		f.recordFiltered(filePath, ReasonIncludePattern)
 
-		return true
+		return true, nil
 	}
 
-	if f.shouldFilterByDetection(filePath) {
-		return true
+	filtered, err := f.shouldFilterByDetection(filePath)
+	if err != nil {
+		return false, err
+	}
+
+	if filtered {
+		return true, nil
 	}
 
 	f.recordChecked(filePath)
 
-	return false
+	return false, nil
 }
 
-func (f *Filter) shouldFilterWithExcludes(filePath string) bool {
+func (f *Filter) shouldFilterWithExcludes(filePath string) (bool, error) {
 	if f.matchesAnyPattern(filePath, f.excludePatterns) {
 		f.recordFiltered(filePath, ReasonExcludePattern)
 
-		return true
+		return true, nil
 	}
 
-	if f.shouldFilterByDetection(filePath) {
-		return true
+	filtered, err := f.shouldFilterByDetection(filePath)
+	if err != nil {
+		return false, err
+	}
+
+	if filtered {
+		return true, nil
 	}
 
 	f.recordChecked(filePath)
 
-	return false
+	return false, nil
 }
 
-func (f *Filter) shouldFilterByDetection(filePath string) bool {
-	if reason := detectReason(f.fsys, filePath, f.options); reason != ReasonNotFiltered {
-		f.recordFiltered(filePath, reason)
-
-		return true
+func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
+	reason, err := detectReasonFS(f.fsys, filePath, f.options)
+	if err != nil {
+		return false, err
 	}
 
-	return false
+	if reason != ReasonNotFiltered {
+		f.recordFiltered(filePath, reason)
+
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {

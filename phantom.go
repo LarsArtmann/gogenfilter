@@ -16,10 +16,6 @@ type ConfigPath string
 
 // Content-related types
 
-// Label represents a filter pattern label used to identify pattern categories.
-// It ensures label values are distinguishable from other string types.
-type Label string
-
 // Operation represents an operation name (e.g., "read", "parse", "walk").
 // It provides type safety for operation identifiers.
 type Operation string
