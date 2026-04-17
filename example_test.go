@@ -7,22 +7,25 @@ import (
 )
 
 func ExampleNewFilter() {
-	filter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
-		gogenfilter.FilterSQLC,
-		gogenfilter.FilterTempl,
-		gogenfilter.FilterGeneric,
-	})
+	filter := gogenfilter.NewFilter(
+		gogenfilter.Enabled(),
+		gogenfilter.WithFilterOptions(
+			gogenfilter.FilterSQLC,
+			gogenfilter.FilterTempl,
+			gogenfilter.FilterGeneric,
+		),
+	)
 
 	fmt.Println(filter.IsEnabled())
 	// Output: true
 }
 
 func ExampleNewFilter_withExcludePatterns() {
-	filter := gogenfilter.NewFilter(true, []gogenfilter.FilterOption{
-		gogenfilter.FilterAll,
-	}).WithExcludePatterns([]string{
-		"**/db/*.go",
-	})
+	filter := gogenfilter.NewFilter(
+		gogenfilter.Enabled(),
+		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+		gogenfilter.WithExcludePatterns("**/db/*.go"),
+	)
 
 	fmt.Println(filter.IsEnabled())
 	// Output: true
@@ -36,7 +39,7 @@ package db
 	reason := gogenfilter.DetectReason(
 		"db/models.go",
 		sqlcContent,
-		map[gogenfilter.FilterOption]bool{gogenfilter.FilterSQLC: true},
+		gogenfilter.FilterSQLC,
 	)
 
 	fmt.Println(reason)
@@ -47,7 +50,7 @@ func ExampleDetectReason_notFiltered() {
 	reason := gogenfilter.DetectReason(
 		"main.go",
 		"package main\n",
-		map[gogenfilter.FilterOption]bool{gogenfilter.FilterSQLC: true},
+		gogenfilter.FilterSQLC,
 	)
 
 	fmt.Println(reason)
@@ -84,12 +87,12 @@ func ExampleAllFilterOptions() {
 	opts := gogenfilter.AllFilterOptions()
 
 	fmt.Println(len(opts))
-	// Output: 8
+	// Output: 12
 }
 
 func ExampleAllFilterReasons() {
 	reasons := gogenfilter.AllFilterReasons()
 
 	fmt.Println(len(reasons))
-	// Output: 10
+	// Output: 14
 }

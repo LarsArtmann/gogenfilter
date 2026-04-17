@@ -59,16 +59,14 @@ func FuzzDetectReason(f *testing.F) {
 		f.Add(s.path, s.content)
 	}
 
-	allOpts := map[FilterOption]bool{FilterAll: true}
-
 	f.Fuzz(func(t *testing.T, path, content string) {
-		reason := DetectReason(path, content, allOpts)
+		reason := DetectReason(path, content, FilterAll)
 
 		if !reason.IsValid() {
 			t.Errorf("DetectReason returned invalid reason %q for path=%q", reason, path)
 		}
 
-		reason2 := DetectReason(path, content, allOpts)
+		reason2 := DetectReason(path, content, FilterAll)
 		if reason != reason2 {
 			t.Errorf("DetectReason not idempotent: first=%v second=%v", reason, reason2)
 		}

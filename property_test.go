@@ -16,10 +16,10 @@ func TestFilterIdempotentProperty(t *testing.T) {
 				return true
 			}
 
-			filter1 := NewFilter(true, nil)
-			filter2 := NewFilter(true, nil)
+			filter1 := NewFilter(Enabled())
+			filter2 := NewFilter(Enabled())
 
-			return filter1.ShouldFilter(filePath) == filter2.ShouldFilter(filePath)
+			return filter1.MustShouldFilter(filePath) == filter2.MustShouldFilter(filePath)
 		}
 
 		err := quick.Check(propertyFn, nil)
@@ -40,7 +40,7 @@ func TestDisabledFilterProperty(t *testing.T) {
 				return true
 			}
 
-			return !NewFilter(false, nil).ShouldFilter(filePath)
+			return !NewFilter(Disabled()).MustShouldFilter(filePath)
 		}
 
 		err := quick.Check(propertyFn, nil)
@@ -61,14 +61,13 @@ func TestIncludePatternProperty(t *testing.T) {
 				return true
 			}
 
-			filter := NewFilter(true, nil)
-			filter.WithIncludePatterns([]string{includePattern})
+			filter := NewFilter(Enabled(), WithIncludePatterns(includePattern))
 
 			if !MatchPattern(filePath, includePattern) {
 				return true
 			}
 
-			return !filter.ShouldFilter(filePath)
+			return !filter.MustShouldFilter(filePath)
 		}
 
 		err := quick.Check(propertyFn, nil)
@@ -89,10 +88,9 @@ func TestExcludePatternProperty(t *testing.T) {
 				return true
 			}
 
-			filter := NewFilter(true, nil)
-			filter.WithExcludePatterns([]string{excludePattern})
+			filter := NewFilter(Enabled(), WithExcludePatterns(excludePattern))
 			shouldFilter := MatchPattern(filePath, excludePattern)
-			isFiltered := filter.ShouldFilter(filePath)
+			isFiltered := filter.MustShouldFilter(filePath)
 
 			return shouldFilter == isFiltered
 		}
