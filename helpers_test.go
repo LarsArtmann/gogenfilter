@@ -312,7 +312,7 @@ func runSQLCFilenameTests(t *testing.T, tests []sqlcFilenameTestCase) {
 type filenameTestCase struct {
 	name     string
 	filename string
-	options  map[FilterOption]bool
+	options  map[FilterOption]struct{}
 	expected FilterReason
 }
 
