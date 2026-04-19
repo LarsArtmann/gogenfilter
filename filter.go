@@ -34,16 +34,9 @@ func WithFilterOptions(opts ...FilterOption) FilterConfig {
 	}
 
 	return func(filter *Filter) {
-		for _, opt := range opts {
-			if opt == FilterAll {
-				for _, specific := range allSpecificOptions() {
-					filter.options[specific] = struct{}{}
-				}
-
-				filter.options[FilterGeneric] = struct{}{}
-			} else {
-				filter.options[opt] = struct{}{}
-			}
+		expanded := optionsMap(opts...)
+		for opt := range expanded {
+			filter.options[opt] = struct{}{}
 		}
 	}
 }
