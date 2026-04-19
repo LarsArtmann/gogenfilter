@@ -35,26 +35,21 @@ func TestIsGenerated(t *testing.T) {
 func TestNeedsContentCheck(t *testing.T) {
 	t.Parallel()
 
-	tests := []boolTestCase[map[FilterOption]bool]{
+	tests := []boolTestCase[map[FilterOption]struct{}]{
 		{
 			name:     "empty options",
-			input:    map[FilterOption]bool{},
+			input:    map[FilterOption]struct{}{},
 			expected: false,
 		},
 		{
 			name:     "only content-based filter",
-			input:    map[FilterOption]bool{FilterGeneric: true},
+			input:    map[FilterOption]struct{}{FilterGeneric: struct{}{}},
 			expected: true,
 		},
 		{
 			name:     "sqlc filter requires content",
-			input:    map[FilterOption]bool{FilterSQLC: true},
+			input:    map[FilterOption]struct{}{FilterSQLC: struct{}{}},
 			expected: true,
-		},
-		{
-			name:     "no filters enabled",
-			input:    map[FilterOption]bool{FilterSQLC: false, FilterGeneric: false},
-			expected: false,
 		},
 	}
 

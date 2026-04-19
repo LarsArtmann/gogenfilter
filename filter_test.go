@@ -54,11 +54,11 @@ func TestNewFilter(t *testing.T) {
 			t.Error("Expected enabled filter")
 		}
 
-		if !filter.options[FilterSQLC] {
+		if _, ok := filter.options[FilterSQLC]; !ok {
 			t.Error("Expected SQLC option enabled")
 		}
 
-		if !filter.options[FilterTempl] {
+		if _, ok := filter.options[FilterTempl]; !ok {
 			t.Error("Expected Templ option enabled")
 		}
 	})
@@ -73,12 +73,12 @@ func TestNewFilter(t *testing.T) {
 		}
 
 		for _, opt := range allSpecificOptions() {
-			if !filter.options[opt] {
+		if _, ok := filter.options[opt]; !ok {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
 		}
 
-		if !filter.options[FilterGeneric] {
+		if _, ok := filter.options[FilterGeneric]; !ok {
 			t.Error("Expected Generic option enabled for FilterAll")
 		}
 	})

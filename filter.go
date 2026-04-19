@@ -37,12 +37,12 @@ func WithFilterOptions(opts ...FilterOption) FilterConfig {
 		for _, opt := range opts {
 			if opt == FilterAll {
 				for _, specific := range allSpecificOptions() {
-					filter.options[specific] = true
+					filter.options[specific] = struct{}{}
 				}
 
-				filter.options[FilterGeneric] = true
+				filter.options[FilterGeneric] = struct{}{}
 			} else {
-				filter.options[opt] = true
+				filter.options[opt] = struct{}{}
 			}
 		}
 	}
@@ -77,7 +77,7 @@ func WithExcludePatterns(patterns ...string) FilterConfig {
 // Filter provides smart filtering of auto-generated Go code.
 // A Filter is immutable after construction — all configuration is applied via NewFilter.
 type Filter struct {
-	options         map[FilterOption]bool
+	options         map[FilterOption]struct{}
 	enabled         bool
 	includePatterns []string
 	excludePatterns []string
@@ -95,7 +95,7 @@ type Filter struct {
 //	NewFilter(Disabled())
 func NewFilter(configs ...FilterConfig) *Filter {
 	filter := &Filter{
-		options:         make(map[FilterOption]bool),
+		options:         make(map[FilterOption]struct{}),
 		enabled:         false,
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
