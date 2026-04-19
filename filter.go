@@ -51,8 +51,16 @@ func WithFS(fsys fs.FS) FilterConfig {
 	}
 }
 
-// WithIncludePatterns adds include patterns. Only files matching at least one
-// include pattern are considered for filtering; all others are immediately filtered.
+// WithIncludePatterns restricts filtering scope to files matching at least one
+// of the given patterns. Files that do NOT match any include pattern are
+// immediately filtered (excluded from analysis) with reason ReasonIncludePattern.
+//
+// This "restrict scope" behavior means include patterns act as a whitelist for
+// which files are worth inspecting — all other files are skipped.
+// Use this to focus filtering on specific directories (e.g., "**/generated/*.go").
+//
+// Patterns use the ** glob syntax supported by MatchPattern.
+// If no include patterns are set, all files are considered.
 func WithIncludePatterns(patterns ...string) FilterConfig {
 	return func(filter *Filter) {
 		filter.includePatterns = append(filter.includePatterns, patterns...)
