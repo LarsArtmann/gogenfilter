@@ -246,7 +246,6 @@ func extractOutputDirs(config *sqlcConfig, projectRoot string) []string {
 }
 
 // GetSQLOutputDirs returns a list of output directories from sqlc configuration files.
-// Uses slog for any warnings about multiple or unparseable configs.
 func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 	configPaths, err := FindSQLCConfigs(paths)
 	if err != nil {
@@ -305,7 +304,6 @@ func parseSQLCConfigFS(fsys fs.FS, configPath string) (*sqlcConfig, *SQLCConfigE
 
 // GetSQLOutputDirsFS returns output directories from sqlc configs using the provided filesystem.
 // Paths must be valid within fsys (relative to the FS root).
-// Uses slog for any warnings about multiple or unparseable configs.
 func GetSQLOutputDirsFS(fsys fs.FS, paths []string) ([]string, *SQLCConfigError) {
 	configPaths, err := FindSQLCConfigsFS(fsys, paths)
 	if err != nil {
