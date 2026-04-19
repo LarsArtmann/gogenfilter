@@ -15,13 +15,13 @@ func fileExists(path string) bool {
 // FindProjectRoot searches parent directories for project marker files.
 // Returns empty string if no marker is found after searching up to maxProjectRootDepth levels.
 func FindProjectRoot(startPath StartPath, markers []string) (string, *ProjectRootError) {
-	absPath, err := filepath.Abs(string(startPath))
+	absPath, err := filepath.Abs(startPath.String())
 	if err != nil {
 		return "", &ProjectRootError{
 			Code:      CodeProjectRootInvalidPath,
 			StartPath: startPath,
 			Markers:   markers,
-			Cause:     fmt.Errorf("getting absolute path for %q: %w", string(startPath), err),
+			Cause:     fmt.Errorf("getting absolute path for %q: %w", startPath, err),
 		}
 	}
 

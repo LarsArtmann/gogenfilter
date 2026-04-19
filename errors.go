@@ -112,18 +112,17 @@ type ProjectRootError struct {
 }
 
 func (e *ProjectRootError) Error() string {
-	startPathStr := string(e.StartPath)
 	if e.Cause != nil {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] project root not found from %q: %v",
 			e.Code,
-			startPathStr,
+			e.StartPath,
 			e.Cause,
 		)
 	}
 
 	return fmt.Sprintf("[gogenfilter:%s] project root not found from %q (searched for: %s)",
-		e.Code, startPathStr, strings.Join(e.Markers, ", "))
+		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
 }
 
 func (e *ProjectRootError) Unwrap() error { return e.Cause }
@@ -159,18 +158,14 @@ type SQLCConfigError struct {
 }
 
 func (e *SQLCConfigError) Error() string {
-	configPathStr := string(e.ConfigPath)
-	operationStr := string(e.Operation)
-	messageStr := string(e.Message)
-
-	if configPathStr != "" {
+	if e.ConfigPath != "" {
 		if e.Cause != nil {
 			return fmt.Sprintf(
 				"[gogenfilter:%s] sqlc config %s %q: %s: %v",
 				e.Code,
-				operationStr,
-				configPathStr,
-				messageStr,
+				e.Operation,
+				e.ConfigPath,
+				e.Message,
 				e.Cause,
 			)
 		}
@@ -178,9 +173,9 @@ func (e *SQLCConfigError) Error() string {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] sqlc config %s %q: %s",
 			e.Code,
-			operationStr,
-			configPathStr,
-			messageStr,
+			e.Operation,
+			e.ConfigPath,
+			e.Message,
 		)
 	}
 
@@ -188,13 +183,13 @@ func (e *SQLCConfigError) Error() string {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] sqlc config %s: %s: %v",
 			e.Code,
-			operationStr,
-			messageStr,
+			e.Operation,
+			e.Message,
 			e.Cause,
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, operationStr, messageStr)
+	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, e.Operation, e.Message)
 }
 
 func (e *SQLCConfigError) Unwrap() error { return e.Cause }
