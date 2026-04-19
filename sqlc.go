@@ -51,58 +51,42 @@ func newSQLCConfigError(
 	}
 }
 
-func sqlcConfigError(
-	code ErrorCode,
-	operation string,
-	message string,
-	path string,
-	err error,
-) *SQLCConfigError {
-	return newSQLCConfigError(
-		code,
-		ConfigPath(path),
-		Operation(operation),
-		ErrorMessage(message),
-		err,
-	)
-}
-
 func sqlcFindError(path string, err error) *SQLCConfigError {
-	return sqlcConfigError(
+	return newSQLCConfigError(
 		CodeSQLCConfigFind,
-		"find",
-		fmt.Sprintf("finding sqlc configs in %q", path),
-		path,
+		ConfigPath(path),
+		Operation("find"),
+		ErrorMessage(fmt.Sprintf("finding sqlc configs in %q", path)),
 		err,
 	)
 }
 
 func sqlcWalkError(path string, err error) *SQLCConfigError {
-	return sqlcConfigError(
+	return newSQLCConfigError(
 		CodeSQLCConfigWalk,
-		"walk",
-		fmt.Sprintf("walking %q for sqlc configs", path),
-		path,
+		ConfigPath(path),
+		Operation("walk"),
+		ErrorMessage(fmt.Sprintf("walking %q for sqlc configs", path)),
 		err,
 	)
 }
 
 func sqlcReadError(configPath string, err error) *SQLCConfigError {
-	return sqlcConfigError(
+	return newSQLCConfigError(
 		CodeSQLCConfigRead,
-		"read",
-		"reading sqlc config",
-		configPath,
+		ConfigPath(configPath),
+		Operation("read"),
+		ErrorMessage("reading sqlc config"),
 		err,
 	)
 }
 
 func sqlcCollectError(configPath string, err error) *SQLCConfigError {
-	return sqlcConfigError(
+	return newSQLCConfigError(
 		CodeSQLCConfigCollect,
-		"collect-output-dirs",
-		"processing sqlc config",
-		configPath,
+		ConfigPath(configPath),
+		Operation("collect-output-dirs"),
+		ErrorMessage("processing sqlc config"),
 		err,
 	)
 }

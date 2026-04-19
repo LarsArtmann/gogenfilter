@@ -60,8 +60,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `TotalFilesChecked` for metrics counter
 - `stringFrom[T ~string]` — generic helper consolidating `String()` methods for all string-based types
 - `validatable` interface for internal types with `IsValid()` (unexported)
-- `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types
-- `sqlcConfigError(...)` bridge function converting raw strings to phantom types for internal callers
+- `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types — all internal callers now use phantom types directly
 - `sqlcFindError` and `sqlcWalkError` helper constructors
 - `unmarshalSQLCConfig` extracted from `parseSQLCConfig`/`parseSQLCConfigFS` for shared YAML parsing
 - `walkDirForSQLCConfigs` extracted walk callback shared between OS and FS variants
