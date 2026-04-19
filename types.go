@@ -52,15 +52,13 @@ func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
 
 // IsValid reports whether the FilterOption is a recognized value.
 func (o FilterOption) IsValid() bool {
-	switch o {
-	case FilterSQLC, FilterTempl, FilterGoEnum, FilterProtobuf,
-		FilterOapi, FilterDeepcopy, FilterWire, FilterMoq,
-		FilterMockgen, FilterStringer, FilterGeneric, FilterAll:
-		return true
-
-	default:
-		return false
+	for _, opt := range AllFilterOptions() {
+		if o == opt {
+			return true
+		}
 	}
+
+	return false
 }
 
 const (
@@ -110,16 +108,13 @@ func (r FilterReason) String() string { return string(r) }
 
 // IsValid reports whether the FilterReason is a recognized value.
 func (r FilterReason) IsValid() bool {
-	switch r {
-	case ReasonSQLC, ReasonTempl, ReasonGoEnum, ReasonProtobuf,
-		ReasonOapi, ReasonDeepcopy, ReasonWire, ReasonMoq,
-		ReasonMockgen, ReasonStringer, ReasonGeneric,
-		ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered:
-		return true
-
-	default:
-		return false
+	for _, reason := range AllFilterReasons() {
+		if r == reason {
+			return true
+		}
 	}
+
+	return false
 }
 
 // FilterReason values for each supported generator and special filter outcomes.
