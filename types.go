@@ -40,8 +40,8 @@ import "slices"
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
-// Validatable is implemented by types that can validate themselves.
-type Validatable interface {
+// validatable is implemented by types that can validate themselves.
+type validatable interface {
 	IsValid() bool
 }
 

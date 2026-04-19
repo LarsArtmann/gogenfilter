@@ -59,7 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `ErrorMessage` for error message text
   - `TotalFilesChecked` for metrics counter
 - `stringFrom[T ~string]` — generic helper consolidating `String()` methods for all string-based types
-- `Validatable` interface for types with `IsValid()`
+- `validatable` interface for internal types with `IsValid()` (unexported)
 - `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types
 - `sqlcConfigError(...)` bridge function converting raw strings to phantom types for internal callers
 - `sqlcFindError` and `sqlcWalkError` helper constructors

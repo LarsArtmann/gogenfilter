@@ -145,7 +145,7 @@ func assertAllValid[T any](t *testing.T, name string, items []T, isValid func(T)
 	}
 }
 
-func assertAllInvalid[T Validatable](t *testing.T, name string, items []T) {
+func assertAllInvalid[T validatable](t *testing.T, name string, items []T) {
 	t.Helper()
 
 	for _, item := range items {
