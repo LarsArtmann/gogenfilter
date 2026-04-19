@@ -8,6 +8,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error)` — detection from an `io.Reader`, useful when the caller already has file content in a stream
+- Integration test fixtures (`testdata/`) from 11 real code generators plus 2 handwritten negatives, loaded via `//go:embed`
+- `errorCodeDefs` single-source-of-truth table — `AllErrorCodes()` and `CodeHelp()` now derive from one table
+- Error code derivation tests — verify `errorCodeDefs` covers every const, has no duplicates, and matches `AllErrorCodes()` exactly
+- `map[FilterOption]struct{}` replaces `map[FilterOption]bool` — values were never `false`
+
+### Changed
+
+- **`IsValid()` methods derived from tables** — `FilterOption.IsValid()` and `FilterReason.IsValid()` now iterate `AllFilterOptions()`/`AllFilterReasons()` instead of manual switches, eliminating split-brain bugs when adding new detectors
+- **SQLC patterns consolidated** — `sqlcFilePatterns`/`sqlcCodePatterns` inlined into their consuming functions (`matchesSQLCFilenamePattern`, `HasSQLCContent`, `HasSQLCCodePatterns`)
+- **`WithFilterOptions` reuses `optionsMap`** — `FilterAll` expansion no longer duplicated between `filter.go` and `detection.go`
+- **Benchmarks use `fstest.MapFS`** — eliminates filesystem I/O noise for reliable perf numbers
+- **`slog` dependency removed** — library no longer produces log output; `warnMultipleSQLCConfigs` removed entirely
+
+### Fixed
+
+- **Leaky `fs.FS` abstraction** — `detectReasonFS` no longer falls back to `os.ReadFile` when the provided filesystem doesn't contain the file
+- **README metrics example** — `TotalFilesChecked == 3` (was incorrectly `1`)
+
+### Removed
+
+- `os.ReadFile` fallback in `detectReasonFS` — custom `fs.FS` implementations now behave correctly
+- `warnMultipleSQLCConfigs` function and all `slog` usage
+
+---
+
+## [Pre-release] — Session 1-4
+
+### Added
+
 - **Error system** — centralized, branded, user-friendly error architecture:
   - `ErrorCode` string type with `String()` via generic `stringFrom[T ~string]` helper
   - 7 error code constants: `CodeProjectRootNotFound`, `CodeProjectRootInvalidPath`, `CodeSQLCConfigRead`, `CodeSQLCConfigParse`, `CodeSQLCConfigWalk`, `CodeSQLCConfigCollect`, `CodeSQLCConfigFind`
@@ -35,7 +65,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `sqlcFindError` and `sqlcWalkError` helper constructors
 - `unmarshalSQLCConfig` extracted from `parseSQLCConfig`/`parseSQLCConfigFS` for shared YAML parsing
 - `walkDirForSQLCConfigs` extracted walk callback shared between OS and FS variants
-- `warnMultipleSQLCConfigs` extracted from `GetSQLOutputDirs` and `GetSQLOutputDirsFS`
 - `isGeneratedBy` and `matchAnyContentPattern` extracted from detection logic
 - Comprehensive `errors_test.go` with generic test helpers (`assertErrorsAs[T]`, `assertBrandedErrorMessage`, `testErrorCodeReturnsCode`, `assertErrorsIs`, `testCrossTypeMismatch`)
 - `sqlc_test.go` error code verification tests
