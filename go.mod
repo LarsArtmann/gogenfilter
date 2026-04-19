@@ -2,7 +2,10 @@ module github.com/LarsArtmann/gogenfilter
 
 go 1.26.0
 
-require github.com/go-faster/yaml v0.4.6
+require (
+	github.com/bmatcuk/doublestar/v4 v4.10.0
+	github.com/go-faster/yaml v0.4.6
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
