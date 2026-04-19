@@ -192,8 +192,8 @@ func ExampleFilter_GetStats() {
 		gogenfilter.WithFS(mapFS),
 	)
 
-	filter.ShouldFilter("db/models.go")
-	filter.ShouldFilter("main.go")
+	_, _ = filter.ShouldFilter("db/models.go")
+	_, _ = filter.ShouldFilter("main.go")
 
 	stats := filter.GetStats()
 	fmt.Println(stats.TotalFilesChecked)

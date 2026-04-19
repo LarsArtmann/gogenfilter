@@ -24,6 +24,9 @@ linters:
             - github.com/bmatcuk/doublestar/v4
             - github.com/go-faster/yaml
             - github.com/LarsArtmann/gogenfilter
+    exhaustruct:
+      exclude:
+        - '.*/fstest\.MapFile'
   enable:
     - arangolint
     - asasalint
@@ -140,4 +143,10 @@ formatters:
     - goimports
     - gofumpt
     - golines
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - funlen
+          - testpackage
 issues: {}
