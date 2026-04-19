@@ -79,14 +79,24 @@ func matchPatternTestCases() []matchPatternTestCase {
 		{name: "empty path", path: "", pattern: "*.go", expected: false},
 		{name: "empty both", path: "", pattern: "", expected: false},
 		{name: "double star alone", path: "a/b/c.go", pattern: "**", expected: true},
-		{name: "double star middle", path: "src/pkg/util/helper.go", pattern: "src/**/helper.go", expected: true},
+		{
+			name:     "double star middle",
+			path:     "src/pkg/util/helper.go",
+			pattern:  "src/**/helper.go",
+			expected: true,
+		},
 		{
 			name:     "double star middle no match",
 			path:     "src/pkg/util/helper.go",
 			pattern:  "src/**/other.go",
 			expected: false,
 		},
-		{name: "single star matches filename only", path: "a/b/c.go", pattern: "*.go", expected: true},
+		{
+			name:     "single star matches filename only",
+			path:     "a/b/c.go",
+			pattern:  "*.go",
+			expected: true,
+		},
 		{name: "single star no separator", path: "dir/file.go", pattern: "*file.go", expected: true},
 		{
 			name:     "absolute path with relative pattern",
