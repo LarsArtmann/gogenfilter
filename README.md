@@ -128,6 +128,8 @@ Include and exclude patterns support two wildcards:
 
 ### Rules
 
+- **Include patterns** restrict the scope: only files matching at least one include pattern are checked for generated code. All other files are immediately filtered (skipped). If no include patterns are set, all files are considered.
+- **Exclude patterns** broaden the scope: files matching any exclude pattern are always filtered, regardless of generated-code detection.
 - **Patterns without `/`** match against the **filename only**: `*.pb.go` matches `any/path/user.pb.go`
 - **Patterns with `/`** match against the **full path**: `internal/*.go` matches `internal/handler.go`
 - **`**/`** at the start matches at any depth: `**/mocks/*.go` matches `pkg/mocks/service.go`
