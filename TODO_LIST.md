@@ -1,7 +1,7 @@
 # TODO List
 
 **Generated:** 2026-04-08
-**Updated:** 2026-04-17
+**Updated:** 2026-04-19
 **Files Processed:** 26
 
 ## 🟡 MEDIUM Priority
@@ -9,12 +9,16 @@
 - [ ] Update CHANGELOG.md with session work under [Unreleased] (source: 2026-04-08_23-06_comprehensive-project-status.md:F.7)
 - [ ] Resolve include patterns bypassing generated-code detection design issue (source: filter.go:72)
 - [ ] Performance profile and optimize hot paths (source: 2026-04-08_23-06_comprehensive-project-status.md:F.23)
-- [ ] Document `**` pattern matching syntax in README
-- [ ] Add `go test -race` to CI
-- [ ] Add coverage threshold to CI
-- [ ] Add `golangci-lint` to CI
-- [ ] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
-- [ ] Export or unexport `MetricsMixin.filteredByReason` consistently
+- [x] Document `**` pattern matching syntax in README
+- [x] Add `go test -race` to CI
+- [x] Add coverage threshold to CI (95%)
+- [x] Add `golangci-lint` to CI
+- [x] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
+- [x] Document MetricsMixin.filteredByReason encapsulation design → `metrics.go`
+- [x] Add .editorconfig for consistent formatting
+- [x] Add BenchmarkDetectReasonReader → `bench_test.go`
+- [x] Add MatchPattern edge case tests → `pattern_test.go`
+- [x] Fix all golangci-lint warnings (zero remaining)
 
 ## 🟢 LOW Priority
 
@@ -63,3 +67,13 @@
 - [x] Replace slog.Warn with configurable logger or return warnings → removed entirely
 - [x] Add package-level Go doc for godoc.org readiness → `doc.go`
 - [x] Test against real-world generated files for integration testing → `testdata/`
+- [x] Document `**` pattern matching syntax in README
+- [x] Add `go test -race` to CI
+- [x] Add coverage threshold to CI (95%)
+- [x] Add `golangci-lint` to CI
+- [x] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
+- [x] Document MetricsMixin.filteredByReason encapsulation design → `metrics.go`
+- [x] Add .editorconfig for consistent formatting
+- [x] Add BenchmarkDetectReasonReader → `bench_test.go`
+- [x] Add MatchPattern edge case tests → `pattern_test.go`
+- [x] Fix all golangci-lint warnings (zero remaining)
