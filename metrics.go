@@ -10,8 +10,12 @@ import (
 
 // MetricsMixin provides common fields for filter metrics.
 // It is embedded in FilterStats to provide read-only access to metrics data.
-// Access filtered counts via the FilteredBy() and TotalFiltered() methods
-// rather than accessing the unexported filteredByReason field directly.
+//
+// The filteredByReason field is intentionally unexported to enforce
+// encapsulation: callers must use the FilteredBy() and TotalFiltered()
+// methods rather than reading or mutating the map directly. This prevents
+// external code from breaking the invariant that counts are non-negative
+// and consistent with the total.
 type MetricsMixin struct {
 	TotalFilesChecked TotalFilesChecked
 	filteredByReason  map[FilterReason]int
