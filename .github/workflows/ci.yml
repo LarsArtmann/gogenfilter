@@ -33,7 +33,16 @@ jobs:
         run: go build ./...
 
       - name: Test
-        run: go test -race -cover ./...
+        run: go test -race -coverprofile=coverage.out ./...
+
+      - name: Coverage threshold
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Total coverage: ${COVERAGE}%"
+          if [ "$(echo "$COVERAGE < 95" | bc -l)" -eq 1 ]; then
+            echo "Coverage ${COVERAGE}% is below 95% threshold"
+            exit 1
+          fi
 
       - name: Vet
         run: go vet ./...
