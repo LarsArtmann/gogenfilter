@@ -6,26 +6,26 @@
 
 ## 🟡 MEDIUM Priority
 
-- [ ] Replace slog.Warn with configurable logger or return warnings (source: sqlc.go)
 - [ ] Update CHANGELOG.md with session work under [Unreleased] (source: 2026-04-08_23-06_comprehensive-project-status.md:F.7)
 - [ ] Resolve include patterns bypassing generated-code detection design issue (source: filter.go:72)
 - [ ] Performance profile and optimize hot paths (source: 2026-04-08_23-06_comprehensive-project-status.md:F.23)
+- [ ] Document `**` pattern matching syntax in README
+- [ ] Add `go test -race` to CI
+- [ ] Add coverage threshold to CI
+- [ ] Add `golangci-lint` to CI
+- [ ] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
+- [ ] Export or unexport `MetricsMixin.filteredByReason` consistently
 
 ## 🟢 LOW Priority
 
 - [ ] Remove or document !needsContentCheck dead branch in DetectReason (source: detection.go:188)
 - [ ] Document API stability guarantees / Go module lifecycle (source: 2026-04-08_23-06_comprehensive-project-status.md:F.19)
 - [ ] Consider //go:generate for detector table generation (source: 2026-04-08_23-06_comprehensive-project-status.md:F.24)
-
-## ⚪ Unknown Priority
-
-- [ ] Add package-level Go doc for godoc.org readiness (source: 2026-04-08_23-06_comprehensive-project-status.md:F.6)
-- [ ] Create CONTRIBUTING.md for external contributors (source: 2026-04-08_23-06_comprehensive-project-status.md:F.17)
 - [ ] Add FilteredBy() examples to example_test.go (source: 2026-04-08_23-06_comprehensive-project-status.md:F.15)
 - [ ] Add Metrics usage examples (source: 2026-04-08_23-06_comprehensive-project-status.md:F.16)
 - [ ] Add Codecov or similar coverage tracking (source: 2026-04-08_23-06_comprehensive-project-status.md:F.21)
-- [ ] Test against real-world generated files for integration testing (source: 2026-04-08_23-06_comprehensive-project-status.md:F.22)
 - [ ] Evaluate filepath.WalkDir vs current approach for project scanning (source: 2026-04-08_23-06_comprehensive-project-status.md:F.25)
+- [ ] Tag v0.1.0 release
 
 ## ✅ Completed
 
@@ -48,3 +48,18 @@
 - [x] Add Filter.String() comprehensive tests → `filter_test.go`
 - [x] Add FilterReasons() method → `filter.go`
 - [x] Add FilterOption.IsValid() enforcement in NewFilter → `filter.go`
+- [x] Fix leaky fs.FS abstraction (remove os.ReadFile fallback) → `detection.go`
+- [x] Fix README metrics bug (TotalFilesChecked) → `README.md`
+- [x] Replace map[FilterOption]bool with map[FilterOption]struct{} → `filter.go`
+- [x] Derive IsValid() from AllFilterOptions/AllFilterReasons → `types.go`
+- [x] Derive AllErrorCodes()/helpText from single errorCodeDefs table → `errors.go`
+- [x] Consolidate sqlc patterns into consuming functions → `detection.go`
+- [x] Consolidate WithFilterOptions FilterAll expansion with optionsMap → `filter.go`
+- [x] Fix benchmarks to use fstest.MapFS → `bench_test.go`
+- [x] Add io.Reader detection API (DetectReasonReader) → `detection.go`
+- [x] Remove slog dependency from library → `sqlc.go`
+- [x] Add error code derivation tests → `errors_test.go`
+- [x] Add integration test fixtures from real tools → `testdata/`, `integration_test.go`
+- [x] Replace slog.Warn with configurable logger or return warnings → removed entirely
+- [x] Add package-level Go doc for godoc.org readiness → `doc.go`
+- [x] Test against real-world generated files for integration testing → `testdata/`
