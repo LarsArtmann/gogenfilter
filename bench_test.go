@@ -1,4 +1,4 @@
-package gogenfilter
+package gogenfilter //nolint:testpackage // needs access to unexported functions for benchmarking
 
 import (
 	"testing"
@@ -15,7 +15,7 @@ func benchmarkShouldFilter(b *testing.B, enabled bool) {
 	b.Helper()
 
 	fsys := fstest.MapFS{
-		"db/models.go": &fstest.MapFile{
+		"db/models.go": &fstest.MapFile{ //nolint:exhaustruct
 			Data: []byte(sqlcGeneratedContent),
 		},
 	}

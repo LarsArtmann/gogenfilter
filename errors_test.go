@@ -1,4 +1,4 @@
-package gogenfilter
+package gogenfilter //nolint:testpackage // needs access to unexported error types
 
 import (
 	"errors"
@@ -120,6 +120,7 @@ func testCrossTypeMismatch(
 	}
 }
 
+//nolint:gocognit,cyclop,funlen // comprehensive table-driven error code tests
 func TestErrorCode(t *testing.T) {
 	t.Parallel()
 

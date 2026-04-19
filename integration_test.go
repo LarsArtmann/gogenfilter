@@ -1,4 +1,4 @@
-package gogenfilter
+package gogenfilter //nolint:testpackage // needs access to unexported types for integration testing
 
 import (
 	"embed"
@@ -48,7 +48,10 @@ func TestIntegrationDetectReasonFromEmbedFS(t *testing.T) {
 			)
 
 			if reason != fixture.expectedReason {
-				t.Errorf("DetectReason(%q) = %v, want %v", fixture.path, reason, fixture.expectedReason)
+				t.Errorf(
+					"DetectReason(%q) = %v, want %v",
+					fixture.path, reason, fixture.expectedReason,
+				)
 			}
 		})
 	}
@@ -62,6 +65,7 @@ func TestIntegrationFilterWithEmbedFS(t *testing.T) {
 			t.Parallel()
 
 			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(testdataFS))
+
 			got, err := f.ShouldFilter(fixture.path)
 			if err != nil {
 				t.Fatalf("ShouldFilter(%q) error: %v", fixture.path, err)
@@ -79,6 +83,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 	t.Parallel()
 
 	mapFS := fstest.MapFS{}
+
 	for _, fixture := range integrationFixtures() {
 		content := mustReadFile(t, testdataFS, fixture.path)
 		mapFS[fixture.path] = &fstest.MapFile{Data: []byte(content)} //nolint:exhaustruct
@@ -89,6 +94,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 			t.Parallel()
 
 			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+
 			got, err := f.ShouldFilter(fixture.path)
 			if err != nil {
 				t.Fatalf("ShouldFilter(%q) error: %v", fixture.path, err)
@@ -122,25 +128,26 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 	}
 
 	mapFS := fstest.MapFS{}
-	for _, c := range cases {
-		if _, exists := mapFS[c.path]; !exists {
-			content := mustReadFile(t, testdataFS, c.path)
-			mapFS[c.path] = &fstest.MapFile{Data: []byte(content)} //nolint:exhaustruct
+	for _, tc := range cases {
+		if _, exists := mapFS[tc.path]; !exists {
+			content := mustReadFile(t, testdataFS, tc.path)
+			mapFS[tc.path] = &fstest.MapFile{Data: []byte(content)} //nolint:exhaustruct
 		}
 	}
 
-	for _, c := range cases {
-		t.Run(c.path+"/"+string(c.option), func(t *testing.T) {
+	for _, tc := range cases { //nolint:varnamelen // tc is standard table-driven test variable
+		t.Run(tc.path+"/"+string(tc.option), func(t *testing.T) {
 			t.Parallel()
 
-			f := NewFilter(Enabled(), WithFilterOptions(c.option), WithFS(mapFS))
-			got, err := f.ShouldFilter(c.path)
+			f := NewFilter(Enabled(), WithFilterOptions(tc.option), WithFS(mapFS))
+
+			got, err := f.ShouldFilter(tc.path)
 			if err != nil {
-				t.Fatalf("ShouldFilter(%q) error: %v", c.path, err)
+				t.Fatalf("ShouldFilter(%q) error: %v", tc.path, err)
 			}
 
-			if got != c.want {
-				t.Errorf("ShouldFilter(%q) with %v = %v, want %v", c.path, c.option, got, c.want)
+			if got != tc.want {
+				t.Errorf("ShouldFilter(%q) with %v = %v, want %v", tc.path, tc.option, got, tc.want)
 			}
 		})
 	}

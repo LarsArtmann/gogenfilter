@@ -313,6 +313,8 @@ func needsContentCheck(options map[FilterOption]struct{}) bool {
 
 // getContentBasedReason checks content for generator-specific markers.
 // Uses a table-driven approach: specific generators are checked first, FilterGeneric is the fallback.
+//
+//nolint:golines // table-driven loop is clearer on one line
 func getContentBasedReason(filePath, content string, options map[FilterOption]struct{}) FilterReason {
 	for _, d := range detectors {
 		if _, ok := options[d.option]; ok && d.checkContent != nil && d.checkContent(filePath, content) {
