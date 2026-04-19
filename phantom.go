@@ -1,5 +1,7 @@
 package gogenfilter
 
+import "fmt"
+
 // Phantom types for type safety
 // These types wrap primitive types to provide compile-time guarantees
 // about the semantic meaning of values.
@@ -10,9 +12,13 @@ package gogenfilter
 // It ensures path values are not confused with other string types.
 type StartPath string
 
+func (p StartPath) String() string { return string(p) }
+
 // ConfigPath represents a path to a configuration file.
 // It distinguishes config file paths from other path types.
 type ConfigPath string
+
+func (p ConfigPath) String() string { return string(p) }
 
 // Content-related types
 
@@ -20,12 +26,18 @@ type ConfigPath string
 // It provides type safety for operation identifiers.
 type Operation string
 
+func (o Operation) String() string { return string(o) }
+
 // ErrorMessage represents error message content.
 // It distinguishes error messages from other string values.
 type ErrorMessage string
+
+func (m ErrorMessage) String() string { return string(m) }
 
 // Count-related types
 
 // TotalFilesChecked represents a count of files that have been checked.
 // It provides type safety for metrics counting.
 type TotalFilesChecked int
+
+func (c TotalFilesChecked) String() string { return fmt.Sprintf("%d", c) }
