@@ -1,38 +1,36 @@
 # TODO List
 
 **Generated:** 2026-04-08
-**Updated:** 2026-04-19
+**Updated:** 2026-04-17
 **Files Processed:** 26
 
 ## 🟡 MEDIUM Priority
 
-- [ ] Update CHANGELOG.md with session work under [Unreleased] (source: 2026-04-08_23-06_comprehensive-project-status.md:F.7)
 - [ ] Resolve include patterns bypassing generated-code detection design issue (source: filter.go:72)
 - [ ] Performance profile and optimize hot paths (source: 2026-04-08_23-06_comprehensive-project-status.md:F.23)
-- [x] Document `**` pattern matching syntax in README
-- [x] Add `go test -race` to CI
-- [x] Add coverage threshold to CI (95%)
-- [x] Add `golangci-lint` to CI
-- [x] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
-- [x] Document MetricsMixin.filteredByReason encapsulation design → `metrics.go`
-- [x] Add .editorconfig for consistent formatting
-- [x] Add BenchmarkDetectReasonReader → `bench_test.go`
-- [x] Add MatchPattern edge case tests → `pattern_test.go`
-- [x] Fix all golangci-lint warnings (zero remaining)
-
-## 🟢 LOW Priority
-
-- [ ] Remove or document !needsContentCheck dead branch in DetectReason (source: detection.go:188)
 - [ ] Document API stability guarantees / Go module lifecycle (source: 2026-04-08_23-06_comprehensive-project-status.md:F.19)
 - [ ] Consider //go:generate for detector table generation (source: 2026-04-08_23-06_comprehensive-project-status.md:F.24)
-- [ ] Add FilteredBy() examples to example_test.go (source: 2026-04-08_23-06_comprehensive-project-status.md:F.15)
-- [ ] Add Metrics usage examples (source: 2026-04-08_23-06_comprehensive-project-status.md:F.16)
 - [ ] Add Codecov or similar coverage tracking (source: 2026-04-08_23-06_comprehensive-project-status.md:F.21)
 - [ ] Evaluate filepath.WalkDir vs current approach for project scanning (source: 2026-04-08_23-06_comprehensive-project-status.md:F.25)
 - [ ] Tag v0.1.0 release
 
+## 🟢 LOW Priority
+
+_(all items below are nice-to-haves for post-v0.1.0)_
+
 ## ✅ Completed
 
+- [x] Unexport `Validatable` interface → `validatable` in `types.go`
+- [x] Remove `sqlcConfigError()` bridge function — all callers use `newSQLCConfigError` with phantom types
+- [x] Add phantom type `String()` methods and tests → `phantom.go`, `phantom_test.go`
+- [x] Cache SQLC filename patterns as package-level var → `detection.go`
+- [x] Document `FilterOption.Reason()` string-value invariant → `types.go`
+- [x] Document `!needsContentCheck` branch as I/O optimization guard → `detection.go`
+- [x] Document include patterns "restrict scope" semantics → `filter.go` godoc, `README.md`
+- [x] Add examples for ShouldFilter, WithFS, WithIncludePatterns, Metrics, MustShouldFilter, DetectReasonReader → `example_test.go`
+- [x] Unexport `Metrics.filteredFiles` to prevent data race → `metrics.go`
+- [x] Remove stale slog references from sqlc.go godoc
+- [x] Update CHANGELOG.md with session work under [Unreleased]
 - [x] Consider io/fs.FS abstraction for testability → `WithFS()`, `FindSQLCConfigsFS`, `GetSQLOutputDirsFS`
 - [x] Add String() method to FilterStats for debugging → `metrics.go`
 - [x] Add String() method to Filter for debugging filter state → `filter.go`
@@ -65,7 +63,7 @@
 - [x] Add error code derivation tests → `errors_test.go`
 - [x] Add integration test fixtures from real tools → `testdata/`, `integration_test.go`
 - [x] Replace slog.Warn with configurable logger or return warnings → removed entirely
-- [x] Add package-level Go doc for godoc.org readiness → `doc.go`
+- [x] Add package-level Go doc for godoc.org readiness → `types.go`
 - [x] Test against real-world generated files for integration testing → `testdata/`
 - [x] Document `**` pattern matching syntax in README
 - [x] Add `go test -race` to CI

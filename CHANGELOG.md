@@ -13,17 +13,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `errorCodeDefs` single-source-of-truth table — `AllErrorCodes()` and `CodeHelp()` now derive from one table
 - Error code derivation tests — verify `errorCodeDefs` covers every const, has no duplicates, and matches `AllErrorCodes()` exactly
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool` — values were never `false`
+- `fmt.Stringer` implementation on all 5 phantom types (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`)
+- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, `MustShouldFilter`, and `DetectReasonReader`
+- Phantom type `String()` method tests — 5 types × 3 cases each
 
 ### Changed
 
 - **`IsValid()` methods derived from tables** — `FilterOption.IsValid()` and `FilterReason.IsValid()` now iterate `AllFilterOptions()`/`AllFilterReasons()` instead of manual switches, eliminating split-brain bugs when adding new detectors
 - **SQLC patterns consolidated** — `sqlcFilePatterns`/`sqlcCodePatterns` inlined into their consuming functions (`matchesSQLCFilenamePattern`, `HasSQLCContent`, `HasSQLCCodePatterns`)
+- **SQLC filename patterns cached** — `sqlcFilenamePatterns` moved to package-level var to avoid re-allocation on every call
 - **`WithFilterOptions` reuses `optionsMap`** — `FilterAll` expansion no longer duplicated between `filter.go` and `detection.go`
 - **Benchmarks use `fstest.MapFS`** — eliminates filesystem I/O noise for reliable perf numbers
 - **`slog` dependency removed** — library no longer produces log output; `warnMultipleSQLCConfigs` removed entirely
+- **`FilterOption.Reason()` invariant documented** — godoc now explains the shared string-value coupling and maintenance obligation when adding new detectors
+- **Include patterns semantics documented** — godoc and README clarify the "restrict scope" whitelist behavior
+- **`needsContentCheck` guard documented** — comment explains I/O optimization and correctness purpose
+- **Phantom types used directly** — eliminated 8+ explicit `string()` casts across `errors.go` and `project.go` via `fmt.Stringer`
+- **`sqlcConfigError` bridge removed** — all internal callers now use `newSQLCConfigError` with typed phantom values
+- **`Validatable` interface unexported** — renamed to `validatable`; only used as internal generic constraint
 
 ### Fixed
 
+- **Data race in `Metrics.filteredFiles`** — field unexported; was accessible without mutex protection
 - **Leaky `fs.FS` abstraction** — `detectReasonFS` no longer falls back to `os.ReadFile` when the provided filesystem doesn't contain the file
 - **README metrics example** — `TotalFilesChecked == 3` (was incorrectly `1`)
 
@@ -31,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `os.ReadFile` fallback in `detectReasonFS` — custom `fs.FS` implementations now behave correctly
 - `warnMultipleSQLCConfigs` function and all `slog` usage
+- `sqlcConfigError()` bridge function — replaced by direct phantom-typed calls to `newSQLCConfigError`
 
 ---
 
