@@ -28,6 +28,16 @@ func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message strin
 	}
 }
 
+func assertAllInMap[K comparable](t *testing.T, name string, items []K, lookup map[K]struct{}) {
+	t.Helper()
+
+	for _, item := range items {
+		if _, ok := lookup[item]; !ok {
+			t.Errorf("%v not found in %s", item, name)
+		}
+	}
+}
+
 //nolint:ireturn // Generic helper function that extracts typed errors from error chain
 func assertErrorsAs[T any](t *testing.T, err error) T {
 	t.Helper()
@@ -195,11 +205,7 @@ func TestErrorCode(t *testing.T) {
 			defCodes[def.Code] = struct{}{}
 		}
 
-		for _, c := range allConsts {
-			if _, ok := defCodes[c]; !ok {
-				t.Errorf("const %q not found in errorCodeDefs", c)
-			}
-		}
+		assertAllInMap(t, "errorCodeDefs", allConsts, defCodes)
 
 		if len(defCodes) != len(allConsts) {
 			t.Errorf("errorCodeDefs has %d entries but there are %d const error codes",
@@ -242,11 +248,7 @@ func TestErrorCode(t *testing.T) {
 			defCodes[def.Code] = struct{}{}
 		}
 
-		for _, c := range codes {
-			if _, ok := defCodes[c]; !ok {
-				t.Errorf("AllErrorCodes() returned %q but it's not in errorCodeDefs", c)
-			}
-		}
+		assertAllInMap(t, "errorCodeDefs", codes, defCodes)
 
 		if len(codes) != len(defCodes) {
 			t.Errorf("AllErrorCodes() returned %d codes, errorCodeDefs has %d",

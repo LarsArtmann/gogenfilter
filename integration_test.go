@@ -34,6 +34,26 @@ func integrationFixtures() []integrationFixture {
 	}
 }
 
+func assertFilterResult(t *testing.T, path string, got bool, expectedReason FilterReason) {
+	t.Helper()
+
+	expected := expectedReason != ReasonNotFiltered
+	if got != expected {
+		t.Errorf("ShouldFilter(%q) = %v, want %v", path, got, expected)
+	}
+}
+
+func mustShouldFilterFromFS(t *testing.T, f *Filter, path string) bool {
+	t.Helper()
+
+	got, err := f.ShouldFilter(path)
+	if err != nil {
+		t.Fatalf("ShouldFilter(%q) error: %v", path, err)
+	}
+
+	return got
+}
+
 func TestIntegrationDetectReasonFromEmbedFS(t *testing.T) {
 	t.Parallel()
 
@@ -66,15 +86,9 @@ func TestIntegrationFilterWithEmbedFS(t *testing.T) {
 
 			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(testdataFS))
 
-			got, err := f.ShouldFilter(fixture.path)
-			if err != nil {
-				t.Fatalf("ShouldFilter(%q) error: %v", fixture.path, err)
-			}
+			got := mustShouldFilterFromFS(t, f, fixture.path)
 
-			shouldFilter := fixture.expectedReason != ReasonNotFiltered
-			if got != shouldFilter {
-				t.Errorf("ShouldFilter(%q) = %v, want %v", fixture.path, got, shouldFilter)
-			}
+			assertFilterResult(t, fixture.path, got, fixture.expectedReason)
 		})
 	}
 }
@@ -95,15 +109,9 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 
 			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
 
-			got, err := f.ShouldFilter(fixture.path)
-			if err != nil {
-				t.Fatalf("ShouldFilter(%q) error: %v", fixture.path, err)
-			}
+			got := mustShouldFilterFromFS(t, f, fixture.path)
 
-			shouldFilter := fixture.expectedReason != ReasonNotFiltered
-			if got != shouldFilter {
-				t.Errorf("ShouldFilter(%q) = %v, want %v", fixture.path, got, shouldFilter)
-			}
+			assertFilterResult(t, fixture.path, got, fixture.expectedReason)
 		})
 	}
 }
