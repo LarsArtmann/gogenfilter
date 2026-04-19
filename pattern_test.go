@@ -109,13 +109,13 @@ func TestMatchPatternInvalidPattern(t *testing.T) {
 	mustNotMatchPattern(t, "file.go", "[", "invalid pattern")
 }
 
-func TestMatchSegmentsDoublestarNoMatch(t *testing.T) {
+func TestMatchPatternDoublestarNoMatch(t *testing.T) {
 	t.Parallel()
 
 	mustNotMatchPattern(t, "a/b/c", "x/**/y", "doublestar pattern with no matching segments")
 }
 
-func TestMatchSegmentsPathShorterThanPattern(t *testing.T) {
+func TestMatchPatternPathShorterThanPattern(t *testing.T) {
 	t.Parallel()
 
 	mustNotMatchPattern(t, "a/b", "a/b/c", "path shorter than pattern")

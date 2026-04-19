@@ -21,6 +21,7 @@ linters:
         Main:
           allow:
             - $gostd
+            - github.com/bmatcuk/doublestar/v4
             - github.com/go-faster/yaml
             - github.com/LarsArtmann/gogenfilter
   enable:
