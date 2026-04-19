@@ -48,8 +48,10 @@ type validatable interface {
 func (o FilterOption) String() string { return string(o) }
 
 // Reason returns the FilterReason corresponding to this FilterOption.
-// Since FilterOption and FilterReason share the same underlying string values,
-// this is a direct type conversion. For example, FilterSQLC.Reason() == ReasonSQLC.
+// This relies on the invariant that each FilterOption constant and its matching
+// FilterReason constant share the same underlying string value (e.g., FilterSQLC == "sqlc" == ReasonSQLC).
+// The detectors table enforces this pairing via explicit (option, reason) fields.
+// When adding a new detector, both a FilterOption and FilterReason const with identical values must be defined.
 func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
 
 // IsValid reports whether the FilterOption is a recognized value.
