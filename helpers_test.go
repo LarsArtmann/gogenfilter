@@ -135,6 +135,16 @@ func mustShouldFilter(t *testing.T, f *Filter, filePath string) bool {
 	return got
 }
 
+func assertShouldFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bool) {
+	t.Helper()
+
+	filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+	got := mustShouldFilter(t, filter, filePath)
+	if got != expected {
+		t.Errorf("ShouldFilter(%q) = %v, want %v", filePath, got, expected)
+	}
+}
+
 func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 	t.Helper()
 
