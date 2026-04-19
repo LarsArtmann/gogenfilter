@@ -175,6 +175,83 @@ func TestErrorCode(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("errorCodeDefs covers every const", func(t *testing.T) {
+		t.Parallel()
+
+		allConsts := []ErrorCode{
+			CodeProjectRootNotFound,
+			CodeProjectRootInvalidPath,
+			CodeSQLCConfigRead,
+			CodeSQLCConfigParse,
+			CodeSQLCConfigWalk,
+			CodeSQLCConfigCollect,
+			CodeSQLCConfigFind,
+		}
+
+		defCodes := make(map[ErrorCode]struct{}, len(errorCodeDefs))
+		for _, def := range errorCodeDefs {
+			defCodes[def.Code] = struct{}{}
+		}
+
+		for _, c := range allConsts {
+			if _, ok := defCodes[c]; !ok {
+				t.Errorf("const %q not found in errorCodeDefs", c)
+			}
+		}
+
+		if len(defCodes) != len(allConsts) {
+			t.Errorf("errorCodeDefs has %d entries but there are %d const error codes",
+				len(defCodes), len(allConsts))
+		}
+	})
+
+	t.Run("errorCodeDefs has no duplicates", func(t *testing.T) {
+		t.Parallel()
+
+		seen := make(map[ErrorCode]int, len(errorCodeDefs))
+		for _, def := range errorCodeDefs {
+			seen[def.Code]++
+		}
+
+		for code, count := range seen {
+			if count > 1 {
+				t.Errorf("errorCodeDefs has duplicate entry for %q (count: %d)", code, count)
+			}
+		}
+	})
+
+	t.Run("errorCodeDefs has non-empty help text", func(t *testing.T) {
+		t.Parallel()
+
+		for _, def := range errorCodeDefs {
+			if strings.TrimSpace(def.Help) == "" {
+				t.Errorf("errorCodeDefs entry for %q has empty help text", def.Code)
+			}
+		}
+	})
+
+	t.Run("AllErrorCodes matches errorCodeDefs exactly", func(t *testing.T) {
+		t.Parallel()
+
+		codes := AllErrorCodes()
+
+		defCodes := make(map[ErrorCode]struct{}, len(errorCodeDefs))
+		for _, def := range errorCodeDefs {
+			defCodes[def.Code] = struct{}{}
+		}
+
+		for _, c := range codes {
+			if _, ok := defCodes[c]; !ok {
+				t.Errorf("AllErrorCodes() returned %q but it's not in errorCodeDefs", c)
+			}
+		}
+
+		if len(codes) != len(defCodes) {
+			t.Errorf("AllErrorCodes() returned %d codes, errorCodeDefs has %d",
+				len(codes), len(defCodes))
+		}
+	})
 }
 
 func TestProjectRootErrorMessaging(t *testing.T) {
