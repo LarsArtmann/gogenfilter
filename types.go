@@ -35,6 +35,8 @@
 //	)
 package gogenfilter
 
+import "slices"
+
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
@@ -52,13 +54,7 @@ func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
 
 // IsValid reports whether the FilterOption is a recognized value.
 func (o FilterOption) IsValid() bool {
-	for _, opt := range AllFilterOptions() {
-		if o == opt {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(AllFilterOptions(), o)
 }
 
 const (
@@ -108,13 +104,7 @@ func (r FilterReason) String() string { return string(r) }
 
 // IsValid reports whether the FilterReason is a recognized value.
 func (r FilterReason) IsValid() bool {
-	for _, reason := range AllFilterReasons() {
-		if r == reason {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(AllFilterReasons(), r)
 }
 
 // FilterReason values for each supported generator and special filter outcomes.
@@ -156,7 +146,8 @@ func AllFilterOptions() []FilterOption {
 // Derived from the detectors table plus special reasons (include/exclude/not-filtered),
 // so adding a new detector automatically updates this list.
 func AllFilterReasons() []FilterReason {
-	reasons := make([]FilterReason, 0, len(detectors)+3)
+	extraReasonsCount := 3
+	reasons := make([]FilterReason, 0, len(detectors)+extraReasonsCount)
 
 	for _, d := range detectors {
 		reasons = append(reasons, d.reason)

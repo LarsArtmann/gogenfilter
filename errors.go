@@ -34,13 +34,21 @@ type errorCodeDef struct {
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
 var errorCodeDefs = []errorCodeDef{
-	{CodeProjectRootNotFound, "Ensure the directory is within a Go project containing a go.mod file or other project marker file."},
+	{CodeProjectRootNotFound, //nolint:golines // help text is more readable on one line
+		"Ensure the directory is within a Go project containing a go.mod file or other project marker file."},
 	{CodeProjectRootInvalidPath, "Verify the start path exists and is a valid directory."},
-	{CodeSQLCConfigRead, "Check that the sqlc config file exists and has appropriate read permissions."},
-	{CodeSQLCConfigParse, "Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format."},
+	{
+		CodeSQLCConfigRead,
+		"Check that the sqlc config file exists and has appropriate read permissions.",
+	},
+	{CodeSQLCConfigParse, //nolint:golines // help text is more readable on one line
+		"Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format."},
 	{CodeSQLCConfigWalk, "Ensure the search path exists and is accessible for directory traversal."},
 	{CodeSQLCConfigCollect, "Verify that all sqlc config files are valid and accessible."},
-	{CodeSQLCConfigFind, "Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file."},
+	{
+		CodeSQLCConfigFind,
+		"Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file.",
+	},
 }
 
 // AllErrorCodes returns all defined error codes.

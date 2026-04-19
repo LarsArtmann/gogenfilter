@@ -213,7 +213,6 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	return unmarshalSQLCConfig(data, configPath)
 }
 
-
 func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var config sqlcConfig
 

@@ -1,4 +1,4 @@
-package gogenfilter
+package gogenfilter //nolint:testpackage // needs access to unexported pattern functions
 
 import "testing"
 

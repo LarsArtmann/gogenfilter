@@ -1,5 +1,4 @@
-package gogenfilter
-
+package gogenfilter //nolint:testpackage // needs access to unexported helpers and test utilities
 import (
 	"errors"
 	"fmt"
@@ -139,6 +138,7 @@ func assertShouldFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expec
 	t.Helper()
 
 	filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+
 	got := mustShouldFilter(t, filter, filePath)
 	if got != expected {
 		t.Errorf("ShouldFilter(%q) = %v, want %v", filePath, got, expected)

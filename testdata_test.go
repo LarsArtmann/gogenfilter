@@ -1,4 +1,4 @@
-package gogenfilter
+package gogenfilter //nolint:testpackage
 
 //nolint:gochecknoglobals
 var generatedTestCases = []generatorTestCase{
@@ -212,55 +212,55 @@ func detectGeneratedTestCases() []filenameTestCase {
 		{
 			"detects sqlc by filename",
 			"db/models.go",
-			map[FilterOption]struct{}{FilterSQLC: struct{}{}},
+			map[FilterOption]struct{}{FilterSQLC: {}},
 			ReasonSQLC,
 		},
 		{
 			"detects templ by filename",
 			"page_templ.go",
-			map[FilterOption]struct{}{FilterTempl: struct{}{}},
+			map[FilterOption]struct{}{FilterTempl: {}},
 			ReasonTempl,
 		},
 		{
 			"detects go-enum by filename",
 			"status_enum.go",
-			map[FilterOption]struct{}{FilterGoEnum: struct{}{}},
+			map[FilterOption]struct{}{FilterGoEnum: {}},
 			ReasonGoEnum,
 		},
 		{
 			"detects protobuf .pb.go by filename",
 			"user.pb.go",
-			map[FilterOption]struct{}{FilterProtobuf: struct{}{}},
+			map[FilterOption]struct{}{FilterProtobuf: {}},
 			ReasonProtobuf,
 		},
 		{
 			"detects protobuf grpc by filename",
 			"user_grpc.pb.go",
-			map[FilterOption]struct{}{FilterProtobuf: struct{}{}},
+			map[FilterOption]struct{}{FilterProtobuf: {}},
 			ReasonProtobuf,
 		},
 		{
 			"detects mockgen _mock.go by filename",
 			"service_mock.go",
-			map[FilterOption]struct{}{FilterMockgen: struct{}{}},
+			map[FilterOption]struct{}{FilterMockgen: {}},
 			ReasonMockgen,
 		},
 		{
 			"detects mockgen mock_ by filename",
 			"mock_service.go",
-			map[FilterOption]struct{}{FilterMockgen: struct{}{}},
+			map[FilterOption]struct{}{FilterMockgen: {}},
 			ReasonMockgen,
 		},
 		{
 			"does not match mock_ in middle of filename",
 			"remove_mock_data.go",
-			map[FilterOption]struct{}{FilterMockgen: struct{}{}},
+			map[FilterOption]struct{}{FilterMockgen: {}},
 			ReasonNotFiltered,
 		},
 		{
 			"returns not filtered for regular file",
 			"main.go",
-			map[FilterOption]struct{}{FilterSQLC: struct{}{}},
+			map[FilterOption]struct{}{FilterSQLC: {}},
 			ReasonNotFiltered,
 		},
 	}
