@@ -252,6 +252,9 @@ func detectReasonFromMap(filePath, content string, options map[FilterOption]stru
 		return reason
 	}
 
+	// Correctness guard: if no enabled detector has a checkContent function,
+	// there is no point reading the file. This also prevents detectReasonFS
+	// from performing unnecessary I/O when only filename-based detectors are active.
 	if !needsContentCheck(options) {
 		return ReasonNotFiltered
 	}
