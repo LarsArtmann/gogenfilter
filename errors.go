@@ -22,31 +22,49 @@ const (
 	CodeSQLCConfigFind         ErrorCode = "sqlc_config_find"          // finding sqlc config files failed
 )
 
-// AllErrorCodes returns all defined error codes.
-func AllErrorCodes() []ErrorCode {
-	return []ErrorCode{
-		CodeProjectRootNotFound,
-		CodeProjectRootInvalidPath,
-		CodeSQLCConfigRead,
-		CodeSQLCConfigParse,
-		CodeSQLCConfigWalk,
-		CodeSQLCConfigCollect,
-		CodeSQLCConfigFind,
-	}
+// errorCodeDef pairs an error code with its user-facing help text.
+// All error codes are defined here — AllErrorCodes() and CodeHelp() derive from this table.
+type errorCodeDef struct {
+	Code ErrorCode
+	Help string
 }
 
-// helpText maps error codes to actionable user guidance.
+// errorCodeDefs is the single source of truth for all error codes.
+// Adding a new entry here automatically updates AllErrorCodes() and CodeHelp().
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
-var helpText = map[ErrorCode]string{
-	CodeProjectRootNotFound:    "Ensure the directory is within a Go project containing a go.mod file or other project marker file.",
-	CodeProjectRootInvalidPath: "Verify the start path exists and is a valid directory.",
-	CodeSQLCConfigRead:         "Check that the sqlc config file exists and has appropriate read permissions.",
-	CodeSQLCConfigParse:        "Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format.",
-	CodeSQLCConfigWalk:         "Ensure the search path exists and is accessible for directory traversal.",
-	CodeSQLCConfigCollect:      "Verify that all sqlc config files are valid and accessible.",
-	CodeSQLCConfigFind:         "Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file.",
+var errorCodeDefs = []errorCodeDef{
+	{CodeProjectRootNotFound, "Ensure the directory is within a Go project containing a go.mod file or other project marker file."},
+	{CodeProjectRootInvalidPath, "Verify the start path exists and is a valid directory."},
+	{CodeSQLCConfigRead, "Check that the sqlc config file exists and has appropriate read permissions."},
+	{CodeSQLCConfigParse, "Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format."},
+	{CodeSQLCConfigWalk, "Ensure the search path exists and is accessible for directory traversal."},
+	{CodeSQLCConfigCollect, "Verify that all sqlc config files are valid and accessible."},
+	{CodeSQLCConfigFind, "Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file."},
 }
+
+// AllErrorCodes returns all defined error codes.
+// Derived from errorCodeDefs — adding a new def automatically updates this list.
+func AllErrorCodes() []ErrorCode {
+	codes := make([]ErrorCode, len(errorCodeDefs))
+	for i, def := range errorCodeDefs {
+		codes[i] = def.Code
+	}
+
+	return codes
+}
+
+// helpText builds the help lookup map from errorCodeDefs.
+//
+//nolint:gochecknoglobals // immutable lookup table, derived from errorCodeDefs
+var helpText = func() map[ErrorCode]string {
+	m := make(map[ErrorCode]string, len(errorCodeDefs))
+	for _, def := range errorCodeDefs {
+		m[def.Code] = def.Help
+	}
+
+	return m
+}()
 
 // CodeHelp returns the user-friendly help text for the given error code.
 func CodeHelp(code ErrorCode) string {
