@@ -3,7 +3,6 @@ package gogenfilter
 import (
 	"fmt"
 	"io/fs"
-	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -298,10 +297,7 @@ func detectReasonFS(
 
 	content, err := fs.ReadFile(fsys, filePath)
 	if err != nil {
-		content, err = os.ReadFile(filePath)
-		if err != nil {
-			return ReasonNotFiltered, fmt.Errorf("read file %q: %w", filePath, err)
-		}
+		return ReasonNotFiltered, fmt.Errorf("read file %q: %w", filePath, err)
 	}
 
 	return getContentBasedReason(filePath, string(content), options), nil
