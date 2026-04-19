@@ -27,7 +27,7 @@ type Metrics struct {
 
 	mu sync.RWMutex
 
-	FilteredFiles map[FilterReason][]string
+	filteredFiles map[FilterReason][]string
 }
 
 // NewMetrics creates a new filter metrics tracker.
@@ -38,7 +38,7 @@ func NewMetrics() *Metrics {
 			filteredByReason:  make(map[FilterReason]int),
 		},
 		mu:            sync.RWMutex{},
-		FilteredFiles: make(map[FilterReason][]string),
+		filteredFiles: make(map[FilterReason][]string),
 	}
 }
 
@@ -56,7 +56,7 @@ func (m *Metrics) record(filePath string, reason FilterReason) {
 
 	if reason != ReasonNotFiltered {
 		m.filteredByReason[reason]++
-		m.FilteredFiles[reason] = append(m.FilteredFiles[reason], filePath)
+		m.filteredFiles[reason] = append(m.filteredFiles[reason], filePath)
 	}
 }
 
