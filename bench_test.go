@@ -1,6 +1,8 @@
 package gogenfilter //nolint:testpackage // needs access to unexported functions for benchmarking
 
 import (
+	"io"
+	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -141,4 +143,32 @@ func BenchmarkDetectReason(b *testing.B) {
 			_ = DetectReason("main.go", "package main\n", FilterAll)
 		}
 	})
+}
+
+func BenchmarkDetectReasonReader(b *testing.B) {
+	tests := []struct {
+		name    string
+		path    string
+		content string
+	}{
+		{
+			name:    "sqlc_filename",
+			path:    "db/models.go",
+			content: sqlcGeneratedContent,
+		},
+		{
+			name:    "not_filtered",
+			path:    "main.go",
+			content: "package main\nfunc main() {}\n",
+		},
+	}
+
+	for _, tt := range tests {
+		b.Run(tt.name, func(b *testing.B) {
+			for b.Loop() {
+				reader := io.NopCloser(strings.NewReader(tt.content))
+				_, _ = DetectReasonReader(tt.path, reader, FilterAll)
+			}
+		})
+	}
 }
