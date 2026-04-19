@@ -170,7 +170,7 @@ filtered, _ = f.ShouldFilter("page_templ.go")
 filtered, _ = f.ShouldFilter("main.go")
 
 stats := f.GetStats()
-// stats.TotalFilesChecked == 1
+// stats.TotalFilesChecked == 3
 // stats.FilteredBy(gogenfilter.ReasonSQLC) == 1
 // stats.FilteredBy(gogenfilter.ReasonTempl) == 1
 // stats.TotalFiltered() == 2
