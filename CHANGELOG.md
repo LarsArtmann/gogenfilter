@@ -51,7 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - **Error system** — centralized, branded, user-friendly error architecture:
-  - `ErrorCode` string type with `String()` via generic `stringFrom[T ~string]` helper
+  - `ErrorCode` string type with `String()` via direct `string(c)` conversion
   - 7 error code constants: `CodeProjectRootNotFound`, `CodeProjectRootInvalidPath`, `CodeSQLCConfigRead`, `CodeSQLCConfigParse`, `CodeSQLCConfigWalk`, `CodeSQLCConfigCollect`, `CodeSQLCConfigFind`
   - `AllErrorCodes()` function returning all defined error codes
   - `CodeHelp(code)` function returning user-friendly guidance for each error code
@@ -59,7 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - 7 sentinel errors for use with `errors.Is`: `ErrProjectRootNotFound`, `ErrProjectRootInvalidPath`, `ErrSQLCConfigRead`, `ErrSQLCConfigParse`, `ErrSQLCConfigWalk`, `ErrSQLCConfigCollect`, `ErrSQLCConfigFind`
   - `ErrorCoder` interface for programmatic error code access
   - `Helper` interface for user-friendly guidance
-  - `Causable` interface for errors that wrap an underlying cause
+  - `Causable` interface for errors that wrap an underlying cause *(later removed as unused)*
   - `CodeEqual[T]` generic function consolidating `Is()` comparison logic
   - `ProjectRootError` struct with `Code`, `StartPath`, `Markers`, `Cause` fields
   - `SQLCConfigError` struct with `Code`, `ConfigPath`, `Operation`, `Message`, `Cause` fields
@@ -70,7 +70,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `Operation` for error operation descriptions
   - `ErrorMessage` for error message text
   - `TotalFilesChecked` for metrics counter
-- `stringFrom[T ~string]` — generic helper consolidating `String()` methods for all string-based types
+- Each phantom and string-based type implements `String()` directly via `string()` conversion
 - `validatable` interface for internal types with `IsValid()` (unexported)
 - `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types — all internal callers now use phantom types directly
 - `sqlcFindError` and `sqlcWalkError` helper constructors
@@ -99,7 +99,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Breaking**: `ParseSQLCConfig` unexported to `parseSQLCConfig` along with `SQLCConfig`/`SQLCVersion` types
 - `detector` struct unified from separate `contentCheck`/`filenameCheck` types into single type with optional fields
 - Table lookup functions converted to package-level `var` for zero-allocation lookup
-- `matchesAnySuffix`/`matchesAnyContains` consolidated into generic `matchAnyWith`
+- `matchesAnySuffix`/`matchesAnyContains` consolidated into `anyMatch`
 - `filepath.Walk` replaced with `filepath.WalkDir` for better performance
 - `fileExists` simplified from 7 lines to `return err == nil`
 - `go.mod` toolchain downgraded from `1.26.1` to `1.26.0` for local compatibility
@@ -110,5 +110,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 
-- Redundant `reason` field from `detector` struct — now derived via `FilterOption.Reason()`
 - `Reasons()` method from `FilterStats` — unused and untested
