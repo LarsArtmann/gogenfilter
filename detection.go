@@ -248,18 +248,18 @@ func DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (Fil
 
 // detectReasonFromMap is the shared core for both DetectReason and detectReasonFS.
 func detectReasonFromMap(filePath, content string, options map[FilterOption]struct{}) FilterReason {
-	if reason := getFilenameBasedReason(filePath, options); reason != ReasonNotFiltered {
-		return reason
+	// Phase 1: Check filename-based detectors (zero I/O)
+	filenameReason := getFilenameBasedReason(filePath, options)
+	if filenameReason != ReasonNotFiltered {
+		return filenameReason
 	}
 
-	// Correctness guard: if no enabled detector has a checkContent function,
-	// there is no point reading the file. This also prevents detectReasonFS
-	// from performing unnecessary I/O when only filename-based detectors are active.
-	if !needsContentCheck(options) {
-		return ReasonNotFiltered
+	// Phase 2: Content-based detection only if needed
+	if needsContentCheck(options) {
+		return getContentBasedReason(filePath, content, options)
 	}
 
-	return getContentBasedReason(filePath, content, options)
+	return ReasonNotFiltered
 }
 
 // optionsMap builds a lookup map from variadic FilterOption values.
@@ -307,9 +307,12 @@ func detectReasonFS(
 
 // needsContentCheck returns true if any enabled detector requires reading file content.
 func needsContentCheck(options map[FilterOption]struct{}) bool {
-	for _, d := range detectors {
-		if _, ok := options[d.option]; ok && d.checkContent != nil {
-			return true
+	for i := range detectors {
+		d := &detectors[i]
+		if _, enabled := options[d.option]; enabled {
+			if d.checkContent != nil {
+				return true
+			}
 		}
 	}
 
@@ -318,12 +321,17 @@ func needsContentCheck(options map[FilterOption]struct{}) bool {
 
 // getContentBasedReason checks content for generator-specific markers.
 // Uses a table-driven approach: specific generators are checked first, FilterGeneric is the fallback.
-//
-//nolint:golines // table-driven loop is clearer on one line
-func getContentBasedReason(filePath, content string, options map[FilterOption]struct{}) FilterReason {
-	for _, d := range detectors {
-		if _, ok := options[d.option]; ok && d.checkContent != nil && d.checkContent(filePath, content) {
-			return d.reason
+func getContentBasedReason(
+	path string,
+	fileContent string,
+	opts map[FilterOption]struct{},
+) FilterReason {
+	for i := range detectors {
+		d := &detectors[i]
+		if _, enabled := opts[d.option]; enabled {
+			if d.checkContent != nil && d.checkContent(path, fileContent) {
+				return d.reason
+			}
 		}
 	}
 
@@ -334,9 +342,12 @@ func getContentBasedReason(filePath, content string, options map[FilterOption]st
 func getFilenameBasedReason(filePath string, options map[FilterOption]struct{}) FilterReason {
 	filename := filepath.Base(filePath)
 
-	for _, d := range detectors {
-		if _, ok := options[d.option]; ok && d.matchFilename != nil && d.matchFilename(filename) {
-			return d.reason
+	for i := range detectors {
+		d := &detectors[i]
+		if _, enabled := options[d.option]; enabled {
+			if d.matchFilename != nil && d.matchFilename(filename) {
+				return d.reason
+			}
 		}
 	}
 

@@ -1,4 +1,5 @@
 package gogenfilter
+
 import (
 	"errors"
 	"fmt"
