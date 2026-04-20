@@ -1,7 +1,7 @@
 # TODO List
 
 **Generated:** 2026-04-08
-**Updated:** 2026-04-17
+**Updated:** 2026-04-20
 **Files Processed:** 26
 
 ## 🟡 MEDIUM Priority
@@ -70,6 +70,13 @@ _(all items below are nice-to-haves for post-v0.1.0)_
 - [x] Add coverage threshold to CI (95%)
 - [x] Add `golangci-lint` to CI
 - [x] Add `//nolint` comments for known false-positive linter warnings (testpackage, depguard)
+- [x] Replace hand-rolled glob matching with doublestar/v4 → `pattern.go`
+- [x] Configure golangci-lint v2 with proper test-file exclusions (testpackage, funlen, gocognit, cyclop) → `.golangci.yaml`
+- [x] Remove all unused `//nolint` directives from test files → 15 `*_test.go` files
+- [x] Fix CHANGELOG contradictions with current codebase → `CHANGELOG.md`
+- [x] Replace proprietary LICENSE with MIT to match README → `LICENSE`
+- [x] Replace `extraReasonsCount` magic number with named `nonDetectorReasons` const → `types.go`
+- [x] Evaluate sqlc error constructor consolidation — kept named wrappers for readability → `sqlc.go`
 - [x] Document MetricsMixin.filteredByReason encapsulation design → `metrics.go`
 - [x] Add .editorconfig for consistent formatting
 - [x] Add BenchmarkDetectReasonReader → `bench_test.go`
