@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported metrics fields
+package gogenfilter
 
 import (
 	"testing"

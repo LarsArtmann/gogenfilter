@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage
+package gogenfilter
 
 //nolint:gochecknoglobals
 var generatedTestCases = []generatorTestCase{
@@ -139,7 +139,6 @@ var generatedTestCases = []generatorTestCase{
 	},
 }
 
-//nolint:funlen
 func shouldFilterTestCases() []shouldFilterTestCase {
 	return []shouldFilterTestCase{
 		newShouldFilterTest(

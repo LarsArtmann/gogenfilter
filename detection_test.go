@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported detectors, optionsMap
+package gogenfilter
 
 import (
 	"os"

@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported types for integration testing
+package gogenfilter
 
 import (
 	"embed"

@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage
+package gogenfilter
 
 import (
 	"path/filepath"
