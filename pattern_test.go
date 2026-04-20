@@ -97,7 +97,12 @@ func matchPatternTestCases() []matchPatternTestCase {
 			pattern:  "*.go",
 			expected: true,
 		},
-		{name: "single star no separator", path: "dir/file.go", pattern: "*file.go", expected: true},
+		{
+			name:     "single star no separator",
+			path:     "dir/file.go",
+			pattern:  "*file.go",
+			expected: true,
+		},
 		{
 			name:     "absolute path with relative pattern",
 			path:     "/tmp/project/pkg1/file.go",

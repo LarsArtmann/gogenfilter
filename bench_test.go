@@ -17,7 +17,7 @@ func benchmarkShouldFilter(b *testing.B, enabled bool) {
 	b.Helper()
 
 	fsys := fstest.MapFS{
-		"db/models.go": &fstest.MapFile{ //nolint:exhaustruct
+		"db/models.go": &fstest.MapFile{
 			Data: []byte(sqlcGeneratedContent),
 		},
 	}
