@@ -45,16 +45,16 @@
 
 ### d) What could we still improve?
 
-| Improvement | Impact | Effort |
-|---|---|---|
-| Derive `IsValid()` from detectors table | High (eliminates split brain) | Low |
-| Derive `AllErrorCodes()`/`helpText` from single source | High (eliminates split brain) | Low |
-| Fix leaky `fs.FS` abstraction | High (real bug) | Low |
-| Replace `map[FilterOption]bool` with `map[FilterOption]struct{}` | Low (correctness) | Trivial |
-| Use `fstest.MapFS` in benchmarks | Medium (reliable perf numbers) | Low |
-| Make slog configurable | Medium (library hygiene) | Medium |
-| Add `io.Reader` detection API | Medium (real use case) | Low |
-| Add real-world integration test fixtures | High (confidence) | Medium |
+| Improvement                                                      | Impact                         | Effort  |
+| ---------------------------------------------------------------- | ------------------------------ | ------- |
+| Derive `IsValid()` from detectors table                          | High (eliminates split brain)  | Low     |
+| Derive `AllErrorCodes()`/`helpText` from single source           | High (eliminates split brain)  | Low     |
+| Fix leaky `fs.FS` abstraction                                    | High (real bug)                | Low     |
+| Replace `map[FilterOption]bool` with `map[FilterOption]struct{}` | Low (correctness)              | Trivial |
+| Use `fstest.MapFS` in benchmarks                                 | Medium (reliable perf numbers) | Low     |
+| Make slog configurable                                           | Medium (library hygiene)       | Medium  |
+| Add `io.Reader` detection API                                    | Medium (real use case)         | Low     |
+| Add real-world integration test fixtures                         | High (confidence)              | Medium  |
 
 ### e) Did we lie?
 
@@ -74,23 +74,24 @@
 ### g) Ghost systems / split brains
 
 **Ghost systems (underutilized but not dead):**
+
 - `project.go` (`FindProjectRoot`) — One caller: `sqlc.go:190`. Generic enough to be useful elsewhere, but currently orphaned in utility.
 - `phantom.go` types `Operation`, `ErrorMessage` — Only used by `sqlc.go` error construction. The type safety they provide is real but the cognitive overhead is disproportionate.
 
 **Split brains (must fix):**
 
-| # | What | Location A | Location B |
-|---|---|---|---|
-| 1 | `FilterOption.IsValid()` | `types.go:54-63` (switch) | `types.go:66-104` (consts) |
-| 2 | `FilterReason.IsValid()` | `types.go:112-123` (switch) | `types.go:126-141` (consts) |
-| 3 | `AllErrorCodes()` | `errors.go:26-36` (manual list) | `errors.go:15-23` (consts) |
-| 4 | `helpText` | `errors.go:41-49` (map) | `errors.go:15-23` (consts) |
-| 5 | `sqlcFilePatterns`/`sqlcCodePatterns` | `detection.go:61-78` (separate) | `detection.go:115-129` (detector) |
-| 6 | `WithFilterOptions` expanding `FilterAll` | `filter.go:36-48` (inline) | `detection.go:266-282` (`optionsMap`) |
+| #   | What                                      | Location A                      | Location B                            |
+| --- | ----------------------------------------- | ------------------------------- | ------------------------------------- |
+| 1   | `FilterOption.IsValid()`                  | `types.go:54-63` (switch)       | `types.go:66-104` (consts)            |
+| 2   | `FilterReason.IsValid()`                  | `types.go:112-123` (switch)     | `types.go:126-141` (consts)           |
+| 3   | `AllErrorCodes()`                         | `errors.go:26-36` (manual list) | `errors.go:15-23` (consts)            |
+| 4   | `helpText`                                | `errors.go:41-49` (map)         | `errors.go:15-23` (consts)            |
+| 5   | `sqlcFilePatterns`/`sqlcCodePatterns`     | `detection.go:61-78` (separate) | `detection.go:115-129` (detector)     |
+| 6   | `WithFilterOptions` expanding `FilterAll` | `filter.go:36-48` (inline)      | `detection.go:266-282` (`optionsMap`) |
 
 ### h) Scope creep
 
-1. **SQLC config discovery** (`sqlc.go`, 339 lines) — Walking filesystem, parsing YAML, finding project root. This is arguably a separate package or library. For a generated-code *filter*, it's significant scope. Justified by the real use case (sqlc output detection), but the line between "filter" and "config parser" is blurred.
+1. **SQLC config discovery** (`sqlc.go`, 339 lines) — Walking filesystem, parsing YAML, finding project root. This is arguably a separate package or library. For a generated-code _filter_, it's significant scope. Justified by the real use case (sqlc output detection), but the line between "filter" and "config parser" is blurred.
 
 2. **Metrics system** (`metrics.go`, 134 lines) — Thread-safe stats tracking with mutexes, snapshots, string formatting. Well-executed but adds complexity. Justified: linters genuinely need these stats.
 
@@ -112,6 +113,7 @@ No evidence of regressions. The old string-based `Label` types were removed in e
 ### k) How are we doing on tests?
 
 **Strengths:**
+
 - 97.1% coverage — strong
 - Table-driven tests throughout
 - Concurrent test with 100 goroutines
@@ -121,6 +123,7 @@ No evidence of regressions. The old string-based `Label` types were removed in e
 - Generic test helpers reduce boilerplate
 
 **Weaknesses:**
+
 - **No tests for OS-based `FindSQLCConfigs`/`GetSQLOutputDirs`** — Only FS variants tested
 - **Benchmarks use real filesystem** — Unreliable numbers
 - **Property tests are shallow** — `testing/quick` doesn't deeply exercise filter logic
@@ -128,7 +131,7 @@ No evidence of regressions. The old string-based `Label` types were removed in e
 - **No tests for error code derivation** — Would catch `AllErrorCodes()` sync issues
 - **`project_test.go` uses temp dirs** — Fine but not fully portable
 
-**Assessment:** Test infrastructure is excellent. Test *coverage* is strong. Test *depth* has gaps — we test the API surface thoroughly but don't verify invariants between derived lists or against real-world inputs.
+**Assessment:** Test infrastructure is excellent. Test _coverage_ is strong. Test _depth_ has gaps — we test the API surface thoroughly but don't verify invariants between derived lists or against real-world inputs.
 
 ---
 
@@ -136,23 +139,23 @@ No evidence of regressions. The old string-based `Label` types were removed in e
 
 The user listed many libraries. Honest assessment:
 
-| Library | Relevant? | Why |
-|---|---|---|
-| gin | No | No HTTP server |
-| koanf | No | No config loading |
-| templ | No | Not generating templates |
-| htmx | No | No frontend |
-| go-arch-lint | Maybe | Could be a *consumer* of this library |
-| samber/lo | Marginal | Could replace `anyMatch` patterns, but adds dependency for marginal gain |
-| samber/mo | No | No monads needed |
-| samber/do | No | No DI needed |
-| sqlc | Consumer | sqlc is a *target* we detect, not a dependency |
-| ginkgo | No | stdlib testing is sufficient |
-| charmbracelet/fang | No | No CLI |
-| OTEL | No | No observability needed in library |
-| casbin | No | No auth |
-| resend-go | No | No email |
-| cockroachdb/errors | Marginal | Could replace custom errors, but our system is small and purpose-built |
+| Library            | Relevant? | Why                                                                      |
+| ------------------ | --------- | ------------------------------------------------------------------------ |
+| gin                | No        | No HTTP server                                                           |
+| koanf              | No        | No config loading                                                        |
+| templ              | No        | Not generating templates                                                 |
+| htmx               | No        | No frontend                                                              |
+| go-arch-lint       | Maybe     | Could be a _consumer_ of this library                                    |
+| samber/lo          | Marginal  | Could replace `anyMatch` patterns, but adds dependency for marginal gain |
+| samber/mo          | No        | No monads needed                                                         |
+| samber/do          | No        | No DI needed                                                             |
+| sqlc               | Consumer  | sqlc is a _target_ we detect, not a dependency                           |
+| ginkgo             | No        | stdlib testing is sufficient                                             |
+| charmbracelet/fang | No        | No CLI                                                                   |
+| OTEL               | No        | No observability needed in library                                       |
+| casbin             | No        | No auth                                                                  |
+| resend-go          | No        | No email                                                                 |
+| cockroachdb/errors | Marginal  | Could replace custom errors, but our system is small and purpose-built   |
 
 **Conclusion:** This is a small, focused Go library. Almost none of the listed libraries are relevant. The strongest candidates are `samber/lo` (marginal) and `cockroachdb/errors` (marginal). Neither justifies the dependency.
 
@@ -164,61 +167,61 @@ The user listed many libraries. Honest assessment:
 
 Sorted by: Impact × Customer Value / Effort
 
-| # | Task | Files | Est. | Impact | Why |
-|---|---|---|---|---|---|
-| L1.1 | Fix leaky `fs.FS` abstraction: remove `os.ReadFile` fallback | `detection.go` | 30min | Critical | Real bug — custom FS leaks to OS |
-| L1.2 | Fix README metrics example bug (`TotalFilesChecked == 3`, not `1`) | `README.md` | 12min | High | Wrong documentation lying to users |
-| L1.3 | Derive `IsValid()` from `AllFilterOptions()`/`AllFilterReasons()` | `types.go` | 45min | High | Eliminates split brain #1, #2 |
-| L1.4 | Derive `AllErrorCodes()` and `helpText` from single source | `errors.go` | 45min | High | Eliminates split brain #3, #4 |
-| L1.5 | Consolidate sqlc patterns into detector struct | `detection.go` | 30min | Medium | Eliminates split brain #5 |
-| L1.6 | Fix benchmarks to use `fstest.MapFS` | `bench_test.go` | 30min | Medium | Reliable perf numbers |
-| L1.7 | Add `io.Reader` detection API (`DetectReasonReader`) | `detection.go` | 45min | High | Real use case for linters |
-| L1.8 | Make slog usage configurable | `sqlc.go`, `filter.go` | 60min | Medium | Library hygiene — consumers control logging |
-| L1.9 | Add error code derivation tests | `errors_test.go` | 30min | High | Catches sync issues automatically |
-| L1.10 | Add integration test fixtures from real tools | `testdata/`, `integration_test.go` | 90min | High | Confidence against real output |
-| L1.11 | Replace `map[FilterOption]bool` with `map[FilterOption]struct{}` | `filter.go` | 15min | Low | Correctness — values were never `false` |
-| L1.12 | Consolidate `WithFilterOptions` FilterAll expansion with `optionsMap` | `filter.go`, `detection.go` | 30min | Medium | Eliminates split brain #6 |
-| L1.13 | Update TODO_LIST.md: mark completed items | `TODO_LIST.md` | 12min | Low | Accuracy |
-| L1.14 | Create `CHANGELOG.md` | `CHANGELOG.md` | 30min | High | Library table stakes |
-| L1.15 | Create `CONTRIBUTING.md` | `CONTRIBUTING.md` | 30min | Medium | Library table stakes |
-| L1.16 | Add `codeOwners` / review guidelines | `CONTRIBUTING.md` | 15min | Low | Nice to have |
+| #     | Task                                                                  | Files                              | Est.  | Impact   | Why                                         |
+| ----- | --------------------------------------------------------------------- | ---------------------------------- | ----- | -------- | ------------------------------------------- |
+| L1.1  | Fix leaky `fs.FS` abstraction: remove `os.ReadFile` fallback          | `detection.go`                     | 30min | Critical | Real bug — custom FS leaks to OS            |
+| L1.2  | Fix README metrics example bug (`TotalFilesChecked == 3`, not `1`)    | `README.md`                        | 12min | High     | Wrong documentation lying to users          |
+| L1.3  | Derive `IsValid()` from `AllFilterOptions()`/`AllFilterReasons()`     | `types.go`                         | 45min | High     | Eliminates split brain #1, #2               |
+| L1.4  | Derive `AllErrorCodes()` and `helpText` from single source            | `errors.go`                        | 45min | High     | Eliminates split brain #3, #4               |
+| L1.5  | Consolidate sqlc patterns into detector struct                        | `detection.go`                     | 30min | Medium   | Eliminates split brain #5                   |
+| L1.6  | Fix benchmarks to use `fstest.MapFS`                                  | `bench_test.go`                    | 30min | Medium   | Reliable perf numbers                       |
+| L1.7  | Add `io.Reader` detection API (`DetectReasonReader`)                  | `detection.go`                     | 45min | High     | Real use case for linters                   |
+| L1.8  | Make slog usage configurable                                          | `sqlc.go`, `filter.go`             | 60min | Medium   | Library hygiene — consumers control logging |
+| L1.9  | Add error code derivation tests                                       | `errors_test.go`                   | 30min | High     | Catches sync issues automatically           |
+| L1.10 | Add integration test fixtures from real tools                         | `testdata/`, `integration_test.go` | 90min | High     | Confidence against real output              |
+| L1.11 | Replace `map[FilterOption]bool` with `map[FilterOption]struct{}`      | `filter.go`                        | 15min | Low      | Correctness — values were never `false`     |
+| L1.12 | Consolidate `WithFilterOptions` FilterAll expansion with `optionsMap` | `filter.go`, `detection.go`        | 30min | Medium   | Eliminates split brain #6                   |
+| L1.13 | Update TODO_LIST.md: mark completed items                             | `TODO_LIST.md`                     | 12min | Low      | Accuracy                                    |
+| L1.14 | Create `CHANGELOG.md`                                                 | `CHANGELOG.md`                     | 30min | High     | Library table stakes                        |
+| L1.15 | Create `CONTRIBUTING.md`                                              | `CONTRIBUTING.md`                  | 30min | Medium   | Library table stakes                        |
+| L1.16 | Add `codeOwners` / review guidelines                                  | `CONTRIBUTING.md`                  | 15min | Low      | Nice to have                                |
 
 ### Level 2 — Smaller Tasks (max 12 min each)
 
 Sorted by: Importance / Effort
 
-| # | Task | Files | Est. |
-|---|---|---|---|
-| L2.1 | Add `FilterOptionAll` and `FilterReasonAll` exported constants | `types.go` | 12min |
-| L2.2 | Add `String()` method to `ErrorCode` | `errors.go` | 8min |
-| L2.3 | Export or unexport `MetricsMixin.filteredByReason` consistently | `metrics.go` | 8min |
-| L2.4 | Add `Errors()` method to `Filter` returning accumulated warnings | `filter.go` | 12min |
-| L2.5 | Add table-driven tests for `AllFilterOptions()` completeness | `types_test.go` | 10min |
-| L2.6 | Add table-driven tests for `AllFilterReasons()` completeness | `types_test.go` | 10min |
-| L2.7 | Add test for `DetectReason` with empty filename | `detection_test.go` | 8min |
-| L2.8 | Add test for `ShouldFilter` with nil FS defaulting to OS | `filter_test.go` | 8min |
-| L2.9 | Document the `**` pattern matching syntax in README | `README.md` | 10min |
-| L2.10 | Add `FilterAll` to README quickstart | `README.md` | 5min |
-| L2.11 | Add `go doc` examples for each `Is*Generated` function | `example_test.go` | 12min |
-| L2.12 | Benchmark `DetectReasonReader` (new API) | `bench_test.go` | 8min |
-| L2.13 | Add property test: filtering is deterministic | `property_test.go` | 10min |
-| L2.14 | Add property test: include+exclude patterns are commutative | `property_test.go` | 10min |
-| L2.15 | Test concurrent `GetStats()` with `ShouldFilter` | `filter_test.go` | 10min |
-| L2.16 | Add `go:generate` command for detector table validation | `generate.go` | 12min |
-| L2.17 | Verify all exported types have godoc | `*.go` | 10min |
-| L2.18 | Add `//nolint` comments for known false-positive linter warnings | `detection.go`, `*_test.go` | 8min |
-| L2.19 | Add `.editorconfig` for consistent formatting | `.editorconfig` | 5min |
-| L2.20 | Test SQLC detection with multiple configs in one project | `sqlc_test.go` | 10min |
-| L2.21 | Add `FilterReason.String()` if not already present | `types.go` | 5min |
-| L2.22 | Verify `MatchPattern` handles edge cases: empty pattern, single `*` | `pattern_test.go` | 8min |
-| L2.23 | Add `go test -race` to CI | `.github/workflows/ci.yml` | 5min |
-| L2.24 | Add coverage threshold to CI (fail below 95%) | `.github/workflows/ci.yml` | 8min |
-| L2.25 | Add `golangci-lint` to CI | `.github/workflows/ci.yml` | 10min |
-| L2.26 | Review and clean up `depguard` allowed-list entries | `.golangci.yaml` | 8min |
-| L2.27 | Add `CODE_OF_CONDUCT.md` | `CODE_OF_CONDUCT.md` | 5min |
-| L2.28 | Add ` SECURITY.md` | `SECURITY.md` | 5min |
-| L2.29 | Verify module path is correct for public publishing | `go.mod` | 3min |
-| L2.30 | Tag v0.1.0 release | git | 3min |
+| #     | Task                                                                | Files                       | Est.  |
+| ----- | ------------------------------------------------------------------- | --------------------------- | ----- |
+| L2.1  | Add `FilterOptionAll` and `FilterReasonAll` exported constants      | `types.go`                  | 12min |
+| L2.2  | Add `String()` method to `ErrorCode`                                | `errors.go`                 | 8min  |
+| L2.3  | Export or unexport `MetricsMixin.filteredByReason` consistently     | `metrics.go`                | 8min  |
+| L2.4  | Add `Errors()` method to `Filter` returning accumulated warnings    | `filter.go`                 | 12min |
+| L2.5  | Add table-driven tests for `AllFilterOptions()` completeness        | `types_test.go`             | 10min |
+| L2.6  | Add table-driven tests for `AllFilterReasons()` completeness        | `types_test.go`             | 10min |
+| L2.7  | Add test for `DetectReason` with empty filename                     | `detection_test.go`         | 8min  |
+| L2.8  | Add test for `ShouldFilter` with nil FS defaulting to OS            | `filter_test.go`            | 8min  |
+| L2.9  | Document the `**` pattern matching syntax in README                 | `README.md`                 | 10min |
+| L2.10 | Add `FilterAll` to README quickstart                                | `README.md`                 | 5min  |
+| L2.11 | Add `go doc` examples for each `Is*Generated` function              | `example_test.go`           | 12min |
+| L2.12 | Benchmark `DetectReasonReader` (new API)                            | `bench_test.go`             | 8min  |
+| L2.13 | Add property test: filtering is deterministic                       | `property_test.go`          | 10min |
+| L2.14 | Add property test: include+exclude patterns are commutative         | `property_test.go`          | 10min |
+| L2.15 | Test concurrent `GetStats()` with `ShouldFilter`                    | `filter_test.go`            | 10min |
+| L2.16 | Add `go:generate` command for detector table validation             | `generate.go`               | 12min |
+| L2.17 | Verify all exported types have godoc                                | `*.go`                      | 10min |
+| L2.18 | Add `//nolint` comments for known false-positive linter warnings    | `detection.go`, `*_test.go` | 8min  |
+| L2.19 | Add `.editorconfig` for consistent formatting                       | `.editorconfig`             | 5min  |
+| L2.20 | Test SQLC detection with multiple configs in one project            | `sqlc_test.go`              | 10min |
+| L2.21 | Add `FilterReason.String()` if not already present                  | `types.go`                  | 5min  |
+| L2.22 | Verify `MatchPattern` handles edge cases: empty pattern, single `*` | `pattern_test.go`           | 8min  |
+| L2.23 | Add `go test -race` to CI                                           | `.github/workflows/ci.yml`  | 5min  |
+| L2.24 | Add coverage threshold to CI (fail below 95%)                       | `.github/workflows/ci.yml`  | 8min  |
+| L2.25 | Add `golangci-lint` to CI                                           | `.github/workflows/ci.yml`  | 10min |
+| L2.26 | Review and clean up `depguard` allowed-list entries                 | `.golangci.yaml`            | 8min  |
+| L2.27 | Add `CODE_OF_CONDUCT.md`                                            | `CODE_OF_CONDUCT.md`        | 5min  |
+| L2.28 | Add ` SECURITY.md`                                                  | `SECURITY.md`               | 5min  |
+| L2.29 | Verify module path is correct for public publishing                 | `go.mod`                    | 3min  |
+| L2.30 | Tag v0.1.0 release                                                  | git                         | 3min  |
 
 ---
 
@@ -294,4 +297,4 @@ The actual execution sequence (top to bottom, commit after each):
 
 ---
 
-*Reflection complete. Execution begins now.*
+_Reflection complete. Execution begins now._

@@ -59,7 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - 7 sentinel errors for use with `errors.Is`: `ErrProjectRootNotFound`, `ErrProjectRootInvalidPath`, `ErrSQLCConfigRead`, `ErrSQLCConfigParse`, `ErrSQLCConfigWalk`, `ErrSQLCConfigCollect`, `ErrSQLCConfigFind`
   - `ErrorCoder` interface for programmatic error code access
   - `Helper` interface for user-friendly guidance
-  - `Causable` interface for errors that wrap an underlying cause *(later removed as unused)*
+  - `Causable` interface for errors that wrap an underlying cause _(later removed as unused)_
   - `CodeEqual[T]` generic function consolidating `Is()` comparison logic
   - `ProjectRootError` struct with `Code`, `StartPath`, `Markers`, `Cause` fields
   - `SQLCConfigError` struct with `Code`, `ConfigPath`, `Operation`, `Message`, `Cause` fields

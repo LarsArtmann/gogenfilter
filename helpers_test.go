@@ -431,3 +431,32 @@ func ValidSQLCConfig(engine string) string {
 		"        package: \"db\"\n" +
 		"        out: \"db\"\n"
 }
+
+func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
+	t.Helper()
+
+	return &ProjectRootError{
+		Code:      CodeProjectRootNotFound,
+		StartPath: StartPath("/path"),
+		Markers:   []string{"go.mod"},
+		Cause:     nil,
+	}
+}
+
+func testProjectRootErrorWithCause(
+	t *testing.T,
+	code ErrorCode,
+	path string,
+	sentinel error,
+) *ProjectRootError {
+	t.Helper()
+
+	innerErr := fmt.Errorf("inner: %w", sentinel)
+
+	return &ProjectRootError{
+		Code:      code,
+		StartPath: StartPath(path),
+		Markers:   []string{"go.mod"},
+		Cause:     innerErr,
+	}
+}

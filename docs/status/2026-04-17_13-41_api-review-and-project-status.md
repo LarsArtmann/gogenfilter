@@ -9,6 +9,7 @@
 ## A. Fully Done
 
 ### Core Library (Production-Ready)
+
 - **Two-phase detection engine** (`detection.go`): Filename-first (zero I/O) → content-based. Table-driven `detectors` slice is clean, ordered, extensible.
 - **7 generator detectors**: sqlc, templ, go-enum, protobuf, mockgen, stringer, generic fallback. All with filename + content heuristics.
 - **Phantom type system** (`phantom.go`): `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked` — strong compile-time domain separation.
@@ -20,6 +21,7 @@
 - **Project root finder** (`project.go`): Marker-based upward search with depth limit. Proper error codes.
 
 ### Test Suite (Comprehensive)
+
 - **Unit tests**: Every exported function covered. Table-driven throughout.
 - **Fuzz tests** (`fuzz_test.go`): `FuzzMatchPattern`, `FuzzDetectReason` with seed corpora.
 - **Property-based tests** (`property_test.go`): Idempotency, disabled filter, include/exclude pattern invariants via `testing/quick`.
@@ -28,6 +30,7 @@
 - **93.1% statement coverage**, race detector clean.
 
 ### Documentation & Tooling
+
 - **README.md**: Installation, quick start, detection functions, filter options, patterns, SQLC config, metrics, filter reasons. Markdown tables.
 - **AGENTS.md**: Project-specific commands, testing patterns, linting config.
 - **Justfile**: test, test-race, lint, coverage, coverage-html, structure-lint, fmt, tidy, build, clean, ci, linecounts.
@@ -73,32 +76,32 @@ The closest to "fucked up" is the **thread-safety issue** (#3 above): if a consu
 
 ### HIGH — API Design (Breaking Changes, Do Before v1.0)
 
-| # | Issue | File | Impact |
-|---|-------|------|--------|
-| 1 | `DetectReason` takes `map[FilterOption]bool` | `detection.go:193` | Every caller must build a map |
-| 2 | `NewFilter(true, opts)` positional bool | `filter.go:22` | Unreadable at call site |
-| 3 | Filter not thread-safe | `filter.go:84-168` | Latent data race |
-| 4 | `WithIncludePatterns`/`WithExcludePatterns` mutate after construction | `filter.go:63-69` | Unsafe if shared |
+| #   | Issue                                                                 | File               | Impact                        |
+| --- | --------------------------------------------------------------------- | ------------------ | ----------------------------- |
+| 1   | `DetectReason` takes `map[FilterOption]bool`                          | `detection.go:193` | Every caller must build a map |
+| 2   | `NewFilter(true, opts)` positional bool                               | `filter.go:22`     | Unreadable at call site       |
+| 3   | Filter not thread-safe                                                | `filter.go:84-168` | Latent data race              |
+| 4   | `WithIncludePatterns`/`WithExcludePatterns` mutate after construction | `filter.go:63-69`  | Unsafe if shared              |
 
 ### MEDIUM — Code Quality (Non-Breaking)
 
-| # | Issue | File | Impact |
-|---|-------|------|--------|
-| 5 | Dead `Label` phantom type | `phantom.go:20` | Dead code |
-| 6 | `matchAnyWith` misleading name | `detection.go:82` | Readability |
-| 7 | `MetricsMixin` half-exported field | `metrics.go:12-15` | Confusing API |
-| 8 | `stringFrom[T ~string]` overengineered | `types.go:15` | Unnecessary abstraction |
-| 9 | `detectReason`/`DetectReason` duplication | `detection.go:193,207` | DRY violation |
-| 10 | `FilterOption.Reason()` silent coupling | `types.go:27` | Fragile |
+| #   | Issue                                     | File                   | Impact                  |
+| --- | ----------------------------------------- | ---------------------- | ----------------------- |
+| 5   | Dead `Label` phantom type                 | `phantom.go:20`        | Dead code               |
+| 6   | `matchAnyWith` misleading name            | `detection.go:82`      | Readability             |
+| 7   | `MetricsMixin` half-exported field        | `metrics.go:12-15`     | Confusing API           |
+| 8   | `stringFrom[T ~string]` overengineered    | `types.go:15`          | Unnecessary abstraction |
+| 9   | `detectReason`/`DetectReason` duplication | `detection.go:193,207` | DRY violation           |
+| 10  | `FilterOption.Reason()` silent coupling   | `types.go:27`          | Fragile                 |
 
 ### LOW — Polish
 
-| # | Issue | File | Impact |
-|---|-------|------|--------|
-| 11 | I/O errors silently become "not filtered" | `detection.go:217-219` | Silent failures |
-| 12 | `FilterAll` expansion not queryable | `filter.go:33-38` | Lost intent |
-| 13 | Inconsistent test package convention | `*_test.go` | testpackage linter |
-| 14 | depguard config needs yaml exception | `.golangci.yaml` | False-positive warnings |
+| #   | Issue                                     | File                   | Impact                  |
+| --- | ----------------------------------------- | ---------------------- | ----------------------- |
+| 11  | I/O errors silently become "not filtered" | `detection.go:217-219` | Silent failures         |
+| 12  | `FilterAll` expansion not queryable       | `filter.go:33-38`      | Lost intent             |
+| 13  | Inconsistent test package convention      | `*_test.go`            | testpackage linter      |
+| 14  | depguard config needs yaml exception      | `.golangci.yaml`       | False-positive warnings |
 
 ---
 
@@ -158,23 +161,23 @@ The `go.mod` says `v0.0.0` implicitly (no version tag), and there's no `CHANGELO
 
 ## Metrics Summary
 
-| Metric | Value |
-|--------|-------|
-| Source files | 9 (`.go`, non-test) |
-| Test files | 14 (`*_test.go`) |
-| Total lines | 5,031 |
-| Source lines (non-test) | ~1,661 |
-| Test lines | ~3,370 |
-| Test-to-source ratio | 2.0x |
-| Statement coverage | 93.1% |
-| Race detector | Clean |
-| `go vet` | Clean |
-| External dependencies | 1 (`go-faster/yaml`) |
-| Exported types | 16 |
-| Exported functions | 42 |
-| Sentinel errors | 7 |
-| Phantom types | 5 (1 unused) |
-| Generator detectors | 7 |
+| Metric                  | Value                |
+| ----------------------- | -------------------- |
+| Source files            | 9 (`.go`, non-test)  |
+| Test files              | 14 (`*_test.go`)     |
+| Total lines             | 5,031                |
+| Source lines (non-test) | ~1,661               |
+| Test lines              | ~3,370               |
+| Test-to-source ratio    | 2.0x                 |
+| Statement coverage      | 93.1%                |
+| Race detector           | Clean                |
+| `go vet`                | Clean                |
+| External dependencies   | 1 (`go-faster/yaml`) |
+| Exported types          | 16                   |
+| Exported functions      | 42                   |
+| Sentinel errors         | 7                    |
+| Phantom types           | 5 (1 unused)         |
+| Generator detectors     | 7                    |
 
 ---
 
