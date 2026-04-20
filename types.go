@@ -148,8 +148,11 @@ func AllFilterOptions() []FilterOption {
 // Derived from the detectors table plus special reasons (include/exclude/not-filtered),
 // so adding a new detector automatically updates this list.
 func AllFilterReasons() []FilterReason {
-	extraReasonsCount := 3
-	reasons := make([]FilterReason, 0, len(detectors)+extraReasonsCount)
+	// nonDetectorReasons counts reasons beyond the detector table:
+	// ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered.
+	const nonDetectorReasons = 3
+
+	reasons := make([]FilterReason, 0, len(detectors)+nonDetectorReasons)
 
 	for _, d := range detectors {
 		reasons = append(reasons, d.reason)
