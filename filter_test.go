@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported types and functions
+package gogenfilter
 
 import (
 	"os"
@@ -651,7 +651,6 @@ func TestShouldFilterConcurrent(t *testing.T) {
 	assertEqual(t, "total checked", int(stats.TotalFilesChecked), goroutines)
 }
 
-//nolint:funlen // table-driven test with many subtests
 func TestShouldFilterEdgeCases(t *testing.T) {
 	t.Parallel()
 

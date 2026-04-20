@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported functions for benchmarking
+package gogenfilter
 
 import (
 	"io"

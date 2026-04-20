@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported helpers and test utilities
+package gogenfilter
 import (
 	"errors"
 	"fmt"

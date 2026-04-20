@@ -1,4 +1,4 @@
-package gogenfilter //nolint:testpackage // needs access to unexported phantom type constructors
+package gogenfilter
 
 import "testing"
 
