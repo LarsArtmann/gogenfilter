@@ -27,6 +27,12 @@ linters:
     exhaustruct:
       exclude:
         - '.*/fstest\.MapFile'
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - funlen
+          - testpackage
   enable:
     - arangolint
     - asasalint
@@ -143,10 +149,4 @@ formatters:
     - goimports
     - gofumpt
     - golines
-  exclusions:
-    rules:
-      - path: _test\.go
-        linters:
-          - funlen
-          - testpackage
 issues: {}

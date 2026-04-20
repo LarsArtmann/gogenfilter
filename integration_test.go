@@ -100,7 +100,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 
 	for _, fixture := range integrationFixtures() {
 		content := mustReadFile(t, testdataFS, fixture.path)
-		mapFS[fixture.path] = &fstest.MapFile{Data: []byte(content)} //nolint:exhaustruct
+		mapFS[fixture.path] = &fstest.MapFile{Data: []byte(content)}
 	}
 
 	for _, fixture := range integrationFixtures() {
@@ -139,7 +139,7 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 	for _, tc := range cases {
 		if _, exists := mapFS[tc.path]; !exists {
 			content := mustReadFile(t, testdataFS, tc.path)
-			mapFS[tc.path] = &fstest.MapFile{Data: []byte(content)} //nolint:exhaustruct
+			mapFS[tc.path] = &fstest.MapFile{Data: []byte(content)}
 		}
 	}
 

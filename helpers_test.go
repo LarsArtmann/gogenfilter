@@ -391,7 +391,7 @@ func testSQLOutputDirs(t *testing.T, yamlContent string, wantDirs int) {
 }
 
 func newMapFile(content string) *fstest.MapFile {
-	return &fstest.MapFile{ //nolint:exhaustruct // test helper, zero-value fields are intentional
+	return &fstest.MapFile{
 		Data: []byte(content),
 	}
 }
