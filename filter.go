@@ -190,29 +190,16 @@ func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
 }
 
 func (f *Filter) shouldFilterWithIncludes(filePath string) (bool, error) {
-	if !f.matchesAnyPattern(filePath, f.includePatterns) {
-		f.recordFiltered(filePath, ReasonIncludePattern)
-
-		return true, nil
-	}
-
-	filtered, err := f.shouldFilterByDetection(filePath)
-	if err != nil {
-		return false, err
-	}
-
-	if filtered {
-		return true, nil
-	}
-
-	f.recordChecked(filePath)
-
-	return false, nil
+	return f.shouldFilterByPattern(filePath, !f.matchesAnyPattern(filePath, f.includePatterns), ReasonIncludePattern)
 }
 
 func (f *Filter) shouldFilterWithExcludes(filePath string) (bool, error) {
-	if f.matchesAnyPattern(filePath, f.excludePatterns) {
-		f.recordFiltered(filePath, ReasonExcludePattern)
+	return f.shouldFilterByPattern(filePath, f.matchesAnyPattern(filePath, f.excludePatterns), ReasonExcludePattern)
+}
+
+func (f *Filter) shouldFilterByPattern(filePath string, patternMatched bool, reason FilterReason) (bool, error) {
+	if patternMatched {
+		f.recordFiltered(filePath, reason)
 
 		return true, nil
 	}

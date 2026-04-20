@@ -3,9 +3,8 @@
 package petstore
 
 import (
-	"encoding/json"
+	"context"
 	"net/http"
-	"fmt"
 )
 
 type Pet struct {

@@ -2,8 +2,6 @@
 
 package v1
 
-import fmt "fmt"
-
 func (in *ConfigMap) DeepCopyInto(out *ConfigMap) {
 	*out = *in
 	if in.Data != nil {

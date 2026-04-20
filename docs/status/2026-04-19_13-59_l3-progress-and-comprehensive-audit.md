@@ -11,10 +11,10 @@
 
 ### Session 10 Commits (all pushed as of HEAD)
 
-| Commit | Description | Files |
-|--------|-------------|-------|
-| `8abe7de` | Remove stale `Uses slog` from sqlc.go:249,308 | `sqlc.go` |
-| `5a3bb0a` | Unexport `Metrics.filteredFiles` (data race fix) | `metrics.go` |
+| Commit    | Description                                                         | Files                                   |
+| --------- | ------------------------------------------------------------------- | --------------------------------------- |
+| `8abe7de` | Remove stale `Uses slog` from sqlc.go:249,308                       | `sqlc.go`                               |
+| `5a3bb0a` | Unexport `Metrics.filteredFiles` (data race fix)                    | `metrics.go`                            |
 | `5c54bad` | Add `String()` to phantom types, remove 8 explicit `string()` casts | `phantom.go`, `errors.go`, `project.go` |
 
 ### Across All Sessions (Sessions 1-10)
@@ -32,22 +32,22 @@
 
 ### L3 Execution Plan (created this session, 3 of ~14 items done)
 
-| # | Item | Status | Effort | Impact |
-|---|------|--------|--------|--------|
-| L3.1 | Fix stale slog comments in sqlc.go | ✅ Done | Trivial | Low |
-| L3.2 | Unexport `FilteredFiles` (data race) | ✅ Done | Small | High |
-| L3.3 | Add `String()` to phantom types | ✅ Done | Small | Medium |
-| L3.4 | Remove unused `Validatable` interface | ❌ Not started | Trivial | Low |
-| L3.5 | Add ShouldFilter/WithIncludePatterns/Metrics examples | ❌ Not started | Medium | High |
-| L3.6 | Document include patterns semantics in godoc/README | ❌ Not started | Small | High |
-| L3.7 | Consolidate `sqlcConfigError` plain-string constructor | ❌ Not started | Small | Medium |
-| L3.8 | Document `FilterOption.Reason()` string-value invariant | ❌ Not started | Trivial | Low |
-| L3.9 | Cache SQLC filename patterns as package-level var | ❌ Not started | Trivial | Low |
-| L3.10 | Document `!needsContentCheck` branch as correctness guard | ❌ Not started | Trivial | Low |
-| L3.11 | Update CHANGELOG.md | ❌ Not started | Medium | Medium |
-| L3.12 | Update TODO_LIST.md | ❌ Not started | Small | Low |
-| L3.13 | Add phantom type String() tests (coverage dipped 97.6%→97.3%) | ❌ Not started | Small | Medium |
-| L3.14 | Push all commits | ❌ Not started | Trivial | — |
+| #     | Item                                                          | Status         | Effort  | Impact |
+| ----- | ------------------------------------------------------------- | -------------- | ------- | ------ |
+| L3.1  | Fix stale slog comments in sqlc.go                            | ✅ Done        | Trivial | Low    |
+| L3.2  | Unexport `FilteredFiles` (data race)                          | ✅ Done        | Small   | High   |
+| L3.3  | Add `String()` to phantom types                               | ✅ Done        | Small   | Medium |
+| L3.4  | Remove unused `Validatable` interface                         | ❌ Not started | Trivial | Low    |
+| L3.5  | Add ShouldFilter/WithIncludePatterns/Metrics examples         | ❌ Not started | Medium  | High   |
+| L3.6  | Document include patterns semantics in godoc/README           | ❌ Not started | Small   | High   |
+| L3.7  | Consolidate `sqlcConfigError` plain-string constructor        | ❌ Not started | Small   | Medium |
+| L3.8  | Document `FilterOption.Reason()` string-value invariant       | ❌ Not started | Trivial | Low    |
+| L3.9  | Cache SQLC filename patterns as package-level var             | ❌ Not started | Trivial | Low    |
+| L3.10 | Document `!needsContentCheck` branch as correctness guard     | ❌ Not started | Trivial | Low    |
+| L3.11 | Update CHANGELOG.md                                           | ❌ Not started | Medium  | Medium |
+| L3.12 | Update TODO_LIST.md                                           | ❌ Not started | Small   | Low    |
+| L3.13 | Add phantom type String() tests (coverage dipped 97.6%→97.3%) | ❌ Not started | Small   | Medium |
+| L3.14 | Push all commits                                              | ❌ Not started | Trivial | —      |
 
 ---
 
@@ -100,28 +100,28 @@
 
 ### Architecture Issues Found During Audit
 
-| Severity | File | Issue | Recommendation |
-|----------|------|-------|----------------|
-| 🔴 High | `filter.go:184-188` | Include patterns invert `ShouldFilter` semantics — non-matching normal files return `true` (filtered) | Document clearly; rename `ReasonIncludePattern` to `ReasonNotInScope` or add docs to `WithIncludePatterns` |
-| 🟡 Medium | `types.go:53` | `FilterOption.Reason()` uses `FilterReason(o)` — relies on identical string values, bypasses `detectors` table | Add invariant comment; optionally derive from table lookup |
-| 🟡 Medium | `types.go:44-46` | `Validatable` interface exported but never used as constraint anywhere | Remove or use |
-| 🟡 Medium | `sqlc.go:54-68` | `sqlcConfigError()` accepts plain strings, defeats phantom type safety | Consolidate to use `newSQLCConfigError` with phantom types everywhere |
-| 🟡 Medium | `detection.go:60` | `matchesSQLCFilenamePattern` re-allocates `[]string` on every call | Move to package-level var |
-| 🟢 Low | `types.go:149` | `extraReasonsCount := 3` magic number | Extract to named constant or compute dynamically |
-| 🟢 Low | `metrics.go:20` | `TotalFilesChecked` exported field on `MetricsMixin` readable without lock | Low risk (int reads are atomic on most architectures) but inconsistent with encapsulation design |
-| 🟢 Low | `detection.go:253` | `!needsContentCheck` branch is nearly dead (no detector without `checkContent`) | Document as correctness guard for future detectors |
-| 🟢 Low | `pattern.go:83-87` | `**` expansion is O(2^n) for pathological inputs | Not a practical concern but worth noting |
+| Severity  | File                | Issue                                                                                                          | Recommendation                                                                                             |
+| --------- | ------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 🔴 High   | `filter.go:184-188` | Include patterns invert `ShouldFilter` semantics — non-matching normal files return `true` (filtered)          | Document clearly; rename `ReasonIncludePattern` to `ReasonNotInScope` or add docs to `WithIncludePatterns` |
+| 🟡 Medium | `types.go:53`       | `FilterOption.Reason()` uses `FilterReason(o)` — relies on identical string values, bypasses `detectors` table | Add invariant comment; optionally derive from table lookup                                                 |
+| 🟡 Medium | `types.go:44-46`    | `Validatable` interface exported but never used as constraint anywhere                                         | Remove or use                                                                                              |
+| 🟡 Medium | `sqlc.go:54-68`     | `sqlcConfigError()` accepts plain strings, defeats phantom type safety                                         | Consolidate to use `newSQLCConfigError` with phantom types everywhere                                      |
+| 🟡 Medium | `detection.go:60`   | `matchesSQLCFilenamePattern` re-allocates `[]string` on every call                                             | Move to package-level var                                                                                  |
+| 🟢 Low    | `types.go:149`      | `extraReasonsCount := 3` magic number                                                                          | Extract to named constant or compute dynamically                                                           |
+| 🟢 Low    | `metrics.go:20`     | `TotalFilesChecked` exported field on `MetricsMixin` readable without lock                                     | Low risk (int reads are atomic on most architectures) but inconsistent with encapsulation design           |
+| 🟢 Low    | `detection.go:253`  | `!needsContentCheck` branch is nearly dead (no detector without `checkContent`)                                | Document as correctness guard for future detectors                                                         |
+| 🟢 Low    | `pattern.go:83-87`  | `**` expansion is O(2^n) for pathological inputs                                                               | Not a practical concern but worth noting                                                                   |
 
 ### Codebase Health Metrics
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Test coverage | 97.3% | ↓ (was 97.6%, phantom String() untested) |
-| Linter warnings | 0 | ✅ Stable |
-| External dependencies | 1 (`go-faster/yaml`) | ✅ Stable |
-| Test LOC | ~3,900 | ✅ Growing |
-| Production LOC | ~1,800 | ✅ Stable |
-| Test:Code ratio | 2.2:1 | ✅ Healthy |
+| Metric                | Value                | Trend                                    |
+| --------------------- | -------------------- | ---------------------------------------- |
+| Test coverage         | 97.3%                | ↓ (was 97.6%, phantom String() untested) |
+| Linter warnings       | 0                    | ✅ Stable                                |
+| External dependencies | 1 (`go-faster/yaml`) | ✅ Stable                                |
+| Test LOC              | ~3,900               | ✅ Growing                               |
+| Production LOC        | ~1,800               | ✅ Stable                                |
+| Test:Code ratio       | 2.2:1                | ✅ Healthy                               |
 
 ---
 
@@ -176,19 +176,19 @@
 
 ## File Inventory (Production)
 
-| File | Lines | Purpose | Last Changed |
-|------|-------|---------|-------------|
-| `detection.go` | 339 | Detector table, Is/Detect functions | Session 8 |
-| `sqlc.go` | 325 | sqlc config discovery/parsing | Session 10 (stale docs) |
-| `filter.go` | 272 | Filter type, functional options, ShouldFilter | Session 8 |
-| `errors.go` | 211 | Branded error types, sentinels, CodeEqual | Session 10 (phantom cast removal) |
-| `types.go` | 161 | FilterOption, FilterReason, package godoc | Session 8 |
-| `metrics.go` | 138 | MetricsMixin, Metrics, FilterStats | Session 10 (unexport FilteredFiles) |
-| `pattern.go` | 100 | MatchPattern with `**` glob support | Session 8 |
-| `project.go` | 52 | FindProjectRoot | Session 10 (phantom cast removal) |
-| `phantom.go` | 43 | Phantom types with String() methods | Session 10 (added String()) |
-| `bench_test.go` | 174 | Benchmarks | Session 9 |
-| `example_test.go` | 98 | Go examples (incomplete — 8/16 APIs covered) | Session 7 |
+| File              | Lines | Purpose                                       | Last Changed                        |
+| ----------------- | ----- | --------------------------------------------- | ----------------------------------- |
+| `detection.go`    | 339   | Detector table, Is/Detect functions           | Session 8                           |
+| `sqlc.go`         | 325   | sqlc config discovery/parsing                 | Session 10 (stale docs)             |
+| `filter.go`       | 272   | Filter type, functional options, ShouldFilter | Session 8                           |
+| `errors.go`       | 211   | Branded error types, sentinels, CodeEqual     | Session 10 (phantom cast removal)   |
+| `types.go`        | 161   | FilterOption, FilterReason, package godoc     | Session 8                           |
+| `metrics.go`      | 138   | MetricsMixin, Metrics, FilterStats            | Session 10 (unexport FilteredFiles) |
+| `pattern.go`      | 100   | MatchPattern with `**` glob support           | Session 8                           |
+| `project.go`      | 52    | FindProjectRoot                               | Session 10 (phantom cast removal)   |
+| `phantom.go`      | 43    | Phantom types with String() methods           | Session 10 (added String())         |
+| `bench_test.go`   | 174   | Benchmarks                                    | Session 9                           |
+| `example_test.go` | 98    | Go examples (incomplete — 8/16 APIs covered)  | Session 7                           |
 
 ## Commits This Session
 
