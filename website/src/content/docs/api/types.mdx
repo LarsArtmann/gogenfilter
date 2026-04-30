@@ -1,0 +1,55 @@
+---
+title: Types
+description: FilterOption, FilterReason, and derived type information.
+---
+
+## FilterOption
+
+A string type representing a generator category to filter.
+
+```go
+type FilterOption string
+```
+
+### Methods
+
+- `String() string` — returns the underlying string value
+- `Reason() FilterReason` — returns the corresponding `FilterReason`
+- `IsValid() bool` — reports whether the value is recognized
+
+### Constants
+
+`FilterSQLC`, `FilterTempl`, `FilterGoEnum`, `FilterProtobuf`, `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`, `FilterMockgen`, `FilterStringer`, `FilterGeneric`, `FilterAll`
+
+## FilterReason
+
+A string type representing why a file was filtered.
+
+```go
+type FilterReason string
+```
+
+### Methods
+
+- `String() string` — returns the underlying string value
+- `IsValid() bool` — reports whether the value is recognized
+
+### Constants
+
+`ReasonSQLC`, `ReasonTempl`, `ReasonGoEnum`, `ReasonProtobuf`, `ReasonOapi`, `ReasonDeepcopy`, `ReasonWire`, `ReasonMoq`, `ReasonMockgen`, `ReasonStringer`, `ReasonGeneric`, `ReasonIncludePattern`, `ReasonExcludePattern`, `ReasonNotFiltered`
+
+## Derived Lists
+
+### `AllFilterOptions() []FilterOption`
+
+Returns all 12 valid `FilterOption` values.
+
+### `AllFilterReasons() []FilterReason`
+
+Returns all 14 valid `FilterReason` values.
+
+Both are derived from the internal `detectors` table — adding a new detector automatically updates these lists.
+
+## Invariant
+
+Each `FilterOption` and its matching `FilterReason` share the same underlying string value (e.g., `FilterSQLC == "sqlc" == ReasonSQLC`).

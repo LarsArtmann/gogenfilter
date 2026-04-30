@@ -1,0 +1,69 @@
+---
+title: Filter
+description: The core Filter type and its functional options API.
+---
+
+## Constructor
+
+### `NewFilter(configs ...FilterConfig) *Filter`
+
+Creates a new filter with functional options. The filter is immutable after construction.
+
+```go
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+)
+```
+
+## Functional Options
+
+### `Enabled() FilterConfig`
+
+Enables the filter and activates metrics collection.
+
+### `Disabled() FilterConfig`
+
+Disables the filter. All calls to `ShouldFilter` return `false`.
+
+### `WithFilterOptions(opts ...FilterOption) FilterConfig`
+
+Specifies which generators to detect. Panics on invalid options.
+
+### `WithFS(fsys fs.FS) FilterConfig`
+
+Sets a custom filesystem. Defaults to `os.DirFS(".")`.
+
+### `WithIncludePatterns(patterns ...string) FilterConfig`
+
+Restricts scope to files matching at least one pattern.
+
+### `WithExcludePatterns(patterns ...string) FilterConfig`
+
+Files matching any pattern are always filtered.
+
+## Methods
+
+### `ShouldFilter(filePath string) (bool, error)`
+
+Determines if a file should be filtered. Returns `true` if the file is generated. I/O errors propagate.
+
+### `MustShouldFilter(filePath string) bool`
+
+Like `ShouldFilter` but panics on error. For tests and benchmarks.
+
+### `IsEnabled() bool`
+
+Returns whether the filter is active.
+
+### `GetStats() FilterStats`
+
+Returns a snapshot of detection statistics.
+
+### `FilterReasons() []FilterReason`
+
+Returns the reasons this filter will detect.
+
+### `String() string`
+
+Human-readable representation of the filter state.

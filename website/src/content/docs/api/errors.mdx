@@ -1,0 +1,50 @@
+---
+title: Errors
+description: Branded error types with sentinel errors and error codes.
+---
+
+## Overview
+
+gogenfilter uses branded errors with `[gogenfilter:<code>]` prefixes for structured error handling.
+
+## Pattern
+
+```go
+filtered, err := f.ShouldFilter("nonexistent.go")
+if err != nil {
+    // Check for specific error types
+    var ferr *gogenfilter.FilterError
+    if errors.As(err, &ferr) {
+        fmt.Println(ferr.Code())
+    }
+}
+```
+
+## Error Interface
+
+Errors implement:
+- `error` — standard Go error interface
+- `ErrorCoder` — returns a structured error code
+- `Helper` — provides user-friendly error messages
+
+## Sentinel Errors
+
+Use `errors.Is` for comparison:
+
+```go
+errors.Is(err, gogenfilter.ErrFileNotFound)
+```
+
+## Error Codes
+
+Error codes use the pattern `[gogenfilter:<code>]` for easy grep and log filtering.
+
+## Generic Code Matching
+
+Use `CodeEqual[T]` for type-safe error code comparison:
+
+```go
+if gogenfilter.CodeEqual[gogenfilter.FileNotFoundCode](err) {
+    // handle file not found
+}
+```

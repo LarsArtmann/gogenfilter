@@ -37,6 +37,16 @@ This project provides detection and filtering capabilities for auto-generated Go
 | `metrics.go`   | Thread-safe detection metrics tracking                                                                                                                                                                                  |
 | `phantom.go`   | Phantom type constructors                                                                                                                                                                                               |
 
+### Website
+
+- `website/` — Astro v6 + Starlight marketing/docs site
+- Landing page at `/` with hero, features, code examples
+- Starlight docs at `/docs/` with PageFind search
+- Firebase Hosting deployment (firebase.json, .firebaserc)
+- CI/CD: `.github/workflows/deploy-website.yml`
+- Build: `cd website && npm run build`
+- Dev: `cd website && npm run dev`
+
 ## Development Guidelines
 
 ### Testing
