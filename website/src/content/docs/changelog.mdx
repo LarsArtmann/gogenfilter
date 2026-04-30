@@ -1,0 +1,36 @@
+---
+title: Changelog
+description: All notable changes to gogenfilter.
+---
+
+## [Unreleased]
+
+### Added
+
+- `DetectReasonReader` — detection from an `io.Reader`
+- Integration test fixtures from 11 real code generators
+- `errorCodeDefs` single-source-of-truth table
+- `map[FilterOption]struct{}` replaces `map[FilterOption]bool`
+- `fmt.Stringer` on all phantom types
+- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`, `MustShouldFilter`, `DetectReasonReader`
+
+### Changed
+
+- Error codes derived from `errorCodeDefs` table
+- Exported `FilterStats.FilteredByReason` field for direct map access
+- Phantom types no longer use format strings in `String()`
+
+## [0.1.0] — 2026-04-04
+
+### Added
+
+- Initial release
+- Two-phase detection: filename-based (zero I/O) then content-based
+- 11 generator detectors: sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic
+- Functional options API: `Enabled()`, `Disabled()`, `WithFilterOptions()`, `WithFS()`, `WithIncludePatterns()`, `WithExcludePatterns()`
+- `fs.FS` abstraction for testing
+- Thread-safe metrics
+- SQLC config discovery
+- Glob pattern matching with `**` support
+- Branded error types with sentinel errors
+- Phantom types for type-safe API boundaries
