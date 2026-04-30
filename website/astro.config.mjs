@@ -8,6 +8,7 @@ export default defineConfig({
     sitemap(),
     starlight({
       title: 'gogenfilter',
+      favicon: '/favicon.svg',
       sidebar: [
         {
           label: 'Getting Started',
