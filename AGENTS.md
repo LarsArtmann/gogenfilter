@@ -66,11 +66,6 @@ go test -race ./...
 
 # Run linter
 golangci-lint run
-
-# Run via Justfile
-just test
-just lint
-just ci
 ```
 
 ## CI
