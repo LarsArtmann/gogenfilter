@@ -60,6 +60,6 @@ func BenchmarkSQLCConfigErrorIs(b *testing.B) {
 	err := newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML")
 
 	for b.Loop() {
-		_ = err.Error()
+		_ = errors.Is(err, ErrSQLCConfigParse)
 	}
 }
