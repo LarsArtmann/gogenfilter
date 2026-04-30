@@ -40,6 +40,13 @@ export default defineConfig({
           label: 'Supported Generators',
           slug: 'generators',
         },
+        {
+          label: 'Community',
+          items: [
+            { label: 'Changelog', slug: 'changelog' },
+            { label: 'Contributing', slug: 'contributing' },
+          ],
+        },
       ],
       social: [
         {

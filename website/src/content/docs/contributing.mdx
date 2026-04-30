@@ -1,0 +1,61 @@
+---
+title: Contributing
+description: How to contribute to gogenfilter.
+---
+
+## Development Setup
+
+**Requirements:** Go 1.26+
+
+```bash
+git clone https://github.com/LarsArtmann/gogenfilter.git
+cd gogenfilter
+go mod download
+```
+
+## Building
+
+```bash
+go build ./...
+```
+
+## Testing
+
+```bash
+# Run all tests
+go test ./...
+
+# With race detector
+go test -race ./...
+```
+
+## Linting
+
+Uses golangci-lint v2:
+
+```bash
+golangci-lint run
+```
+
+## Code Style
+
+- Table-driven tests where possible
+- `t.Parallel()` within `t.Run()` for test isolation
+- Functional options pattern for configuration
+- Strong types over runtime checks
+- Early returns over nested conditionals
+
+## Adding a Generator
+
+1. Add a `FilterOption` and `FilterReason` const with the same string value in `types.go`
+2. Add a detector entry in the `detectors` table in `detection.go`
+3. Implement `matchFilename` (Phase 1) and/or `checkContent` (Phase 2) functions
+4. Add test fixtures in `testdata/`
+5. `AllFilterOptions()` and `AllFilterReasons()` update automatically
+
+## Pull Requests
+
+- Ensure all tests pass: `go test -race ./...`
+- Ensure linting passes: `golangci-lint run`
+- Add tests for new functionality
+- Keep changes focused and atomic
