@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://gogenfilter.dev',
+  site: 'https://gogenfilter.lars.software',
   integrations: [
     sitemap(),
     starlight({
