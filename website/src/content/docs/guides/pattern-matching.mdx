@@ -1,0 +1,60 @@
+---
+title: Pattern Matching
+description: Use include and exclude patterns to scope file filtering.
+---
+
+## Wildcards
+
+Include and exclude patterns support two wildcards:
+
+| Pattern | Meaning |
+| ------- | ------- |
+| `*` | Matches any sequence of non-separator characters (single path segment) |
+| `**` | Matches zero or more complete path segments (crosses `/` boundaries) |
+
+## Include Patterns
+
+Include patterns restrict scope: only files matching at least one include pattern are checked. All other files are immediately filtered (skipped).
+
+```go
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+    gogenfilter.WithIncludePatterns("pkg/**"),
+)
+```
+
+Files outside `pkg/` are filtered with `ReasonIncludePattern`.
+
+## Exclude Patterns
+
+Exclude patterns broaden scope: matching files are always filtered, regardless of detection.
+
+```go
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+    gogenfilter.WithExcludePatterns("**/*.pb.go", "mocks/*"),
+)
+```
+
+## Pattern Rules
+
+- **Patterns without `/`** match against the **filename only**: `*.pb.go` matches `any/path/user.pb.go`
+- **Patterns with `/`** match against the **full path**: `internal/*.go` matches `internal/handler.go`
+- **`**/`** at the start matches at any depth: `**/mocks/*.go` matches `pkg/mocks/service.go`
+- **`/**`** at the end matches anything under a directory: `generated/**` matches `generated/a/b/c.go`
+- **`/**/`** in the middle bridges any number of segments: `src/**/test.go` matches `src/pkg/test.go`
+
+## Combined Example
+
+```go
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+    gogenfilter.WithIncludePatterns("pkg/**"),
+    gogenfilter.WithExcludePatterns("**/*.pb.go"),
+)
+```
+
+This filters everything inside `pkg/` except protobuf files, which are excluded regardless.

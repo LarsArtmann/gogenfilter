@@ -1,0 +1,60 @@
+---
+title: SQLC Config Discovery
+description: Automatically find SQLC output directories from config files.
+---
+
+## Overview
+
+gogenfilter can discover SQLC configuration files and extract output directories, so you don't have to hardcode paths.
+
+## Find Configs
+
+```go
+configs, err := gogenfilter.FindSQLCConfigs([]string{"./..."})
+if err != nil {
+    log.Fatal(err)
+}
+
+for _, cfg := range configs {
+    fmt.Printf("Config: %s\n", cfg.Path)
+}
+```
+
+## Get Output Directories
+
+```go
+dirs, err := gogenfilter.GetSQLOutputDirs([]string{"."})
+if err != nil {
+    log.Fatal(err)
+}
+
+for _, dir := range dirs {
+    fmt.Printf("Output: %s\n", dir)
+}
+```
+
+## Supported Config Formats
+
+- `sqlc.yaml`
+- `sqlc.yml`
+
+The parser uses the `github.com/go-faster/yaml` library for robust YAML handling.
+
+## Use Case
+
+Combine config discovery with include patterns for precise scoping:
+
+```go
+dirs, _ := gogenfilter.GetSQLOutputDirs([]string{"."})
+
+includePatterns := make([]string, len(dirs))
+for i, dir := range dirs {
+    includePatterns[i] = dir + "/**"
+}
+
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
+    gogenfilter.WithIncludePatterns(includePatterns...),
+)
+```
