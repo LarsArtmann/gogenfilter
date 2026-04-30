@@ -32,6 +32,11 @@ import FeatureGrid from '../components/FeatureGrid.astro';
         <div class="install-cmd">$ go get github.com/LarsArtmann/gogenfilter</div>
       </div>
 
+      <a href="https://github.com/LarsArtmann/gogenfilter" target="_blank" rel="noopener noreferrer" class="stars-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Star on GitHub
+      </a>
+
       <div class="code-preview-wrapper">
         <div class="code-preview-glow"></div>
         <div class="code-preview">
@@ -41,7 +46,7 @@ import FeatureGrid from '../components/FeatureGrid.astro';
             <span class="code-dot"></span>
             <span class="code-filename">main.go</span>
           </div>
-          <pre class="code-content"><code set:html={`<span class="kw">package</span> <span class="typ">main</span>
+          <pre class="code-content" style="position: relative;"><code id="hero-code" set:html={`<span class="kw">package</span> <span class="typ">main</span>
 
 <span class="kw">import</span> (
     <span class="str">"fmt"</span>
@@ -57,24 +62,40 @@ import FeatureGrid from '../components/FeatureGrid.astro';
     filtered, _ := f.<span class="fn">ShouldFilter</span>(<span class="str">"db/models.go"</span>)
     fmt.<span class="fn">Println</span>(filtered) <span class="cmt">// true — sqlc generated</span>
 }`} /></pre>
+          <button class="code-copy-btn" id="copy-btn" data-code="package main
+
+import (
+    &quot;fmt&quot;
+    gogenfilter &quot;github.com/LarsArtmann/gogenfilter&quot;
+)
+
+func main() {
+    f := gogenfilter.NewFilter(
+        gogenfilter.Enabled(),
+        gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+    )
+
+    filtered, _ := f.ShouldFilter(&quot;db/models.go&quot;)
+    fmt.Println(filtered) // true — sqlc generated
+}">Copy</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section fade-in">
     <div class="section-inner">
       <GeneratorGrid />
     </div>
   </section>
 
-  <section class="section">
+  <section class="section fade-in">
     <div class="section-inner">
       <FeatureGrid />
     </div>
   </section>
 
-  <section class="section">
+  <section class="section fade-in">
     <div class="section-inner-sm text-center">
       <h2 class="section-title">Two-phase detection.</h2>
       <p class="section-desc">Filename first, content second. Most files are classified without reading a single byte.</p>
@@ -111,7 +132,40 @@ import FeatureGrid from '../components/FeatureGrid.astro';
     </div>
   </section>
 
-  <section class="section">
+  <section class="section fade-in">
+    <div class="section-inner-sm text-center">
+      <h2 class="section-title">Why gogenfilter?</h2>
+      <p class="section-desc">Purpose-built for Go. Not a generic file filter.</p>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comparison-title">Regex Grep</div>
+          <div class="comparison-price">DIY</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> No filename detection</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> Manual pattern maintenance</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> No metrics</div>
+        </div>
+        <div class="comparison-card highlighted">
+          <div class="comparison-title">gogenfilter</div>
+          <div class="comparison-price">Free</div>
+          <div class="comparison-feature"><span class="check">&#x2713;</span> 11 generators, table-driven</div>
+          <div class="comparison-feature"><span class="check">&#x2713;</span> Two-phase (zero I/O first)</div>
+          <div class="comparison-feature"><span class="check">&#x2713;</span> Thread-safe metrics</div>
+          <div class="comparison-feature"><span class="check">&#x2713;</span> fs.FS testable</div>
+          <div class="comparison-feature"><span class="check">&#x2713;</span> Pattern scoping</div>
+        </div>
+        <div class="comparison-card">
+          <div class="comparison-title">Full AST Parse</div>
+          <div class="comparison-price">Heavy</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> Requires go/ast import</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> Slow (parse entire file)</div>
+          <div class="comparison-feature"><span class="cross">&#x2717;</span> Overkill for filtering</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-in">
     <div class="section-inner-sm text-center">
       <h2 class="section-title">Built for real tools.</h2>
       <p class="section-desc">Drop it into any linter, analyzer, or CI pipeline.</p>
@@ -136,7 +190,7 @@ import FeatureGrid from '../components/FeatureGrid.astro';
     </div>
   </section>
 
-  <section class="section cta">
+  <section class="section cta fade-in">
     <div class="section-inner-sm text-center">
       <h2 class="section-title">Start filtering in seconds.</h2>
       <p class="section-desc">Three lines to filter all generated code from your project.</p>
@@ -147,3 +201,28 @@ import FeatureGrid from '../components/FeatureGrid.astro';
     </div>
   </section>
 </LandingLayout>
+
+<script is:inline>
+  document.getElementById('copy-btn').addEventListener('click', function() {
+    const code = this.getAttribute('data-code').replace(/&quot;/g, '"');
+    navigator.clipboard.writeText(code).then(() => {
+      this.textContent = 'Copied!';
+      this.classList.add('copied');
+      setTimeout(() => {
+        this.textContent = 'Copy';
+        this.classList.remove('copied');
+      }, 2000);
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
