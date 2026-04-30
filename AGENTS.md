@@ -30,7 +30,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 | `filter.go`    | `Filter` type with functional options (`Enabled`, `Disabled`, `WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `ShouldFilter` returns `(bool, error)`. `MustShouldFilter` panics on error. |
 | `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, filename/content matchers                                                                                                                         |
 | `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                                                 |
-| `pattern.go`   | Custom `**` glob pattern matching                                                                                                                                                                                       |
+| `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                          |
 | `sqlc.go`      | SQLC config discovery and parsing                                                                                                                                                                                       |
 | `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                                |
 | `project.go`   | Project root discovery                                                                                                                                                                                                  |
@@ -105,6 +105,7 @@ reason := gogenfilter.DetectReason("file.go", content,
 
 ## Dependencies
 
+- `github.com/bmatcuk/doublestar/v4` - `**` glob pattern matching
 - `github.com/go-faster/yaml` - YAML parsing for SQLC config
 
 ## License
