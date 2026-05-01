@@ -8,6 +8,7 @@
 ## a) FULLY DONE
 
 ### Website Infrastructure
+
 - **Astro v6.2.1 + Starlight v0.38.4** initialized in `website/`
 - **28 source files** created (components, layouts, pages, styles, content, config)
 - **14 HTML pages** generated in 1.88s build, 1.5MB total output
@@ -16,6 +17,7 @@
 - **Sitemap** auto-generated (`sitemap-index.xml`)
 
 ### Landing Page (`/`)
+
 - Hero section: "Skip the generated noise." with gradient accent
 - Interactive code preview showing `main.go` with syntax highlighting
 - Install command: `$ go get github.com/LarsArtmann/gogenfilter`
@@ -28,6 +30,7 @@
 - Footer with Documentation, GitHub, pkg.go.dev links
 
 ### Design
+
 - **Dark theme** (stone-950 background, cyan-400 accent)
 - **Typography**: Space Grotesk (headings/body) + JetBrains Mono (code)
 - **Custom CSS** (no Tailwind — removed due to Tailwind v4 + Astro 6 compatibility issues)
@@ -35,27 +38,32 @@
 - **Animations**: Pulsing badge dot, hover transitions on cards/buttons
 
 ### Documentation (11 MDX pages)
+
 - **Getting Started**: Installation, Quick Start (5 code examples)
 - **Guides**: Filter Options (full option table), Pattern Matching (wildcards, rules, examples), Metrics (per-reason breakdown), SQLC Config Discovery, Custom Filesystems (MapFS, embed.FS)
 - **API Reference**: Filter (constructor, options, methods), Detection (DetectReason, per-generator functions), Types (FilterOption, FilterReason, derived lists), Errors (branded errors, sentinels)
 - **Generators**: Complete detection method table for all 11 tools
 
 ### Firebase Hosting
+
 - `firebase.json`: dist/ public dir, clean URLs, trailing slash off, cache headers (immutable for assets, must-revalidate for HTML)
 - `.firebaserc`: project default set to "gogenfilter"
 - `.gitignore`: node_modules, dist, .firebase, .astro excluded
 
 ### CI/CD
+
 - `.github/workflows/deploy-website.yml`: Triggers on push/PR when `website/**` changes
 - Node 22, npm ci, build, Firebase deploy action
 - Uses `FIREBASE_SERVICE_ACCOUNT` secret (needs to be added to repo)
 
 ### Go Library
+
 - All tests pass with race detector (`go test -race ./...`)
 - Build clean (`go build ./...`)
 - No regressions — website is fully isolated in `website/` directory
 
 ### AGENTS.md
+
 - Updated with Website section documenting the new website structure and commands
 
 ---
@@ -63,6 +71,7 @@
 ## b) PARTIALLY DONE
 
 ### Firebase Deployment
+
 - **Config files created** (firebase.json, .firebaserc) ✅
 - **GitHub Actions workflow created** ✅
 - **NOT actually deployed yet** — requires:
@@ -72,11 +81,13 @@
   4. Custom domain configuration (gogenfilter.dev or similar)
 
 ### Starlight Logo
+
 - SVG logo created at `public/logo.svg` ✅
 - Starlight logo config **removed** due to Astro image optimization error ❌
 - Starlight currently shows text-only "gogenfilter" title (no logo image)
 
 ### Tailwind CSS
+
 - Installed and attempted integration ✅
 - **Removed** due to `@tailwindcss/vite` v4 + Astro 6 incompatibility ❌
 - Replaced with custom CSS ✅
@@ -126,6 +137,7 @@
 ## e) WHAT WE SHOULD IMPROVE
 
 ### High Priority
+
 1. **Actually deploy** — the website is fully built but sitting in `/dist/` only. Firebase deployment is 3 CLI commands away.
 2. **Fix Starlight logo** — either use a PNG/JPG instead of SVG, or configure Astro's image handling to skip SVGs.
 3. **Add favicon.ico** — currently only `logo.svg`, browsers expect `.ico`.
@@ -134,6 +146,7 @@
 6. **Mobile nav** — landing page has no hamburger menu on mobile; nav links overflow.
 
 ### Medium Priority
+
 7. **Analytics** — add Plausible or Vercel Analytics for traffic tracking.
 8. **Performance audit** — run Lighthouse, optimize fonts, add preloads.
 9. **GitHub Actions CI for website** — add a build-only job on PRs (don't deploy previews).
@@ -142,6 +155,7 @@
 12. **Structured data** — add JSON-LD for library/software application.
 
 ### Nice to Have
+
 13. **Interactive Go playground** — embed a Go playground for live examples.
 14. **Versioned docs** — track API changes across gogenfilter versions.
 15. **i18n** — translate docs for non-English audiences.
@@ -153,33 +167,33 @@
 
 ## f) Top #25 Things to Do Next
 
-| # | Task | Priority | Effort | Impact |
-|---|------|----------|--------|--------|
-| 1 | Deploy to Firebase (create project, login, deploy) | CRITICAL | 15min | High |
-| 2 | Add `FIREBASE_SERVICE_ACCOUNT` GitHub secret | CRITICAL | 5min | High |
-| 3 | Configure custom domain (gogenfilter.dev) | HIGH | 30min | High |
-| 4 | Fix Starlight logo (use PNG or configure SVG handling) | HIGH | 30min | Medium |
-| 5 | Add favicon.ico + apple-touch-icon | HIGH | 15min | Medium |
-| 6 | Add Open Graph / social sharing images | HIGH | 1hr | High |
-| 7 | Add mobile hamburger nav to landing page | HIGH | 1hr | Medium |
-| 8 | Re-integrate Tailwind CSS (v3 or wait for v4 fix) | MEDIUM | 2hr | Medium |
-| 9 | Add robots.txt via Astro integration | MEDIUM | 10min | Low |
-| 10 | Add Plausible/Umami analytics | MEDIUM | 30min | Medium |
-| 11 | Run Lighthouse audit and fix issues | MEDIUM | 1hr | Medium |
-| 12 | Add copy-to-clipboard on landing page code block | MEDIUM | 30min | Low |
-| 13 | Add "GitHub Stars" badge to landing page | MEDIUM | 15min | Medium |
-| 14 | Generate sitemap for Google Search Console | MEDIUM | 5min | Medium |
-| 15 | Proofread all 11 documentation pages | MEDIUM | 2hr | Medium |
-| 16 | Add RSS feed via Starlight config | LOW | 15min | Low |
-| 17 | Add JSON-LD structured data | LOW | 30min | Low |
-| 18 | Create GitHub issue/PR templates | LOW | 30min | Low |
-| 19 | Add "Contributing" page to docs (from CONTRIBUTING.md) | LOW | 30min | Low |
-| 20 | Add changelog page (from CHANGELOG.md) | LOW | 30min | Low |
-| 21 | Set up Lighthouse CI in GitHub Actions | LOW | 1hr | Low |
-| 22 | Add versioned docs support | LOW | 2hr | Low |
-| 23 | Add interactive Go code examples | LOW | 4hr | Medium |
-| 24 | Internationalization (i18n) | LOW | 4hr | Low |
-| 25 | Add dark/light toggle to landing page (match Starlight docs) | LOW | 1hr | Low |
+| #   | Task                                                         | Priority | Effort | Impact |
+| --- | ------------------------------------------------------------ | -------- | ------ | ------ |
+| 1   | Deploy to Firebase (create project, login, deploy)           | CRITICAL | 15min  | High   |
+| 2   | Add `FIREBASE_SERVICE_ACCOUNT` GitHub secret                 | CRITICAL | 5min   | High   |
+| 3   | Configure custom domain (gogenfilter.dev)                    | HIGH     | 30min  | High   |
+| 4   | Fix Starlight logo (use PNG or configure SVG handling)       | HIGH     | 30min  | Medium |
+| 5   | Add favicon.ico + apple-touch-icon                           | HIGH     | 15min  | Medium |
+| 6   | Add Open Graph / social sharing images                       | HIGH     | 1hr    | High   |
+| 7   | Add mobile hamburger nav to landing page                     | HIGH     | 1hr    | Medium |
+| 8   | Re-integrate Tailwind CSS (v3 or wait for v4 fix)            | MEDIUM   | 2hr    | Medium |
+| 9   | Add robots.txt via Astro integration                         | MEDIUM   | 10min  | Low    |
+| 10  | Add Plausible/Umami analytics                                | MEDIUM   | 30min  | Medium |
+| 11  | Run Lighthouse audit and fix issues                          | MEDIUM   | 1hr    | Medium |
+| 12  | Add copy-to-clipboard on landing page code block             | MEDIUM   | 30min  | Low    |
+| 13  | Add "GitHub Stars" badge to landing page                     | MEDIUM   | 15min  | Medium |
+| 14  | Generate sitemap for Google Search Console                   | MEDIUM   | 5min   | Medium |
+| 15  | Proofread all 11 documentation pages                         | MEDIUM   | 2hr    | Medium |
+| 16  | Add RSS feed via Starlight config                            | LOW      | 15min  | Low    |
+| 17  | Add JSON-LD structured data                                  | LOW      | 30min  | Low    |
+| 18  | Create GitHub issue/PR templates                             | LOW      | 30min  | Low    |
+| 19  | Add "Contributing" page to docs (from CONTRIBUTING.md)       | LOW      | 30min  | Low    |
+| 20  | Add changelog page (from CHANGELOG.md)                       | LOW      | 30min  | Low    |
+| 21  | Set up Lighthouse CI in GitHub Actions                       | LOW      | 1hr    | Low    |
+| 22  | Add versioned docs support                                   | LOW      | 2hr    | Low    |
+| 23  | Add interactive Go code examples                             | LOW      | 4hr    | Medium |
+| 24  | Internationalization (i18n)                                  | LOW      | 4hr    | Low    |
+| 25  | Add dark/light toggle to landing page (match Starlight docs) | LOW      | 1hr    | Low    |
 
 ---
 
@@ -188,6 +202,7 @@
 **What is the Firebase project ID and does a Firebase project already exist for gogenfilter?**
 
 The `.firebaserc` currently says `"default": "gogenfilter"` but:
+
 - Has a Firebase project been created at console.firebase.google.com?
 - Is there an existing Google Cloud project tied to this?
 - What Google account should own the project?
@@ -200,9 +215,9 @@ This blocks actual deployment (#1-3 in the todo list above). Everything else I c
 
 ## Build Verification
 
-| Check | Status |
-|-------|--------|
-| `go test -race ./...` | PASS |
-| `go build ./...` | PASS |
+| Check                         | Status                 |
+| ----------------------------- | ---------------------- |
+| `go test -race ./...`         | PASS                   |
+| `go build ./...`              | PASS                   |
 | `cd website && npm run build` | PASS (14 pages, 1.88s) |
-| No regressions to Go library | CONFIRMED |
+| No regressions to Go library  | CONFIRMED              |

@@ -9,26 +9,28 @@
 
 ## Session Summary (2 sessions, 7 commits)
 
-| Commit | Description |
-|--------|-------------|
+| Commit    | Description                                                                           |
+| --------- | ------------------------------------------------------------------------------------- |
 | `30b252f` | feat(website): initial Astro + Starlight site, landing page, 11 docs, Firebase config |
-| `971667e` | fix(website): favicon.svg, favicon.ico, robots.txt, hero badge accuracy |
-| `ac04790` | feat(website): mobile nav, copy button, comparison section, scroll animations |
-| `3f3e024` | feat(website): OG image generation (14 PNGs), changelog + contributing pages |
-| `56bd04f` | docs: website polish sprint status report |
-| `248c840` | feat(website): flake.nix, domain set to gogenfilter.lars.software |
+| `971667e` | fix(website): favicon.svg, favicon.ico, robots.txt, hero badge accuracy               |
+| `ac04790` | feat(website): mobile nav, copy button, comparison section, scroll animations         |
+| `3f3e024` | feat(website): OG image generation (14 PNGs), changelog + contributing pages          |
+| `56bd04f` | docs: website polish sprint status report                                             |
+| `248c840` | feat(website): flake.nix, domain set to gogenfilter.lars.software                     |
 
 ---
 
 ## a) FULLY DONE
 
 ### Go Library (Pre-existing, No Regressions)
+
 - 11 generator detectors (sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic)
 - Two-phase detection, functional options API, fs.FS abstraction, thread-safe metrics
 - Branded errors, phantom types, SQLC config discovery, glob pattern matching
 - `go test -race ./...` passes clean
 
 ### Website — Landing Page (`/`)
+
 - Hero: "Skip the generated noise." with gradient accent, animated badge dot
 - Code preview with syntax-highlighted Go example + copy-to-clipboard button
 - Install command: `$ go get github.com/LarsArtmann/gogenfilter`
@@ -45,12 +47,14 @@
 - Footer: Documentation, GitHub, pkg.go.dev links
 
 ### Website — Design
+
 - Dark theme (stone-950 bg, cyan-400 accent)
 - Typography: Space Grotesk + JetBrains Mono
 - Custom vanilla CSS (no Tailwind — v4 incompatible with Astro 6)
 - Responsive: mobile-first grid breakpoints
 
 ### Website — Documentation (13 MDX pages)
+
 - Getting Started: Installation, Quick Start
 - Guides: Filter Options, Pattern Matching, Metrics, SQLC Config, Custom Filesystems
 - API Reference: Filter, Detection, Types, Errors
@@ -59,6 +63,7 @@
 - Starlight sidebar with 4 sections, PageFind search, dark/light toggle
 
 ### Website — Infrastructure
+
 - Astro v6.2.1 + Starlight v0.38.4
 - 36 source files, 16 HTML output pages, 14 OG images
 - Sitemap auto-generated
@@ -74,17 +79,20 @@
 ## b) PARTIALLY DONE
 
 ### Firebase Deployment
+
 - Config files exist (firebase.json, .firebaserc, flake.nix deploy app) ✅
 - GitHub Actions workflow exists ✅
 - Domain set in all configs ✅
 - **NOT deployed** — requires: Firebase CLI login, project creation (`firebase projects:create gogenfilter-site`), `firebase deploy`, custom domain setup in Firebase console, CNAME in DNS, `FIREBASE_SERVICE_ACCOUNT` GitHub secret
 
 ### Starlight Logo
+
 - SVG logo exists at public/logo.svg ✅
 - Starlight logo config removed (Astro image optimization breaks on SVGs) ❌
 - Starlight shows text-only "gogenfilter" in sidebar — no logo image
 
 ### OG Images
+
 - 14 PNGs auto-generated for all docs pages ✅
 - OG meta tags on landing page ✅
 - OG images NOT yet referenced in Starlight docs head config (need `routeMiddleware`) ❌
@@ -141,17 +149,20 @@
 ## e) WHAT WE SHOULD IMPROVE
 
 ### Critical (Blocks Launch)
+
 1. **Deploy to Firebase** — 3 CLI commands, but needs your Firebase login + project creation
 2. **DNS setup** — CNAME record for gogenfilter.lars.software
 3. **GitHub Actions secret** — `FIREBASE_SERVICE_ACCOUNT` for CI/CD
 
 ### High Impact
+
 4. **OG image injection into Starlight** — use routeMiddleware to add og:image to docs head
 5. **Starlight logo** — create PNG version, configure properly
 6. **Self-host fonts** — Google Fonts external request hurts performance + privacy
 7. **Lighthouse audit** — establish baseline, fix low-hanging fruit
 
 ### Medium Impact
+
 8. **Tailwind v3** — re-add with compatible version for faster iteration
 9. **Analytics** — Plausible or Umami for traffic tracking
 10. **JSON-LD** — structured data for search rich snippets
@@ -160,6 +171,7 @@
 13. **Content review** — have someone proofread all 13 doc pages
 
 ### Nice to Have
+
 14. **Versioned docs** — track API changes across releases
 15. **i18n** — translate for non-English audiences
 16. **Blog** — publish changelogs as blog posts
@@ -171,33 +183,33 @@
 
 ## f) Top #25 Things to Do Next
 
-| # | Task | Impact | Effort | Blocks On |
-|---|------|--------|--------|-----------|
-| 1 | Deploy to Firebase (login, create project, deploy) | CRITICAL | 10min | You: firebase login |
-| 2 | Add FIREBASE_SERVICE_ACCOUNT GitHub secret | CRITICAL | 5min | You: GCP service account |
-| 3 | Configure DNS CNAME for gogenfilter.lars.software | CRITICAL | 10min | You: DNS access |
-| 4 | Add custom domain in Firebase Hosting console | CRITICAL | 5min | After #1 |
-| 5 | Fix Starlight logo (generate PNG, add config) | HIGH | 20min | None |
-| 6 | Wire OG images into Starlight docs head (routeMiddleware) | HIGH | 20min | None |
-| 7 | Add static OG image for landing page | HIGH | 15min | None |
-| 8 | Self-host Google Fonts (download + local serve) | MEDIUM | 30min | None |
-| 9 | Run Lighthouse audit + fix issues | MEDIUM | 30min | None |
-| 10 | Add apple-touch-icon.png (180x180) | MEDIUM | 5min | None |
-| 11 | Enable Starlight RSS feed | MEDIUM | 5min | None |
-| 12 | Add JSON-LD structured data | MEDIUM | 20min | None |
-| 13 | Re-add Tailwind CSS v3 (compatible with Astro 6) | MEDIUM | 1hr | None |
-| 14 | Add Plausible analytics | MEDIUM | 15min | You: Plausible account |
-| 15 | Proofread all 13 documentation pages | MEDIUM | 1hr | None |
-| 16 | Separate CI workflow: build-only on PRs, deploy on master | LOW | 15min | None |
-| 17 | Create custom 404 page matching landing page design | LOW | 20min | None |
-| 18 | Add dynamic GitHub stars count via API | LOW | 15min | None |
-| 19 | Add versioned docs support | LOW | 2hr | None |
-| 20 | Add i18n (German, Japanese?) | LOW | 4hr | None |
-| 21 | Add blog section for release notes | LOW | 1hr | None |
-| 22 | Add interactive Go playground examples | LOW | 3hr | None |
-| 23 | Add email/newsletter capture | LOW | 1hr | You: email service |
-| 24 | Performance budgets in CI | LOW | 30min | None |
-| 25 | Accessibility audit with axe-core | LOW | 1hr | None |
+| #   | Task                                                      | Impact   | Effort | Blocks On                |
+| --- | --------------------------------------------------------- | -------- | ------ | ------------------------ |
+| 1   | Deploy to Firebase (login, create project, deploy)        | CRITICAL | 10min  | You: firebase login      |
+| 2   | Add FIREBASE_SERVICE_ACCOUNT GitHub secret                | CRITICAL | 5min   | You: GCP service account |
+| 3   | Configure DNS CNAME for gogenfilter.lars.software         | CRITICAL | 10min  | You: DNS access          |
+| 4   | Add custom domain in Firebase Hosting console             | CRITICAL | 5min   | After #1                 |
+| 5   | Fix Starlight logo (generate PNG, add config)             | HIGH     | 20min  | None                     |
+| 6   | Wire OG images into Starlight docs head (routeMiddleware) | HIGH     | 20min  | None                     |
+| 7   | Add static OG image for landing page                      | HIGH     | 15min  | None                     |
+| 8   | Self-host Google Fonts (download + local serve)           | MEDIUM   | 30min  | None                     |
+| 9   | Run Lighthouse audit + fix issues                         | MEDIUM   | 30min  | None                     |
+| 10  | Add apple-touch-icon.png (180x180)                        | MEDIUM   | 5min   | None                     |
+| 11  | Enable Starlight RSS feed                                 | MEDIUM   | 5min   | None                     |
+| 12  | Add JSON-LD structured data                               | MEDIUM   | 20min  | None                     |
+| 13  | Re-add Tailwind CSS v3 (compatible with Astro 6)          | MEDIUM   | 1hr    | None                     |
+| 14  | Add Plausible analytics                                   | MEDIUM   | 15min  | You: Plausible account   |
+| 15  | Proofread all 13 documentation pages                      | MEDIUM   | 1hr    | None                     |
+| 16  | Separate CI workflow: build-only on PRs, deploy on master | LOW      | 15min  | None                     |
+| 17  | Create custom 404 page matching landing page design       | LOW      | 20min  | None                     |
+| 18  | Add dynamic GitHub stars count via API                    | LOW      | 15min  | None                     |
+| 19  | Add versioned docs support                                | LOW      | 2hr    | None                     |
+| 20  | Add i18n (German, Japanese?)                              | LOW      | 4hr    | None                     |
+| 21  | Add blog section for release notes                        | LOW      | 1hr    | None                     |
+| 22  | Add interactive Go playground examples                    | LOW      | 3hr    | None                     |
+| 23  | Add email/newsletter capture                              | LOW      | 1hr    | You: email service       |
+| 24  | Performance budgets in CI                                 | LOW      | 30min  | None                     |
+| 25  | Accessibility audit with axe-core                         | LOW      | 1hr    | None                     |
 
 ---
 
@@ -211,11 +223,11 @@ This blocks items #1-4 above (the entire deployment). The flake.nix `deploy` app
 
 ## Build Verification
 
-| Check | Status |
-|-------|--------|
-| `go test -race ./...` | PASS |
+| Check                         | Status                               |
+| ----------------------------- | ------------------------------------ |
+| `go test -race ./...`         | PASS                                 |
 | `cd website && npm run build` | PASS (16 pages, 14 OG images, 2.07s) |
-| `nix flake check` (website/) | PASS |
-| `git status` | CLEAN (pushed to origin/master) |
-| Website source files | 36 |
-| Total commits this session | 7 |
+| `nix flake check` (website/)  | PASS                                 |
+| `git status`                  | CLEAN (pushed to origin/master)      |
+| Website source files          | 36                                   |
+| Total commits this session    | 7                                    |

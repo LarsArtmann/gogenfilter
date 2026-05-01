@@ -7,10 +7,10 @@ description: Use include and exclude patterns to scope file filtering.
 
 Include and exclude patterns support two wildcards:
 
-| Pattern | Meaning |
-| ------- | ------- |
-| `*` | Matches any sequence of non-separator characters (single path segment) |
-| `**` | Matches zero or more complete path segments (crosses `/` boundaries) |
+| Pattern | Meaning                                                                |
+| ------- | ---------------------------------------------------------------------- |
+| `*`     | Matches any sequence of non-separator characters (single path segment) |
+| `**`    | Matches zero or more complete path segments (crosses `/` boundaries)   |
 
 ## Include Patterns
 
@@ -42,9 +42,9 @@ f := gogenfilter.NewFilter(
 
 - **Patterns without `/`** match against the **filename only**: `*.pb.go` matches `any/path/user.pb.go`
 - **Patterns with `/`** match against the **full path**: `internal/*.go` matches `internal/handler.go`
-- **`**/`** at the start matches at any depth: `**/mocks/*.go` matches `pkg/mocks/service.go`
-- **`/**`** at the end matches anything under a directory: `generated/**` matches `generated/a/b/c.go`
-- **`/**/`** in the middle bridges any number of segments: `src/**/test.go` matches `src/pkg/test.go`
+- **`**/`** at the start matches at any depth: `\*_/mocks/_.go`matches`pkg/mocks/service.go`
+- **`/**`** at the end matches anything under a directory: `generated/\*\*`matches`generated/a/b/c.go`
+- **`/**/`** in the middle bridges any number of segments: `src/\*\*/test.go`matches`src/pkg/test.go`
 
 ## Combined Example
 

@@ -19,30 +19,30 @@ gogenfilter is a mature, high-quality Go library for detecting auto-generated co
 
 ### Core Library (Production-Grade)
 
-| Component | File | Lines | Coverage | Status |
-|-----------|------|-------|----------|--------|
-| Filter API | `filter.go` | 279 | ~97% | Complete |
-| Detection engine | `detection.go` | 355 | ~96% | Complete |
-| Type system | `types.go` | 166 | 100% | Complete |
-| Pattern matching | `pattern.go` | 39 | 92.3% | Complete |
-| SQLC integration | `sqlc.go` | 309 | ~91% | Complete |
-| Error system | `errors.go` | 218 | ~95% | Complete |
-| Project discovery | `project.go` | 52 | 92.9% | Complete |
-| Metrics | `metrics.go` | 138 | 100% | Complete |
-| Phantom types | `phantom.go` | 43 | 100% | Complete |
+| Component         | File           | Lines | Coverage | Status   |
+| ----------------- | -------------- | ----- | -------- | -------- |
+| Filter API        | `filter.go`    | 279   | ~97%     | Complete |
+| Detection engine  | `detection.go` | 355   | ~96%     | Complete |
+| Type system       | `types.go`     | 166   | 100%     | Complete |
+| Pattern matching  | `pattern.go`   | 39    | 92.3%    | Complete |
+| SQLC integration  | `sqlc.go`      | 309   | ~91%     | Complete |
+| Error system      | `errors.go`    | 218   | ~95%     | Complete |
+| Project discovery | `project.go`   | 52    | 92.9%    | Complete |
+| Metrics           | `metrics.go`   | 138   | 100%     | Complete |
+| Phantom types     | `phantom.go`   | 43    | 100%     | Complete |
 
 ### Test Suite (Comprehensive)
 
-| Category | Files | Lines | Status |
-|----------|-------|-------|--------|
-| Unit tests | `*_test.go` (17 files) | 4,570 | Complete |
-| Integration tests | `integration_test.go`, `testdata_test.go` | 439 | Complete |
-| Benchmarks | `bench_test.go`, `errors_bench_test.go` | 239 | Complete |
-| Fuzz tests | `fuzz_test.go` | 74 | Complete |
-| Property tests | `property_test.go` | 103 | Complete |
-| Concurrent tests | `filter_concurrent_test.go` | 59 | Complete |
-| Edge case tests | `filter_edge_test.go` | 93 | Complete |
-| Examples | `example_test.go` | 226 | Complete |
+| Category          | Files                                     | Lines | Status   |
+| ----------------- | ----------------------------------------- | ----- | -------- |
+| Unit tests        | `*_test.go` (17 files)                    | 4,570 | Complete |
+| Integration tests | `integration_test.go`, `testdata_test.go` | 439   | Complete |
+| Benchmarks        | `bench_test.go`, `errors_bench_test.go`   | 239   | Complete |
+| Fuzz tests        | `fuzz_test.go`                            | 74    | Complete |
+| Property tests    | `property_test.go`                        | 103   | Complete |
+| Concurrent tests  | `filter_concurrent_test.go`               | 59    | Complete |
+| Edge case tests   | `filter_edge_test.go`                     | 93    | Complete |
+| Examples          | `example_test.go`                         | 226   | Complete |
 
 **Total: 6,169 lines of Go across 32 files (1,599 production + 4,570 test)**
 
@@ -79,58 +79,62 @@ gogenfilter is a mature, high-quality Go library for detecting auto-generated co
 
 ### Quality Metrics
 
-| Metric | Value | Assessment |
-|--------|-------|------------|
-| Test coverage | 97.4% | Excellent |
-| Linter issues | 0 | Perfect |
-| Vet warnings | 0 | Perfect |
-| Race conditions | 0 | Perfect |
-| Production lines | 1,599 | Lean |
-| Test/Prod ratio | 2.86:1 | Very healthy |
-| Generators supported | 11 + generic fallback | Comprehensive |
-| Dependencies | 2 (doublestar/v4, go-faster/yaml) | Minimal |
+| Metric               | Value                             | Assessment    |
+| -------------------- | --------------------------------- | ------------- |
+| Test coverage        | 97.4%                             | Excellent     |
+| Linter issues        | 0                                 | Perfect       |
+| Vet warnings         | 0                                 | Perfect       |
+| Race conditions      | 0                                 | Perfect       |
+| Production lines     | 1,599                             | Lean          |
+| Test/Prod ratio      | 2.86:1                            | Very healthy  |
+| Generators supported | 11 + generic fallback             | Comprehensive |
+| Dependencies         | 2 (doublestar/v4, go-faster/yaml) | Minimal       |
 
 ### Benchmark Performance
 
-| Operation | ns/op | allocs | Assessment |
-|-----------|-------|--------|------------|
-| ShouldFilter (enabled) | 73.4 | 0 | Excellent |
-| ShouldFilter (disabled) | 1.2 | 0 | Excellent |
-| DetectGenerated | 10.8 | 0 | Excellent |
-| MatchPattern (exact) | 34.9 | 0 | Excellent |
-| MatchPattern (doublestar) | 68.7 | 0 | Good |
-| Error construction | <2.0 | 0 | Excellent |
-| errors.Is matching | ~8.0 | 0 | Excellent |
+| Operation                 | ns/op | allocs | Assessment |
+| ------------------------- | ----- | ------ | ---------- |
+| ShouldFilter (enabled)    | 73.4  | 0      | Excellent  |
+| ShouldFilter (disabled)   | 1.2   | 0      | Excellent  |
+| DetectGenerated           | 10.8  | 0      | Excellent  |
+| MatchPattern (exact)      | 34.9  | 0      | Excellent  |
+| MatchPattern (doublestar) | 68.7  | 0      | Good       |
+| Error construction        | <2.0  | 0      | Excellent  |
+| errors.Is matching        | ~8.0  | 0      | Excellent  |
 
 ---
 
 ## B) PARTIALLY DONE 🟡
 
 ### 1. TODO_LIST.md — Stale and Accumulated Technical Debt
+
 - **84 completed items** still listed (noise, should be removed)
 - **"Tag v0.1.0 release"** still listed as medium priority — but `v0.1.0` and `v0.2.0` tags already exist
 - 6 legitimate open items remain (see section C)
 
 ### 2. `.gitignore` — Contains Non-Comment Lines
+
 - Lines 52 and 54 contain text that looks like commit messages, not patterns:
   - `Copy/paste detection report` (line 52)
   - `Add pattern for Templ generated files` (line 54)
 - These will silently ignore files matching these exact filenames
 
 ### 3. AGENTS.md — Just Fixed (Uncommitted)
+
 - Updated `detection.go` description to include `DetectReasonReader`
 - Updated `pattern.go` description to reflect `doublestar/v4` usage
 - Added missing `github.com/bmatcuk/doublestar/v4` dependency
 - **Status:** Fixed locally, needs commit
 
 ### 4. Coverage Gaps (Minor)
-| Function | Coverage | Note |
-|----------|----------|------|
-| `MustShouldFilter` | 75.0% | Panic path untested (by design) |
-| `detectReasonFromMap` | 83.3% | Error branch |
-| `FindSQLCConfigsFS` | 81.8% | Error paths |
-| `GetSQLOutputDirs` | 80.0% | Error paths |
-| `ProjectRootError.Error` | 85.7% | Edge case |
+
+| Function                 | Coverage | Note                            |
+| ------------------------ | -------- | ------------------------------- |
+| `MustShouldFilter`       | 75.0%    | Panic path untested (by design) |
+| `detectReasonFromMap`    | 83.3%    | Error branch                    |
+| `FindSQLCConfigsFS`      | 81.8%    | Error paths                     |
+| `GetSQLOutputDirs`       | 80.0%    | Error paths                     |
+| `ProjectRootError.Error` | 85.7%    | Edge case                       |
 
 ---
 
@@ -159,23 +163,28 @@ Additional items not in TODO_LIST.md:
 **Nothing is truly fucked.** The project is in excellent shape. However, here are things that are sloppy:
 
 ### 1. `.gitignore` Contains Garbage Lines
+
 ```
 Copy/paste detection report    ← This is a COMMENT without #
 Add pattern for Templ generated files  ← This is a COMMIT MESSAGE
 ```
+
 These silently ignore files named exactly `Copy/paste detection report` and `Add pattern for Templ generated files`. Harmless but embarrassing for a published library.
 
 ### 2. `.art-dupl.json` — Untracked Config File
+
 - Present in working directory but not committed or gitignored
 - Purpose unclear — appears to be a config for a duplicate code detector
 - Should be committed (if project tooling) or gitignored (if personal)
 
 ### 3. TODO_LIST.md — 84 Completed Items Cluttering the File
+
 - Makes it impossible to see what's actually pending
 - Stale "Tag v0.1.0" item undermines credibility
 - Should have been cleaned up incrementally
 
 ### 4. Version Tags Ahead of CHANGELOG
+
 - `v0.1.0` and `v0.2.0` tags exist
 - CHANGELOG has `[Unreleased]` and `[Pre-release]` sections but no tagged version sections
 - Unclear what changed between v0.1.0 and v0.2.0
@@ -216,48 +225,48 @@ These silently ignore files named exactly `Copy/paste detection report` and `Add
 
 ### Shipping (Do First)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 1 | Commit AGENTS.md fixes | 1 min | High |
-| 2 | Clean TODO_LIST.md (remove completed items, fix stale entries) | 5 min | High |
-| 3 | Fix `.gitignore` garbage lines | 2 min | Medium |
-| 4 | Decide fate of `.art-dupl.json` (commit or gitignore) | 1 min | Medium |
-| 5 | Add `[0.1.0]` and `[0.2.0]` sections to CHANGELOG.md with dates | 15 min | High |
-| 6 | Decide: tag v0.3.0 or v1.0.0 | Decision | Critical |
-| 7 | Update CHANGELOG `[Unreleased]` to the chosen version | 5 min | High |
-| 8 | Tag the release | 1 min | Critical |
-| 9 | Push to origin (if ready) | 1 min | Critical |
+| #   | Task                                                            | Effort   | Impact   |
+| --- | --------------------------------------------------------------- | -------- | -------- |
+| 1   | Commit AGENTS.md fixes                                          | 1 min    | High     |
+| 2   | Clean TODO_LIST.md (remove completed items, fix stale entries)  | 5 min    | High     |
+| 3   | Fix `.gitignore` garbage lines                                  | 2 min    | Medium   |
+| 4   | Decide fate of `.art-dupl.json` (commit or gitignore)           | 1 min    | Medium   |
+| 5   | Add `[0.1.0]` and `[0.2.0]` sections to CHANGELOG.md with dates | 15 min   | High     |
+| 6   | Decide: tag v0.3.0 or v1.0.0                                    | Decision | Critical |
+| 7   | Update CHANGELOG `[Unreleased]` to the chosen version           | 5 min    | High     |
+| 8   | Tag the release                                                 | 1 min    | Critical |
+| 9   | Push to origin (if ready)                                       | 1 min    | Critical |
 
 ### Polish (Do Next)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 10 | Add API stability statement to README or godoc | 10 min | Medium |
-| 11 | Add pkg.go.dev badge to README | 5 min | Medium |
-| 12 | Test `MustShouldFilter` panic path | 5 min | Low |
-| 13 | Verify `.editorconfig` exists and is comprehensive | 3 min | Low |
-| 14 | Add `CONTRIBUTING.md` | 15 min | Medium |
-| 15 | Add `CODE_OF_CONDUCT.md` | 5 min | Low |
+| #   | Task                                               | Effort | Impact |
+| --- | -------------------------------------------------- | ------ | ------ |
+| 10  | Add API stability statement to README or godoc     | 10 min | Medium |
+| 11  | Add pkg.go.dev badge to README                     | 5 min  | Medium |
+| 12  | Test `MustShouldFilter` panic path                 | 5 min  | Low    |
+| 13  | Verify `.editorconfig` exists and is comprehensive | 3 min  | Low    |
+| 14  | Add `CONTRIBUTING.md`                              | 15 min | Medium |
+| 15  | Add `CODE_OF_CONDUCT.md`                           | 5 min  | Low    |
 
 ### Technical Debt (Do Eventually)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 16 | Resolve include-patterns-vs-detection design question | 30 min | High |
-| 17 | Performance profiling with pprof on hot paths | 1 hour | Medium |
-| 18 | Add Codecov or similar coverage tracking to CI | 15 min | Medium |
-| 19 | Evaluate `//go:generate` for detector table | 1 hour | Low |
-| 20 | Review `FindSQLCConfigs` WalkDir usage — may already be done | 15 min | Low |
-| 21 | Increase coverage on error paths (85-92% functions) | 30 min | Low |
+| #   | Task                                                         | Effort | Impact |
+| --- | ------------------------------------------------------------ | ------ | ------ |
+| 16  | Resolve include-patterns-vs-detection design question        | 30 min | High   |
+| 17  | Performance profiling with pprof on hot paths                | 1 hour | Medium |
+| 18  | Add Codecov or similar coverage tracking to CI               | 15 min | Medium |
+| 19  | Evaluate `//go:generate` for detector table                  | 1 hour | Low    |
+| 20  | Review `FindSQLCConfigs` WalkDir usage — may already be done | 15 min | Low    |
+| 21  | Increase coverage on error paths (85-92% functions)          | 30 min | Low    |
 
 ### Nice-to-Have
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 22 | Add more generators (e.g., `go-bindata`, `esc`, `pkger`) | 2 hours | Medium |
-| 23 | Create a companion CLI tool for standalone use | 4 hours | Medium |
-| 24 | Add real-world integration tests against actual generated repos | 2 hours | Low |
-| 25 | Write a blog post / announcement for the release | 1 hour | Medium |
+| #   | Task                                                            | Effort  | Impact |
+| --- | --------------------------------------------------------------- | ------- | ------ |
+| 22  | Add more generators (e.g., `go-bindata`, `esc`, `pkger`)        | 2 hours | Medium |
+| 23  | Create a companion CLI tool for standalone use                  | 4 hours | Medium |
+| 24  | Add real-world integration tests against actual generated repos | 2 hours | Low    |
+| 25  | Write a blog post / announcement for the release                | 1 hour  | Medium |
 
 ---
 
@@ -277,6 +286,7 @@ This is a semantic design decision that affects the API contract. The current be
 ## File Inventory
 
 ### Production Code (9 files, 1,599 lines)
+
 ```
 detection.go  355  — Core detection engine, detectors table
 filter.go     279  — Filter type, functional options, ShouldFilter
@@ -290,6 +300,7 @@ pattern.go     39  — Glob pattern matching via doublestar/v4
 ```
 
 ### Test Code (17 files, 4,570 lines)
+
 ```
 detection_test.go       513  — Detection engine tests
 helpers_test.go         462  — Generic test helpers
@@ -316,6 +327,7 @@ filter_concurrent_test.go 59  — Thread safety tests
 ```
 
 ### Test Data (11 directories)
+
 ```
 testdata/{deepcopy,go-enum,handwritten,mockgen,moq,oapi,protobuf,sqlc,stringer,templ,wire}
 ```
