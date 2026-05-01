@@ -5,10 +5,10 @@ on:
     branches:
       - master
     paths:
-      - 'website/**'
+      - "website/**"
   pull_request:
     paths:
-      - 'website/**'
+      - "website/**"
 
 defaults:
   run:
@@ -22,8 +22,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
           cache-dependency-path: website/package-lock.json
 
       - run: npm ci
@@ -33,7 +33,7 @@ jobs:
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
           projectId: gogenfilter
           entryPoint: website
