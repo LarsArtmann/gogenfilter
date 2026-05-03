@@ -18,12 +18,14 @@ linters:
   settings:
     depguard:
       rules:
-        Main:
+        main:
           allow:
             - $gostd
             - github.com/bmatcuk/doublestar/v4
             - github.com/go-faster/yaml
             - github.com/LarsArtmann/gogenfilter
+            - github.com/onsi/ginkgo/v2
+            - github.com/onsi/gomega
     exhaustruct:
       exclude:
         - '.*/fstest\.MapFile'
@@ -34,6 +36,7 @@ linters:
           - cyclop
           - funlen
           - gocognit
+          - revive
           - testpackage
   enable:
     - arangolint
