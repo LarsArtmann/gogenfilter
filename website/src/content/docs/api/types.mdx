@@ -65,13 +65,13 @@ Returned by `Filter.GetStats()`. Contains a snapshot of detection statistics.
 
 Phantom types enforce type safety at API boundaries. They are string types with no runtime cost.
 
-| Type       | Used by                                   |
-| ---------- | ----------------------------------------- |
-| `StartPath`   | `FindProjectRoot`, `ProjectRootError`      |
-| `ConfigPath`  | `SQLCConfigError`                         |
-| `Operation`   | `SQLCConfigError`                         |
-| `ErrorMessage`| `SQLCConfigError`                         |
-| `TotalFilesChecked`| `FilterStats`, `GetStats()` output    |
+| Type                | Used by                               |
+| ------------------- | ------------------------------------- |
+| `StartPath`         | `FindProjectRoot`, `ProjectRootError` |
+| `ConfigPath`        | `SQLCConfigError`                     |
+| `Operation`         | `SQLCConfigError`                     |
+| `ErrorMessage`      | `SQLCConfigError`                     |
+| `TotalFilesChecked` | `FilterStats`, `GetStats()` output    |
 
 All phantom types implement `fmt.Stringer` (`String() string`).
 
