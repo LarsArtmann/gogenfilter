@@ -28,8 +28,30 @@ const ogDesc = siteConfig.ogDescription.replace('{count}', '11');
     <meta name="twitter:description" content={ogDesc} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="canonical" href={siteConfig.siteUrl} />
   </head>
   <body class="font-sans bg-bg-primary text-text-secondary antialiased leading-relaxed">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "gogenfilter",
+      "description": siteConfig.description,
+      "url": siteConfig.siteUrl,
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Go",
+      "programmingLanguage": "Go",
+      "license": "https://opensource.org/licenses/MIT",
+      "author": {
+        "@type": "Person",
+        "name": "LarsArtmann",
+        "url": siteConfig.author.url
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    })} />
     <Header />
     <main>
       <slot />
