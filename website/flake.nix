@@ -60,6 +60,22 @@
               '';
             }}/bin/deploy";
           };
+
+          validate-docs = {
+            type = "app";
+            program = "${pkgs.writeShellApplication {
+              name = "validate-docs";
+              runtimeInputs = with pkgs; [ go ];
+              text = ''
+                export PATH="$(go env GOPATH)/bin:$PATH"
+                if ! command -v md-go-validator &>/dev/null; then
+                  echo "Installing md-go-validator..."
+                  go install github.com/larsartmann/md-go-validator@latest
+                fi
+                md-go-validator -f table src/content/docs/docs/
+              '';
+            }}/bin/validate-docs";
+          };
         });
 
       devShells = forAllSystems (system:

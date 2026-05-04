@@ -2,6 +2,7 @@ package gogenfilter_test
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"testing/fstest"
 
@@ -223,4 +224,32 @@ func ExampleDetectReasonReader() {
 	)
 	fmt.Println(reason)
 	// Output: sqlc
+}
+
+func ExampleFindProjectRoot_errorHandling() {
+	_, err := gogenfilter.FindProjectRoot(
+		gogenfilter.StartPath("/nonexistent/path"),
+		[]string{"go.mod"},
+	)
+	if err != nil {
+		fmt.Println(errors.Is(err, gogenfilter.ErrProjectRootNotFound))
+		fmt.Println(err.ErrorCode())
+		fmt.Println(err.Help() != "")
+	}
+	// Output:
+	// true
+	// project_root_not_found
+	// true
+}
+
+func ExampleCodeHelp() {
+	help := gogenfilter.CodeHelp(gogenfilter.CodeSQLCConfigParse)
+	fmt.Println(help != "")
+	// Output: true
+}
+
+func ExampleAllErrorCodes() {
+	codes := gogenfilter.AllErrorCodes()
+	fmt.Println(len(codes))
+	// Output: 7
 }

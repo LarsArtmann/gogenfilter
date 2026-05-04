@@ -41,13 +41,10 @@
 
 ## Website (Separate Concern)
 
-| #   | Task                                    | Source      | Effort |
-| --- | --------------------------------------- | ----------- | ------ |
-| 20  | Run Lighthouse audit and fix issues     | status docs | 60min  |
-| 21  | Self-host Google Fonts                  | status docs | 30min  |
-| 22  | Add analytics (Plausible/Umami)         | status docs | 30min  |
-| 23  | Add custom 404 page                     | status docs | 30min  |
-| 24  | Fix Starlight logo (PNG instead of SVG) | status docs | 15min  |
+| #   | Task                                | Source      | Effort |
+| --- | ----------------------------------- | ----------- | ------ |
+| 20  | Run Lighthouse audit and fix issues | status docs | 60min  |
+| 23  | Add custom 404 page                 | status docs | 30min  |
 
 ## ✅ Completed (2026-05-03 Verification)
 
@@ -108,6 +105,9 @@ All items below verified as DONE by reading actual source code:
 - [x] Generic test helpers — `helpers_test.go`
 - [x] Filter.String() tests — `filter_test.go`
 - [x] BDD tests with ginkgo — `bdd_test.go`
+- [x] Self-host Google Fonts — Astro font provider in `astro.config.mjs`
+- [x] Analytics (Plausible) — `LandingLayout.astro` with preconnect
+- [x] Starlight logo is SVG throughout — `Logo.astro`, `public/logo.svg`
 - [x] GitHub Actions CI (test, race, lint, coverage) — `.github/workflows/ci.yml`
 - [x] golangci-lint v2 configured — `.golangci.yaml`
 - [x] Coverage threshold 95% — CI workflow
