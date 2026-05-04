@@ -52,14 +52,13 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 ### Skip Directives
 
-For intentionally partial code snippets, use a skip directive before the code block:
-
-<!-- skip-validate -->
+For intentionally partial code snippets, place a directive before the code block:
 
 ```markdown
 <!-- skip-validate -->
 
 ```go
+// intentionally partial code
 type MyStruct struct {
     Name string
 }
