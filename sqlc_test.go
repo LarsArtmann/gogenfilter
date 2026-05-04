@@ -59,8 +59,6 @@ func TestRecordSQLCConfig(t *testing.T) {
 func TestParseSQLCConfig_Valid(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "sqlc.yaml")
 	content := `version: "2"
 sql:
   - schema: "schema.sql"
@@ -70,12 +68,7 @@ sql:
         package: "db"
         out: "internal/db"
 `
-	writeFile(t, configPath, content)
-
-	config, err := parseSQLCConfig(configPath)
-	if err != nil {
-		t.Fatalf("parseSQLCConfig() error = %v", err)
-	}
+	config := parseSQLCConfigFromYAML(t, content)
 
 	if config.Version != "2" {
 		t.Errorf("Version = %q, want %q", config.Version, "2")
@@ -86,7 +79,7 @@ sql:
 	assertStringField(t, "Schema", config.SQL[0].Schema, "schema.sql")
 	assertStringField(t, "Engine", config.SQL[0].Engine, "postgresql")
 	assertStringField(t, "Package", config.SQL[0].Gen.Go.Package, "db")
-	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "internal/db")
+	assertSQLGoOut(t, config, "internal/db")
 }
 
 func TestParseSQLCConfig_NonExistent(t *testing.T) {
@@ -244,6 +237,37 @@ sql:
 `,
 			wantDirs: 0,
 		},
+		{
+			name: "v2 codegen and json",
+			yaml: `version: "2"
+sql:
+  - schema: "schema/"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "gen/db"
+      json:
+        out: "gen/json"
+    codegen:
+      - plugin: "go-structs"
+        out: "gen/structs"
+`,
+			wantDirs: 3,
+		},
+		{
+			name: "v1 multiple packages",
+			yaml: `version: "1"
+packages:
+  - name: "db"
+    path: "gen/db"
+    engine: "postgresql"
+  - name: "models"
+    path: "gen/models"
+    engine: "mysql"
+`,
+			wantDirs: 2,
+		},
 	}
 
 	for _, tt := range tests {
@@ -388,9 +412,6 @@ func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
 func TestParseSQLCConfig_V1Format(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "sqlc.yaml")
-
 	content := `version: "1"
 packages:
   - name: "db"
@@ -399,12 +420,7 @@ packages:
     schema: "./sql/schema/"
     engine: "postgresql"
 `
-	writeFile(t, configPath, content)
-
-	config, err := parseSQLCConfig(configPath)
-	if err != nil {
-		t.Fatalf("parseSQLCConfig() error = %v", err)
-	}
+	config := parseSQLCConfigFromYAML(t, content)
 
 	assertStringField(t, "Version", config.Version, "1")
 
@@ -414,7 +430,7 @@ packages:
 		t.Fatal("v1 SQL entry should have non-nil Go config")
 	}
 
-	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "internal/db")
+	assertSQLGoOut(t, config, "internal/db")
 }
 
 func TestGetSQLOutputDirs_V1Format_ReturnsOutputDirs(t *testing.T) {
@@ -434,9 +450,6 @@ packages:
 func TestParseSQLCConfig_V2CodegenOutput(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "sqlc.yaml")
-
 	content := `version: "2"
 sql:
   - schema: "schema/"
@@ -451,27 +464,17 @@ sql:
       - plugin: "go-embed"
         out: "gen/embed"
 `
-	writeFile(t, configPath, content)
-
-	config, err := parseSQLCConfig(configPath)
-	if err != nil {
-		t.Fatalf("parseSQLCConfig() error = %v", err)
-	}
+	config := parseSQLCConfigFromYAML(t, content)
 
 	assertLen(t, "SQL entries", len(config.SQL), 1)
+	assertCodegenLen(t, config, 2)
 
-	assertLen(t, "Codegen entries", len(config.SQL[0].Codegen), 2)
-
-	assertStringField(t, "Codegen[0].Out", config.SQL[0].Codegen[0].Out, "gen/structs")
-	assertStringField(t, "Codegen[0].Plugin", config.SQL[0].Codegen[0].Plugin, "go-structs")
+	assertCodegenEntry(t, config, 0, "gen/structs", "go-structs")
 	assertStringField(t, "Codegen[1].Out", config.SQL[0].Codegen[1].Out, "gen/embed")
 }
 
 func TestParseSQLCConfig_V2JSONOutput(t *testing.T) {
 	t.Parallel()
-
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "sqlc.yaml")
 
 	content := `version: "2"
 sql:
@@ -484,53 +487,13 @@ sql:
       json:
         out: "gen/json"
 `
-	writeFile(t, configPath, content)
-
-	config, err := parseSQLCConfig(configPath)
-	if err != nil {
-		t.Fatalf("parseSQLCConfig() error = %v", err)
-	}
+	config := parseSQLCConfigFromYAML(t, content)
 
 	if config.SQL[0].Gen.JSON == nil {
 		t.Fatal("Gen.JSON should not be nil")
 	}
 
 	assertStringField(t, "Gen.JSON.Out", config.SQL[0].Gen.JSON.Out, "gen/json")
-}
-
-func TestGetSQLOutputDirs_V2CodegenAndJSON(t *testing.T) {
-	t.Parallel()
-
-	yaml := `version: "2"
-sql:
-  - schema: "schema/"
-    engine: "postgresql"
-    gen:
-      go:
-        package: "db"
-        out: "gen/db"
-      json:
-        out: "gen/json"
-    codegen:
-      - plugin: "go-structs"
-        out: "gen/structs"
-`
-	testSQLOutputDirs(t, yaml, 3)
-}
-
-func TestGetSQLOutputDirs_V1MultiplePackages(t *testing.T) {
-	t.Parallel()
-
-	yaml := `version: "1"
-packages:
-  - name: "db"
-    path: "gen/db"
-    engine: "postgresql"
-  - name: "models"
-    path: "gen/models"
-    engine: "mysql"
-`
-	testSQLOutputDirs(t, yaml, 2)
 }
 
 func TestParseSQLCConfig_UnsupportedVersion(t *testing.T) {
@@ -551,9 +514,6 @@ func TestParseSQLCConfig_UnsupportedVersion(t *testing.T) {
 func TestParseSQLCConfig_V2GoNil(t *testing.T) {
 	t.Parallel()
 
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "sqlc.yaml")
-
 	content := `version: "2"
 sql:
   - schema: "schema/"
@@ -562,16 +522,11 @@ sql:
       - plugin: "custom"
         out: "gen/custom"
 `
-	writeFile(t, configPath, content)
-
-	config, err := parseSQLCConfig(configPath)
-	if err != nil {
-		t.Fatalf("parseSQLCConfig() error = %v", err)
-	}
+	config := parseSQLCConfigFromYAML(t, content)
 
 	if config.SQL[0].Gen.Go != nil {
 		t.Error("Gen.Go should be nil when not specified")
 	}
 
-	assertLen(t, "Codegen entries", len(config.SQL[0].Codegen), 1)
+	assertCodegenLen(t, config, 1)
 }

@@ -68,6 +68,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **`ReasonOutsideScope` (was `ReasonIncludePattern`)** — renamed in v0; describes the outcome (file is outside include scope) rather than the mechanism. `ReasonIncludePattern` was misleading: the file was filtered because it did NOT match, not because it matched.
 - **SQLC v1 config supported** — `sqlcV1Config` struct maps v1 `packages[].path` to output dirs. Version dispatch in `unmarshalSQLCConfig` routes v1 to `parseV1AsV2` which converts to v2 format. Unsupported versions return a parse error.
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
+- **art-dupl known false positive** — `unmarshalSQLCConfig` and `parseV1AsV2` in `sqlc.go` share identical signatures `([]byte, string) → (*sqlcConfig, *SQLCConfigError)` but are fundamentally different functions (version dispatch vs v1→v2 conversion). Art-dupl's structural matching flags them; fixing it would require mangling the API (different return types or internal helper extraction), which is worse than the false positive.
 
 ### Testing
 
@@ -96,6 +97,9 @@ go test -race ./...
 
 # Run linter
 golangci-lint run
+
+# Detect code duplication (excludes testdata/moq - generated mock code)
+art-dupl --semantic --sort total-tokens -t 15 --exclude-pattern 'testdata/moq/**'
 
 # Website: detect code duplication (jscpd via wrapper script)
 cd website && npm run dedup

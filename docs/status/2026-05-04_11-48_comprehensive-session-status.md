@@ -26,6 +26,7 @@
 **THE #1 TRUST ISSUE.** `gogenfilter.Enabled()` and `gogenfilter.Disabled()` were referenced in 17+ files across docs, website, and code examples — but these functions **never existed in the public API**. Every code example in the documentation would produce a compile error.
 
 **Fixed across:**
+
 - `quick-start.mdx` — 3 occurrences removed
 - `pattern-matching.mdx` — 3 occurrences removed
 - `metrics.mdx` — 2 occurrences removed
@@ -93,39 +94,39 @@
 
 ### From TODO_LIST.md (HIGH Priority)
 
-| # | Task | Effort |
-|---|------|--------|
-| 1 | Tag v0.1.0 release | 5min |
-| 2 | Resolve include patterns design question | 30min |
+| #   | Task                                     | Effort |
+| --- | ---------------------------------------- | ------ |
+| 1   | Tag v0.1.0 release                       | 5min   |
+| 2   | Resolve include patterns design question | 30min  |
 
 ### From TODO_LIST.md (MEDIUM Priority)
 
-| # | Task | Effort |
-|---|------|--------|
-| 3 | Performance profile and optimize hot paths | 30min |
-| 4 | Add Codecov or similar coverage tracking | 15min |
-| 5 | Consider `//go:generate` for detector table generation | 45min |
-| 6 | Add `RegisterDetector()` API for custom detectors | 60min |
-| 7 | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API | 30min |
-| 8 | Expose filtered file paths in FilterStats for debugging | 15min |
-| 9 | Add BDD/ginkgo tests for user-facing behaviors | 60min |
+| #   | Task                                                             | Effort |
+| --- | ---------------------------------------------------------------- | ------ |
+| 3   | Performance profile and optimize hot paths                       | 30min  |
+| 4   | Add Codecov or similar coverage tracking                         | 15min  |
+| 5   | Consider `//go:generate` for detector table generation           | 45min  |
+| 6   | Add `RegisterDetector()` API for custom detectors                | 60min  |
+| 7   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API | 30min  |
+| 8   | Expose filtered file paths in FilterStats for debugging          | 15min  |
+| 9   | Add BDD/ginkgo tests for user-facing behaviors                   | 60min  |
 
 ### From TODO_LIST.md (LOW Priority)
 
-| # | Task | Effort |
-|---|------|--------|
-| 10 | Add `*.gen.go` filename heuristic for oapi-codegen detector | 10min |
-| 11 | Performance: Error() allocation optimization with strings.Builder | 15min |
-| 12 | Consider renaming ReasonIncludePattern to ReasonNotInScope | PARTIALLY DONE (broken) |
-| 13 | Cross-platform path testing (Windows-style paths) | 15min |
-| 14 | Test SQLC config v1 format | DONE |
+| #   | Task                                                              | Effort                  |
+| --- | ----------------------------------------------------------------- | ----------------------- |
+| 10  | Add `*.gen.go` filename heuristic for oapi-codegen detector       | 10min                   |
+| 11  | Performance: Error() allocation optimization with strings.Builder | 15min                   |
+| 12  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | PARTIALLY DONE (broken) |
+| 13  | Cross-platform path testing (Windows-style paths)                 | 15min                   |
+| 14  | Test SQLC config v1 format                                        | DONE                    |
 
 ### From TODO_LIST.md (Website)
 
-| # | Task | Effort |
-|---|------|--------|
-| 15 | Run Lighthouse audit and fix issues | 60min |
-| 16 | Add custom 404 page | 30min |
+| #   | Task                                | Effort |
+| --- | ----------------------------------- | ------ |
+| 15  | Run Lighthouse audit and fix issues | 60min  |
+| 16  | Add custom 404 page                 | 30min  |
 
 ---
 
@@ -187,33 +188,33 @@
 
 Sorted by impact × effort (highest first):
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | **Fix `ReasonIncludePattern` rename** — complete or revert | CRITICAL | 10min | Fix broken test compilation |
-| 2 | **Tag v0.1.0 release** | HIGH | 5min | Release |
-| 3 | **Review and commit/remove `limitations.mdx`** | HIGH | 10min | Docs cleanup |
-| 4 | **Review and commit/remove `website/scripts/`** | MEDIUM | 10min | Cleanup |
-| 5 | **Commit or restore `.jscpd.json` deletion** | MEDIUM | 5min | Cleanup |
-| 6 | **Add `WalkAndFilter()` bulk API** | HIGH | 30min | Feature |
-| 7 | **Add `RegisterDetector()` API** | HIGH | 60min | Feature |
-| 8 | **Link benchmarks doc from landing page PhaseSection** | MEDIUM | 15min | Website |
-| 9 | **Add Codecov coverage tracking** | MEDIUM | 15min | CI |
-| 10 | **`strings.Builder` for Error() methods** | MEDIUM | 15min | Performance |
-| 11 | **Add `*.gen.go` heuristic for oapi-codegen** | LOW | 10min | Detection |
-| 12 | **Cross-platform path tests** | LOW | 15min | Testing |
-| 13 | **Resolve include patterns design question** | HIGH | 30min | Design |
-| 14 | **Performance profile hot paths** | MEDIUM | 30min | Performance |
-| 15 | **Add custom 404 page** | LOW | 30min | Website |
-| 16 | **Run Lighthouse audit** | LOW | 60min | Website |
-| 17 | **`//go:generate` for detector table** | LOW | 45min | Architecture |
-| 18 | **BDD/ginkgo tests for user-facing behaviors** | LOW | 60min | Testing |
-| 19 | **Benchmark regression in CI** | MEDIUM | 30min | CI |
-| 20 | **Expose `FilteredFiles` in docs** | LOW | 10min | Docs |
-| 21 | **Interactive Go Playground examples** | LOW | 60min | Website |
-| 22 | **SEO optimization for benchmarks page** | LOW | 15min | Website |
-| 23 | **`astro check` in deploy workflow** | LOW | 10min | CI |
-| 24 | **Restart gopls to clear stale diagnostics** | LOW | 1min | Dev experience |
-| 25 | **Update AGENTS.md with session learnings** | LOW | 10min | Memory |
+| #   | Task                                                       | Impact   | Effort | Category                    |
+| --- | ---------------------------------------------------------- | -------- | ------ | --------------------------- |
+| 1   | **Fix `ReasonIncludePattern` rename** — complete or revert | CRITICAL | 10min  | Fix broken test compilation |
+| 2   | **Tag v0.1.0 release**                                     | HIGH     | 5min   | Release                     |
+| 3   | **Review and commit/remove `limitations.mdx`**             | HIGH     | 10min  | Docs cleanup                |
+| 4   | **Review and commit/remove `website/scripts/`**            | MEDIUM   | 10min  | Cleanup                     |
+| 5   | **Commit or restore `.jscpd.json` deletion**               | MEDIUM   | 5min   | Cleanup                     |
+| 6   | **Add `WalkAndFilter()` bulk API**                         | HIGH     | 30min  | Feature                     |
+| 7   | **Add `RegisterDetector()` API**                           | HIGH     | 60min  | Feature                     |
+| 8   | **Link benchmarks doc from landing page PhaseSection**     | MEDIUM   | 15min  | Website                     |
+| 9   | **Add Codecov coverage tracking**                          | MEDIUM   | 15min  | CI                          |
+| 10  | **`strings.Builder` for Error() methods**                  | MEDIUM   | 15min  | Performance                 |
+| 11  | **Add `*.gen.go` heuristic for oapi-codegen**              | LOW      | 10min  | Detection                   |
+| 12  | **Cross-platform path tests**                              | LOW      | 15min  | Testing                     |
+| 13  | **Resolve include patterns design question**               | HIGH     | 30min  | Design                      |
+| 14  | **Performance profile hot paths**                          | MEDIUM   | 30min  | Performance                 |
+| 15  | **Add custom 404 page**                                    | LOW      | 30min  | Website                     |
+| 16  | **Run Lighthouse audit**                                   | LOW      | 60min  | Website                     |
+| 17  | **`//go:generate` for detector table**                     | LOW      | 45min  | Architecture                |
+| 18  | **BDD/ginkgo tests for user-facing behaviors**             | LOW      | 60min  | Testing                     |
+| 19  | **Benchmark regression in CI**                             | MEDIUM   | 30min  | CI                          |
+| 20  | **Expose `FilteredFiles` in docs**                         | LOW      | 10min  | Docs                        |
+| 21  | **Interactive Go Playground examples**                     | LOW      | 60min  | Website                     |
+| 22  | **SEO optimization for benchmarks page**                   | LOW      | 15min  | Website                     |
+| 23  | **`astro check` in deploy workflow**                       | LOW      | 10min  | CI                          |
+| 24  | **Restart gopls to clear stale diagnostics**               | LOW      | 1min   | Dev experience              |
+| 25  | **Update AGENTS.md with session learnings**                | LOW      | 10min  | Memory                      |
 
 ---
 
@@ -222,6 +223,7 @@ Sorted by impact × effort (highest first):
 **Why does `go test` pass but `go vet` fails with `undefined: ReasonIncludePattern`?**
 
 The rename from `ReasonIncludePattern` to `ReasonOutsideScope` happened in source files (`types.go`, `filter.go`) but test files (`filter_test.go:244`, `types_test.go:121`) still reference the old name. `go test ./...` exits with `ok` but `go vet ./...` shows compilation errors. This suggests either:
+
 - The affected test functions are conditionally excluded from the build
 - `go test` and `go vet` have different compilation paths
 - There's a caching issue
@@ -232,15 +234,15 @@ The rename from `ReasonIncludePattern` to `ReasonOutsideScope` happened in sourc
 
 ## Build & Test Summary
 
-| Check | Status |
-|-------|--------|
-| `go build ./...` | PASS |
-| `go test -race ./...` | PASS (97.4% coverage) |
-| `go vet ./...` | FAIL (ReasonIncludePattern undefined in test files) |
-| `golangci-lint run` | Not run this session |
-| Website `astro check` | PASS (0 errors, 0 warnings) |
-| Website `npm run build` | PASS (20 pages) |
-| Website HTML validate | Not run this session |
+| Check                   | Status                                              |
+| ----------------------- | --------------------------------------------------- |
+| `go build ./...`        | PASS                                                |
+| `go test -race ./...`   | PASS (97.4% coverage)                               |
+| `go vet ./...`          | FAIL (ReasonIncludePattern undefined in test files) |
+| `golangci-lint run`     | Not run this session                                |
+| Website `astro check`   | PASS (0 errors, 0 warnings)                         |
+| Website `npm run build` | PASS (20 pages)                                     |
+| Website HTML validate   | Not run this session                                |
 
 ## Git State
 
