@@ -1,9 +1,10 @@
 ---
 export interface Props {
   variant?: 'default' | 'feature' | 'comparison' | 'usecase';
-  padding?: 'sm' | 'md' | 'lg';
+  padding?: 'xs' | 'sm' | 'md' | 'lg';
   dashed?: boolean;
   href?: string;
+  external?: boolean;
   class?: string;
 }
 
@@ -12,10 +13,12 @@ const {
   padding = 'md',
   dashed = false,
   href,
+  external = false,
   class: className,
 } = Astro.props;
 
 const paddingClasses: Record<string, string> = {
+  xs: 'p-4',
   sm: 'p-5',
   md: 'p-6',
   lg: 'p-8',
@@ -40,7 +43,7 @@ const allClasses = [
 ---
 
 {href ? (
-  <a href={href} class:list={[allClasses, className]}>
+  <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} class:list={[allClasses, className]}>
     <slot />
   </a>
 ) : (
