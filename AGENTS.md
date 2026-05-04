@@ -74,7 +74,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
-- Generic helper functions in `helpers_test.go`: `assertErrorsAs[T]()`, `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`
+- Generic helper functions in `helpers_test.go`: `assertErrorType[T]()`, `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`
 - Run tests with: `go test ./...`
 
 ### Linting

@@ -20,7 +20,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 			os.ErrPermission,
 		)
 
-		projErr := assertErrorsAs[*ProjectRootError](t, realErr)
+		projErr := assertErrorType[*ProjectRootError](t, realErr)
 
 		assertEqual(t, "StartPath", projErr.StartPath, "/deep/path")
 		assertEqual(t, "Code", projErr.Code, CodeProjectRootInvalidPath)
@@ -114,7 +114,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 			os.ErrPermission,
 		)
 
-		sqlcErr := assertErrorsAs[*SQLCConfigError](t, realErr)
+		sqlcErr := assertErrorType[*SQLCConfigError](t, realErr)
 
 		assertEqual(t, "ConfigPath", sqlcErr.ConfigPath, "/config/sqlc.yaml")
 		assertEqual(t, "Operation", sqlcErr.Operation, "read")
