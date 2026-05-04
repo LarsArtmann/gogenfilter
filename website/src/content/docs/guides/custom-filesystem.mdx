@@ -58,9 +58,6 @@ func main() {
         panic(err)
     }
     fsConfig := gogenfilter.WithFS(mapFS)
-    if err != nil {
-        panic(err)
-    }
     f, err := gogenfilter.NewFilter(opts, fsConfig)
     if err != nil {
         panic(err)
