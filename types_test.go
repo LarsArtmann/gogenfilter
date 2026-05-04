@@ -118,7 +118,7 @@ func TestFilterReasonIsValid(t *testing.T) {
 		ReasonSQLC, ReasonTempl, ReasonGoEnum, ReasonProtobuf,
 		ReasonOapi, ReasonDeepcopy, ReasonWire, ReasonMoq,
 		ReasonMockgen, ReasonStringer, ReasonGeneric,
-		ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered,
+		ReasonOutsideScope, ReasonExcludePattern, ReasonNotFiltered,
 	}
 
 	for _, r := range validReasons {

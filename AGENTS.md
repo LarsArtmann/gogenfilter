@@ -64,7 +64,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 ### Design Decisions
 
 - **oapi-codegen has no filename heuristic** — `*.gen.go` is not specific to oapi-codegen (used by many generators). Adding it as phase-1 detection would cause false positives. Content-based detection is correct.
-- **`ReasonIncludePattern` name stays** — semantically "include pattern" describes the mechanism (file excluded because it didn't match an include pattern). Renaming to `ReasonNotInScope` would be a breaking API change for cosmetic improvement.
+- **`ReasonOutsideScope` (was `ReasonIncludePattern`)** — renamed in v0; describes the outcome (file is outside include scope) rather than the mechanism. `ReasonIncludePattern` was misleading: the file was filtered because it did NOT match, not because it matched.
 - **SQLC v1 config supported** — `sqlcV1Config` struct maps v1 `packages[].path` to output dirs. Version dispatch in `unmarshalSQLCConfig` routes v1 to `parseV1AsV2` which converts to v2 format. Unsupported versions return a parse error.
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 
@@ -95,6 +95,9 @@ go test -race ./...
 
 # Run linter
 golangci-lint run
+
+# Website: detect code duplication (jscpd via wrapper script)
+cd website && npm run dedup
 ```
 
 ## CI

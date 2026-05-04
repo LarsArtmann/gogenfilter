@@ -214,7 +214,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		})
 
 		ginkgo.When("a file does not match any include pattern", func() {
-			ginkgo.It("filters it with include-pattern reason", func() {
+			ginkgo.It("filters it with outside-scope reason", func() {
 				filter := gogenfilter.NewFilter(
 					gogenfilter.WithIncludePatterns("pkg/*.go"),
 				)
@@ -223,7 +223,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				gomega.Expect(filtered).To(gomega.BeTrue())
 
 				stats := filter.GetStats()
-				gomega.Expect(stats.FilteredBy(gogenfilter.ReasonIncludePattern)).
+				gomega.Expect(stats.FilteredBy(gogenfilter.ReasonOutsideScope)).
 					To(gomega.Equal(1))
 			})
 		})

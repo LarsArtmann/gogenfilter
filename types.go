@@ -121,7 +121,7 @@ const (
 	ReasonMockgen        FilterReason = "mockgen"
 	ReasonStringer       FilterReason = "stringer"
 	ReasonGeneric        FilterReason = "generic"
-	ReasonIncludePattern FilterReason = "include-pattern"
+	ReasonOutsideScope   FilterReason = "outside-scope"
 	ReasonExcludePattern FilterReason = "exclude-pattern"
 	ReasonNotFiltered    FilterReason = "not-filtered"
 )
@@ -148,7 +148,7 @@ func AllFilterOptions() []FilterOption {
 // so adding a new detector automatically updates this list.
 func AllFilterReasons() []FilterReason {
 	// nonDetectorReasons counts reasons beyond the detector table:
-	// ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered.
+	// ReasonOutsideScope, ReasonExcludePattern, ReasonNotFiltered.
 	const nonDetectorReasons = 3
 
 	reasons := make([]FilterReason, 0, len(detectors)+nonDetectorReasons)
@@ -157,7 +157,7 @@ func AllFilterReasons() []FilterReason {
 		reasons = append(reasons, d.reason)
 	}
 
-	return append(reasons, ReasonIncludePattern, ReasonExcludePattern, ReasonNotFiltered)
+	return append(reasons, ReasonOutsideScope, ReasonExcludePattern, ReasonNotFiltered)
 }
 
 // maxProjectRootDepth is the maximum number of parent directories to search
