@@ -294,3 +294,145 @@ a3f8124 docs(status): comprehensive post-benchmark-integration status report
 
 *Report generated: 2026-05-04 12:48*
 *Next action: Deploy changes + decide on CSP header*
+
+---
+
+## Appendix A: Firebase Hosting Configuration Reference
+
+### Final `firebase.json` (SUPERB Configuration)
+
+```json
+{
+  "hosting": {
+    "target": "gogenfilter",
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/src/**"],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/docs/docs/**",
+        "destination": "/docs/:dest",
+        "type": 301
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(css|js|jpg|jpeg|gif|png|svg|ico|webp|avif|woff|woff2)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "X-XSS-Protection", "value": "1; mode=block" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+          { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
+          { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+        ]
+      },
+      {
+        "source": "404.html",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Appendix B: Security Headers Explained
+
+| Header | Value | Purpose |
+|--------|-------|---------|
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Force HTTPS for 2 years, include subdomains, submit to preload list |
+| `X-Content-Type-Options` | `nosniff` | Prevent MIME-type sniffing attacks |
+| `X-Frame-Options` | `DENY` | Prevent clickjacking via iframe embedding |
+| `X-XSS-Protection` | `1; mode=block` | Legacy XSS filter (modern browsers use CSP) |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Control referrer information shared |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Disable unused browser features |
+| `Cross-Origin-Resource-Policy` | `same-origin` | Prevent cross-origin resource loading attacks |
+| `Cross-Origin-Opener-Policy` | `same-origin` | Prevent cross-origin window access |
+
+---
+
+## Appendix C: Deployment Commands
+
+```bash
+# Preview locally
+npx firebase emulators:start --only hosting
+
+# Deploy to production
+npx firebase deploy --only hosting
+
+# Deploy to specific target channel
+npx firebase hosting:channel:deploy preview
+
+# Verify deployment
+curl -I https://gogenfilter.lars.software
+```
+
+---
+
+## Appendix D: HSTS Preload Submission
+
+Once domain is verified and HSTS header is live:
+
+1. Visit: https://hstspreload.org
+2. Submit: `gogenfilter.lars.software`
+3. Wait for review (can take weeks)
+4. Domain will be included in major browsers' HSTS preload lists
+
+**Note:** Preload is permanent and difficult to undo. Ensure all subdomains support HTTPS before submitting.
+
+---
+
+## Appendix E: Excluded Headers & Rationale
+
+| Header | Reason for Exclusion |
+|--------|---------------------|
+| `Content-Security-Policy` | Low risk static site; would complicate Plausible analytics |
+| `HPKP` (Public-Key-Pins) | **Deprecated** — high risk of permanently breaking site |
+| `Expect-CT` | Optional; HSTS provides similar protection |
+| `X-Permitted-Cross-Domain-Policies` | Not applicable — no Flash/ PDFs |
+| `Clear-Site-Data` | Would clear user data on logout — not needed |
+
+---
+
+## Appendix F: CDN Performance Notes
+
+Firebase Hosting CDN automatically:
+- ✅ Serves content from edge locations globally
+- ✅ Compresses with gzip/Brotli (negotiated with client)
+- ✅ Adds `Vary: Accept-Encoding` header
+- ✅ Provides HTTP/2 support
+- ✅ Handles cache busting via content hashing
+
+---
+
+## Appendix G: Monitoring & Observability
+
+| Service | Purpose | Status |
+|---------|---------|--------|
+| **Plausible Analytics** | Privacy-friendly page analytics | ✅ Installed |
+| **Firebase Console** | Hosting logs, bandwidth, errors | ✅ Available |
+| **GitHub Actions** | CI/CD status | ✅ Configured |
+| **PageFind** | Full-text search | ✅ Built-in |
+
+---
+
+*Appendix added: 2026-05-04 12:50*
