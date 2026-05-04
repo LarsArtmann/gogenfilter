@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: HTML Validation
-        run: npx html-validate --config .htmlvalidate.json dist/**/*.html || true
+        run: npx html-validate --config .htmlvalidate.json "dist/**/*.html"
 
       - uses: actions/upload-artifact@v4
         with:
