@@ -39,6 +39,9 @@ func main() {
 
 	// Check if a file should be filtered
 	filtered, err := filter.Filter("user.sql.go")
+    if err != nil {
+        panic(err)
+    }
     if filtered {
         fmt.Printf("Filtered: %s\n", "user.sql.go")
     }
@@ -61,6 +64,6 @@ go list -m github.com/LarsArtmann/gogenfilter
 
 ## Next Steps
 
-- Follow the [Quick Start](/docs/getting-started/quick-start/) for complete examples
-- Learn about [Filter Options](/docs/guides/filter-options/) to customize detection
-- See [Supported Generators](/docs/generators/) for the full list
+- Follow the [Quick Start](/getting-started/quick-start/) for complete examples
+- Learn about [Filter Options](/guides/filter-options/) to customize detection
+- See [Supported Generators](/generators/) for the full list
