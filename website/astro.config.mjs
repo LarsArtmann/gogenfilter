@@ -74,6 +74,7 @@ export default defineConfig({
           items: [
             { label: "Changelog", slug: "docs/changelog" },
             { label: "Contributing", slug: "docs/contributing" },
+            { label: "Related Tools", slug: "docs/related-tools" },
           ],
         },
       ],
