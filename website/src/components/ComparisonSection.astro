@@ -1,6 +1,5 @@
 ---
 import { comparisons } from '../data/sections';
-import { generatorCount } from '../data/generators';
 ---
 
 <div class="text-center mb-12">
@@ -14,7 +13,7 @@ import { generatorCount } from '../data/generators';
       <div class="font-semibold text-text-primary mb-2 text-base">{item.variant}</div>
       <div class="text-2xl font-bold text-accent mb-3">{item.price}</div>
       {item.pros.map((pro) => (
-        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> {item.variant === 'gogenfilter' && pro.includes('11 generators') ? `${generatorCount} generators, table-driven` : pro}</div>
+        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> {pro}</div>
       ))}
       {item.cons.map((con) => (
         <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> {con}</div>

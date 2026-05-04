@@ -14,7 +14,7 @@ import { siteConfig } from '../data/config';
       gen.url ? (
         <a href={gen.url} target="_blank" rel="noopener noreferrer" title={`Visit ${gen.name}`} class="p-4 rounded-xl border border-border bg-bg-card hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200 block no-underline">
           <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" loading="lazy" />
+            <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
             <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
             <svg class="ml-auto text-text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
           </div>
@@ -23,7 +23,7 @@ import { siteConfig } from '../data/config';
       ) : (
         <div class="p-4 rounded-xl border border-border border-dashed bg-bg-card">
           <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" loading="lazy" />
+            <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
             <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
           </div>
           <div class="text-xs text-text-muted font-mono">{gen.file}</div>
