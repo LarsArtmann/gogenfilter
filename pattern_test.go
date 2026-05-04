@@ -136,6 +136,39 @@ func TestMatchPatternPathShorterThanPattern(t *testing.T) {
 	mustNotMatchPattern(t, "a/b", "a/b/c", "path shorter than pattern")
 }
 
+func TestMatchPatternCrossPlatform(t *testing.T) {
+	t.Parallel()
+
+	tests := []matchPatternTestCase{
+		{name: "forward slash path and pattern",
+			path: "vendor/file.go", pattern: "vendor/*", expected: true},
+		{name: "forward slash double star pattern",
+			path: "generated/sqlc/models.go", pattern: "generated/**/*.go", expected: true},
+		{name: "forward slash deep path",
+			path: "a/b/c.go", pattern: "a/**", expected: true},
+		{name: "backslash in pattern detected as separator",
+			path: "any", pattern: "vendor\\*", expected: false},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := MatchPattern(testCase.path, testCase.pattern)
+
+			if got != testCase.expected {
+				t.Errorf(
+					"MatchPattern(%q, %q) = %v, want %v",
+					testCase.path,
+					testCase.pattern,
+					got,
+					testCase.expected,
+				)
+			}
+		})
+	}
+}
+
 func mustNotMatchPattern(t *testing.T, path, pattern, msg string) {
 	t.Helper()
 
