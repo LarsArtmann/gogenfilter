@@ -15,6 +15,7 @@ on:
       - .github/workflows/website.yml
       - .github/workflows/lighthouse.yml
       - lighthouserc.json
+  workflow_dispatch:
 
 permissions:
   contents: read
