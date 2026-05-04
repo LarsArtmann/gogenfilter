@@ -1,49 +1,47 @@
 # TODO List
 
 **Generated:** 2026-05-03
-**Updated:** 2026-05-04
-**Files Processed:** All .md files in docs/ + TODO_LIST.md + CHANGELOG.md + README.md + FEATURES.md
-**Verified Against:** Actual source code (all .go files)
+**Updated:** 2026-05-04 (freshness verified)
 
 ## 🔴 HIGH Priority
 
-| #   | Task                                                                                               | Source                                  | Effort |
-| --- | -------------------------------------------------------------------------------------------------- | --------------------------------------- | ------ |
-| 1   | Tag v0.1.0 release                                                                                 | TODO_LIST.md, planning/2026-04-08_21-26 | 5min   |
-| 2   | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST.md                            | 30min  |
+| #   | Task                                                                                               | Source    | Effort |
+| --- | -------------------------------------------------------------------------------------------------- | --------- | ------ |
+| 1   | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST | 30min  |
 
 ## 🟡 MEDIUM Priority
 
-| #   | Task                                                                  | Source                 | Effort |
-| --- | --------------------------------------------------------------------- | ---------------------- | ------ |
-| 3   | Performance profile and optimize hot paths                            | TODO_LIST.md           | 30min  |
-| 4   | Add Codecov or similar coverage tracking                              | TODO_LIST.md           | 15min  |
-| 5   | Consider `//go:generate` for detector table generation                | TODO_LIST.md           | 45min  |
-| 6   | Add `RegisterDetector()` API for custom detectors without forking     | status docs            | 60min  |
-| 7   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API      | code review 2026-05-03 | 30min  |
-| 8   | Expose filtered file paths in FilterStats for debugging               | code review 2026-05-03 | 15min  |
-| 9   | Add BDD/ginkgo tests for user-facing behaviors                        | code review 2026-05-03 | 60min  |
+| #   | Task                                                              | Source      | Effort |
+| --- | ----------------------------------------------------------------- | ----------- | ------ |
+| 2   | Performance profile and optimize hot paths                        | TODO_LIST   | 30min  |
+| 3   | Add Codecov or similar coverage tracking                          | TODO_LIST   | 15min  |
+| 4   | Consider `//go:generate` for detector table generation            | TODO_LIST   | 45min  |
+| 5   | Add `RegisterDetector()` API for custom detectors without forking | status docs | 60min  |
+| 6   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API  | code review | 30min  |
+| 7   | Expose filtered file paths in FilterStats for debugging           | code review | 15min  |
 
 ## 🟢 LOW Priority
 
 | #   | Task                                                              | Source      | Effort |
 | --- | ----------------------------------------------------------------- | ----------- | ------ |
-| 10  | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  |
-| 11  | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  |
-| 12  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  |
-| 13  | Cross-platform path testing (Windows-style paths)                 | status docs | 15min  |
-| 14  | Test SQLC config v1 format (current tests only cover v2)          | status docs | 15min  |
+| 8   | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  |
+| 9   | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  |
+| 10  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  |
+| 11  | Cross-platform path testing (Windows-style paths)                 | status docs | 15min  |
+| 12  | Test SQLC config v1 format (current tests only cover v2)          | status docs | 15min  |
 
 ## Website (Separate Concern)
 
 | #   | Task                                | Source      | Effort |
 | --- | ----------------------------------- | ----------- | ------ |
-| 15  | Run Lighthouse audit and fix issues | status docs | 60min  |
-| 16  | Add custom 404 page                 | status docs | 30min  |
+| 13  | Run Lighthouse audit and fix issues | status docs | 60min  |
+| 14  | Add custom 404 page                 | status docs | 30min  |
 
 ## ✅ Completed (2026-05-04 Verification)
 
 All items below verified as DONE by reading actual source code:
+
+- [x] **Tag v0.1.0 release** — tags v0.1.0, v0.2.0, v2.1.0 all exist (was TODO #1, completed 2026-05-04)
 
 - [x] Two-phase detection (filename then content) — `detection.go`
 - [x] Functional options API — `filter.go` NewFilter
