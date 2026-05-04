@@ -34,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **SQLC patterns consolidated** — `sqlcFilePatterns`/`sqlcCodePatterns` inlined into their consuming functions (`matchesSQLCFilenamePattern`, `HasSQLCContent`, `HasSQLCCodePatterns`)
 - **SQLC filename patterns cached** — `sqlcFilenamePatterns` moved to package-level var to avoid re-allocation on every call
 - **`WithFilterOptions` reuses `optionsMap`** — `FilterAll` expansion no longer duplicated between `filter.go` and `detection.go`
-- **Benchmarks use `fstest.MapFS`** — eliminates filesystem I/O noise for reliable perf numbers
+- **`filteredFiles` moved to `MetricsMixin`** — file path tracking now included in `GetStats()` snapshots via `FilteredFiles()` accessor
 - **`slog` dependency removed** — library no longer produces log output; `warnMultipleSQLCConfigs` removed entirely
 - **`FilterOption.Reason()` invariant documented** — godoc now explains the shared string-value coupling and maintenance obligation when adding new detectors
 - **Include patterns semantics documented** — godoc and README clarify the "restrict scope" whitelist behavior
