@@ -1,8 +1,23 @@
+export const logoPaths = [
+  "/logos/sqlc.svg",
+  "/logos/templ.svg",
+  "/logos/protobuf.svg",
+  "/logos/go-enum.svg",
+  "/logos/mockgen.svg",
+  "/logos/moq.svg",
+  "/logos/wire.svg",
+  "/logos/oapi-codegen.svg",
+  "/logos/deepcopy-gen.svg",
+  "/logos/stringer.svg",
+  "/logos/generic.svg",
+] as const;
+export type LogoPath = (typeof logoPaths)[number];
+
 export interface Generator {
   name: string;
   file: string;
   url: string;
-  logo: string;
+  logo: LogoPath;
 }
 
 export const featureIconKeys = [
