@@ -24,6 +24,20 @@ type ProjectRootError struct {
 
 **When it occurs:** `FindProjectRoot` fails to locate a `go.mod` or other marker file, or cannot resolve the start path.
 
+### `FilterConfigError`
+
+Returned when a filter configuration option is invalid.
+
+```go
+type FilterConfigError struct {
+    Code   ErrorCode
+    Option FilterOption
+    Cause  error
+}
+```
+
+**When it occurs:** `WithFilterOptions` receives an unrecognized `FilterOption` value.
+
 ### `SQLCConfigError`
 
 Returned when a sqlc configuration file cannot be found, read, parsed, or collected.
@@ -74,6 +88,7 @@ All error codes are defined as `ErrorCode` constants. Use `AllErrorCodes()` to r
 | ---------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `CodeProjectRootNotFound`    | `project_root_not_found`    | Ensure the directory is within a Go project containing a go.mod file or other project marker file.       |
 | `CodeProjectRootInvalidPath` | `project_root_invalid_path` | Verify the start path exists and is a valid directory.                                                   |
+| `CodeInvalidFilterOption`    | `invalid_filter_option`     | Ensure the FilterOption is valid. Use FilterOption constants (FilterSQLC, FilterTempl, etc.) or FilterAll. |
 | `CodeSQLCConfigRead`         | `sqlc_config_read`          | Check that the sqlc config file exists and has appropriate read permissions.                             |
 | `CodeSQLCConfigParse`        | `sqlc_config_parse`         | Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format. |
 | `CodeSQLCConfigWalk`         | `sqlc_config_walk`          | Ensure the search path exists and is accessible for directory traversal.                                 |
@@ -83,7 +98,7 @@ All error codes are defined as `ErrorCode` constants. Use `AllErrorCodes()` to r
 ```go
 codes := gogenfilter.AllErrorCodes()
 fmt.Println(len(codes))
-// Output: 7
+// Output: 8
 ```
 
 ## Sentinel Errors
@@ -94,6 +109,7 @@ Sentinel errors have zero-value domain fields — matching is by `ErrorCode` onl
 | --------------------------- | ------------------- | --------------------------- |
 | `ErrProjectRootNotFound`    | `*ProjectRootError` | `project_root_not_found`    |
 | `ErrProjectRootInvalidPath` | `*ProjectRootError` | `project_root_invalid_path` |
+| `ErrInvalidFilterOption`    | `*FilterConfigError` | `invalid_filter_option`    |
 | `ErrSQLCConfigRead`         | `*SQLCConfigError`  | `sqlc_config_read`          |
 | `ErrSQLCConfigParse`        | `*SQLCConfigError`  | `sqlc_config_parse`         |
 | `ErrSQLCConfigWalk`         | `*SQLCConfigError`  | `sqlc_config_walk`          |
