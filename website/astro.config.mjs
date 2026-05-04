@@ -7,6 +7,11 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   site: "https://gogenfilter.lars.software",
 
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: "hover",
+  },
+
   fonts: [
     {
       provider: fontProviders.google(),
@@ -91,6 +96,15 @@ export default defineConfig({
       ],
     }),
   ],
+
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
+  },
 
   vite: {
     plugins: [tailwindcss()],
