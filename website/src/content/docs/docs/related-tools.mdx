@@ -54,19 +54,19 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 For intentionally partial code snippets, use a skip directive before the code block:
 
-````markdown
-<!-- skip-validate -->
+{/* skip-validate */}
+
+```markdown
+{/* skip-validate */}
 
 ```go
 type MyStruct struct {
     Name string
 }
 ```
-````
+```
 
-````
-
-Available directives: `<!-- skip-validate -->`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
+Available directives: `{/* skip-validate */}`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
 
 ### Library Usage
 
@@ -101,4 +101,4 @@ func main() {
         }
     }
 }
-````
+```
