@@ -46,6 +46,16 @@ This project provides detection and filtering capabilities for auto-generated Go
 - CI/CD: `.github/workflows/deploy-website.yml`
 - Build: `cd website && npm run build`
 - Dev: `cd website && npm run dev`
+- Type check: `cd website && npx astro check`
+- HTML validation: `cd website && npx html-validate 'dist/**/*.html'`
+
+#### Website Patterns
+
+- **`Icon.astro`** — Centralized SVG icon component. Import from `../components/Icon.astro`. Props: `name` (string), `size` (number, default 20). Available icons: Feature icons (lightning, sliders, glob, chart, folder, database), UseCase icons (cog, chart, refresh, bolt, check), UI icons (arrow-external, arrow-right, github, menu, close, sun, moon).
+- **Theme system** — Dark mode default. Light mode via `.light` class on `<html>`. Toggle persists to `localStorage`. Initialize with `prefers-color-scheme` as fallback. CSS variables in `src/styles/global.css` under `:root.light`.
+- **Type-safe icon keys** — `FeatureIcon` and `UseCaseIcon` exported from `src/data/types.ts` as `as const` + `typeof ...[number]` unions.
+- **Analytics** — Plausible injected in `LandingLayout.astro` head with `is:inline defer`.
+- **SEO** — Canonical URL, JSON-LD SoftwareApplication schema, OG meta tags all in `LandingLayout.astro`.
 
 ## Development Guidelines
 

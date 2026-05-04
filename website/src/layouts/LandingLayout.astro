@@ -30,7 +30,7 @@ const ogDesc = siteConfig.ogDescription.replace('{count}', '11');
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="canonical" href={siteConfig.siteUrl} />
     <!-- Analytics (Plausible) -->
-    <script defer data-domain="gogenfilter.lars.software" src="https://plausible.io/js/script.js"></script>
+    <script defer data-domain="gogenfilter.lars.software" src="https://plausible.io/js/script.js" is:inline></script>
   </head>
   <body class="font-sans bg-bg-primary text-text-secondary antialiased leading-relaxed">
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
