@@ -5,6 +5,7 @@
   "rules": {
     "no-trailing-whitespace": "off",
     "require-sri": "off",
-    "attr-quotes": "off"
+    "attr-quotes": "off",
+    "heading-level": "off"
   }
 }
