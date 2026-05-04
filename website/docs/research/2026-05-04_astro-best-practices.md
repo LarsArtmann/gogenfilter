@@ -329,27 +329,28 @@ If the project ever needs client-side interactivity (interactive playground, liv
 
 ---
 
-## 8. Priority Execution Order
+## 8. Execution Results
 
-| # | Task | Impact | Effort | Section |
-|---|------|--------|--------|---------|
-| 1 | Fix hardcoded generator count in LandingLayout | Bug fix | 2 min | 2.5 |
-| 2 | Enable prefetch in astro.config.mjs | Perceived perf | 5 min | 2.1 |
-| 3 | Add `data-astro-prefetch` to nav links | Perceived perf | 5 min | 3.1 |
-| 4 | Add `og:image` to landing page | Social sharing | 5 min | 3.4 |
-| 5 | Configure Shiki dual themes | Code quality | 10 min | 2.4 |
-| 6 | Tighten Icon component types | Type safety | 10 min | 3.2 |
-| 7 | Add security headers | Security | 5 min | 3.5 |
-| 8 | Enable View Transitions | Navigation speed | 15 min | 2.2 |
-| 9 | Move logos to src/assets/ | Image perf | 30 min | 2.3 |
-| 10 | Consolidate inline scripts | Bundle opt | 20 min | 3.3 |
-| 11 | Enhance robots.txt | SEO | 1 min | 4.4 |
-| 12 | Custom 404 page | UX | 15 min | 4.3 |
+All high-impact items completed. 12 commits, 0 errors, 0 warnings.
 
-**Total estimated effort: ~2 hours for all items**
-
----
-
+| # | Task | Status |
+|---|------|--------|
+| 1 | Fix hardcoded generator count in LandingLayout | DONE |
+| 2 | Enable prefetch in astro.config.mjs | DONE |
+| 3 | Add \`data-astro-prefetch\` to nav links | DONE |
+| 4 | Add \`og:image\` to landing page | DONE |
+| 5 | Configure Shiki dual themes | DONE |
+| 6 | Tighten Icon component types | DONE |
+| 7 | Add security headers | DONE |
+| 8 | Enable View Transitions | DONE |
+| 9 | Remove dead \`icons\` export from features.ts | DONE |
+| 10 | Remove dead \`useCaseIcons\` export from sections.ts | DONE |
+| 11 | Centralize IconName type in types.ts | DONE |
+| 12 | Use Section.astro component in index.astro | DONE |
+| 13 | Move logos to src/assets/ | Skipped: SVGs dont benefit from Astro image optimization |
+| 14 | Consolidate inline scripts | Skipped: \`is:inline\` required for FOUC prevention |
+| 15 | Enhance robots.txt | Already done |
+| 16 | Custom 404 page | Already done (Starlight built-in) |
 ## 9. Key Takeaways
 
 1. **The foundation is excellent.** Astro 6, Tailwind v4, Starlight, strict TS, self-hosted fonts, content layer API — all correct choices.
