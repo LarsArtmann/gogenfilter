@@ -6,47 +6,47 @@ _All documentation accuracy sprint work complete. Project is clean and pushed._
 
 ## a) FULLY DONE
 
-| # | Area | Details |
-|---|------|---------|
-| 1 | All 21 documentation fixes | Committed across 6 files |
-| 2 | Firebase redirect | `/docs/docs/**` → `/docs/:dest` 301 |
-| 3 | Firebase security headers | 10 headers including HSTS, COOP, CORP, Permissions-Policy |
-| 4 | CI improvements | Code duplication check step, sparse-checkout, md-go-validator build from source |
-| 5 | Website consolidation | `Sections.astro` component (4 Section+component pairs → 1 loop) |
-| 6 | Go tests | `go test ./...` — PASS |
-| 7 | Go lint | `golangci-lint run` — 0 issues |
-| 8 | Website build | 19 pages built, 0 errors |
-| 9 | HTML validation | `html-validate dist/**/*.html` — 0 errors |
-| 10 | Git state | Clean, up to date with origin |
-| 11 | Sidebar on all docs pages | Verified — all 18 pages have sidebar |
-| 12 | No stale `Enabled()` in docs | Verified — installation page clean |
-| 13 | Changelog synced | `CHANGELOG.md` ↔ `website/changelog.mdx` in sync |
-| 14 | Zero TODO/FIXME in Go code | Clean |
-| 15 | Dedup.sh fixed | `basename` bug corrected |
-| 16 | `validate:docs` script fixed | Uses local `md-go-validator-bin` |
-| 17 | `Sections.astro` component | Consolidates 4 Section+component pairs into array loop |
+| #   | Area                         | Details                                                                         |
+| --- | ---------------------------- | ------------------------------------------------------------------------------- |
+| 1   | All 21 documentation fixes   | Committed across 6 files                                                        |
+| 2   | Firebase redirect            | `/docs/docs/**` → `/docs/:dest` 301                                             |
+| 3   | Firebase security headers    | 10 headers including HSTS, COOP, CORP, Permissions-Policy                       |
+| 4   | CI improvements              | Code duplication check step, sparse-checkout, md-go-validator build from source |
+| 5   | Website consolidation        | `Sections.astro` component (4 Section+component pairs → 1 loop)                 |
+| 6   | Go tests                     | `go test ./...` — PASS                                                          |
+| 7   | Go lint                      | `golangci-lint run` — 0 issues                                                  |
+| 8   | Website build                | 19 pages built, 0 errors                                                        |
+| 9   | HTML validation              | `html-validate dist/**/*.html` — 0 errors                                       |
+| 10  | Git state                    | Clean, up to date with origin                                                   |
+| 11  | Sidebar on all docs pages    | Verified — all 18 pages have sidebar                                            |
+| 12  | No stale `Enabled()` in docs | Verified — installation page clean                                              |
+| 13  | Changelog synced             | `CHANGELOG.md` ↔ `website/changelog.mdx` in sync                                |
+| 14  | Zero TODO/FIXME in Go code   | Clean                                                                           |
+| 15  | Dedup.sh fixed               | `basename` bug corrected                                                        |
+| 16  | `validate:docs` script fixed | Uses local `md-go-validator-bin`                                                |
+| 17  | `Sections.astro` component   | Consolidates 4 Section+component pairs into array loop                          |
 
 ---
 
 ## b) PARTIALLY DONE
 
-| # | Area | Status | Remaining |
-|---|------|--------|-----------|
-| 1 | Status report consolidation | `docs/status/` has 26 files | Should archive 24 old ones |
-| 2 | Benchmark numbers | Go 1.26 text updated | Numbers still from Go 1.24 env |
-| 3 | Lighthouse audit | Pending | Requires live browser |
+| #   | Area                        | Status                      | Remaining                      |
+| --- | --------------------------- | --------------------------- | ------------------------------ |
+| 1   | Status report consolidation | `docs/status/` has 26 files | Should archive 24 old ones     |
+| 2   | Benchmark numbers           | Go 1.26 text updated        | Numbers still from Go 1.24 env |
+| 3   | Lighthouse audit            | Pending                     | Requires live browser          |
 
 ---
 
 ## c) NOT STARTED
 
-| # | Area | Priority | Why |
-|---|------|----------|-----|
-| 1 | Archive old `docs/status/` files | MEDIUM | 26 files, mostly from 2026-05-04 |
-| 2 | `MetricsMixin` unexport | LOW | Breaking change — semver major |
-| 3 | Export `DetectReasonFS` | LOW | Feature request for v0.2.0 |
-| 4 | Auto-generate API reference | LOW | High effort, medium value |
-| 5 | Single-source changelog | LOW | Build pipeline needed |
+| #   | Area                             | Priority | Why                              |
+| --- | -------------------------------- | -------- | -------------------------------- |
+| 1   | Archive old `docs/status/` files | MEDIUM   | 26 files, mostly from 2026-05-04 |
+| 2   | `MetricsMixin` unexport          | LOW      | Breaking change — semver major   |
+| 3   | Export `DetectReasonFS`          | LOW      | Feature request for v0.2.0       |
+| 4   | Auto-generate API reference      | LOW      | High effort, medium value        |
+| 5   | Single-source changelog          | LOW      | Build pipeline needed            |
 
 ---
 
@@ -88,19 +88,19 @@ The only minor issue: the git working tree had uncommitted changes from another 
 
 ## f) TOP 25 THINGS TO DO NEXT
 
-| Rank | Task | Impact | Effort | Category |
-|------|------|--------|--------|----------|
-| 1 | Archive old `docs/status/` files | MEDIUM | 10 min | Maintenance |
-| 2 | Re-run benchmarks on Go 1.26 | MEDIUM | 15 min | Data |
-| 3 | Browser visual QA | MEDIUM | 30 min | Testing |
-| 4 | Lighthouse audit | MEDIUM | 30 min | Testing |
-| 5 | `MetricsMixin` unexport | MEDIUM | 30 min | Architecture |
-| 6 | Export `DetectReasonFS` | LOW | 60 min | Feature |
-| 7 | Single-source changelog script | LOW | 60 min | Automation |
-| 8 | API reference auto-generation | LOW | 120 min | Automation |
-| 9 | Add View Transitions to website | LOW | 15 min | UX |
-| 10 | Migrate logos from `public/` to `src/assets/` | LOW | 30 min | Astro best practice |
-| 11-25 | — | LOW | — | Future work |
+| Rank  | Task                                          | Impact | Effort  | Category            |
+| ----- | --------------------------------------------- | ------ | ------- | ------------------- |
+| 1     | Archive old `docs/status/` files              | MEDIUM | 10 min  | Maintenance         |
+| 2     | Re-run benchmarks on Go 1.26                  | MEDIUM | 15 min  | Data                |
+| 3     | Browser visual QA                             | MEDIUM | 30 min  | Testing             |
+| 4     | Lighthouse audit                              | MEDIUM | 30 min  | Testing             |
+| 5     | `MetricsMixin` unexport                       | MEDIUM | 30 min  | Architecture        |
+| 6     | Export `DetectReasonFS`                       | LOW    | 60 min  | Feature             |
+| 7     | Single-source changelog script                | LOW    | 60 min  | Automation          |
+| 8     | API reference auto-generation                 | LOW    | 120 min | Automation          |
+| 9     | Add View Transitions to website               | LOW    | 15 min  | UX                  |
+| 10    | Migrate logos from `public/` to `src/assets/` | LOW    | 30 min  | Astro best practice |
+| 11-25 | —                                             | LOW    | —       | Future work         |
 
 ---
 
@@ -123,14 +123,14 @@ This mirrors the `Filter` → `GetStats()` path but without the detection logic.
 
 ## Current Commits (Last 6)
 
-| Commit | Description |
-|--------|-------------|
-| `8c84da3` | docs(status): final documentation accuracy sprint status report |
-| `8b1a1c8` | fix(ci): add sparse-checkout for website directory |
-| `a43b3d6` | chore(website): comprehensive CI and Firebase Hosting improvements |
+| Commit    | Description                                                                    |
+| --------- | ------------------------------------------------------------------------------ |
+| `8c84da3` | docs(status): final documentation accuracy sprint status report                |
+| `8b1a1c8` | fix(ci): add sparse-checkout for website directory                             |
+| `a43b3d6` | chore(website): comprehensive CI and Firebase Hosting improvements             |
 | `4409352` | security(firebase): add HSTS header and improve Firebase Hosting configuration |
-| `f90ab60` | docs(website): add FilterStats type reference to api/types.mdx |
-| `bdb5dab` | docs(website): comprehensive doc accuracy sprint — 11 files fixed |
+| `f90ab60` | docs(website): add FilterStats type reference to api/types.mdx                 |
+| `bdb5dab` | docs(website): comprehensive doc accuracy sprint — 11 files fixed              |
 
 ---
 
