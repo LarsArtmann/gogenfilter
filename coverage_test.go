@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -21,7 +22,9 @@ func TestFilterConfigErrorIs_CrossType(t *testing.T) {
 	}
 
 	if errors.Is(err, target) {
-		t.Error("errors.Is should not match across different error types (FilterConfigError vs ProjectRootError)")
+		t.Error(
+			"errors.Is should not match across different error types (FilterConfigError vs ProjectRootError)",
+		)
 	}
 }
 
@@ -65,10 +68,14 @@ func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 	t.Parallel()
 
 	cfg1 := FilterConfig(func(f *Filter) error {
-		return fmt.Errorf("config error 1") //nolint:err113 // test helper for multi-error aggregation
+		return errors.New(
+			"config error 1",
+		) //nolint:err113 // test helper for multi-error aggregation
 	})
 	cfg2 := FilterConfig(func(f *Filter) error {
-		return fmt.Errorf("config error 2") //nolint:err113 // test helper for multi-error aggregation
+		return errors.New(
+			"config error 2",
+		) //nolint:err113 // test helper for multi-error aggregation
 	})
 
 	_, err := NewFilter(cfg1, cfg2)
@@ -152,6 +159,7 @@ func TestUnmarshalSQLCConfig_V2ParseError(t *testing.T) {
 	t.Parallel()
 
 	data := []byte("version: \"2\"\nsql: [invalid\n")
+
 	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
 	if err == nil {
 		t.Fatal("unmarshalSQLCConfig should return error for invalid v2 YAML")
@@ -164,6 +172,7 @@ func TestUnmarshalSQLCConfig_UnsupportedVersion(t *testing.T) {
 	t.Parallel()
 
 	data := []byte("version: \"3\"\n")
+
 	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
 	if err == nil {
 		t.Fatal("unmarshalSQLCConfig should return error for unsupported version")
@@ -180,6 +189,7 @@ func TestParseV1AsV2_ParseError(t *testing.T) {
 	t.Parallel()
 
 	data := []byte("version: \"1\"\npackages: [invalid\n")
+
 	_, err := parseV1AsV2(data, "sqlc.yaml")
 	if err == nil {
 		t.Fatal("parseV1AsV2 should return error for invalid v1 YAML")
@@ -200,6 +210,7 @@ packages:
     path: "gen/models"
     engine: "mysql"
 `)
+
 	config, err := parseV1AsV2(data, "sqlc.yaml")
 	if err != nil {
 		t.Fatalf("parseV1AsV2 error: %v", err)
@@ -207,6 +218,17 @@ packages:
 
 	assertLen(t, "SQL entries", len(config.SQL), 1)
 	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "gen/models")
+}
+
+func TestGetSQLOutputDirs_FindError(t *testing.T) {
+	t.Parallel()
+
+	_, err := GetSQLOutputDirs([]string{"/nonexistent/path/that/does/not/exist"})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirs should return error for nonexistent path")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigFind)
 }
 
 func TestGetSQLOutputDirs_ParseError(t *testing.T) {
@@ -255,6 +277,19 @@ func TestGetSQLOutputDirsFS_ParseError(t *testing.T) {
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigCollect)
 }
 
+func TestGetSQLOutputDirsFS_FindError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	_, err := GetSQLOutputDirsFS(fsys, []string{"nonexistent_dir"})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirsFS should return error for nonexistent dir")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigWalk)
+}
+
 func TestGetSQLOutputDirsFS_Success(t *testing.T) {
 	t.Parallel()
 
@@ -300,12 +335,36 @@ func TestGetSQLOutputDirsFS_ConfigReadError(t *testing.T) {
 func TestFindProjectRoot_BreakCondition(t *testing.T) {
 	t.Parallel()
 
-	_, err := FindProjectRoot(StartPath("/"), []string{"this_marker_definitely_does_not_exist.anywhere"})
+	_, err := FindProjectRoot(
+		StartPath("/"),
+		[]string{"this_marker_definitely_does_not_exist.anywhere"},
+	)
 	if err == nil {
 		t.Fatal("FindProjectRoot should fail when reaching filesystem root")
 	}
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
+}
+
+func TestFindProjectRoot_InvalidPath(t *testing.T) {
+	t.Parallel()
+
+	veryLongSegment := make([]byte, 4096)
+	for i := range veryLongSegment {
+		veryLongSegment[i] = 'a'
+	}
+
+	longPath := "/" + string(veryLongSegment)
+	var longPathSb344 strings.Builder
+	for range 100 {
+		longPathSb344.WriteString("/" + string(veryLongSegment))
+	}
+	longPath += longPathSb344.String()
+
+	_, err := FindProjectRoot(StartPath(longPath), []string{"go.mod"})
+	if err == nil {
+		t.Fatal("FindProjectRoot should fail for excessively long path")
+	}
 }
 
 func TestProjectRootError_Unwrap(t *testing.T) {
