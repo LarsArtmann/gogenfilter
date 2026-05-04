@@ -52,7 +52,7 @@ jobs:
 
       - uses: golangci/golangci-lint-action@v7
         with:
-          version: v2
+          version: v2.11.4
 
   build-website:
     name: Build Website
