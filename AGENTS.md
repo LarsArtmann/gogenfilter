@@ -117,13 +117,13 @@ cd website && npm run dedup
 
 ## CI
 
-Two separate GitHub Actions workflows, both triggered on push/PR to master with path filters:
+Four separate GitHub Actions workflows, all triggered on push/PR to master with path filters:
 
 **Go CI** (`.github/workflows/ci.yml`):
 
 - Path filters: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`
 - Concurrency group cancels in-progress runs
-- `go vet` → tests with race detector and coverage (95% threshold) → benchmarks
+- `go vet` → tests with race detector and coverage (98% threshold) → benchmarks
 - golangci-lint (separate job, parallel)
 
 **Website** (`.github/workflows/website.yml`):
@@ -155,6 +155,12 @@ f := gogenfilter.NewFilter(
 
 // Filter returns (bool, error) — I/O errors propagate
 filtered, err := f.Filter("file.go")
+
+// FilterPaths returns ([]bool, error) — batch filtering
+results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
+
+// FilterContext respects context cancellation
+filtered, err := f.FilterContext(ctx, "file.go")
 
 // Variadic DetectReason (no I/O)
 reason := gogenfilter.DetectReason("file.go", content,

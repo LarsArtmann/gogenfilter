@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [v3.0.0] — 2026-05-04
 
-### Changed
+### Added
+
+- `FilterPaths(paths []string) ([]bool, error)` — batch filtering of multiple paths; returns partial results on error
+- `FilterContext(ctx context.Context, filePath string) (bool, error)` — context-aware filtering with cancellation support
+- `FilterPathsContext(ctx context.Context, paths []string) ([]bool, error)` — batch filtering with context cancellation between paths
+- `FilterConfigError` type — returned when invalid filter options are provided; implements `ErrorCoder`, `Helper`, and `Unwrap` interfaces
+- `ErrInvalidFilterOption` sentinel error — for `errors.Is()` matching
+- `CodeInvalidFilterOption` error code — for programmatic error handling
 
 - **Breaking: `WithFilterOptions` returns `(FilterConfig, error)`** — previously panicked on invalid options; now returns `*FilterConfigError` with `errors.Is()` support
 - **Breaking: `NewFilter` returns `(*Filter, error)`** — previously returned `*Filter` only; now uses `errors.Join()` to aggregate config errors
@@ -23,9 +30,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - **Silent misconfiguration** — previously, `NewFilter(WithFilterOptions(FilterAll))` (without `Enabled()`) compiled fine but silently did nothing; now passing options automatically enables the filter
-
-### Added
-
 - `FilterConfigError` type — returned when invalid filter options are provided; implements `ErrorCoder`, `Helper`, and `Unwrap` interfaces
 - `ErrInvalidFilterOption` sentinel error — for `errors.Is()` matching
 - `CodeInvalidFilterOption` error code — for programmatic error handling
