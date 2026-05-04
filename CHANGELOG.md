@@ -15,7 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool` — values were never `false`
 - `fmt.Stringer` implementation on all 5 phantom types (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`)
 - Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, `MustFilter`, and `DetectReasonReader`
+- Error handling examples (`errors.Is`, `ErrorCode()`, `Help()`, `CodeHelp`, `AllErrorCodes`, `FindProjectRoot`)
 - Phantom type `String()` method tests — 5 types × 3 cases each
+- `BenchmarkCodeHelp` — 4.9ns/op, zero allocations (map lookup)
+- `MustFilter` panic path test — covers the panic-on-error branch
+- CI bench step (`go test -bench=. -benchmem`)
 
 ### Changed
 
