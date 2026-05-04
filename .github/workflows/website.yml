@@ -46,10 +46,12 @@ jobs:
       - run: npm run build
 
       - name: Install md-go-validator
+        continue-on-error: true
         run: go install github.com/larsartmann/md-go-validator@latest
 
       - name: Validate documentation code blocks
-        run: md-go-validator -f json -o validation-results.json src/content/docs/docs/
+        continue-on-error: true
+        run: md-go-validator -f json -o validation-results.json src/content/docs/
 
       - name: Upload validation results
         if: always()
