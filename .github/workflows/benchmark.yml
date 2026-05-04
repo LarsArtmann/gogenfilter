@@ -1,0 +1,57 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "**.go"
+      - go.mod
+      - go.sum
+      - .github/workflows/benchmark.yml
+  pull_request:
+    branches: [master]
+    paths:
+      - "**.go"
+      - go.mod
+      - go.sum
+      - .github/workflows/benchmark.yml
+
+permissions:
+  contents: write
+  deployments: write
+
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    name: Run Benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - run: go mod download
+
+      - name: Run benchmarks
+        run: go test -bench=. -benchmem -count=1 ./... | tee benchmark-output.txt
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: gogenfilter
+          tool: "go"
+          output-file-path: benchmark-output.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: ${{ github.event_name == 'push' }}
+          alert-threshold: "150%"
+          fail-threshold: "300%"
+          comment-on-alert: true
+          comment-always: true
+          summary-always: true
+          fail-on-alert: false
+          max-items-in-chart: 100
