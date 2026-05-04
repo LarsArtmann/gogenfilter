@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-04 10:09  
 **Since:** 2026-05-04 09:56 (last status report)  
-**Branch:** master (7 commits ahead of origin/master)  
+**Branch:** master (7 commits ahead of origin/master)
 
 ---
 
@@ -16,38 +16,38 @@
 
 ### Core Library (Production-Ready)
 
-| Area | Status | Evidence |
-|------|--------|----------|
-| Detection engine (11 generators + generic) | ✅ Complete | `detection.go` — table-driven, all detectors verified |
-| Filter API (functional options) | ✅ Complete | `filter.go` — `ShouldFilter`, `MustFilter`, `FilterReasons`, `IsEnabled` |
-| Pattern matching (`**` glob) | ✅ Complete | `pattern.go` — doublestar/v4 |
-| SQLC config discovery | ✅ Complete | `sqlc.go` — OS + fs.FS variants |
-| Branded error system | ✅ Complete | `errors.go` — 7 codes, sentinels, `ErrorCoder`, `Helper`, `CodeEqual[T]` |
-| Phantom types (5) | ✅ Complete | `phantom.go` — type-safe boundaries |
-| Thread-safe metrics | ✅ Complete | `metrics.go` — `RWMutex`, immutable snapshots |
-| Project root discovery | ✅ Complete | `project.go` — depth-limited |
-| 12 runnable examples | ✅ Complete | `example_test.go` |
-| BDD tests with ginkgo | ✅ Complete | `bdd_test.go` |
-| Race detector clean | ✅ Complete | `go test -race` passes |
-| Zero lint issues | ✅ Complete | `golangci-lint run` clean |
-| 97.4% test coverage | ✅ Complete | 46 source files, 23 test files |
+| Area                                       | Status      | Evidence                                                                 |
+| ------------------------------------------ | ----------- | ------------------------------------------------------------------------ |
+| Detection engine (11 generators + generic) | ✅ Complete | `detection.go` — table-driven, all detectors verified                    |
+| Filter API (functional options)            | ✅ Complete | `filter.go` — `ShouldFilter`, `MustFilter`, `FilterReasons`, `IsEnabled` |
+| Pattern matching (`**` glob)               | ✅ Complete | `pattern.go` — doublestar/v4                                             |
+| SQLC config discovery                      | ✅ Complete | `sqlc.go` — OS + fs.FS variants                                          |
+| Branded error system                       | ✅ Complete | `errors.go` — 7 codes, sentinels, `ErrorCoder`, `Helper`, `CodeEqual[T]` |
+| Phantom types (5)                          | ✅ Complete | `phantom.go` — type-safe boundaries                                      |
+| Thread-safe metrics                        | ✅ Complete | `metrics.go` — `RWMutex`, immutable snapshots                            |
+| Project root discovery                     | ✅ Complete | `project.go` — depth-limited                                             |
+| 12 runnable examples                       | ✅ Complete | `example_test.go`                                                        |
+| BDD tests with ginkgo                      | ✅ Complete | `bdd_test.go`                                                            |
+| Race detector clean                        | ✅ Complete | `go test -race` passes                                                   |
+| Zero lint issues                           | ✅ Complete | `golangci-lint run` clean                                                |
+| 97.4% test coverage                        | ✅ Complete | 46 source files, 23 test files                                           |
 
 ### Website (Fully Functional)
 
-| Feature | Status | Evidence |
-|---------|--------|----------|
-| Astro v6 + Starlight docs | ✅ Complete | 17 pages built in 2.31s |
-| Landing page design | ✅ Complete | Hero, features, code examples, use cases |
-| Light/dark mode toggle | ✅ Complete | localStorage + prefers-color-scheme |
-| GitHub star count | ✅ Complete | Build-time fetch, displays "X Stars" |
+| Feature                       | Status      | Evidence                                      |
+| ----------------------------- | ----------- | --------------------------------------------- |
+| Astro v6 + Starlight docs     | ✅ Complete | 17 pages built in 2.31s                       |
+| Landing page design           | ✅ Complete | Hero, features, code examples, use cases      |
+| Light/dark mode toggle        | ✅ Complete | localStorage + prefers-color-scheme           |
+| GitHub star count             | ✅ Complete | Build-time fetch, displays "X Stars"          |
 | Icon component (`Icon.astro`) | ✅ Complete | 18 icons centralized (feature + usecase + UI) |
-| Plausible analytics | ✅ Complete | `defer data-domain` script |
-| SEO (canonical, JSON-LD, OG) | ✅ Complete | `LandingLayout.astro` |
-| Self-hosted fonts | ✅ Complete | Space Grotesk + JetBrains Mono |
-| Custom generator logos | ✅ Complete | 11 SVG logos (2 official + 9 custom) |
-| Firebase Hosting | ✅ Complete | `firebase.json` configured |
-| HTML validation | ✅ Complete | `html-validate` passes (0 errors) |
-| Type check | ✅ Complete | `astro check` — 0 errors, 0 warnings, 0 hints |
+| Plausible analytics           | ✅ Complete | `defer data-domain` script                    |
+| SEO (canonical, JSON-LD, OG)  | ✅ Complete | `LandingLayout.astro`                         |
+| Self-hosted fonts             | ✅ Complete | Space Grotesk + JetBrains Mono                |
+| Custom generator logos        | ✅ Complete | 11 SVG logos (2 official + 9 custom)          |
+| Firebase Hosting              | ✅ Complete | `firebase.json` configured                    |
+| HTML validation               | ✅ Complete | `html-validate` passes (0 errors)             |
+| Type check                    | ✅ Complete | `astro check` — 0 errors, 0 warnings, 0 hints |
 
 ### Recent Session Work (2026-05-04)
 
@@ -118,6 +118,7 @@
 ### None Currently
 
 All builds passing:
+
 - ✅ `go test ./...` — PASS
 - ✅ `go test -race ./...` — PASS (race detector clean)
 - ✅ `golangci-lint run` — 0 issues
@@ -157,33 +158,33 @@ All builds passing:
 
 ## f) Top #25 Things We Should Get Done Next
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | **Tag v0.1.0 release** | 🔴 Critical | 5 min | Release |
-| 2 | **Push 7 commits to origin/master** | 🔴 Critical | 1 min | Process |
-| 3 | **Document API stability guarantees** | 🔴 High | 15 min | Docs |
-| 4 | **Add `WalkAndFilter` bulk API** | 🟡 High | 30 min | Feature |
-| 5 | **Document remaining public APIs** | 🟡 High | 30 min | Docs |
-| 6 | **Run Lighthouse audit + fix issues** | 🟡 High | 60 min | Website |
-| 7 | **Add Codecov coverage tracking** | 🟡 Medium | 15 min | CI |
-| 8 | **Test `MustFilter` panic path** | 🟡 Medium | 5 min | Testing |
-| 9 | **Browser visual QA** | 🟡 Medium | 30 min | Website |
-| 10 | **Icon type unification** | 🟡 Medium | 20 min | Code |
-| 11 | **Finish `errors.AsType` migration** | 🟡 Medium | 15 min | Code |
-| 12 | **Expose filtered file paths** | 🟡 Medium | 15 min | Feature |
-| 13 | **Performance profile** | 🟡 Medium | 30 min | Perf |
-| 14 | **Add `go test -bench` to CI** | 🟡 Medium | 10 min | CI |
-| 15 | **Add BDD/ginkgo tests** | 🟡 Medium | 60 min | Testing |
-| 16 | **Error handling examples** | 🟡 Medium | 15 min | Docs |
-| 17 | **`RegisterDetector()` plugin API** | 🟢 Low | 60 min | Feature |
-| 18 | **Fix Starlight logo (PNG → SVG)** | 🟢 Low | 15 min | Website |
-| 19 | **`//go:generate` for detectors** | 🟢 Low | 45 min | Code |
-| 20 | **Add CONTRIBUTING.md** | 🟢 Low | 15 min | Docs |
-| 21 | **Cross-platform path testing** | 🟢 Low | 15 min | Testing |
-| 22 | **Test SQLC config v1** | 🟢 Low | 15 min | Testing |
-| 23 | **Rename ReasonIncludePattern** | 🟢 Low | 10 min | API |
-| 24 | **Error() allocation optimization** | 🟢 Low | 15 min | Perf |
-| 25 | **Benchmark `CodeHelp()`** | 🟢 Low | 5 min | Perf |
+| #   | Task                                  | Impact      | Effort | Category |
+| --- | ------------------------------------- | ----------- | ------ | -------- |
+| 1   | **Tag v0.1.0 release**                | 🔴 Critical | 5 min  | Release  |
+| 2   | **Push 7 commits to origin/master**   | 🔴 Critical | 1 min  | Process  |
+| 3   | **Document API stability guarantees** | 🔴 High     | 15 min | Docs     |
+| 4   | **Add `WalkAndFilter` bulk API**      | 🟡 High     | 30 min | Feature  |
+| 5   | **Document remaining public APIs**    | 🟡 High     | 30 min | Docs     |
+| 6   | **Run Lighthouse audit + fix issues** | 🟡 High     | 60 min | Website  |
+| 7   | **Add Codecov coverage tracking**     | 🟡 Medium   | 15 min | CI       |
+| 8   | **Test `MustFilter` panic path**      | 🟡 Medium   | 5 min  | Testing  |
+| 9   | **Browser visual QA**                 | 🟡 Medium   | 30 min | Website  |
+| 10  | **Icon type unification**             | 🟡 Medium   | 20 min | Code     |
+| 11  | **Finish `errors.AsType` migration**  | 🟡 Medium   | 15 min | Code     |
+| 12  | **Expose filtered file paths**        | 🟡 Medium   | 15 min | Feature  |
+| 13  | **Performance profile**               | 🟡 Medium   | 30 min | Perf     |
+| 14  | **Add `go test -bench` to CI**        | 🟡 Medium   | 10 min | CI       |
+| 15  | **Add BDD/ginkgo tests**              | 🟡 Medium   | 60 min | Testing  |
+| 16  | **Error handling examples**           | 🟡 Medium   | 15 min | Docs     |
+| 17  | **`RegisterDetector()` plugin API**   | 🟢 Low      | 60 min | Feature  |
+| 18  | **Fix Starlight logo (PNG → SVG)**    | 🟢 Low      | 15 min | Website  |
+| 19  | **`//go:generate` for detectors**     | 🟢 Low      | 45 min | Code     |
+| 20  | **Add CONTRIBUTING.md**               | 🟢 Low      | 15 min | Docs     |
+| 21  | **Cross-platform path testing**       | 🟢 Low      | 15 min | Testing  |
+| 22  | **Test SQLC config v1**               | 🟢 Low      | 15 min | Testing  |
+| 23  | **Rename ReasonIncludePattern**       | 🟢 Low      | 10 min | API      |
+| 24  | **Error() allocation optimization**   | 🟢 Low      | 15 min | Perf     |
+| 25  | **Benchmark `CodeHelp()`**            | 🟢 Low      | 5 min  | Perf     |
 
 ---
 
@@ -192,6 +193,7 @@ All builds passing:
 ### **What is the v0.1.0 release criteria?**
 
 The library is production-ready:
+
 - ✅ Feature-complete (11 detectors + generic fallback)
 - ✅ 97.4% test coverage
 - ✅ Zero lint issues
@@ -213,38 +215,41 @@ The library is production-ready:
 
 ## Project Health Metrics
 
-| Metric | Value |
-|--------|-------|
-| Go source files | 46 |
-| Test files | 23 |
-| Test coverage | **97.4%** |
-| Lint issues | 0 |
-| Race detector | Clean |
-| Website pages | 17 |
-| Website build time | 2.31s |
-| Type check | 0 errors, 0 warnings, 0 hints |
-| Open TODO items | 22 (2 high, 9 medium, 8 low, 3 website) |
-| Completed TODO items | **102** |
-| Dependencies | 2 (doublestar/v4, go-faster/yaml) |
-| Uncommitted changes | 0 (ready to push 7 commits) |
+| Metric               | Value                                   |
+| -------------------- | --------------------------------------- |
+| Go source files      | 46                                      |
+| Test files           | 23                                      |
+| Test coverage        | **97.4%**                               |
+| Lint issues          | 0                                       |
+| Race detector        | Clean                                   |
+| Website pages        | 17                                      |
+| Website build time   | 2.31s                                   |
+| Type check           | 0 errors, 0 warnings, 0 hints           |
+| Open TODO items      | 22 (2 high, 9 medium, 8 low, 3 website) |
+| Completed TODO items | **102**                                 |
+| Dependencies         | 2 (doublestar/v4, go-faster/yaml)       |
+| Uncommitted changes  | 0 (ready to push 7 commits)             |
 
 ---
 
 ## Session Summary (2026-05-04 10:09)
 
 ### This Status Report
+
 - Comprehensive analysis of all project areas
 - Identified 7 commits ahead of origin/master
 - Catalogued all remaining work
 
 ### Current State
+
 - ✅ Core library: Production-ready
-- ✅ Website: Production-ready  
+- ✅ Website: Production-ready
 - ✅ Documentation: Comprehensive
 - ✅ CI/CD: Fully configured
 - ⏳ Release: Pending v0.1.0 tag
 
 ### Next Immediate Actions
+
 1. Push 7 commits to origin/master
 2. Tag v0.1.0 release
 3. Document API stability guarantees
