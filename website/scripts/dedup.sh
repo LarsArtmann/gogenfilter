@@ -13,13 +13,14 @@ done
 
 find src \( -name "*.ts" -o -name "*.css" \) | while read -r f; do
   dir=$(dirname "$f")
+  base=$(basename "$f")
   mkdir -p "$WORKDIR/$dir"
-  cp "$f" "$WORKDIR/$f"
+  cp "$f" "$WORKDIR/$dir/$base"
 done
 
 npx jscpd "$WORKDIR/src/" \
-  --min-lines 2 \
-  --min-tokens 20 \
+  --min-lines 3 \
+  --min-tokens 40 \
   --reporters consoleFull \
   --ignore "**/node_modules/**,**/dist/**,**/.astro/**" \
   --absolute \

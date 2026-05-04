@@ -78,6 +78,10 @@ jobs:
         run: npx html-validate --config .htmlvalidate.json "dist/**/*.html"
         working-directory: website
 
+      - name: Code duplication check
+        run: npm run dedup
+        working-directory: website
+
       - uses: actions/upload-artifact@v4
         with:
           name: website-dist

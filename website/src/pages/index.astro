@@ -3,10 +3,7 @@ import LandingLayout from '../layouts/LandingLayout.astro';
 import GeneratorGrid from '../components/GeneratorGrid.astro';
 import FeatureGrid from '../components/FeatureGrid.astro';
 import HeroSection from '../components/HeroSection.astro';
-import PhaseSection from '../components/PhaseSection.astro';
-import ComparisonSection from '../components/ComparisonSection.astro';
-import UseCasesSection from '../components/UseCasesSection.astro';
-import CTASection from '../components/CTASection.astro';
+import Sections from '../components/Sections.astro';
 import Section from '../components/Section.astro';
 import { siteConfig } from '../data/config';
 ---
@@ -22,21 +19,7 @@ import { siteConfig } from '../data/config';
     <FeatureGrid />
   </Section>
 
-  <Section width="narrow" class="text-center">
-    <PhaseSection />
-  </Section>
-
-  <Section width="narrow" class="text-center">
-    <ComparisonSection />
-  </Section>
-
-  <Section width="narrow" class="text-center">
-    <UseCasesSection />
-  </Section>
-
-  <Section width="narrow" class="text-center">
-    <CTASection />
-  </Section>
+  <Sections />
 </LandingLayout>
 
 <script is:inline>

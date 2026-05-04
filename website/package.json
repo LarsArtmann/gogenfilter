@@ -29,7 +29,7 @@
     "preview": "astro preview",
     "typecheck": "astro check",
     "clean": "rm -rf dist .astro node_modules/.cache",
-    "validate:docs": "cd ../md-go-validator && go run ./cmd/md-go-validator -f table ../gogenfilter/website/src/content/docs/",
+    "validate:docs": "../md-go-validator-bin -f table src/content/docs/",
     "dedup": "bash scripts/dedup.sh",
     "astro": "astro"
   },
