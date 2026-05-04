@@ -5,8 +5,11 @@ export interface Generator {
   logo: string;
 }
 
+export const featureIconKeys = ['lightning', 'sliders', 'glob', 'chart', 'folder', 'database'] as const;
+export type FeatureIcon = typeof featureIconKeys[number];
+
 export interface Feature {
-  icon: string;
+  icon: FeatureIcon;
   title: string;
   desc: string;
 }
