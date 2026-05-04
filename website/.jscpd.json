@@ -1,0 +1,17 @@
+{
+  "threshold": 0,
+  "reporters": ["consoleFull"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/.astro/**",
+    "**/flake.lock"
+  ],
+  "format": ["html", "typescript", "css"],
+  "formats-exts": {
+    "html": "astro"
+  },
+  "min-lines": 3,
+  "min-tokens": 30,
+  "absolute": true
+}

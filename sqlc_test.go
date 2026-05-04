@@ -81,9 +81,7 @@ sql:
 		t.Errorf("Version = %q, want %q", config.Version, "2")
 	}
 
-	if len(config.SQL) != 1 {
-		t.Fatalf("len(SQL) = %d, want 1", len(config.SQL))
-	}
+	assertLen(t, "SQL entries", len(config.SQL), 1)
 
 	assertStringField(t, "Schema", config.SQL[0].Schema, "schema.sql")
 	assertStringField(t, "Engine", config.SQL[0].Engine, "postgresql")
@@ -410,9 +408,7 @@ packages:
 
 	assertStringField(t, "Version", config.Version, "1")
 
-	if len(config.SQL) != 1 {
-		t.Fatalf("v1 format should have 1 SQL entry, got %d", len(config.SQL))
-	}
+	assertLen(t, "SQL entries", len(config.SQL), 1)
 
 	if config.SQL[0].Gen.Go == nil {
 		t.Fatal("v1 SQL entry should have non-nil Go config")
@@ -462,13 +458,9 @@ sql:
 		t.Fatalf("parseSQLCConfig() error = %v", err)
 	}
 
-	if len(config.SQL) != 1 {
-		t.Fatalf("len(SQL) = %d, want 1", len(config.SQL))
-	}
+	assertLen(t, "SQL entries", len(config.SQL), 1)
 
-	if len(config.SQL[0].Codegen) != 2 {
-		t.Fatalf("len(Codegen) = %d, want 2", len(config.SQL[0].Codegen))
-	}
+	assertLen(t, "Codegen entries", len(config.SQL[0].Codegen), 2)
 
 	assertStringField(t, "Codegen[0].Out", config.SQL[0].Codegen[0].Out, "gen/structs")
 	assertStringField(t, "Codegen[0].Plugin", config.SQL[0].Codegen[0].Plugin, "go-structs")
@@ -581,7 +573,5 @@ sql:
 		t.Error("Gen.Go should be nil when not specified")
 	}
 
-	if len(config.SQL[0].Codegen) != 1 {
-		t.Fatalf("len(Codegen) = %d, want 1", len(config.SQL[0].Codegen))
-	}
+	assertLen(t, "Codegen entries", len(config.SQL[0].Codegen), 1)
 }
