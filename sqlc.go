@@ -272,21 +272,25 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 // parseV1AsV2 parses a v1 config and converts it to v2 format.
 // v1 uses packages[].path as output dirs; v2 uses sql[].gen.go.out.
 func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
-	var v1 sqlcV1Config
+	var v1Config sqlcV1Config
 
-	err := unmarshalSQLCYAML(data, &v1, configPath, "parsing sqlc v1 config")
+	err := unmarshalSQLCYAML(data, &v1Config, configPath, "parsing sqlc v1 config")
 	if err != nil {
 		return nil, err
 	}
 
-	config := &sqlcConfig{Version: v1.Version}
+	config := &sqlcConfig{Version: v1Config.Version, SQL: nil}
 
-	for _, pkg := range v1.Packages {
+	for _, pkg := range v1Config.Packages {
 		if pkg.Path != "" {
 			config.SQL = append(config.SQL, sqlcEngine{
+				Schema: "",
+				Engine: "",
 				Gen: sqlcGenConfig{
-					Go: &sqlcGoConfig{Out: pkg.Path},
+					Go:   &sqlcGoConfig{Package: "", Out: pkg.Path},
+					JSON: nil,
 				},
+				Codegen: nil,
 			})
 		}
 	}
