@@ -19,7 +19,7 @@ import Icon from './Icon.astro';
         Scan for{' '}
         {phase.patterns.map((p, i) => (
           <>
-            <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">{p}</code>
+            <code class="bg-code-inline-bg px-1.5 py-0.5 rounded text-xs text-accent/80">{p}</code>
             {i < phase.patterns.length - 1 && ' and '}
           </>
         ))}

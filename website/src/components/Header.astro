@@ -4,7 +4,7 @@ import Icon from './Icon.astro';
 import { siteConfig } from '../data/config';
 ---
 
-<nav class="fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-2xl bg-bg-primary/70">
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-2xl bg-bg-primary/70" aria-label="Main navigation">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2.5 group">
       <Logo class="transition-transform group-hover:rotate-12" />
@@ -29,14 +29,6 @@ import { siteConfig } from '../data/config';
 </nav>
 
 <script is:inline>
-  // Theme initialization
-  (function() {
-    const stored = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isLight = stored === 'light' || (!stored && !prefersDark);
-    if (isLight) document.documentElement.classList.add('light');
-  })();
-
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
   const lightIcon = themeToggle.querySelector('.theme-icon-light');
@@ -46,6 +38,7 @@ import { siteConfig } from '../data/config';
     const isLight = document.documentElement.classList.contains('light');
     lightIcon.classList.toggle('hidden', !isLight);
     darkIcon.classList.toggle('hidden', isLight);
+    themeToggle.setAttribute('aria-pressed', String(isLight));
   }
 
   applyTheme();

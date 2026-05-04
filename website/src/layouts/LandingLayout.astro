@@ -35,8 +35,19 @@ const ogDesc = siteConfig.ogDescription.replace('{count}', String(generatorCount
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="canonical" href={siteConfig.siteUrl} />
+    <link rel="preconnect" href="https://plausible.io" />
+    <link rel="dns-prefetch" href="https://plausible.io" />
     <!-- Analytics (Plausible) -->
     <script defer data-domain="gogenfilter.lars.software" src="https://plausible.io/js/script.js" is:inline></script>
+    <!-- Theme flash prevention -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isLight = stored === 'light' || (!stored && !prefersDark);
+        if (isLight) document.documentElement.classList.add('light');
+      })();
+    </script>
   </head>
   <body class="font-sans bg-bg-primary text-text-secondary antialiased leading-relaxed">
     <script type="application/ld+json" is:inline set:html={JSON.stringify({

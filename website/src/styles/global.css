@@ -21,6 +21,11 @@
 
   --color-amber: #fbbf24;
 
+  --color-code-inline-bg: #1c1917;
+  --color-code-dot: #44403c;
+  --color-code-comment: #57534e;
+  --color-success: #4ade80;
+
   --font-sans: var(--font-space-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
 
@@ -49,6 +54,11 @@
   --color-accent-hover: #06b6d4;
   --color-accent-dim: rgba(8, 145, 178, 0.1);
   --color-accent-light: #67e8f9;
+
+  --color-code-inline-bg: #e7e5e4;
+  --color-code-dot: #a8a29e;
+  --color-code-comment: #78716c;
+  --color-success: #22c55e;
 }
 
 @keyframes fade-in {
