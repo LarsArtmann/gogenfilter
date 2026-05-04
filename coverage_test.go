@@ -66,12 +66,8 @@ func TestFilterConfigErrorIs_WrongSentinel(t *testing.T) {
 func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 	t.Parallel()
 
-	cfg1 := FilterConfig(func(f *Filter) error {
-		return errors.New("config error 1") //nolint:err113
-	})
-	cfg2 := FilterConfig(func(f *Filter) error {
-		return errors.New("config error 2") //nolint:err113
-	})
+	cfg1 := failingFilterConfig("config error 1")
+	cfg2 := failingFilterConfig("config error 2")
 
 	_, err := NewFilter(cfg1, cfg2)
 	if err == nil {
@@ -126,18 +122,24 @@ func findSubstring(s, substr string) bool {
 func TestMatchPattern_MalformedPattern(t *testing.T) {
 	t.Parallel()
 
-	result := MatchPattern("src/file.go", "[")
-	if result {
-		t.Error("malformed pattern [ should not match")
+	tests := []struct {
+		name    string
+		path    string
+		pattern string
+	}{
+		{"no slash", "src/file.go", "["},
+		{"with slash", "src/file.go", "src/["},
 	}
-}
 
-func TestMatchPattern_MalformedPatternWithSlash(t *testing.T) {
-	t.Parallel()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-	result := MatchPattern("src/file.go", "src/[")
-	if result {
-		t.Error("malformed pattern with slash should not match")
+			result := MatchPattern(tt.path, tt.pattern)
+			if result {
+				t.Error("malformed pattern should not match")
+			}
+		})
 	}
 }
 
@@ -212,7 +214,7 @@ packages:
 	}
 
 	assertLen(t, "SQL entries", len(config.SQL), 1)
-	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "gen/models")
+	assertSQLGoOut(t, config, "gen/models")
 }
 
 func TestGetSQLOutputDirs_FindError(t *testing.T) {
@@ -288,9 +290,7 @@ func TestGetSQLOutputDirsFS_FindError(t *testing.T) {
 func TestGetSQLOutputDirsFS_Success(t *testing.T) {
 	t.Parallel()
 
-	fsys := fstest.MapFS{
-		"sqlc.yaml": {
-			Data: []byte(`version: "2"
+	fsys := createFSWithFile(t, "sqlc.yaml", `version: "2"
 sql:
   - schema: "schema/"
     engine: "postgresql"
@@ -298,9 +298,7 @@ sql:
       go:
         package: "db"
         out: "gen/db"
-`),
-		},
-	}
+`)
 
 	dirs, err := GetSQLOutputDirsFS(fsys, []string{"."})
 	if err != nil {
@@ -313,11 +311,7 @@ sql:
 func TestGetSQLOutputDirsFS_ConfigReadError(t *testing.T) {
 	t.Parallel()
 
-	fsys := fstest.MapFS{
-		"project/sqlc.yaml": {
-			Data: []byte("version: \"2\"\nsql:\n  - [invalid\n"),
-		},
-	}
+	fsys := createFSWithPath(t, "project/sqlc.yaml", "version: \"2\"\nsql:\n  - [invalid\n")
 
 	_, err := GetSQLOutputDirsFS(fsys, []string{"project"})
 	if err == nil {
@@ -352,9 +346,7 @@ func TestProjectRootError_Unwrap(t *testing.T) {
 		Cause:     innerErr,
 	}
 
-	if !errors.Is(err, os.ErrPermission) {
-		t.Error("Unwrap should expose inner error")
-	}
+	assertUnwrapSentinel(t, err)
 }
 
 func TestFilterConfigError_Unwrap(t *testing.T) {
@@ -366,9 +358,7 @@ func TestFilterConfigError_Unwrap(t *testing.T) {
 		Cause:  os.ErrPermission,
 	}
 
-	if !errors.Is(err, os.ErrPermission) {
-		t.Error("Unwrap should expose inner error")
-	}
+	assertUnwrapSentinel(t, err)
 }
 
 func TestSQLCConfigError_Unwrap(t *testing.T) {
@@ -382,7 +372,5 @@ func TestSQLCConfigError_Unwrap(t *testing.T) {
 		Cause:      os.ErrPermission,
 	}
 
-	if !errors.Is(err, os.ErrPermission) {
-		t.Error("Unwrap should expose inner error")
-	}
+	assertUnwrapSentinel(t, err)
 }
