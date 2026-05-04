@@ -448,7 +448,7 @@ func assertErrorsIs(t *testing.T, err, sentinel error) {
 	t.Helper()
 
 	if !errors.Is(err, sentinel) {
-		t.Errorf("errors.Is should match %v", sentinel)
+		t.Errorf("expected %v, got: %v", sentinel, err)
 	}
 }
 

@@ -628,9 +628,7 @@ func TestFilterContext(t *testing.T) {
 			t.Fatal("expected error for cancelled context")
 		}
 
-		if !errors.Is(err, context.Canceled) {
-			t.Errorf("expected context.Canceled, got: %v", err)
-		}
+		assertErrorsIs(t, err, context.Canceled)
 	})
 
 	t.Run("succeeds with active context", func(t *testing.T) {
@@ -676,9 +674,7 @@ func TestFilterPathsContext(t *testing.T) {
 			t.Fatal("expected error for cancelled context")
 		}
 
-		if !errors.Is(err, context.Canceled) {
-			t.Errorf("expected context.Canceled, got: %v", err)
-		}
+		assertErrorsIs(t, err, context.Canceled)
 	})
 
 	t.Run("succeeds with active context", func(t *testing.T) {
