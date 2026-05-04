@@ -56,7 +56,7 @@
 | Custom color tokens | FULLY_FUNCTIONAL | bg-primary, bg-card, border, text-primary/secondary/muted, accent, amber |
 | Custom fonts        | FULLY_FUNCTIONAL | Space Grotesk (sans) + JetBrains Mono (mono) via Astro font providers    |
 | Fade-in animation   | FULLY_FUNCTIONAL | CSS keyframe + `@theme --animate-fade-in`                                |
-| Dark theme only     | FULLY_FUNCTIONAL | Stone-950 background, no light mode toggle                               |
+| Light/Dark themes   | FULLY_FUNCTIONAL | CSS custom properties toggle, localStorage persistence                     |
 
 ## Deployment
 

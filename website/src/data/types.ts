@@ -1,10 +1,10 @@
 export const logoPaths = [
-  "/logos/sqlc.svg",
+  "/logos/sqlc.png",
   "/logos/templ.svg",
   "/logos/protobuf.svg",
   "/logos/go-enum.svg",
   "/logos/mockgen.svg",
-  "/logos/moq.svg",
+  "/logos/moq.png",
   "/logos/wire.svg",
   "/logos/oapi-codegen.svg",
   "/logos/deepcopy-gen.svg",
