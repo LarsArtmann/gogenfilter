@@ -10,9 +10,14 @@ When a filter is enabled (has filter options, include patterns, or exclude patte
 ## Basic Usage
 
 ```go
-f := gogenfilter.NewFilter(
-    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
-)
+opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+if err != nil {
+    panic(err)
+}
+f, err := gogenfilter.NewFilter(opts)
+if err != nil {
+    panic(err)
+}
 
 f.Filter("db/models.go")
 f.Filter("page_templ.go")

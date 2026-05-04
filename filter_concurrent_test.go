@@ -19,6 +19,7 @@ func TestFilterConcurrent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	filter, err := NewFilter(
 		opts,
 		WithFS(mapFS),

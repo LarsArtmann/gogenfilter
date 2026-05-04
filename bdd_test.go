@@ -651,7 +651,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 		ginkgo.When("FilterConfigError occurs", func() {
 			ginkgo.It("provides ErrorCode and Help methods", func() {
-				err := &gogenfilter.FilterConfigError{
+				err := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
 					Code:   gogenfilter.CodeInvalidFilterOption,
 					Option: gogenfilter.FilterOption("bad"),
 				}
@@ -662,7 +662,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 		ginkgo.When("SQLCConfigError occurs", func() {
 			ginkgo.It("includes config path in error message", func() {
-				err := &gogenfilter.SQLCConfigError{
+				err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 					Code:       gogenfilter.CodeSQLCConfigParse,
 					ConfigPath: gogenfilter.ConfigPath("sqlc.yaml"),
 					Operation:  gogenfilter.Operation("parse"),

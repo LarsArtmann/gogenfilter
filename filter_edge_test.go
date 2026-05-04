@@ -16,6 +16,7 @@ func TestFilterEdgeCases(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
@@ -75,6 +76,7 @@ func TestFilterEdgeCases(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts, WithFS(mapFS))
 		if err != nil {
 			t.Fatal(err)
@@ -97,6 +99,7 @@ func TestFilterEdgeCases(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts, WithFS(nil))
 		if err != nil {
 			t.Fatal(err)

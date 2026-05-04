@@ -31,6 +31,7 @@ func testMapFSDetectsSQLC(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	fltr, err := NewFilter(opts, WithFS(mapFS))
 	if err != nil {
 		t.Fatal(err)
@@ -55,6 +56,7 @@ func testMapFSNonGenerated(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	fltr, err := NewFilter(opts, WithFS(mapFS))
 	if err != nil {
 		t.Fatal(err)
@@ -74,6 +76,7 @@ func testMapFSNonExistent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	fltr, err := NewFilter(opts, WithFS(mapFS))
 	if err != nil {
 		t.Fatal(err)
@@ -106,6 +109,7 @@ func testMapFSMultipleGenerators(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	fltr, err := NewFilter(opts, WithFS(mapFS))
 	if err != nil {
 		t.Fatal(err)
@@ -280,6 +284,7 @@ func TestFilterExcludePattern(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	filter, err := NewFilter(
 		opts,
 		WithExcludePatterns("**/db/*.go"),

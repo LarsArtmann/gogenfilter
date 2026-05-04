@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **Breaking: `WithFilterOptions` returns `(FilterConfig, error)`** — previously panicked on invalid options; now returns `*FilterConfigError` with `errors.Is()` support
+- **Breaking: `NewFilter` returns `(*Filter, error)`** — previously returned `*Filter` only; now uses `errors.Join()` to aggregate config errors
+- **Breaking: `FilterConfig` returns `error`** — config functions now return error to support validation; `WithFS`, `WithIncludePatterns`, `WithExcludePatterns` return `nil` error
 - **Breaking: `Enabled()` and `Disabled()` removed** — a filter is now enabled when it has filter options, include patterns, or exclude patterns; `NewFilter()` with no arguments is disabled. This eliminates silent misconfiguration where forgetting `Enabled()` caused the filter to silently pass everything through.
 - `IsEnabled()` now derives state from configuration — returns `true` when `len(f.options) > 0 || len(f.includePatterns) > 0 || len(f.excludePatterns) > 0`
 - `enabled bool` field removed from `Filter` struct — state is implicit, not stored
@@ -23,6 +26,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `FilterConfigError` type — returned when invalid filter options are provided; implements `ErrorCoder`, `Helper`, and `Unwrap` interfaces
+- `ErrInvalidFilterOption` sentinel error — for `errors.Is()` matching
+- `CodeInvalidFilterOption` error code — for programmatic error handling
 - `FilterStats.FilteredFiles(reason FilterReason) []string` — returns file paths filtered for a given reason (defensive copy, safe to mutate)
 - SQLC config v1 format test coverage — verifies v1 config parses but returns zero output dirs
 - Cross-platform path matching tests — forward slash and backslash detection patterns

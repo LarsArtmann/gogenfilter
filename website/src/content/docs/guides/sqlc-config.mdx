@@ -109,10 +109,15 @@ for i, dir := range dirs {
     includePatterns[i] = dir + "/**"
 }
 
-f := gogenfilter.NewFilter(
-    gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
-    gogenfilter.WithIncludePatterns(includePatterns...),
-)
+opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC)
+if err != nil {
+    panic(err)
+}
+includeConfig := gogenfilter.WithIncludePatterns(includePatterns...)
+f, err := gogenfilter.NewFilter(opts, includeConfig)
+if err != nil {
+    panic(err)
+}
 ```
 
 ## Implementation Details
