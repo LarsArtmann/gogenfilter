@@ -43,15 +43,10 @@ func main() {
 ## Import Options
 
 ```go
-// Core functionality
 import "github.com/LarsArtmann/gogenfilter"
-
-// Specific types
-import (
-    "github.com/LarsArtmann/gogenfilter"
-    "github.com/bmatcuk/doublestar/v4" // for pattern matching
-)
 ```
+
+`gogenfilter` re-exports `MatchPattern` for convenience, so you don't need a separate `doublestar` import.
 
 ## Verify Installation
 

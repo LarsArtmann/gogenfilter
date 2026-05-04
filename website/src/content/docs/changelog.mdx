@@ -21,7 +21,7 @@ description: All notable changes to gogenfilter.
 ### Changed
 
 - Error codes derived from `errorCodeDefs` table
-- Exported `FilterStats.FilteredByReason` field for direct map access
+- `filteredByReason` map unexported — use `FilteredBy(reason)` accessor for per-reason breakdown
 - Phantom types no longer use format strings in `String()`
 
 ## [0.1.0] — 2026-04-04
