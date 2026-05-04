@@ -59,14 +59,6 @@ jobs:
             exit 1
           fi
 
-      - uses: codecov/codecov-action@v4
-        if: success() || failure()
-        with:
-          files: ./coverage.out
-          flags: unittests
-          name: gogenfilter
-          fail_ci_if_error: false
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
