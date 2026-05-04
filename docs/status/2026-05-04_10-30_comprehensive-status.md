@@ -225,33 +225,33 @@ Everything compiles, all tests pass, lint is clean, coverage is high, benchmarks
 
 Sorted by impact × effort (Pareto principle):
 
-| #   | Task                                                                        | Impact | Effort | Priority |
-| :-- | :-------------------------------------------------------------------------- | :----: | :----: | :------: |
-| 1   | Fix `MustShouldFilter` → `MustFilter` in example_test.go + property_test.go |  HIGH  |  5min  |  🔴 NOW  |
-| 2   | Commit PNG logos + generators.ts update                                     |  MED   |  1min  |  🔴 NOW  |
-| 3   | Tag v0.1.0 release                                                          |  HIGH  |  5min  |  🔴 NOW  |
-| 4   | Update AGENTS.md with MustFilter rename + errors.AsType migration           |  MED   |  5min  |  🔴 NOW  |
-| 5   | Add `errors.AsType` error handling examples to README                       |  MED   | 10min  | 🟡 SOON  |
-| 6   | Resolve include patterns design question                                    |  MED   | 30min  | 🟡 SOON  |
-| 7   | Run Lighthouse audit on deployed website                                    |  MED   | 60min  | 🟡 SOON  |
-| 8   | Add custom 404 page to website                                              |  LOW   | 30min  | 🟢 LATER |
-| 9   | Add Codecov / coverage tracking to CI                                       |  MED   | 15min  | 🟡 SOON  |
-| 10  | Add `WalkAndFilter()` bulk API                                              |  HIGH  | 30min  | 🟡 SOON  |
-| 11  | Expose filtered file paths in FilterStats                                   |  MED   | 15min  | 🟡 SOON  |
-| 12  | Performance profile and optimize hot paths                                  |  MED   | 30min  | 🟢 LATER |
-| 13  | `RegisterDetector()` API for custom detectors                               |  HIGH  | 60min  | 🟢 LATER |
-| 14  | BDD/ginkgo tests for user-facing behaviors                                  |  MED   | 60min  | 🟢 LATER |
-| 15  | `//go:generate` for detector table generation                               |  MED   | 45min  | 🟢 LATER |
-| 16  | `*.gen.go` filename heuristic for oapi-codegen                              |  LOW   | 10min  | 🟢 LATER |
-| 17  | `Error()` allocation optimization with strings.Builder                      |  LOW   | 15min  | 🟢 LATER |
-| 18  | Rename `ReasonIncludePattern` → `ReasonNotInScope`                          |  LOW   | 10min  | 🟢 LATER |
-| 19  | Cross-platform path testing (Windows)                                       |  LOW   | 15min  | 🟢 LATER |
-| 20  | Test SQLC config v1 format                                                  |  LOW   | 15min  | 🟢 LATER |
-| 21  | Consolidate error `Error()` formatting into shared branded formatter        |  LOW   | 20min  | 🟢 LATER |
-| 22  | Website flake.nix — commit or remove uncommitted changes                    |  LOW   | 10min  | 🟢 LATER |
-| 23  | Add OG image generation for social sharing                                  |  LOW   | 30min  | 🟢 LATER |
-| 24  | Add `FilterStats.ToJSON()` for structured logging integration               |  LOW   | 15min  | 🟢 LATER |
-| 25  | Evaluate Go 1.26 iterator support for `WalkAndFilter` results               |  LOW   | 15min  | 🟢 LATER |
+| # | Task | Impact | Effort | Priority |
+|:---|:---|:---:|:---:|:---:|
+| 1 | Commit PNG logos + generators.ts update | MED | 1min | 🔴 NOW |
+| 2 | Tag v0.1.0 release | HIGH | 5min | 🔴 NOW |
+| 3 | Update AGENTS.md with errors.AsType migration | MED | 5min | 🔴 NOW |
+| 4 | Add `errors.AsType` error handling examples to README | MED | 10min | 🟡 SOON |
+| 5 | Resolve include patterns design question | MED | 30min | 🟡 SOON |
+| 6 | Run Lighthouse audit on deployed website | MED | 60min | 🟡 SOON |
+| 7 | Add custom 404 page to website | LOW | 30min | 🟢 LATER |
+| 8 | Add Codecov / coverage tracking to CI | MED | 15min | 🟡 SOON |
+| 9 | Add `WalkAndFilter()` bulk API | HIGH | 30min | 🟡 SOON |
+| 10 | Expose filtered file paths in FilterStats | MED | 15min | 🟡 SOON |
+| 11 | Performance profile and optimize hot paths | MED | 30min | 🟢 LATER |
+| 12 | `RegisterDetector()` API for custom detectors | HIGH | 60min | 🟢 LATER |
+| 13 | BDD/ginkgo tests for user-facing behaviors | MED | 60min | 🟢 LATER |
+| 14 | `//go:generate` for detector table generation | MED | 45min | 🟢 LATER |
+| 15 | `*.gen.go` filename heuristic for oapi-codegen | LOW | 10min | 🟢 LATER |
+| 16 | `Error()` allocation optimization with strings.Builder | LOW | 15min | 🟢 LATER |
+| 17 | Rename `ReasonIncludePattern` → `ReasonNotInScope` | LOW | 10min | 🟢 LATER |
+| 18 | Cross-platform path testing (Windows) | LOW | 15min | 🟢 LATER |
+| 19 | Test SQLC config v1 format | LOW | 15min | 🟢 LATER |
+| 20 | Consolidate error `Error()` formatting into shared branded formatter | LOW | 20min | 🟢 LATER |
+| 21 | Website flake.nix — commit or remove uncommitted changes | LOW | 10min | 🟢 LATER |
+| 22 | Add OG image generation for social sharing | LOW | 30min | 🟢 LATER |
+| 23 | Add `FilterStats.ToJSON()` for structured logging integration | LOW | 15min | 🟢 LATER |
+| 24 | Evaluate Go 1.26 iterator support for `WalkAndFilter` results | LOW | 15min | 🟢 LATER |
+| 25 | Convert sqlc.png and moq.png logos to SVG for consistency | LOW | 30min | 🟢 LATER |
 
 ---
 
