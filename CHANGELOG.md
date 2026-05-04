@@ -100,7 +100,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `unmarshalSQLCConfig` extracted from `parseSQLCConfig`/`parseSQLCConfigFS` for shared YAML parsing
 - `walkDirForSQLCConfigs` extracted walk callback shared between OS and FS variants
 - `isGeneratedBy` and `matchAnyContentPattern` extracted from detection logic
-- Comprehensive `errors_test.go` with generic test helpers (`assertErrorsAs[T]`, `assertBrandedErrorMessage`, `testErrorCodeReturnsCode`, `assertErrorsIs`, `testCrossTypeMismatch`)
+- Comprehensive `errors_test.go` with generic test helpers (`assertErrorType[T]`, `assertBrandedErrorMessage`, `testErrorCodeReturnsCode`, `assertErrorsIs`, `testCrossTypeMismatch`)
 - `sqlc_test.go` error code verification tests
 - `TestFindProjectRootErrorCode` in `project_test.go`
 - `FilterOption.Reason()` — derives the corresponding `FilterReason` from any `FilterOption` via type conversion
