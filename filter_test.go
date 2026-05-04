@@ -241,7 +241,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 
 		stats := filter.GetStats()
 
-		assertFilterStats(t, stats, ReasonIncludePattern, 1, "include-pattern")
+		assertFilterStats(t, stats, ReasonOutsideScope, 1, "outside-scope")
 	})
 
 	t.Run("include pattern with wildcard", func(t *testing.T) {

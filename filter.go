@@ -41,7 +41,7 @@ func WithFS(fsys fs.FS) FilterConfig {
 
 // WithIncludePatterns restricts filtering scope to files matching at least one
 // of the given patterns. Files that do NOT match any include pattern are
-// immediately filtered (excluded from analysis) with reason ReasonIncludePattern.
+// immediately filtered (excluded from analysis) with reason ReasonOutsideScope.
 //
 // This "restrict scope" behavior means include patterns act as a whitelist for
 // which files are worth inspecting — all other files are skipped.
@@ -174,7 +174,7 @@ func (f *Filter) shouldFilterWithIncludes(filePath string) (bool, error) {
 	return f.shouldFilterByPattern(
 		filePath,
 		!f.matchesAnyPattern(filePath, f.includePatterns),
-		ReasonIncludePattern,
+		ReasonOutsideScope,
 	)
 }
 
