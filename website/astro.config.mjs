@@ -2,8 +2,11 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import sitemap from "@astrojs/sitemap";
 
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineConfig({
   site: "https://gogenfilter.lars.software",
+
   integrations: [
     sitemap(),
     starlight({
@@ -67,4 +70,8 @@ export default defineConfig({
       ],
     }),
   ],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
