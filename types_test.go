@@ -74,10 +74,15 @@ func TestFilterOptionReason(t *testing.T) {
 		{FilterGeneric, ReasonGeneric},
 	}
 
-	for _, tc := range tests {
-		if got := tc.option.Reason(); got != tc.reason {
+	for _, testCase := range tests {
+		reason, found := testCase.option.Reason()
+		if !found {
+			t.Errorf("FilterOption(%q).Reason() returned false, want true", testCase.option)
+		}
+
+		if reason != testCase.reason {
 			t.Errorf("FilterOption(%q).Reason() = %q, want %q",
-				tc.option, got, tc.reason)
+				testCase.option, reason, testCase.reason)
 		}
 	}
 }
@@ -183,4 +188,85 @@ func TestAllFilterReasons(t *testing.T) {
 		reasons,
 		func(r FilterReason) bool { return r.IsValid() },
 	)
+}
+
+func TestAllGeneratorOptions(t *testing.T) {
+	t.Parallel()
+
+	opts := AllGeneratorOptions()
+
+	assertEqual(t, "len(AllGeneratorOptions())", len(opts), 11)
+
+	for _, opt := range opts {
+		if opt == FilterAll {
+			t.Error("AllGeneratorOptions() should not contain FilterAll")
+		}
+	}
+
+	assertAllValid(
+		t,
+		"AllGeneratorOptions()",
+		opts,
+		func(o FilterOption) bool { return o.IsValid() },
+	)
+}
+
+func TestFilterOptionReasonFilterAllReturnsFalse(t *testing.T) {
+	t.Parallel()
+
+	reason, ok := FilterAll.Reason()
+	if ok {
+		t.Error("FilterAll.Reason() should return false")
+	}
+
+	if reason != "" {
+		t.Errorf("FilterAll.Reason() reason = %q, want empty", reason)
+	}
+}
+
+func TestFilterOptionReasonUnregisteredReturnsFalse(t *testing.T) {
+	t.Parallel()
+
+	reason, ok := FilterOption("nonexistent").Reason()
+	if ok {
+		t.Error("unregistered option Reason() should return false")
+	}
+
+	if reason != "" {
+		t.Errorf("unregistered option Reason() reason = %q, want empty", reason)
+	}
+}
+
+func TestFilterResultString(t *testing.T) {
+	t.Parallel()
+
+	t.Run("not filtered", func(t *testing.T) {
+		t.Parallel()
+
+		r := FilterResult{Filtered: false, Reason: "", Path: "", Trace: ""}
+		if r.String() != "FilterResult(filtered=false)" {
+			t.Errorf("unexpected String(): %q", r.String())
+		}
+	})
+
+	t.Run("filtered without trace", func(t *testing.T) {
+		t.Parallel()
+
+		r := FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "", Trace: ""}
+		assertContains(t, r.String(), "filtered=true")
+		assertContains(t, r.String(), "sqlc")
+	})
+
+	t.Run("filtered with trace", func(t *testing.T) {
+		t.Parallel()
+
+		result := FilterResult{
+			Filtered: true,
+			Reason:   ReasonSQLC,
+			Path:     "",
+			Trace:    "detected as sqlc via filename pattern",
+		}
+		assertContains(t, result.String(), "trace=")
+		assertContains(t, result.String(), "sqlc")
+	})
 }

@@ -41,16 +41,15 @@ var detectors = []detector{
 }
 
 // filterOptionToReason maps FilterOption values to their FilterReason using the
-// detectors table. This eliminates the implicit string-equality invariant between
-// FilterOption and FilterReason constants. Panics on unregistered options.
-func filterOptionToReason(opt FilterOption) FilterReason {
+// detectors table. Returns (reason, true) for registered options, ("", false) otherwise.
+func filterOptionToReason(opt FilterOption) (FilterReason, bool) {
 	for _, d := range detectors {
 		if d.option == opt {
-			return d.reason
+			return d.reason, true
 		}
 	}
 
-	panic("gogenfilter: FilterOption.Reason() called on unregistered option: " + opt.String())
+	return "", false
 }
 
 // allSpecificOptions returns all FilterOption values that correspond to specific
@@ -63,6 +62,18 @@ func allSpecificOptions() []FilterOption {
 		if d.option != FilterGeneric {
 			opts = append(opts, d.option)
 		}
+	}
+
+	return opts
+}
+
+// allDetectorOptions returns all FilterOption values from the detectors table
+// (including FilterGeneric but excluding FilterAll).
+func allDetectorOptions() []FilterOption {
+	opts := make([]FilterOption, 0, len(detectors))
+
+	for _, d := range detectors {
+		opts = append(opts, d.option)
 	}
 
 	return opts
@@ -365,4 +376,78 @@ func getFilenameBasedReason(filePath string, options map[FilterOption]struct{}) 
 	}
 
 	return ReasonNotFiltered
+}
+
+// getFilenameBasedReasonWithTrace is like getFilenameBasedReason but also
+// returns a trace string.
+func getFilenameBasedReasonWithTrace(
+	filePath string,
+	options map[FilterOption]struct{},
+) (FilterReason, string) {
+	filename := filepath.Base(filePath)
+
+	for i := range detectors {
+		d := &detectors[i]
+		if _, enabled := options[d.option]; enabled {
+			if d.matchFilename != nil && d.matchFilename(filename) {
+				trace := fmt.Sprintf("detected as %s via filename pattern", d.option)
+
+				return d.reason, trace
+			}
+		}
+	}
+
+	return ReasonNotFiltered, ""
+}
+
+// getContentBasedReasonWithTrace is like getContentBasedReason but also returns a trace string.
+func getContentBasedReasonWithTrace(
+	path string,
+	fileContent string,
+	opts map[FilterOption]struct{},
+) (FilterReason, string) {
+	for i := range detectors {
+		d := &detectors[i]
+		if _, enabled := opts[d.option]; enabled {
+			if d.checkContent != nil && d.checkContent(path, fileContent) {
+				trace := fmt.Sprintf("detected as %s via content marker", d.option)
+
+				return d.reason, trace
+			}
+		}
+	}
+
+	return ReasonNotFiltered, ""
+}
+
+// detectReasonFSWithTrace is like detectReasonFS but returns a FilterResult with trace info.
+func detectReasonFSWithTrace(
+	fsys fs.FS,
+	filePath string,
+	options map[FilterOption]struct{},
+) (FilterResult, error) {
+	reason, trace := getFilenameBasedReasonWithTrace(filePath, options)
+	if reason != ReasonNotFiltered {
+		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+	}
+
+	if !needsContentCheck(options) {
+		return FilterResult{
+			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
+		}, nil
+	}
+
+	content, err := fs.ReadFile(fsys, filePath)
+	if err != nil {
+		return FilterResult{
+			Filtered: false, Reason: "", Path: filePath, Trace: "",
+		}, fmt.Errorf("read file %q: %w", filePath, err)
+	}
+
+	reason, trace = getContentBasedReasonWithTrace(filePath, string(content), options)
+	if reason != ReasonNotFiltered {
+		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+	}
+
+	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: ""}, nil
 }

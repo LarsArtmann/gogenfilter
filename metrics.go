@@ -24,18 +24,27 @@ type MetricsMixin struct {
 type Metrics struct {
 	MetricsMixin
 
-	mu sync.RWMutex
+	mu               sync.RWMutex
+	maxFilteredFiles int
 }
 
 // NewMetrics creates a new filter metrics tracker.
-func NewMetrics() *Metrics {
+// maxFilteredFiles controls the maximum number of file paths stored per reason.
+// A value of 0 means unlimited (default behavior).
+func NewMetrics(maxFilteredFiles ...int) *Metrics {
+	maxFiles := 0
+	if len(maxFilteredFiles) > 0 {
+		maxFiles = maxFilteredFiles[0]
+	}
+
 	return &Metrics{
 		MetricsMixin: MetricsMixin{
 			TotalFilesChecked: 0,
 			filteredByReason:  make(map[FilterReason]int),
 			filteredFiles:     make(map[FilterReason][]string),
 		},
-		mu: sync.RWMutex{},
+		mu:               sync.RWMutex{},
+		maxFilteredFiles: maxFiles,
 	}
 }
 
@@ -53,7 +62,10 @@ func (m *Metrics) record(filePath string, reason FilterReason) {
 
 	if reason != ReasonNotFiltered {
 		m.filteredByReason[reason]++
-		m.filteredFiles[reason] = append(m.filteredFiles[reason], filePath)
+
+		if m.maxFilteredFiles == 0 || len(m.filteredFiles[reason]) < m.maxFilteredFiles {
+			m.filteredFiles[reason] = append(m.filteredFiles[reason], filePath)
+		}
 	}
 }
 

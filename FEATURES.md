@@ -32,6 +32,13 @@
 | Exclude patterns              | FULLY_FUNCTIONAL | `WithExcludePatterns("**/*.pb.go")` — always filter matches                        |
 | Filter immutability           | FULLY_FUNCTIONAL | Filter is immutable after `NewFilter` construction                                 |
 | Filter with error             | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                                            |
+| FilterResult struct           | FULLY_FUNCTIONAL | `Filtered`, `Reason`, `Path`, `Trace` fields for structured results                |
+| FilterDetailed()              | FULLY_FUNCTIONAL | `(FilterResult, error)` with trace info — additive API alongside `Filter()`        |
+| FilterPathsDetailed()         | FULLY_FUNCTIONAL | Batch `([]FilterResult, error)` with trace info                                    |
+| FilterDetailedContext()       | FULLY_FUNCTIONAL | Context-aware `FilterDetailed` with cancellation                                   |
+| AllGeneratorOptions()         | FULLY_FUNCTIONAL | Enumerate detector options (excludes `FilterAll`)                                  |
+| FilterOption.Reason()         | FULLY_FUNCTIONAL | Returns `(FilterReason, bool)` — no panics                                         |
+| WithMetricsCap()              | FULLY_FUNCTIONAL | Limits stored file paths per reason; `0` = unlimited                               |
 | FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                                            |
 | IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                                               |
 | String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                                        |

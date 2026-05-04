@@ -311,9 +311,14 @@ func TestDetectorOptionReasonConsistency(t *testing.T) {
 			t.Errorf("detector reason %q is not a valid FilterReason", det.reason)
 		}
 
-		if det.option.Reason() != det.reason {
+		reason, ok := det.option.Reason()
+		if !ok {
+			t.Errorf("detector{option=%q}.Reason() returned false, want true", det.option)
+		}
+
+		if reason != det.reason {
 			t.Errorf("detector{option=%q}.Reason() = %q, want %q",
-				det.option, det.option.Reason(), det.reason)
+				det.option, reason, det.reason)
 		}
 	}
 }

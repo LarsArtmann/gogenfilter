@@ -592,11 +592,17 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		)
 
 		ginkgo.It("FilterOption.Reason returns matching FilterReason", func() {
-			gomega.Expect(gogenfilter.FilterSQLC.Reason()).To(gomega.Equal(gogenfilter.ReasonSQLC))
-			gomega.Expect(gogenfilter.FilterTempl.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonTempl))
-			gomega.Expect(gogenfilter.FilterGeneric.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonGeneric))
+			reason, found := gogenfilter.FilterSQLC.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonSQLC))
+
+			reason, found = gogenfilter.FilterTempl.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonTempl))
+
+			reason, found = gogenfilter.FilterGeneric.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonGeneric))
 		})
 
 		ginkgo.It("AllFilterOptions returns all known options", func() {
