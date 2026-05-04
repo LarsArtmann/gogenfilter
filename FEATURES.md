@@ -108,17 +108,17 @@
 
 ## Testing
 
-| Feature              | Status           | Details                                                       |
-| -------------------- | ---------------- | ------------------------------------------------------------- |
-| Table-driven tests   | FULLY_FUNCTIONAL | All test files use table-driven patterns                      |
-| Parallel tests       | FULLY_FUNCTIONAL | `t.Parallel()` throughout                                     |
-| Integration tests    | FULLY_FUNCTIONAL | Real generated files via `//go:embed testdata`                |
-| Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                        |
-| Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants            |
-| Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                     |
-| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `ShouldFilter` test                             |
-| Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                       |
-| Runnable examples    | FULLY_FUNCTIONAL | 12 `Example*` functions in `example_test.go`                  |
+| Feature              | Status           | Details                                                        |
+| -------------------- | ---------------- | -------------------------------------------------------------- |
+| Table-driven tests   | FULLY_FUNCTIONAL | All test files use table-driven patterns                       |
+| Parallel tests       | FULLY_FUNCTIONAL | `t.Parallel()` throughout                                      |
+| Integration tests    | FULLY_FUNCTIONAL | Real generated files via `//go:embed testdata`                 |
+| Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                         |
+| Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants             |
+| Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                      |
+| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `ShouldFilter` test                              |
+| Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
+| Runnable examples    | FULLY_FUNCTIONAL | 12 `Example*` functions in `example_test.go`                   |
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
 
 ## CI/CD

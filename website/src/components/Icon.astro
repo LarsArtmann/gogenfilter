@@ -38,8 +38,8 @@ const uiIconPaths: Record<UIIcon, string> = {
   star: '<path fill="currentColor" stroke="none" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
 };
 
-const allIcons: Record<string, string> = { ...featureIconPaths, ...useCaseIconPaths, ...uiIconPaths };
-const pathContent = allIcons[name] ?? '';
+const allIcons: Record<IconName, string> = { ...featureIconPaths, ...useCaseIconPaths, ...uiIconPaths };
+const pathContent = allIcons[name];
 ---
 
 {pathContent && <svg width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><Fragment set:html={pathContent} /></svg>}

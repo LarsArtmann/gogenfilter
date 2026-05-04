@@ -18,6 +18,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 ## a) FULLY DONE ✅
 
 ### Go Library — Production Ready
+
 - **11 generators** detected: sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic
 - **Two-phase detection**: filename (zero I/O) → content (reads file)
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll))` — immutable after construction
@@ -33,6 +34,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 - **Tags**: v0.1.0, v0.2.0, v2.1.0
 
 ### Website — Production Deployed
+
 - **Astro v6 + Starlight** docs at `/docs/` with PageFind search (20 pages)
 - **Landing page**: Hero, code preview with copy, generator grid (11 logos), feature grid, comparison table, use cases, CTA
 - **Tailwind v4** with custom color tokens, Space Grotesk + JetBrains Mono fonts
@@ -44,21 +46,24 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 - **Doc validation**: `md-go-validator` for Go code blocks in markdown
 
 ### Code Deduplication Tooling (This Session)
+
 - **jscpd v4.0.9** installed as devDependency in website
 - **`scripts/dedup.sh`** wrapper script — works around jscpd v4's broken `formats-exts` config by copying `.astro` → `.html` in temp dir
 - **`npm run dedup`** script in package.json
 - **Result: 9 clones found, all eliminated or reduced to borderline structural patterns**
 
 ### Deduplication Commits (This Session)
-| Commit | What | Clones Removed |
-|--------|------|----------------|
-| `f48e5bc` | Extract `SectionHeader.astro` from 6 components | ~5 |
-| `e273494` | Add `width` prop to `Section.astro`, simplify `index.astro` | ~3 |
-| `7012f69` | Unify GeneratorGrid cards via `Card.astro` (+ xs padding, external links) | 2 |
-| `d830a2d` | Extract shared `chartPath` constant in `Icon.astro` | 1 |
-| `6a11f42` | Replace 3 identical dot spans with `Array.map` loop | 1 |
+
+| Commit    | What                                                                      | Clones Removed |
+| --------- | ------------------------------------------------------------------------- | -------------- |
+| `f48e5bc` | Extract `SectionHeader.astro` from 6 components                           | ~5             |
+| `e273494` | Add `width` prop to `Section.astro`, simplify `index.astro`               | ~3             |
+| `7012f69` | Unify GeneratorGrid cards via `Card.astro` (+ xs padding, external links) | 2              |
+| `d830a2d` | Extract shared `chartPath` constant in `Icon.astro`                       | 1              |
+| `6a11f42` | Replace 3 identical dot spans with `Array.map` loop                       | 1              |
 
 ### New Components Created
+
 - **`SectionHeader.astro`** — Reusable title + subtitle section header (used by 6 components)
 - **`Section.astro`** gained `width="narrow"|"wide"` prop — eliminates wrapper divs
 - **`Card.astro`** gained `xs` padding and `external` link support (`target=_blank`, `rel=noopener`)
@@ -68,25 +73,28 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 ## b) PARTIALLY DONE 🟡
 
 ### Website Clones (4 remaining at min-lines=2)
+
 - **index.astro**: 4 narrow `<Section width="narrow" class="text-center">` wrappers are structurally similar but represent legitimate page layout — **not worth abstracting further**
 - **FeatureGrid ↔ GeneratorGrid**: Shared import section + `<div><SectionHeader>` wrapper — natural structural similarity
 - At `--min-lines 3 --min-tokens 30` → **0 clones**. These are borderline at current thresholds.
 
 ### TODO_LIST.md Items (root)
-| # | Status | Item |
-|---|--------|------|
-| 1 | 🔴 OPEN | Resolve include patterns design question |
-| 2 | 🔲 OPEN | Performance profile and optimize hot paths |
-| 3 | 🔲 OPEN | Add Codecov or similar coverage tracking |
-| 4 | 🔲 OPEN | Consider `//go:generate` for detector table generation |
-| 5 | 🔲 OPEN | Add `RegisterDetector()` API for custom detectors |
-| 6 | 🔲 OPEN | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API |
+
+| #   | Status  | Item                                                             |
+| --- | ------- | ---------------------------------------------------------------- |
+| 1   | 🔴 OPEN | Resolve include patterns design question                         |
+| 2   | 🔲 OPEN | Performance profile and optimize hot paths                       |
+| 3   | 🔲 OPEN | Add Codecov or similar coverage tracking                         |
+| 4   | 🔲 OPEN | Consider `//go:generate` for detector table generation           |
+| 5   | 🔲 OPEN | Add `RegisterDetector()` API for custom detectors                |
+| 6   | 🔲 OPEN | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API |
 
 ### website/TODO_LIST.md Items
-| # | Status | Item |
-|---|--------|------|
-| 11 | 🔲 OPEN | Run Lighthouse audit and fix issues |
-| 14 | 🔲 OPEN | Browser visual QA (desktop + mobile) |
+
+| #   | Status  | Item                                 |
+| --- | ------- | ------------------------------------ |
+| 11  | 🔲 OPEN | Run Lighthouse audit and fix issues  |
+| 14  | 🔲 OPEN | Browser visual QA (desktop + mobile) |
 
 ---
 
@@ -110,6 +118,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 ## d) TOTALLY FUCKED UP 💥
 
 ### jscpd v4.0.9 `formats-exts` Bug
+
 - jscpd's `formats-exts` config option is **completely broken** in v4.0.9
 - It correctly detects `.astro` files as `html`/`markup` format but then rejects them with `Format "html" does not included to supported formats`
 - The bug also affects `.html` files when any `.jscpd.json` config is present
@@ -117,12 +126,14 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 - **Impact**: Every Astro project using jscpd hits this. Should be reported upstream.
 
 ### gh-pages Branch Corruption
+
 - At session start, git was on a `gh-pages` branch with **all project files staged** (including `.auto-deduplicate.lock`, `.art-dupl.json`)
 - This was clearly from a previous automation run that went wrong
 - Resolved by `git checkout master` — gh-pages should be cleaned up or deleted
 
 ### Excessive Status Documentation
-- **37 status files** in `docs/status/` + **14 in `website/docs/status/`
+
+- **37 status files** in `docs/status/` + \*\*14 in `website/docs/status/`
 - Many are from the same day (2026-05-04) with overlapping content
 - This creates noise and makes it hard to find the current state
 - **Recommendation**: Archive old status files, keep only the latest comprehensive one
@@ -132,21 +143,25 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 ## e) WHAT WE SHOULD IMPROVE 📈
 
 ### Architecture
+
 1. **Detector plugin system** — `RegisterDetector()` would allow third-party detectors without forking. Currently adding a detector requires editing `detection.go`'s internal table.
 2. **`WalkAndFilter()` bulk API** — Users currently must walk directories themselves. A built-in walker with concurrent filtering would be the #1 quality-of-life improvement.
 3. **`//go:generate` for types** — `AllFilterOptions()`, `AllFilterReasons()`, `isValid()` are all derived from the detector table but maintained manually. A generator would eliminate drift risk.
 
 ### Go Library
+
 4. **SQLC v1 output dir extraction** — Currently parses v1 but returns zero output dirs (by design). Could extract `packages[].path` for real v1 support.
 5. **Error wrapping with `%w`** — Some error paths don't wrap underlying errors, making `errors.Unwrap` chains incomplete.
 6. **Context support** — No `context.Context` parameter anywhere. For a library that does I/O (SQLC config discovery), cancellation support matters.
 
 ### Website
+
 7. **Lighthouse audit** — Never been run. Could reveal significant perf/a11y/SEO wins.
 8. **Responsive visual QA** — No manual testing beyond "it builds". Need real device/browser testing.
 9. **Reduce status doc noise** — 51 status files across two directories. Consolidate and archive.
 
 ### DevEx
+
 10. **Coverage tracking** — 97.4% coverage but no CI enforcement or trend tracking.
 11. **Release automation** — Manual git tags, no goreleaser, no release notes generation.
 12. **Nix flake for website** — Website has a `flake.nix` but it's unclear if it's maintained.
@@ -156,6 +171,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 ## f) TOP 25 THINGS TO DO NEXT (Sorted by Impact/Effort)
 
 ### 🔴 HIGH Impact, LOW Effort (Do Now)
+
 1. **Clean up gh-pages branch** — Delete corrupted branch or force-reset it
 2. **Archive old status docs** — Move pre-2026-05-04 status files to `docs/status/archive/`
 3. **Run Lighthouse audit** — `npx lighthouse http://localhost:4321 --output=html` after `npm run preview`
@@ -164,6 +180,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 6. **Browser visual QA** — Manual check on Chrome, Firefox, Safari, mobile viewport
 
 ### 🟡 HIGH Impact, MEDIUM Effort (Plan Soon)
+
 7. **`WalkAndFilter()` bulk API** — Add concurrent directory walking with filtering
 8. **`RegisterDetector()` plugin API** — Allow custom detectors without forking
 9. **Context support** — Add `context.Context` to I/O operations (SQLC config, `ShouldFilter`)
@@ -172,6 +189,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 12. **CI coverage enforcement** — Fail CI if coverage drops below 95%
 
 ### 🟢 MEDIUM Impact, LOW Effort (Quick Wins)
+
 13. **Add `//go:generate` for AllFilterOptions/AllFilterReasons** — Eliminate manual derivation
 14. **Custom 404 page** — Brand the Starlight 404 with gogenfilter styling
 15. **Changelog automation** — `git-chglog` or similar from conventional commits
@@ -180,6 +198,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 18. **Add `go doc` examples** — Ensure all exported functions have `Example*` test functions
 
 ### 🔵 LOW Impact, Various Effort (Backlog)
+
 19. **Performance profiling** — `pprof` analysis of `ShouldFilter` hot path
 20. **Interactive playground** — WASM-based "try gogenfilter" on the website
 21. **Add CONTRIBUTING.md to website** — Link from root CONTRIBUTING.md
@@ -195,6 +214,7 @@ gogenfilter is a mature, well-tested Go library for detecting auto-generated cod
 **What is the intended relationship between `gh-pages` and `master`?**
 
 The `gh-pages` branch has all project files staged (not just website build output) and appears corrupted. The website deploys to **Firebase Hosting** (not GitHub Pages), so `gh-pages` seems unused. Should this branch be:
+
 - **Deleted entirely** (since Firebase handles deployment)?
 - **Force-reset to a proper website build** (if it's meant for GitHub Pages as a mirror)?
 - **Kept as-is** (if some automation depends on it)?
@@ -205,23 +225,23 @@ This blocks knowing whether the branch is intentional infrastructure or leftover
 
 ## Metrics Summary
 
-| Metric | Value |
-|--------|-------|
-| Go source files | 25 `.go` files |
-| Total Go lines | 6,956 |
-| Test coverage | 97.4% |
-| golangci-lint issues | 0 |
-| Generators supported | 11 |
-| Benchmarks | 24 |
-| ShouldFilter (enabled) | 72.83 ns/op, 0 allocs |
-| ShouldFilter (disabled) | 1.457 ns/op, 0 allocs |
-| Website pages | 20 |
-| Website components | 17 |
-| Website dedup clones (min-lines=2) | 4 (borderline) |
-| Website dedup clones (min-lines=3) | 0 |
-| Astro check | 0 errors, 0 warnings, 2 hints |
-| Status docs total | 51 files |
-| npm vulnerabilities | 5 moderate (from jscpd deps) |
+| Metric                             | Value                         |
+| ---------------------------------- | ----------------------------- |
+| Go source files                    | 25 `.go` files                |
+| Total Go lines                     | 6,956                         |
+| Test coverage                      | 97.4%                         |
+| golangci-lint issues               | 0                             |
+| Generators supported               | 11                            |
+| Benchmarks                         | 24                            |
+| ShouldFilter (enabled)             | 72.83 ns/op, 0 allocs         |
+| ShouldFilter (disabled)            | 1.457 ns/op, 0 allocs         |
+| Website pages                      | 20                            |
+| Website components                 | 17                            |
+| Website dedup clones (min-lines=2) | 4 (borderline)                |
+| Website dedup clones (min-lines=3) | 0                             |
+| Astro check                        | 0 errors, 0 warnings, 2 hints |
+| Status docs total                  | 51 files                      |
+| npm vulnerabilities                | 5 moderate (from jscpd deps)  |
 
 ---
 
