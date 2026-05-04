@@ -5,7 +5,53 @@ description: Automatically find SQLC output directories from config files.
 
 ## Overview
 
-gogenfilter can discover SQLC configuration files and extract output directories, so you don't have to hardcode paths.
+gogenfilter discovers SQLC configuration files and extracts output directories, so you don't have to hardcode paths. It supports both v1 and v2 config formats, including plugin-based codegen and JSON output.
+
+## Supported Config Formats
+
+- `sqlc.yaml` and `sqlc.yml`
+- Version 1 (`version: "1"`) and Version 2 (`version: "2"`)
+
+### V2 Format
+
+```yaml
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "queries/"
+    queries: "queries/"
+    gen:
+      go:
+        package: "db"
+        out: "gen/db" # Go output directory
+      json:
+        out: "gen/json" # JSON output directory
+    codegen:
+      - plugin: "go-structs"
+        out: "gen/structs" # Plugin output directory
+```
+
+All three output directory sources are extracted:
+
+| Source         | Field                 |
+| -------------- | --------------------- |
+| Go codegen     | `sql[].gen.go.out`    |
+| JSON output    | `sql[].gen.json.out`  |
+| Plugin codegen | `sql[].codegen[].out` |
+
+### V1 Format
+
+```yaml
+version: "1"
+packages:
+  - name: "db"
+    path: "gen/db" # output directory
+    engine: "postgresql"
+    schema: "queries/"
+    queries: "queries/"
+```
+
+V1 configs use `packages[].path` as the output directory, which is automatically mapped.
 
 ## Find Configs
 
@@ -15,8 +61,8 @@ if err != nil {
     log.Fatal(err)
 }
 
-for _, cfg := range configs {
-    fmt.Printf("Config: %s\n", cfg.Path)
+for path, root := range configs {
+    fmt.Printf("Config: %s (root: %s)\n", path, root)
 }
 ```
 
@@ -32,13 +78,6 @@ for _, dir := range dirs {
     fmt.Printf("Output: %s\n", dir)
 }
 ```
-
-## Supported Config Formats
-
-- `sqlc.yaml`
-- `sqlc.yml`
-
-The parser uses the `github.com/go-faster/yaml` library for robust YAML handling.
 
 ## Use Case
 
@@ -57,3 +96,7 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithIncludePatterns(includePatterns...),
 )
 ```
+
+## Implementation Details
+
+The parser uses `github.com/go-faster/yaml` — a 2–3x faster, actively maintained fork of `go-yaml/yaml`. The config version is detected first, then dispatched to v1 or v2 parsing logic. Unsupported versions return a parse error. See the [Known Limitations](/docs/limitations) page for documented tradeoffs.

@@ -71,6 +71,10 @@ export default defineConfig({
           slug: "docs/generators",
         },
         {
+          label: "Known Limitations",
+          slug: "docs/limitations",
+        },
+        {
           label: "Community",
           items: [
             { label: "Changelog", slug: "docs/changelog" },

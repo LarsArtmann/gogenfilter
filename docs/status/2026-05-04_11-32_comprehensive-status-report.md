@@ -79,19 +79,19 @@
 
 ### Coverage Gaps
 
-| Function | Coverage | Issue |
-|----------|----------|-------|
-| `detectReasonFromMap` | 83.3% | Some branches untested |
-| `SQLCConfigError.Error()` | 85.7% | `ConfigPath=""` + `Cause=nil` branch untested |
-| `MatchPattern` | 92.3% | Some edge cases untested |
-| `FindProjectRoot` | 92.9% | Error path untested |
-| `unmarshalSQLCConfig` | 84.2% | `version:""` + unsupported version branches |
-| `parseV1AsV2` | 81.8% | Empty packages branch |
-| `GetSQLOutputDirs` | 0.0% | Previously tested but test removed? |
-| `FindSQLCConfigsFS` | 0.0% | Previously tested but test removed? |
-| `parseSQLCConfigFS` | 0.0% | Previously tested but test removed? |
-| `GetSQLOutputDirsFS` | 0.0% | Previously tested but test removed? |
-| `FilteredBy()` | 0.0% | Test regression — was tested before |
+| Function                  | Coverage | Issue                                         |
+| ------------------------- | -------- | --------------------------------------------- |
+| `detectReasonFromMap`     | 83.3%    | Some branches untested                        |
+| `SQLCConfigError.Error()` | 85.7%    | `ConfigPath=""` + `Cause=nil` branch untested |
+| `MatchPattern`            | 92.3%    | Some edge cases untested                      |
+| `FindProjectRoot`         | 92.9%    | Error path untested                           |
+| `unmarshalSQLCConfig`     | 84.2%    | `version:""` + unsupported version branches   |
+| `parseV1AsV2`             | 81.8%    | Empty packages branch                         |
+| `GetSQLOutputDirs`        | 0.0%     | Previously tested but test removed?           |
+| `FindSQLCConfigsFS`       | 0.0%     | Previously tested but test removed?           |
+| `parseSQLCConfigFS`       | 0.0%     | Previously tested but test removed?           |
+| `GetSQLOutputDirsFS`      | 0.0%     | Previously tested but test removed?           |
+| `FilteredBy()`            | 0.0%     | Test regression — was tested before           |
 
 ### TODO_LIST.md
 
@@ -109,16 +109,16 @@
 
 From TODO_LIST.md:
 
-| # | Task | Priority |
-|---|------|----------|
-| 1 | Resolve include patterns design question | HIGH |
-| 2 | Performance profile and optimize hot paths | MEDIUM |
-| 3 | Add Codecov or similar coverage tracking | MEDIUM |
-| 4 | Consider `//go:generate` for detector table generation | MEDIUM |
-| 5 | Add `RegisterDetector()` API for custom detectors | MEDIUM |
-| 6 | Add `WalkAndFilter(dir string)` bulk API | MEDIUM |
-| 10 | Run Lighthouse audit and fix issues | WEBSITE |
-| 11 | Add custom 404 page | WEBSITE |
+| #   | Task                                                   | Priority |
+| --- | ------------------------------------------------------ | -------- |
+| 1   | Resolve include patterns design question               | HIGH     |
+| 2   | Performance profile and optimize hot paths             | MEDIUM   |
+| 3   | Add Codecov or similar coverage tracking               | MEDIUM   |
+| 4   | Consider `//go:generate` for detector table generation | MEDIUM   |
+| 5   | Add `RegisterDetector()` API for custom detectors      | MEDIUM   |
+| 6   | Add `WalkAndFilter(dir string)` bulk API               | MEDIUM   |
+| 10  | Run Lighthouse audit and fix issues                    | WEBSITE  |
+| 11  | Add custom 404 page                                    | WEBSITE  |
 
 ---
 
@@ -141,6 +141,7 @@ This was tested in `metrics_test.go` previously. Possible test regression.
 ### 4. Uncommitted changes in working tree
 
 3 files modified but not committed:
+
 - `docs/planning/2026-05-04_historical-benchmarks-integration.md`
 - `docs/research/2026-05-04_sqlc-config-parsing-comparison.md`
 - `website/src/content/docs/docs/guides/benchmarks.mdx`
@@ -148,6 +149,7 @@ This was tested in `metrics_test.go` previously. Possible test regression.
 ### 5. AGENTS.md potentially stale
 
 Needs updating with:
+
 - SQLC v1 support (parseV1AsV2)
 - JSON/codegen output dir support
 - Implicit enable/disable (no Enabled/Disabled)
@@ -185,33 +187,33 @@ Needs updating with:
 
 Sorted by impact × effort (Pareto):
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Investigate 0% coverage functions — are tests gone or broken? | HIGH | 15min | Regression |
-| 2 | Fix `FilteredBy()` 0% coverage | HIGH | 10min | Regression |
-| 3 | Write status report, commit, push | HIGH | 10min | Process |
-| 4 | Commit 3 orphaned working-tree files | MED | 5min | Housekeeping |
-| 5 | Update TODO_LIST.md — fix stale line refs and v1 SQLC info | MED | 15min | Docs |
-| 6 | Update CHANGELOG.md with recent session changes | MED | 15min | Docs |
-| 7 | Update AGENTS.md with v1 SQLC + implicit enable | MED | 10min | Docs |
-| 8 | Add coverage for `unmarshalSQLCConfig` unsupported version branch | MED | 10min | Testing |
-| 9 | Add coverage for `parseV1AsV2` empty packages branch | MED | 10min | Testing |
-| 10 | Add coverage for `SQLCConfigError.Error()` ConfigPath="" + Cause=nil | MED | 10min | Testing |
-| 11 | Add coverage for `detectReasonFromMap` uncovered branches | MED | 10min | Testing |
-| 12 | Resolve include patterns design question (TODO #1) | MED | 30min | Design |
-| 13 | Update README to remove any stale Enabled()/Disabled() references | MED | 10min | Docs |
-| 14 | Check if `example_test.go` output comments are still accurate | MED | 15min | Testing |
-| 15 | Run `golangci-lint run` and fix any issues | MED | 10min | Quality |
-| 16 | Add `WalkAndFilter` bulk API (TODO #6) | MED | 30min | Feature |
-| 17 | Add Codecov to CI (TODO #3) | LOW | 15min | CI |
-| 18 | Pre-compute `Filter.String()` in NewFilter | LOW | 15min | Perf |
-| 19 | Replace `slices.Contains` in IsValid with map lookup | LOW | 10min | Perf |
-| 20 | Performance profile hot paths (TODO #2) | LOW | 30min | Perf |
-| 21 | Website: Run Lighthouse audit (TODO #10) | LOW | 60min | Website |
-| 22 | Website: Add custom 404 page (TODO #11) | LOW | 30min | Website |
-| 23 | Consider `//go:generate` for detector table (TODO #4) | LOW | 45min | Architect |
-| 24 | Add `RegisterDetector()` API (TODO #5) | LOW | 60min | Feature |
-| 25 | Consider compile-time FilterOption/Reason pairing | LOW | 60min | Architect |
+| #   | Task                                                                 | Impact | Effort | Category     |
+| --- | -------------------------------------------------------------------- | ------ | ------ | ------------ |
+| 1   | Investigate 0% coverage functions — are tests gone or broken?        | HIGH   | 15min  | Regression   |
+| 2   | Fix `FilteredBy()` 0% coverage                                       | HIGH   | 10min  | Regression   |
+| 3   | Write status report, commit, push                                    | HIGH   | 10min  | Process      |
+| 4   | Commit 3 orphaned working-tree files                                 | MED    | 5min   | Housekeeping |
+| 5   | Update TODO_LIST.md — fix stale line refs and v1 SQLC info           | MED    | 15min  | Docs         |
+| 6   | Update CHANGELOG.md with recent session changes                      | MED    | 15min  | Docs         |
+| 7   | Update AGENTS.md with v1 SQLC + implicit enable                      | MED    | 10min  | Docs         |
+| 8   | Add coverage for `unmarshalSQLCConfig` unsupported version branch    | MED    | 10min  | Testing      |
+| 9   | Add coverage for `parseV1AsV2` empty packages branch                 | MED    | 10min  | Testing      |
+| 10  | Add coverage for `SQLCConfigError.Error()` ConfigPath="" + Cause=nil | MED    | 10min  | Testing      |
+| 11  | Add coverage for `detectReasonFromMap` uncovered branches            | MED    | 10min  | Testing      |
+| 12  | Resolve include patterns design question (TODO #1)                   | MED    | 30min  | Design       |
+| 13  | Update README to remove any stale Enabled()/Disabled() references    | MED    | 10min  | Docs         |
+| 14  | Check if `example_test.go` output comments are still accurate        | MED    | 15min  | Testing      |
+| 15  | Run `golangci-lint run` and fix any issues                           | MED    | 10min  | Quality      |
+| 16  | Add `WalkAndFilter` bulk API (TODO #6)                               | MED    | 30min  | Feature      |
+| 17  | Add Codecov to CI (TODO #3)                                          | LOW    | 15min  | CI           |
+| 18  | Pre-compute `Filter.String()` in NewFilter                           | LOW    | 15min  | Perf         |
+| 19  | Replace `slices.Contains` in IsValid with map lookup                 | LOW    | 10min  | Perf         |
+| 20  | Performance profile hot paths (TODO #2)                              | LOW    | 30min  | Perf         |
+| 21  | Website: Run Lighthouse audit (TODO #10)                             | LOW    | 60min  | Website      |
+| 22  | Website: Add custom 404 page (TODO #11)                              | LOW    | 30min  | Website      |
+| 23  | Consider `//go:generate` for detector table (TODO #4)                | LOW    | 45min  | Architect    |
+| 24  | Add `RegisterDetector()` API (TODO #5)                               | LOW    | 60min  | Feature      |
+| 25  | Consider compile-time FilterOption/Reason pairing                    | LOW    | 60min  | Architect    |
 
 ---
 
