@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "gogenfilter-site"
+    "default": "lars-software"
+  },
+  "targets": {
+    "lars-software": {
+      "hosting": {
+        "gogenfilter": [
+          "gogenfilter"
+        ]
+      }
+    }
   }
 }
