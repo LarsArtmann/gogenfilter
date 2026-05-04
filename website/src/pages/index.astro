@@ -72,19 +72,19 @@ func main() {
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-6xl mx-auto px-6">
       <GeneratorGrid />
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-6xl mx-auto px-6">
       <FeatureGrid />
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
       <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Two-phase detection.</h2>
       <p class="text-lg text-text-muted mb-12">Filename first, content second. Most files are classified without reading a single byte.</p>
@@ -121,7 +121,7 @@ func main() {
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
       <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Why gogenfilter?</h2>
       <p class="text-lg text-text-muted mb-12">Purpose-built for Go. Not a generic file filter.</p>
@@ -154,7 +154,7 @@ func main() {
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
       <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Built for real tools.</h2>
       <p class="text-lg text-text-muted mb-12">Drop it into any linter, analyzer, or CI pipeline.</p>
@@ -179,7 +179,7 @@ func main() {
     </div>
   </section>
 
-  <section class="py-24 relative fade-in">
+  <section data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
       <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Start filtering in seconds.</h2>
       <p class="text-lg text-text-muted mb-12">Three lines to filter all generated code from your project.</p>
@@ -207,7 +207,7 @@ func main() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        entry.target.classList.add('animate-fade-in');
         observer.unobserve(entry.target);
       }
     });
