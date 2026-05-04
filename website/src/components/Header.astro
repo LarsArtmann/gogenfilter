@@ -49,6 +49,15 @@ import { siteConfig } from '../data/config';
     applyTheme();
   });
 
+  // Listen for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      const isLight = !e.matches;
+      document.documentElement.classList.toggle('light', isLight);
+      applyTheme();
+    }
+  });
+
   // Nav toggle
   const toggle = document.getElementById('nav-toggle');
   const navLinks = document.getElementById('nav-links');
