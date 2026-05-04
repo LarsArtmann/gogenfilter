@@ -65,14 +65,9 @@
             type = "app";
             program = "${pkgs.writeShellApplication {
               name = "validate-docs";
-              runtimeInputs = with pkgs; [ go ];
+              runtimeInputs = with pkgs; [ nodejs ];
               text = ''
-                export PATH="$(go env GOPATH)/bin:$PATH"
-                if ! command -v md-go-validator &>/dev/null; then
-                  echo "Installing md-go-validator..."
-                  go install github.com/larsartmann/md-go-validator@latest
-                fi
-                md-go-validator -f table src/content/docs/docs/
+                npm run validate:docs
               '';
             }}/bin/validate-docs";
           };
