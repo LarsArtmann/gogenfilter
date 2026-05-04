@@ -39,6 +39,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npx astro check
+
       - run: npm run build
 
       - name: Install md-go-validator
