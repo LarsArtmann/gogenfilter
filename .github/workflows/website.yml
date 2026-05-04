@@ -14,8 +14,10 @@ on:
 
 permissions:
   contents: read
-  checks: write
-  id-token: write
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-website:
@@ -70,6 +72,9 @@ jobs:
     needs: build-website
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
