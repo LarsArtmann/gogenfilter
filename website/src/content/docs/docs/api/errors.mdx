@@ -112,11 +112,11 @@ if errors.Is(err, gogenfilter.ErrProjectRootNotFound) {
 }
 ```
 
-### `errors.As` — Type Extraction
+### `errors.AsType` — Type Extraction (Go 1.26+)
 
 ```go
-var projErr *gogenfilter.ProjectRootError
-if errors.As(err, &projErr) {
+projErr, ok := errors.AsType[*gogenfilter.ProjectRootError](err)
+if ok {
     fmt.Println(projErr.ErrorCode())
     fmt.Println(projErr.StartPath)
 }
@@ -134,7 +134,7 @@ if gogenfilter.CodeEqual(err, gogenfilter.ErrProjectRootNotFound) {
 
 ### `Unwrap()` — Error Chains
 
-Both error types implement `Unwrap()` for error chain traversal with `errors.Is` and `errors.As`.
+Both error types implement `Unwrap()` for error chain traversal with `errors.Is` and `errors.AsType`.
 
 ## Help Text
 
