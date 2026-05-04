@@ -16,38 +16,38 @@ export default defineConfig({
         {
           label: "Getting Started",
           items: [
-            { label: "Installation", slug: "getting-started/installation" },
-            { label: "Quick Start", slug: "getting-started/quick-start" },
+            { label: "Installation", slug: "docs/getting-started/installation" },
+            { label: "Quick Start", slug: "docs/getting-started/quick-start" },
           ],
         },
         {
           label: "Guides",
           items: [
-            { label: "Filter Options", slug: "guides/filter-options" },
-            { label: "Pattern Matching", slug: "guides/pattern-matching" },
-            { label: "Metrics", slug: "guides/metrics" },
-            { label: "SQLC Config Discovery", slug: "guides/sqlc-config" },
-            { label: "Custom Filesystems", slug: "guides/custom-filesystem" },
+            { label: "Filter Options", slug: "docs/guides/filter-options" },
+            { label: "Pattern Matching", slug: "docs/guides/pattern-matching" },
+            { label: "Metrics", slug: "docs/guides/metrics" },
+            { label: "SQLC Config Discovery", slug: "docs/guides/sqlc-config" },
+            { label: "Custom Filesystems", slug: "docs/guides/custom-filesystem" },
           ],
         },
         {
           label: "API Reference",
           items: [
-            { label: "Filter", slug: "api/filter" },
-            { label: "Detection", slug: "api/detection" },
-            { label: "Types", slug: "api/types" },
-            { label: "Errors", slug: "api/errors" },
+            { label: "Filter", slug: "docs/api/filter" },
+            { label: "Detection", slug: "docs/api/detection" },
+            { label: "Types", slug: "docs/api/types" },
+            { label: "Errors", slug: "docs/api/errors" },
           ],
         },
         {
           label: "Supported Generators",
-          slug: "generators",
+          slug: "docs/generators",
         },
         {
           label: "Community",
           items: [
-            { label: "Changelog", slug: "changelog" },
-            { label: "Contributing", slug: "contributing" },
+            { label: "Changelog", slug: "docs/changelog" },
+            { label: "Contributing", slug: "docs/contributing" },
           ],
         },
       ],
