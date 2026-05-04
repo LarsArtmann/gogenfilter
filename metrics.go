@@ -128,7 +128,7 @@ func (fs FilterStats) FilteredBy(reason FilterReason) int {
 
 // FilteredFiles returns the file paths filtered for a specific reason.
 // Returns nil if no files were filtered for that reason.
-// The returned slice is a copy and safe to mutate.
+// The returned slice is a copy — safe to mutate without affecting subsequent calls.
 func (fs FilterStats) FilteredFiles(reason FilterReason) []string {
 	files := fs.filteredFiles[reason]
 	if files == nil {

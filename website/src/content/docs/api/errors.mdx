@@ -201,10 +201,13 @@ _, err := gogenfilter.FindProjectRoot(
     []string{"go.mod"},
 )
 if err != nil {
-    fmt.Println(err.ErrorCode())
-    // project_root_not_found
-    fmt.Println(err.Help() != "")
-    // true
+    projErr, ok := errors.AsType[*gogenfilter.ProjectRootError](err)
+    if ok {
+        fmt.Println(projErr.ErrorCode())
+        // project_root_not_found
+        fmt.Println(projErr.Help() != "")
+        // true
+    }
 }
 ```
 
