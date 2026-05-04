@@ -1,47 +1,48 @@
 # TODO List
 
 **Generated:** 2026-05-03
-**Updated:** 2026-05-04 (freshness verified)
+**Updated:** 2026-05-04 (session 3 freshness verification)
 
 ## 🔴 HIGH Priority
 
-| #   | Task                                                                                               | Source    | Effort |
-| --- | -------------------------------------------------------------------------------------------------- | --------- | ------ |
-| 1   | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST | 30min  |
+| # | Task                                                                                           | Source    | Effort |
+|---|------------------------------------------------------------------------------------------------|-----------|--------|
+| 1 | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST | 30min  |
 
 ## 🟡 MEDIUM Priority
 
-| #   | Task                                                              | Source      | Effort |
-| --- | ----------------------------------------------------------------- | ----------- | ------ |
-| 2   | Performance profile and optimize hot paths                        | TODO_LIST   | 30min  |
-| 3   | Add Codecov or similar coverage tracking                          | TODO_LIST   | 15min  |
-| 4   | Consider `//go:generate` for detector table generation            | TODO_LIST   | 45min  |
-| 5   | Add `RegisterDetector()` API for custom detectors without forking | status docs | 60min  |
-| 6   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API  | code review | 30min  |
-| 7   | Expose filtered file paths in FilterStats for debugging           | code review | 15min  |
+| # | Task                                                              | Source      | Effort |
+|---|-------------------------------------------------------------------|-------------|--------|
+| 2 | Performance profile and optimize hot paths                        | TODO_LIST   | 30min  |
+| 3 | Add Codecov or similar coverage tracking                          | TODO_LIST   | 15min  |
+| 4 | Consider `//go:generate` for detector table generation            | TODO_LIST   | 45min  |
+| 5 | Add `RegisterDetector()` API for custom detectors without forking | status docs | 60min  |
+| 6 | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API  | code review | 30min  |
 
 ## 🟢 LOW Priority
 
-| #   | Task                                                              | Source      | Effort |
-| --- | ----------------------------------------------------------------- | ----------- | ------ |
-| 8   | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  |
-| 9   | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  |
-| 10  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  |
-| 11  | Cross-platform path testing (Windows-style paths)                 | status docs | 15min  |
-| 12  | Test SQLC config v1 format (current tests only cover v2)          | status docs | 15min  |
+| # | Task                                                              | Source      | Effort | Status                                    |
+|---|-------------------------------------------------------------------|-------------|--------|-------------------------------------------|
+| 7 | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  | **Won't do** — false positive risk        |
+| 8 | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  | **Won't do** — 228ns cold path            |
+| 9 | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  | **Won't do** — breaking rename, cosmetic  |
 
 ## Website (Separate Concern)
 
-| #   | Task                                | Source      | Effort |
-| --- | ----------------------------------- | ----------- | ------ |
-| 13  | Run Lighthouse audit and fix issues | status docs | 60min  |
-| 14  | Add custom 404 page                 | status docs | 30min  |
+| #  | Task                                | Source      | Effort |
+|----|-------------------------------------|-------------|--------|
+| 10 | Run Lighthouse audit and fix issues | status docs | 60min  |
+| 11 | Add custom 404 page                 | status docs | 30min  |
 
-## ✅ Completed (2026-05-04 Verification)
+## ✅ Completed
 
 All items below verified as DONE by reading actual source code:
 
-- [x] **Tag v0.1.0 release** — tags v0.1.0, v0.2.0, v2.1.0 all exist (was TODO #1, completed 2026-05-04)
+- [x] **Tag v0.1.0 release** — tags v0.1.0, v0.2.0, v2.1.0 all exist
+- [x] **Expose filtered file paths in FilterStats** — `FilteredFiles(reason) []string` in `metrics.go`
+- [x] **SQLC config v1 format tested** — verifies v1 parses but returns zero output dirs (`sqlc_test.go`)
+- [x] **Cross-platform path testing** — forward slash and backslash detection (`pattern_test.go`)
+- [x] **BDD/ginkgo tests for user-facing behaviors** — `bdd_test.go` (38 specs)
 
 - [x] Two-phase detection (filename then content) — `detection.go`
 - [x] Functional options API — `filter.go` NewFilter
