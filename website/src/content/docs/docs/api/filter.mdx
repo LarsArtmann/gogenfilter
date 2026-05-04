@@ -11,7 +11,6 @@ Creates a new filter with functional options. The filter is immutable after cons
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 ```
@@ -40,7 +39,7 @@ Files matching any pattern are always filtered.
 
 Determines if a file should be filtered. Returns `true` if the file is generated. I/O errors propagate.
 
-### `MustShouldFilter(filePath string) bool`
+### `MustFilter(filePath string) bool`
 
 Like `ShouldFilter` but panics on error. For tests and benchmarks.
 
