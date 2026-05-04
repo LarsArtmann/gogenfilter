@@ -2,13 +2,11 @@
 import { features } from '../data/features';
 import Icon from './Icon.astro';
 import Card from './Card.astro';
+import SectionHeader from './SectionHeader.astro';
 ---
 
 <div>
-  <div class="text-center mb-12">
-    <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Engineered for performance.</h2>
-    <p class="text-lg text-text-muted">Every API decision optimized for real-world static analysis pipelines.</p>
-  </div>
+  <SectionHeader title="Engineered for performance." subtitle="Every API decision optimized for real-world static analysis pipelines." />
 
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
