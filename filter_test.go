@@ -378,10 +378,7 @@ func TestFilterString(t *testing.T) {
 		str := filter.String()
 		assertContains(t, str, "includes=")
 		assertContains(t, str, "Filter(")
-
-		if strings.Contains(str, "options=") {
-			t.Errorf("pattern-only filter should not show options, got: %s", str)
-		}
+		assertNotContains(t, str, "options=", "pattern-only filter should not show options")
 	})
 
 	t.Run("enabled with exclude patterns", func(t *testing.T) {
@@ -390,10 +387,7 @@ func TestFilterString(t *testing.T) {
 		filter := NewFilter(WithExcludePatterns("vendor/**"))
 		str := filter.String()
 		assertContains(t, str, "excludes=")
-
-		if strings.Contains(str, "options=") {
-			t.Errorf("pattern-only filter should not show options, got: %s", str)
-		}
+		assertNotContains(t, str, "options=", "pattern-only filter should not show options")
 	})
 
 	t.Run("enabled with all options and patterns", func(t *testing.T) {
