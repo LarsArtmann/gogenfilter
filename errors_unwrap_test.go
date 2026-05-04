@@ -44,10 +44,9 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 
 		wrapped := fmt.Errorf("layer2: %w", fmt.Errorf("layer1: %w", inner))
 
-		var extracted *ProjectRootError
-
-		if !errors.As(wrapped, &extracted) {
-			t.Fatal("errors.As should find ProjectRootError through nested wrapping")
+		extracted, ok := errors.AsType[*ProjectRootError](wrapped)
+		if !ok {
+			t.Fatal("errors.AsType should find ProjectRootError through nested wrapping")
 		}
 
 		assertEqual(t, "ErrorCode", extracted.ErrorCode(), CodeProjectRootInvalidPath)
@@ -94,8 +93,8 @@ func testSQLCUnwrapCollectToInner(t *testing.T) {
 
 	_, collectErr := sqlcConfigUnwrapTestSetup()
 
-	var inner *SQLCConfigError
-	if !errors.As(collectErr.Unwrap(), &inner) {
+	inner, ok := errors.AsType[*SQLCConfigError](collectErr.Unwrap())
+	if !ok {
 		t.Fatal("Unwrap() should expose inner SQLCConfigError")
 	}
 

@@ -32,7 +32,7 @@
 | Exclude patterns              | FULLY_FUNCTIONAL | `WithExcludePatterns("**/*.pb.go")` — always filter matches |
 | Filter immutability           | FULLY_FUNCTIONAL | Filter is immutable after `NewFilter` construction          |
 | ShouldFilter with error       | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                     |
-| MustShouldFilter              | FULLY_FUNCTIONAL | Panics on error — for tests/benchmarks                      |
+| MustFilter                    | FULLY_FUNCTIONAL | Panics on error — for tests/benchmarks                      |
 | FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                     |
 | IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                        |
 | String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                 |
@@ -79,7 +79,7 @@
 | Sentinel errors      | FULLY_FUNCTIONAL | 7 `Err*` vars for `errors.Is` matching          |
 | ErrorCoder interface | FULLY_FUNCTIONAL | `ErrorCode() ErrorCode` for programmatic access |
 | Helper interface     | FULLY_FUNCTIONAL | `Help() string` returns user-friendly guidance  |
-| Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.As`         |
+| Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.AsType`     |
 | CodeEqual generic    | FULLY_FUNCTIONAL | `CodeEqual[T]` for type-safe code comparison    |
 | AllErrorCodes()      | FULLY_FUNCTIONAL | All codes from `errorCodeDefs` table            |
 | CodeHelp()           | FULLY_FUNCTIONAL | Help text from `errorCodeDefs` table            |

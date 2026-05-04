@@ -130,7 +130,7 @@ gogenfilter is a mature, high-quality Go library for detecting auto-generated co
 
 | Function                 | Coverage | Note                            |
 | ------------------------ | -------- | ------------------------------- |
-| `MustShouldFilter`       | 75.0%    | Panic path untested (by design) |
+| `MustFilter`             | 75.0%    | Panic path untested (by design) |
 | `detectReasonFromMap`    | 83.3%    | Error branch                    |
 | `FindSQLCConfigsFS`      | 81.8%    | Error paths                     |
 | `GetSQLOutputDirs`       | 80.0%    | Error paths                     |
@@ -213,7 +213,7 @@ These silently ignore files named exactly `Copy/paste detection report` and `Add
 
 ### Low Impact
 
-8. **Test the panic paths** — `MustShouldFilter` at 75% is fine but testing the panic would bring it to 100%.
+8. **Test the panic paths** — `MustFilter` at 75% is fine but testing the panic would bring it to 100%.
 
 9. **Contributing guide** — Standard OSS best practice. Not blocking for publish.
 
@@ -243,7 +243,7 @@ These silently ignore files named exactly `Copy/paste detection report` and `Add
 | --- | -------------------------------------------------- | ------ | ------ |
 | 10  | Add API stability statement to README or godoc     | 10 min | Medium |
 | 11  | Add pkg.go.dev badge to README                     | 5 min  | Medium |
-| 12  | Test `MustShouldFilter` panic path                 | 5 min  | Low    |
+| 12  | Test `MustFilter` panic path                       | 5 min  | Low    |
 | 13  | Verify `.editorconfig` exists and is comprehensive | 3 min  | Low    |
 | 14  | Add `CONTRIBUTING.md`                              | 15 min | Medium |
 | 15  | Add `CODE_OF_CONDUCT.md`                           | 5 min  | Low    |

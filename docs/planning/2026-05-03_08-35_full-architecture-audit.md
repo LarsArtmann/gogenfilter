@@ -32,7 +32,7 @@
 - **Quality: Excellent.** Immutable-after-construction design is sound.
 - Functional options pattern is idiomatic Go.
 - `ShouldFilter` properly delegates to pattern-based vs detection-based paths.
-- `MustShouldFilter` panics with clear message prefix.
+- `MustFilter` panics with clear message prefix.
 - `String()` method is well-implemented for debugging.
 - No issues found.
 

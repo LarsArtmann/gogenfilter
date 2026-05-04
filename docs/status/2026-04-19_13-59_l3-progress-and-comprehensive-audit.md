@@ -149,7 +149,7 @@
 ### Medium Impact, Medium Effort
 
 14. **Add `DetectReasonReader` example** — io.Reader API undocumented
-15. **Add `MustShouldFilter` example** — panic-on-error variant undocumented
+15. **Add `MustFilter` example** — panic-on-error variant undocumented
 16. **Add `Filter.String()` example** — debug representation undocumented
 17. **Add error handling examples** — `FindProjectRoot`, `FindSQLCConfigs` error paths
 18. **Add `FilterReasons()` example** — shows which reasons the filter detects

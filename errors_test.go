@@ -39,12 +39,12 @@ func assertAllInMap[K comparable](t *testing.T, name string, items []K, lookup m
 }
 
 //nolint:ireturn // Generic helper function that extracts typed errors from error chain
-func assertErrorsAs[T any](t *testing.T, err error) T {
+func assertErrorsAs[T error](t *testing.T, err error) T {
 	t.Helper()
 
-	var result T
-	if !errors.As(err, &result) {
-		t.Fatalf("errors.As failed to extract %T", result)
+	result, ok := errors.AsType[T](err)
+	if !ok {
+		t.Fatalf("errors.AsType failed to extract %T", result)
 	}
 
 	return result

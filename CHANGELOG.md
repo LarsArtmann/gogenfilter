@@ -14,11 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Error code derivation tests — verify `errorCodeDefs` covers every const, has no duplicates, and matches `AllErrorCodes()` exactly
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool` — values were never `false`
 - `fmt.Stringer` implementation on all 5 phantom types (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`)
-- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, `MustShouldFilter`, and `DetectReasonReader`
+- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, `MustFilter`, and `DetectReasonReader`
 - Phantom type `String()` method tests — 5 types × 3 cases each
 
 ### Changed
 
+- **`MustShouldFilter` renamed to `MustFilter`** — the double-modal name was unnecessarily verbose; the new name follows the standard Go `Must` prefix convention
 - **`IsValid()` methods derived from tables** — `FilterOption.IsValid()` and `FilterReason.IsValid()` now iterate `AllFilterOptions()`/`AllFilterReasons()` instead of manual switches, eliminating split-brain bugs when adding new detectors
 - **SQLC patterns consolidated** — `sqlcFilePatterns`/`sqlcCodePatterns` inlined into their consuming functions (`matchesSQLCFilenamePattern`, `HasSQLCContent`, `HasSQLCCodePatterns`)
 - **SQLC filename patterns cached** — `sqlcFilenamePatterns` moved to package-level var to avoid re-allocation on every call
