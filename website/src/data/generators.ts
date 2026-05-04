@@ -32,7 +32,7 @@ export const generators: Generator[] = [
   {
     name: "deepcopy-gen",
     file: "zz_generated.*",
-    url: "https://github.com/kubernetes/gengo",
+    url: "https://github.com/kubernetes/code-generator",
     logo: "/logos/deepcopy-gen.svg",
   },
   {
