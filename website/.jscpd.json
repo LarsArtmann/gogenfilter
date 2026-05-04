@@ -7,11 +7,11 @@
     "**/.astro/**",
     "**/flake.lock"
   ],
-  "format": ["html", "typescript", "css"],
-  "formats-exts": {
-    "html": "astro"
+  "format": ["html", "typescript", "css", "markdown"],
+  "formatsExts": {
+    "html": ["astro", "mdx"]
   },
-  "min-lines": 3,
-  "min-tokens": 30,
+  "minLines": 2,
+  "minTokens": 20,
   "absolute": true
 }
