@@ -1,4 +1,4 @@
-import type { Generator, LogoPath } from "./types";
+import type { Generator } from "./types";
 
 export const generators: Generator[] = [
   { name: "sqlc", file: ".sql.go", url: "https://sqlc.dev", logo: "/logos/sqlc.png" },
