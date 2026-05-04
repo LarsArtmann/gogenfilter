@@ -23,6 +23,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - `docs/`: Planning documents and status reports
 - `.github/workflows/ci.yml`: Go CI — test, vet, lint, benchmarks (path-filtered: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`)
 - `.github/workflows/website.yml`: Website CI/CD — typecheck, build, validate docs, deploy to Firebase (path-filtered: `website/**`)
+- `.github/dependabot.yml`: Weekly automated dependency updates (Go modules, npm, GitHub Actions)
 
 ### Key Source Files
 
@@ -111,8 +112,10 @@ Two separate GitHub Actions workflows, both triggered on push/PR to master with 
 
 - Path filters: `website/**`
 - Concurrency group cancels in-progress runs
-- `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation
+- `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation (enforced, not suppressed)
 - Deploy to Firebase Hosting (master push only, least-privilege permissions)
+- Node version pinned via `website/.node-version` (used by volta/fnm/nvm)
+- `md-go-validator@latest` — intentionally unpinned (internal tool, owner-controlled)
 
 ## Key API Patterns
 
