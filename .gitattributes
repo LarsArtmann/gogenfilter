@@ -4,3 +4,5 @@ docs/status/*.md linguist-documentation
 # Exclude from language statistics
 *.pb.go linguist-generated
 *_mock.go linguist-generated
+# Exclude from language statistics
+reports/** linguist-generated

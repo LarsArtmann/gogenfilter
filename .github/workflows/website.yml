@@ -6,11 +6,17 @@ on:
     paths:
       - website/**
       - .github/workflows/website.yml
+      - .github/workflows/lighthouse.yml
+      - lighthouserc.json
+      - budget.json
   pull_request:
     branches: [master]
     paths:
       - website/**
       - .github/workflows/website.yml
+      - .github/workflows/lighthouse.yml
+      - lighthouserc.json
+      - budget.json
 
 permissions:
   contents: read

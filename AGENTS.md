@@ -60,6 +60,12 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **SEO** — Canonical URL, JSON-LD SoftwareApplication schema, OG meta tags all in `LandingLayout.astro`.
 - **Code deduplication** — jscpd v4.0.9 via `scripts/dedup.sh` wrapper (needed because jscpd v4 `formats-exts` is broken for `.astro` files). Script copies `.astro` → `.html` in temp dir, runs jscpd with `--min-lines 2 --min-tokens 20`, remaps paths back. Run: `cd website && npm run dedup`.
 
+#### Lighthouse / Performance
+
+- **[unlighthouse.dev/tools](https://unlighthouse.dev/tools)** — Free web tools for performance auditing: Bulk PageSpeed Test, CWV Checker, CWV History, Lighthouse Score Calculator, HAR Viewer, Page Size Checker.
+- **[LHCI](https://unlighthouse.dev/learn-lighthouse/lighthouse-ci)** — Automated Lighthouse CI via `treosh/lighthouse-ci-action@v12`. Config in `lighthouserc.json` + `budget.json`. GitHub App token required (`LHCI_GITHUB_APP_TOKEN` secret). Run: `workflow_dispatch` for on-demand or push/PR for continuous audits.
+- **TL;DR**: Use the web tools for quick checks. Use the CI workflow for regression tracking. Tighten budgets over time as baselines are established.
+
 ## Development Guidelines
 
 ### Design Decisions
@@ -119,12 +125,22 @@ Two separate GitHub Actions workflows, both triggered on push/PR to master with 
 
 **Website** (`.github/workflows/website.yml`):
 
-- Path filters: `website/**`
+- Path filters: `website/**`, `.github/workflows/lighthouse.yml`, `lighthouserc.json`, `budget.json`
 - Concurrency group cancels in-progress runs
 - `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation (enforced, not suppressed)
 - Deploy to Firebase Hosting (master push only, least-privilege permissions)
 - Node version pinned via `website/.node-version` (used by volta/fnm/nvm)
 - `md-go-validator@latest` — intentionally unpinned (internal tool, owner-controlled)
+
+**Lighthouse CI** (`.github/workflows/lighthouse.yml`):
+
+- Uses `treosh/lighthouse-ci-action@v12` (official LHCI, 1.2k+ stars, collaborated with Google Chrome team)
+- **Prerequisite**: Install [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci) for the repo, then add the token as `LHCI_GITHUB_APP_TOKEN` secret
+- Triggers: push/PR to master (when website/config files change), plus `workflow_dispatch` for on-demand
+- Scans: `https://gogenfilter.web.app/` (root, docs, API, changelog) — 3 runs per URL for stability
+- Assertions: `lighthouse:no-pwa` preset + permissive custom thresholds (performance: warn≥0.8, accessibility: error≥0.8, SEO/best-practices: error≥0.9)
+- Uploads results to temporary public storage + artifacts (14-day retention)
+- See `lighthouserc.json` and `budget.json` for full configuration
 
 ## Key API Patterns
 
