@@ -10,9 +10,14 @@ import (
 )
 
 func main() {
-    f := gogenfilter.NewFilter(
-        gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
-    )
+    opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+    if err != nil {
+        panic(err)
+    }
+    f, err := gogenfilter.NewFilter(opts)
+    if err != nil {
+        panic(err)
+    }
 
     filtered, _ := f.Filter("db/models.go")
     fmt.Println(filtered) // true — sqlc generated

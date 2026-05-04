@@ -19,7 +19,9 @@ type FilterConfig func(*Filter) error
 func WithFilterOptions(opts ...FilterOption) (FilterConfig, error) {
 	for _, opt := range opts {
 		if !opt.IsValid() {
-			return nil, &FilterConfigError{Code: CodeInvalidFilterOption, Option: opt}
+			return nil, &FilterConfigError{ //nolint:exhaustruct
+				Code: CodeInvalidFilterOption, Option: opt,
+			}
 		}
 	}
 

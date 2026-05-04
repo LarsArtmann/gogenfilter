@@ -32,10 +32,14 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
 )
 
 <span class="text-text-muted">func</span> <span class="text-accent">main</span>() {
-    f := gogenfilter.<span class="text-accent">NewFilter</span>(
-        gogenfilter.<span class="text-accent">Enabled</span>(),
-        gogenfilter.<span class="text-accent">WithFilterOptions</span>(gogenfilter.FilterAll),
-    )
+    opts, err := gogenfilter.<span class="text-accent">WithFilterOptions</span>(gogenfilter.FilterAll)
+    if err != nil {
+        panic(err)
+    }
+    f, err := gogenfilter.<span class="text-accent">NewFilter</span>(opts)
+    if err != nil {
+        panic(err)
+    }
 
     filtered, _ := f.<span class="text-accent">Filter</span>(<span class="text-amber">"db/models.go"</span>)
     fmt.<span class="text-accent">Println</span>(filtered) <span class="text-code-comment">// true — sqlc generated</span>

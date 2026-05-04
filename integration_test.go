@@ -88,6 +88,7 @@ func TestIntegrationFilterWithEmbedFS(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			f, err := NewFilter(configOpts, WithFS(testdataFS))
 			if err != nil {
 				t.Fatal(err)
@@ -118,6 +119,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			f, err := NewFilter(configOpts, WithFS(mapFS))
 			if err != nil {
 				t.Fatal(err)
@@ -165,6 +167,7 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			f, err := NewFilter(configOpts, WithFS(mapFS))
 			if err != nil {
 				t.Fatal(err)

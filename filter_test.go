@@ -54,6 +54,7 @@ func TestNewFilter(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
@@ -79,6 +80,7 @@ func TestNewFilter(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
@@ -136,10 +138,12 @@ func TestFilterReasons(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 2 {
@@ -167,10 +171,12 @@ func TestFilterReasons(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		reasons := filter.FilterReasons()
 
 		expected := len(allSpecificOptions()) + 1 // +1 for FilterGeneric
@@ -186,6 +192,7 @@ func TestFilterReasons(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 0 {
@@ -239,6 +246,7 @@ func TestFilterWithIncludes(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(
 			opts,
 			WithIncludePatterns("models.go"),
@@ -263,6 +271,7 @@ func TestFilterWithIncludes(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(
 			opts,
 			WithIncludePatterns("main.go"),
@@ -386,6 +395,7 @@ func TestFilterWithMetrics(t *testing.T) {
 			for opt := range expanded {
 				f.options[opt] = struct{}{}
 			}
+
 			return nil
 		},
 		WithFS(os.DirFS(tmpDir)),
@@ -414,6 +424,7 @@ func TestGetStatsDisabledFilter(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	stats := f.GetStats()
 
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
@@ -431,6 +442,7 @@ func TestFilterString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		assertContains(t, filter.String(), "disabled")
 	})
 
@@ -441,10 +453,12 @@ func TestFilterString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(opts)
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		str := filter.String()
 
 		assertContains(t, str, "sqlc")
@@ -459,6 +473,7 @@ func TestFilterString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		str := filter.String()
 		assertContains(t, str, "includes=")
 		assertContains(t, str, "Filter(")
@@ -472,6 +487,7 @@ func TestFilterString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		str := filter.String()
 		assertContains(t, str, "excludes=")
 		assertNotContains(t, str, "options=", "pattern-only filter should not show options")
@@ -484,6 +500,7 @@ func TestFilterString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		filter, err := NewFilter(
 			opts,
 			WithIncludePatterns("pkg/*.go"),

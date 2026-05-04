@@ -36,13 +36,14 @@ gogenfilter.WithFilterOptions(
 
 ## Validation
 
-`FilterOption` values are validated at construction time. Passing an invalid option panics:
+`FilterOption` values are validated at construction time. Passing an invalid option returns a `*FilterConfigError`:
 
 ```go
-// Panics: "gogenfilter: invalid FilterOption: unknown"
-gogenfilter.NewFilter(
-    gogenfilter.WithFilterOptions(gogenfilter.FilterOption("unknown")),
-)
+// Returns error: "gogenfilter: invalid filter option: unknown"
+cfg, err := gogenfilter.WithFilterOptions(gogenfilter.FilterOption("unknown"))
+if err != nil {
+    // handle error
+}
 ```
 
 ## Discovering Options
