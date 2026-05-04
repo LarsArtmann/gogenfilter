@@ -2,13 +2,11 @@
 import { generators, generatorCount } from '../data/generators';
 import { siteConfig } from '../data/config';
 import Icon from './Icon.astro';
+import SectionHeader from './SectionHeader.astro';
 ---
 
 <div>
-  <div class="text-center mb-12">
-    <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">{generatorCount} generators. One filter.</h2>
-    <p class="text-lg text-text-muted">Detects output from every major Go code generation tool.</p>
-  </div>
+  <SectionHeader title={`${generatorCount} generators. One filter.`} subtitle="Detects output from every major Go code generation tool." />
 
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {generators.map((gen) => (
