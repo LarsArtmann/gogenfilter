@@ -15,6 +15,7 @@ Using vocabulary from the improve-codebase-architecture skill: **module**, **int
 **Solution:** Create a `Section.astro` component that encapsulates the section wrapper pattern. Props: `maxWidth: '3xl' | '6xl'`, `centered: boolean`, `animate: boolean`.
 
 **Benefits:**
+
 - **Locality:** Section wrapper change (e.g., adding a new `data-*` attribute) happens in one place, propagates to all 7 sections.
 - **Leverage:** New page sections use `<Section>` instead of copy-pasting 40 chars of CSS classes.
 - **Test surface:** Section layout can be tested independently.
@@ -30,6 +31,7 @@ Using vocabulary from the improve-codebase-architecture skill: **module**, **int
 **Solution:** Create a `Card.astro` component. Props: `variant: 'default' | 'accent' | 'dashed'`, `centered: boolean`, `padding: 'sm' | 'md'`, `as: 'div' | 'a'` (for linked cards).
 
 **Benefits:**
+
 - **Locality:** Card style changes (e.g., new border radius) happen once.
 - **Leverage:** GeneratorGrid and FeatureGrid both delegate to Card — less code in each.
 - **Depth:** The Card interface is small (4 props) but covers all current variants.
@@ -45,6 +47,7 @@ Using vocabulary from the improve-codebase-architecture skill: **module**, **int
 **Solution:** Create an `Icon.astro` component with a `name` prop. Icons stored as a map of SVG paths (not full HTML strings). Component handles sizing, color, and `aria-hidden`.
 
 **Benefits:**
+
 - **Locality:** SVG path data centralized. Adding an icon = one entry.
 - **Leverage:** `<Icon name="lightning" size="sm" />` is cleaner than raw HTML injection.
 - **Type safety:** `name` prop typed to union of valid icon keys.
@@ -60,6 +63,7 @@ Using vocabulary from the improve-codebase-architecture skill: **module**, **int
 **Solution:** Extract the "Why gogenfilter" comparison data and "Built for real tools" use-case data into `data/` files (or inline arrays in the section component), then render via `.map()`.
 
 **Benefits:**
+
 - **Consistency:** All sections follow the same data-driven pattern.
 - **Leverage:** Adding/removing a comparison point = editing data, not HTML.
 
@@ -67,11 +71,11 @@ Using vocabulary from the improve-codebase-architecture skill: **module**, **int
 
 ## Prioritization
 
-| # | Candidate                      | Impact | Effort | Leverage gained |
-|---|-------------------------------|--------|--------|-----------------|
-| 1 | Section module                | High   | 15min  | 7 → 1 for section wrappers |
-| 2 | Card module                   | High   | 20min  | 8+ → 1 for card styles |
-| 3 | Icon system                   | Medium | 30min  | 10+ → 1 for icon patterns |
-| 4 | ComparisonSection data-driven | Low    | 15min  | Consistency only |
+| #   | Candidate                     | Impact | Effort | Leverage gained            |
+| --- | ----------------------------- | ------ | ------ | -------------------------- |
+| 1   | Section module                | High   | 15min  | 7 → 1 for section wrappers |
+| 2   | Card module                   | High   | 20min  | 8+ → 1 for card styles     |
+| 3   | Icon system                   | Medium | 30min  | 10+ → 1 for icon patterns  |
+| 4   | ComparisonSection data-driven | Low    | 15min  | Consistency only           |
 
 **Recommendation:** Start with 1 (Section) and 2 (Card) — they eliminate the most duplication for the least effort. Candidate 3 adds polish but isn't urgent.

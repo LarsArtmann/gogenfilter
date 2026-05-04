@@ -17,84 +17,84 @@ The website went from ~780 lines of hand-written CSS with a monolithic 229-line 
 
 ### Phase 1: Tailwind v4 Migration — ✅ FULLY DONE
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| Install Tailwind CSS v4.2.4 + `@tailwindcss/vite` | ✅ DONE | `package.json` |
-| Rewrite `global.css` 780→51 lines with `@theme` tokens | ✅ DONE | `src/styles/global.css` |
-| Migrate all 7 components to Tailwind utility classes | ✅ DONE | Header, Footer, GeneratorGrid, FeatureGrid, CodeBlock, Logo, index.astro |
-| Add Astro font providers for Space Grotesk + JetBrains Mono | ✅ DONE | `astro.config.mjs` |
-| Fix Starlight docs nesting (docs were in `src/content/docs/docs/`) | ✅ DONE | Moved to correct path |
+| Task                                                               | Status  | Evidence                                                                 |
+| ------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------ |
+| Install Tailwind CSS v4.2.4 + `@tailwindcss/vite`                  | ✅ DONE | `package.json`                                                           |
+| Rewrite `global.css` 780→51 lines with `@theme` tokens             | ✅ DONE | `src/styles/global.css`                                                  |
+| Migrate all 7 components to Tailwind utility classes               | ✅ DONE | Header, Footer, GeneratorGrid, FeatureGrid, CodeBlock, Logo, index.astro |
+| Add Astro font providers for Space Grotesk + JetBrains Mono        | ✅ DONE | `astro.config.mjs`                                                       |
+| Fix Starlight docs nesting (docs were in `src/content/docs/docs/`) | ✅ DONE | Moved to correct path                                                    |
 
 ### Phase 2: Architecture Polish — ✅ FULLY DONE (8 commits)
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| Remove dead `.generator-*` CSS and unused keyframes | ✅ DONE | `global.css` reduced to 51 lines |
-| CodeBlock design tokens | ✅ DONE | Uses `--color-*` runtime tokens |
-| Fade-in animation to global.css | ✅ DONE | `data-animate` attribute pattern |
-| Header mobile nav — remove max-sm hacks + !important | ✅ DONE | Clean scoped CSS |
-| Logo component extraction | ✅ DONE | `Logo.astro` with configurable size/class |
-| Typed data layer | ✅ DONE | `types.ts`, `generators.ts`, `features.ts` |
-| Runtime CSS custom properties (`@theme` not `@theme inline`) | ✅ DONE | Tokens on `:root` at runtime |
-| Self-hosted fonts | ✅ DONE | Astro `fontProviders.google()` + `fontProviders.fontsource()` |
+| Task                                                         | Status  | Evidence                                                      |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------- |
+| Remove dead `.generator-*` CSS and unused keyframes          | ✅ DONE | `global.css` reduced to 51 lines                              |
+| CodeBlock design tokens                                      | ✅ DONE | Uses `--color-*` runtime tokens                               |
+| Fade-in animation to global.css                              | ✅ DONE | `data-animate` attribute pattern                              |
+| Header mobile nav — remove max-sm hacks + !important         | ✅ DONE | Clean scoped CSS                                              |
+| Logo component extraction                                    | ✅ DONE | `Logo.astro` with configurable size/class                     |
+| Typed data layer                                             | ✅ DONE | `types.ts`, `generators.ts`, `features.ts`                    |
+| Runtime CSS custom properties (`@theme` not `@theme inline`) | ✅ DONE | Tokens on `:root` at runtime                                  |
+| Self-hosted fonts                                            | ✅ DONE | Astro `fontProviders.google()` + `fontProviders.fontsource()` |
 
 ### Phase 3: Bug Fix — ✅ FULLY DONE
 
-| Task | Status | Evidence |
-|------|--------|----------|
+| Task                                                                                                    | Status  | Evidence                            |
+| ------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------- |
 | Fix broken scroll animations (IntersectionObserver queried `.fade-in` but sections used `data-animate`) | ✅ DONE | All 6 animated sections now visible |
 
 ### Phase 4: External Work Integration — ✅ FULLY DONE
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| `siteConfig` single source of truth | ✅ DONE | `config.ts` |
-| `generatorCount` export | ✅ DONE | `generators.ts` |
-| Header, Footer, LandingLayout wired to `siteConfig` | ✅ DONE | All files import `siteConfig` |
-| Logo `class` prop type + `aria-label` + `role="img"` | ✅ DONE | `Logo.astro` |
-| `aria-hidden` on decorative SVGs in GeneratorGrid | ✅ DONE | Arrow icons |
-| `loading="lazy"` on generator logos | ✅ DONE | `GeneratorGrid.astro` |
-| Replace hardcoded "11" with `generatorCount` | ✅ DONE | 5 occurrences |
-| Emoji → inline SVG in UseCases | ✅ DONE | Check/x icons |
-| Non-clickable generic card with `border-dashed` | ✅ DONE | GeneratorGrid |
+| Task                                                 | Status  | Evidence                      |
+| ---------------------------------------------------- | ------- | ----------------------------- |
+| `siteConfig` single source of truth                  | ✅ DONE | `config.ts`                   |
+| `generatorCount` export                              | ✅ DONE | `generators.ts`               |
+| Header, Footer, LandingLayout wired to `siteConfig`  | ✅ DONE | All files import `siteConfig` |
+| Logo `class` prop type + `aria-label` + `role="img"` | ✅ DONE | `Logo.astro`                  |
+| `aria-hidden` on decorative SVGs in GeneratorGrid    | ✅ DONE | Arrow icons                   |
+| `loading="lazy"` on generator logos                  | ✅ DONE | `GeneratorGrid.astro`         |
+| Replace hardcoded "11" with `generatorCount`         | ✅ DONE | 5 occurrences                 |
+| Emoji → inline SVG in UseCases                       | ✅ DONE | Check/x icons                 |
+| Non-clickable generic card with `border-dashed`      | ✅ DONE | GeneratorGrid                 |
 
 ### Phase 5: Section Extraction + Reusable Primitives — ✅ FULLY DONE
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| `Section.astro` reusable component | ✅ DONE | 31 lines |
-| `Card.astro` reusable component | ✅ DONE | 50 lines |
-| `HeroSection.astro` extracted | ✅ DONE | 85 lines |
-| `PhaseSection.astro` extracted | ✅ DONE | 34 lines |
-| `ComparisonSection.astro` extracted | ✅ DONE | 24 lines |
-| `UseCasesSection.astro` extracted | ✅ DONE | 20 lines |
-| `CTASection.astro` extracted | ✅ DONE | 11 lines |
-| `data/sections.ts` with all section data | ✅ DONE | 86 lines |
-| Section types in `types.ts` | ✅ DONE | `PhaseCard`, `ComparisonItem`, `UseCase` |
-| `index.astro` refactored | ✅ DONE | 229 lines → 64 lines (72% reduction) |
-| `FeatureGrid.astro` uses `Card.astro` | ✅ DONE | Cleaner markup |
-| Header mobile nav: close button + close-on-click + Tailwind CSS vars | ✅ DONE | `Header.astro` |
-| `accent-light` theme token | ✅ DONE | `--color-accent-light: #a5f3fc` |
-| `prefers-reduced-motion` support | ✅ DONE | `global.css` |
-| Remove dead `.fade-in` CSS from `index.astro` | ✅ DONE | Inline `<style>` block deleted |
-| Hardcoded `#a5f3fc` → `accent-light` token | ✅ DONE | `index.astro` gradient |
+| Task                                                                 | Status  | Evidence                                 |
+| -------------------------------------------------------------------- | ------- | ---------------------------------------- |
+| `Section.astro` reusable component                                   | ✅ DONE | 31 lines                                 |
+| `Card.astro` reusable component                                      | ✅ DONE | 50 lines                                 |
+| `HeroSection.astro` extracted                                        | ✅ DONE | 85 lines                                 |
+| `PhaseSection.astro` extracted                                       | ✅ DONE | 34 lines                                 |
+| `ComparisonSection.astro` extracted                                  | ✅ DONE | 24 lines                                 |
+| `UseCasesSection.astro` extracted                                    | ✅ DONE | 20 lines                                 |
+| `CTASection.astro` extracted                                         | ✅ DONE | 11 lines                                 |
+| `data/sections.ts` with all section data                             | ✅ DONE | 86 lines                                 |
+| Section types in `types.ts`                                          | ✅ DONE | `PhaseCard`, `ComparisonItem`, `UseCase` |
+| `index.astro` refactored                                             | ✅ DONE | 229 lines → 64 lines (72% reduction)     |
+| `FeatureGrid.astro` uses `Card.astro`                                | ✅ DONE | Cleaner markup                           |
+| Header mobile nav: close button + close-on-click + Tailwind CSS vars | ✅ DONE | `Header.astro`                           |
+| `accent-light` theme token                                           | ✅ DONE | `--color-accent-light: #a5f3fc`          |
+| `prefers-reduced-motion` support                                     | ✅ DONE | `global.css`                             |
+| Remove dead `.fade-in` CSS from `index.astro`                        | ✅ DONE | Inline `<style>` block deleted           |
+| Hardcoded `#a5f3fc` → `accent-light` token                           | ✅ DONE | `index.astro` gradient                   |
 
 ---
 
 ## Code Quality Metrics
 
-| Metric | Value |
-|--------|-------|
-| Type check errors | **0** |
-| Type check warnings | **0** |
-| Type check hints | **0** |
-| Build errors | **0** |
-| Build warnings | **0** |
-| Build time | **2.18s** |
-| Pages built | **17** |
-| Total lines (components + data + CSS) | **749** |
-| `index.astro` lines | **64** (was 229, **72% reduction**) |
-| `global.css` lines | **51** (was 780, **93% reduction**) |
+| Metric                                | Value                               |
+| ------------------------------------- | ----------------------------------- |
+| Type check errors                     | **0**                               |
+| Type check warnings                   | **0**                               |
+| Type check hints                      | **0**                               |
+| Build errors                          | **0**                               |
+| Build warnings                        | **0**                               |
+| Build time                            | **2.18s**                           |
+| Pages built                           | **17**                              |
+| Total lines (components + data + CSS) | **749**                             |
+| `index.astro` lines                   | **64** (was 229, **72% reduction**) |
+| `global.css` lines                    | **51** (was 780, **93% reduction**) |
 
 ---
 
@@ -135,58 +135,58 @@ src/
 
 ## Git History (Session: 2026-05-04)
 
-| Commit | Message |
-|--------|---------|
-| `a598ae0` | refactor(website): extract section components and reusable primitives |
-| `e879210` | docs(website): comprehensive architecture review, feature audit, and codebase quality scan |
-| `6582736` | docs(status): add comprehensive frontend design audit and code quality scan |
-| `4dfb4e1` | refactor(website): centralize site config, fix type issues, improve accessibility |
+| Commit    | Message                                                                                        |
+| --------- | ---------------------------------------------------------------------------------------------- |
+| `a598ae0` | refactor(website): extract section components and reusable primitives                          |
+| `e879210` | docs(website): comprehensive architecture review, feature audit, and codebase quality scan     |
+| `6582736` | docs(status): add comprehensive frontend design audit and code quality scan                    |
+| `4dfb4e1` | refactor(website): centralize site config, fix type issues, improve accessibility              |
 | `e63e283` | docs(status): comprehensive Tailwind v4 migration status report + fix broken scroll animations |
-| `e4b0160` | ci: consolidate website deployment into main CI workflow |
-| `2ca65e9` | perf(fonts): self-host fonts via Astro font provider, remove Google CDN |
-| `4d3c031` | refactor(css): expose design tokens as runtime CSS custom properties |
-| `bd5d043` | refactor: extract typed data layer for generators and features |
-| `9a97bce` | refactor: extract shared Logo component, deduplicate Header/Footer SVG |
-| `e3000db` | feat(website): add Logo.astro component with branded SVG icon |
-| `d00dcf9` | fix(Header): replace max-sm Tailwind hacks with clean scoped CSS for mobile nav |
-| `3f6962a` | refactor(animations): move fade-in to global.css with Tailwind animate utility |
-| `ec982c3` | refactor(landing): migrate scroll animations to data-attribute selectors |
-| `f625e03` | docs(status): add comprehensive status report for generator logos + linked cards |
-| `46c517a` | docs: restructure Starlight docs under /docs/ subdirectory |
-| `b7ada99` | feat(landing): redesign generator grid with logos and full-card links |
-| `87b3007` | feat(landing): add SVG logos for all 11 supported code generators |
-| `d22d3a2` | refactor(CodeBlock): use design system tokens instead of generic stone colors |
-| `1cf08c9` | refactor(css): remove dead generator CSS and unused keyframes from global.css |
+| `e4b0160` | ci: consolidate website deployment into main CI workflow                                       |
+| `2ca65e9` | perf(fonts): self-host fonts via Astro font provider, remove Google CDN                        |
+| `4d3c031` | refactor(css): expose design tokens as runtime CSS custom properties                           |
+| `bd5d043` | refactor: extract typed data layer for generators and features                                 |
+| `9a97bce` | refactor: extract shared Logo component, deduplicate Header/Footer SVG                         |
+| `e3000db` | feat(website): add Logo.astro component with branded SVG icon                                  |
+| `d00dcf9` | fix(Header): replace max-sm Tailwind hacks with clean scoped CSS for mobile nav                |
+| `3f6962a` | refactor(animations): move fade-in to global.css with Tailwind animate utility                 |
+| `ec982c3` | refactor(landing): migrate scroll animations to data-attribute selectors                       |
+| `f625e03` | docs(status): add comprehensive status report for generator logos + linked cards               |
+| `46c517a` | docs: restructure Starlight docs under /docs/ subdirectory                                     |
+| `b7ada99` | feat(landing): redesign generator grid with logos and full-card links                          |
+| `87b3007` | feat(landing): add SVG logos for all 11 supported code generators                              |
+| `d22d3a2` | refactor(CodeBlock): use design system tokens instead of generic stone colors                  |
+| `1cf08c9` | refactor(css): remove dead generator CSS and unused keyframes from global.css                  |
 
 ---
 
 ## Partially Done
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Aria labels | **PARTIAL** | Nav toggle has `aria-label`; some decorative SVGs may still need `aria-hidden` |
-| Color contrast | **UNKNOWN** | No automated audit performed |
-| Keyboard navigation | **UNKNOWN** | Not verified |
-| OG image generation | **PARTIAL** | `astro-og-canvas` is configured but not visually verified |
+| Task                | Status      | Notes                                                                          |
+| ------------------- | ----------- | ------------------------------------------------------------------------------ |
+| Aria labels         | **PARTIAL** | Nav toggle has `aria-label`; some decorative SVGs may still need `aria-hidden` |
+| Color contrast      | **UNKNOWN** | No automated audit performed                                                   |
+| Keyboard navigation | **UNKNOWN** | Not verified                                                                   |
+| OG image generation | **PARTIAL** | `astro-og-canvas` is configured but not visually verified                      |
 
 ---
 
 ## Not Started
 
-| Task | Priority | Notes |
-|------|----------|-------|
-| Lighthouse audit | MEDIUM | Performance, accessibility, SEO scoring |
-| Browser visual QA (desktop + mobile) | MEDIUM | Manual testing needed |
-| HTML validation step in CI | MEDIUM | `html-validate` or similar |
-| Icon.astro centralized SVG component | LOW | 30min effort, low ROI at current scale |
-| Type `icons` record keys to `Feature['icon']` union | LOW | `Record<string, string>` → `Record<Feature['icon'], string>` |
-| Light mode support | LOW | 60min effort, dark-only is fine for now |
-| Custom 404 page in Starlight | LOW | 15min |
-| Analytics (Plausible/Umami) | LOW | 30min |
-| Real brand logos (sqlc, protobuf, etc.) | LOW | 30min, needs permission/licensing research |
-| JSON-LD structured data for SEO | LOW | 20min |
-| Canonical URL meta tags | LOW | 5min |
-| GitHub Actions CI for build verification | LOW | 20min |
+| Task                                                | Priority | Notes                                                        |
+| --------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| Lighthouse audit                                    | MEDIUM   | Performance, accessibility, SEO scoring                      |
+| Browser visual QA (desktop + mobile)                | MEDIUM   | Manual testing needed                                        |
+| HTML validation step in CI                          | MEDIUM   | `html-validate` or similar                                   |
+| Icon.astro centralized SVG component                | LOW      | 30min effort, low ROI at current scale                       |
+| Type `icons` record keys to `Feature['icon']` union | LOW      | `Record<string, string>` → `Record<Feature['icon'], string>` |
+| Light mode support                                  | LOW      | 60min effort, dark-only is fine for now                      |
+| Custom 404 page in Starlight                        | LOW      | 15min                                                        |
+| Analytics (Plausible/Umami)                         | LOW      | 30min                                                        |
+| Real brand logos (sqlc, protobuf, etc.)             | LOW      | 30min, needs permission/licensing research                   |
+| JSON-LD structured data for SEO                     | LOW      | 20min                                                        |
+| Canonical URL meta tags                             | LOW      | 5min                                                         |
+| GitHub Actions CI for build verification            | LOW      | 20min                                                        |
 
 ---
 
@@ -254,4 +254,4 @@ The question is: **Is the website deployment now handled entirely by the main re
 
 ---
 
-*Report generated by Crush at 2026-05-04 08:42 CEST*
+_Report generated by Crush at 2026-05-04 08:42 CEST_
