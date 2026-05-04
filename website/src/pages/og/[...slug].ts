@@ -6,10 +6,11 @@ const docPages = Object.fromEntries(docs.map(({ data, id }) => [id, { data }]));
 
 const pages = {
   ...docPages,
-  "home": {
+  home: {
     data: {
       title: "gogenfilter",
-      description: "Detect and filter auto-generated Go code files from 11 generators. Built for linters and static analysis.",
+      description:
+        "Detect and filter auto-generated Go code files from 11 generators. Built for linters and static analysis.",
     },
   },
 };
