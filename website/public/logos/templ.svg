@@ -1,4 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <rect width="24" height="24" rx="4" fill="#66d0dd"/>
-  <text x="12" y="16.5" text-anchor="middle" font-family="monospace" font-weight="700" font-size="11" fill="#1a1a1a">&lt;/&gt;</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="8" fill="url(#templ-gradient)"/>
+  <path d="M10 14h28M10 22h20M10 30h24" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 30l6-6-6-6" stroke="#66d0dd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 10l-4 4 4 4" fill="#66d0dd"/>
+  <defs>
+    <linearGradient id="templ-gradient" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1a1a2e"/>
+      <stop offset="1" stop-color="#16213e"/>
+    </linearGradient>
+  </defs>
 </svg>

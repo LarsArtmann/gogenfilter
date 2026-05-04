@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <rect width="24" height="24" rx="4" fill="#00add8"/>
-  <text x="12" y="17" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="13" fill="#fff">E</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="8" fill="#00add8"/>
+  <rect x="10" y="12" width="8" height="8" rx="2" fill="#fff" opacity="0.9"/>
+  <rect x="22" y="12" width="8" height="8" rx="2" fill="#fff" opacity="0.6"/>
+  <rect x="34" y="12" width="8" height="8" rx="2" fill="#fff" opacity="0.3"/>
+  <rect x="10" y="24" width="8" height="8" rx="2" fill="#fff" opacity="0.3"/>
+  <rect x="22" y="24" width="8" height="8" rx="2" fill="#fff" opacity="0.9"/>
+  <rect x="34" y="24" width="8" height="8" rx="2" fill="#fff" opacity="0.6"/>
 </svg>

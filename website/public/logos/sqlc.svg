@@ -1,4 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <rect width="24" height="24" rx="4" fill="#ff6b35"/>
-  <path d="M6 9h2v6H6V9zm3-2h2v10H9V7zm3 4h2v4h-2v-4zm3-2h2v6h-2V9z" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="8" fill="url(#sqlc-gradient)"/>
+  <path d="M12 14h24M12 20h20M12 26h16M12 32h12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <circle cx="36" cy="34" r="6" fill="#00d4aa"/>
+  <path d="M33 34l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="sqlc-gradient" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff6b35"/>
+      <stop offset="1" stop-color="#f7931e"/>
+    </linearGradient>
+  </defs>
 </svg>
