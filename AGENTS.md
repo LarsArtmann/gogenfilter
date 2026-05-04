@@ -62,9 +62,10 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 #### Lighthouse / Performance
 
+- **Lighthouse / Performance**: Config in `lighthouserc.json` only. Assertions cover performance, accessibility, SEO, best-practices, resource sizes, and timings. Budgets not used (LHCI v12 rejects budgets+assertions together).
 - **[unlighthouse.dev/tools](https://unlighthouse.dev/tools)** — Free web tools for performance auditing: Bulk PageSpeed Test, CWV Checker, CWV History, Lighthouse Score Calculator, HAR Viewer, Page Size Checker.
-- **[LHCI](https://unlighthouse.dev/learn-lighthouse/lighthouse-ci)** — Automated Lighthouse CI via `treosh/lighthouse-ci-action@v12`. Config in `lighthouserc.json` + `budget.json`. GitHub App token required (`LHCI_GITHUB_APP_TOKEN` secret). Run: `workflow_dispatch` for on-demand or push/PR for continuous audits.
-- **TL;DR**: Use the web tools for quick checks. Use the CI workflow for regression tracking. Tighten budgets over time as baselines are established.
+- **[LHCI](https://unlighthouse.dev/learn-lighthouse/lighthouse-ci)** — Automated Lighthouse CI via `treosh/lighthouse-ci-action@v12`. GitHub App token required (`LHCI_GITHUB_APP_TOKEN` secret). Run: `workflow_dispatch` for on-demand or push/PR for continuous audits.
+- **TL;DR**: Use the web tools for quick checks. Use the CI workflow for regression tracking. Tighten assertions over time as baselines are established.
 
 ## Development Guidelines
 
@@ -85,7 +86,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **BDD tests**: 175 ginkgo specs in `bdd_test.go` (110) + `bdd_extended_test.go` (65). Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
 - **Coverage tests**: Targeted tests in `coverage_test.go` for hard-to-reach error paths (cross-type `errors.Is`, multi-error aggregation, SQLC parse errors, malformed patterns).
 - Run tests with: `go test ./...`
-- **Coverage**: 99.8% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains at 92.9%)
+- **Coverage**: 98.9% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
 
 ### Linting
 
@@ -117,7 +118,7 @@ cd website && npm run dedup
 
 ## CI
 
-Four separate GitHub Actions workflows, all triggered on push/PR to master with path filters:
+Four separate GitHub Actions workflows, all triggered on push/PR to master with path filters + `workflow_dispatch` for manual triggering:
 
 **Go CI** (`.github/workflows/ci.yml`):
 
@@ -125,15 +126,25 @@ Four separate GitHub Actions workflows, all triggered on push/PR to master with 
 - Concurrency group cancels in-progress runs
 - `go vet` → tests with race detector and coverage (98% threshold) → benchmarks
 - golangci-lint (separate job, parallel)
+- Uses `actions/setup-go@v6` (Node.js 24)
+
+**Benchmark** (`.github/workflows/benchmark.yml`):
+
+- Path filters: `*.go`, `go.mod`, `go.sum`, `.github/workflows/benchmark.yml`
+- `workflow_dispatch` enabled
+- `go test -bench=. -benchmem` → `benchmark-action/github-action-benchmark@v1`
+- Pushes benchmark data to `gh-pages` branch (`dev/bench/` directory)
+- Alert threshold: 150%, fail threshold: 300%
 
 **Website** (`.github/workflows/website.yml`):
 
-- Path filters: `website/**`, `.github/workflows/lighthouse.yml`, `lighthouserc.json`, `budget.json`
+- Path filters: `website/**`, `.github/workflows/website.yml`, `.github/workflows/lighthouse.yml`, `lighthouserc.json`
+- `workflow_dispatch` enabled
 - Concurrency group cancels in-progress runs
-- `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation (enforced, not suppressed)
+- `npm ci` → `astro check` (typecheck) → build → doc validation (md-go-validator) → HTML validation (enforced, not suppressed) → code dedup check
+- Cross-repo checkouts for `LarsArtmann/md-go-validator` and `LarsArtmann/go-output` use `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback
 - Deploy to Firebase Hosting (master push only, least-privilege permissions)
 - Node version pinned via `website/.node-version` (used by volta/fnm/nvm)
-- `md-go-validator@latest` — intentionally unpinned (internal tool, owner-controlled)
 
 **Lighthouse CI** (`.github/workflows/lighthouse.yml`):
 
@@ -143,7 +154,13 @@ Four separate GitHub Actions workflows, all triggered on push/PR to master with 
 - Scans: `https://gogenfilter.web.app/` (root, docs, API, changelog) — 3 runs per URL for stability
 - Assertions: `lighthouse:no-pwa` preset + permissive custom thresholds (performance: warn≥0.8, accessibility: error≥0.8, SEO/best-practices: error≥0.9)
 - Uploads results to temporary public storage + artifacts (14-day retention)
-- See `lighthouserc.json` and `budget.json` for full configuration
+- Config in `lighthouserc.json` only (budgets NOT used — LHCI v12 rejects budgets+assertions together)
+
+### CI Known Issues (2026-05-04)
+
+- **Website CI**: Requires `PRIVATE_REPO_TOKEN` secret (PAT with `contents:read` on `LarsArtmann/md-go-validator` and `LarsArtmann/go-output`) for cross-repo private checkout
+- **Lighthouse CI**: Accessibility assertions fail on live site — `color-contrast`, `label-content-name-mismatch` on root page; `redirects` on `/docs`
+- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped
 
 ## Key API Patterns
 
