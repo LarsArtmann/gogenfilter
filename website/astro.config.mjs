@@ -39,6 +39,12 @@ export default defineConfig({
     starlight({
       title: "gogenfilter",
       favicon: "/favicon.svg",
+      expressiveCode: {
+        themes: ["github-light", "github-dark"],
+        frames: {
+          showCopyToClipboardButton: true,
+        },
+      },
       sidebar: [
         {
           label: "Getting Started",
@@ -103,15 +109,6 @@ export default defineConfig({
       ],
     }),
   ],
-
-  markdown: {
-    shikiConfig: {
-      themes: {
-        light: "github-light",
-        dark: "github-dark",
-      },
-    },
-  },
 
   vite: {
     plugins: [tailwindcss()],
