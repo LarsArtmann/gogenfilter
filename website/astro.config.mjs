@@ -54,6 +54,7 @@ export default defineConfig({
             { label: "Metrics", slug: "docs/guides/metrics" },
             { label: "SQLC Config Discovery", slug: "docs/guides/sqlc-config" },
             { label: "Custom Filesystems", slug: "docs/guides/custom-filesystem" },
+            { label: "Benchmarks", slug: "docs/guides/benchmarks" },
           ],
         },
         {

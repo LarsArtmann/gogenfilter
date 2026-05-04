@@ -1,0 +1,108 @@
+---
+title: Benchmarks
+description: Performance characteristics and benchmark results for all hot paths.
+---
+
+## Philosophy
+
+gogenfilter is designed for linters and static analysis tools where detection overhead must be negligible. The two-phase architecture (filename first, content only when needed) ensures most checks complete with zero I/O.
+
+## Results
+
+Benchmarked on Go 1.24, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
+
+### ShouldFilter
+
+The primary API. Full end-to-end detection including filesystem access.
+
+```
+ShouldFilter/enabled    69 ns/op    92 B/op    0 allocs/op
+ShouldFilter/disabled   1.2 ns/op    0 B/op    0 allocs/op
+```
+
+A disabled filter is essentially a branch prediction — 1.2 nanoseconds. An enabled filter with a known-generated file completes in ~69ns with zero heap allocations.
+
+### Filename Detection (Phase 1)
+
+Zero-I/O filename matching. No file reads, no content parsing.
+
+```
+DetectGenerated    14 ns/op    0 B/op    0 allocs/op
+```
+
+This is the fast path — a single scan of the filename against the detector table.
+
+### Per-Generator Checks
+
+Individual `Is*Generated` functions combining filename and content checks:
+
+```
+IsGenericGenerated    5.0 ns/op    0 B/op    0 allocs/op
+IsSQLCGenerated       5.9 ns/op    0 B/op    0 allocs/op
+IsProtobufGenerated   7.0 ns/op    0 B/op    0 allocs/op
+```
+
+All under 7 nanoseconds with zero allocations.
+
+### DetectReason
+
+Variadic detection across multiple filter options:
+
+```
+DetectReason/filename_only    353 ns/op    632 B/op    4 allocs/op
+DetectReason/content_based    693 ns/op    680 B/op    5 allocs/op
+DetectReason/not_filtered     614 ns/op    680 B/op    5 allocs/op
+```
+
+Higher cost than the per-generator checks because it iterates all enabled detectors and performs content matching. Still sub-microsecond.
+
+### DetectReasonReader
+
+Same as `DetectReason` but reads from an `io.Reader`:
+
+```
+DetectReasonReader/sqlc_filename    517 ns/op   1288 B/op    8 allocs/op
+DetectReasonReader/not_filtered     812 ns/op   1272 B/op    9 allocs/op
+```
+
+Includes the cost of reading content from the reader.
+
+### Pattern Matching
+
+`MatchPattern` with different glob patterns via doublestar:
+
+```
+MatchPattern/question     25 ns/op    0 B/op    0 allocs/op
+MatchPattern/exact        40 ns/op    0 B/op    0 allocs/op
+MatchPattern/wildcard     46 ns/op    0 B/op    0 allocs/op
+MatchPattern/doublestar   72 ns/op    0 B/op    0 allocs/op
+MatchPattern/no_match     77 ns/op    0 B/op    0 allocs/op
+```
+
+All zero-allocation. `**` globs are the most expensive at ~72ns — still negligible.
+
+### Error System
+
+Error construction and inspection:
+
+```
+NewSQLCConfigError        0.2 ns/op     0 B/op    0 allocs/op
+NewProjectRootError       1.9 ns/op     0 B/op    0 allocs/op
+CodeHelp                  5.6 ns/op     0 B/op    0 allocs/op
+ProjectRootErrorIs        7.9 ns/op     0 B/op    0 allocs/op
+SQLCConfigErrorIs         8.9 ns/op     0 B/op    0 allocs/op
+ProjectRootErrorError   229 ns/op     144 B/op    3 allocs/op
+SQLCConfigErrorError    284 ns/op     176 B/op    5 allocs/op
+```
+
+Error construction and `errors.Is` matching are essentially free. `Error()` string formatting allocates but is only called when displaying errors.
+
+## Reproducing
+
+Run the benchmarks yourself:
+
+```bash
+go test -bench=. -benchmem ./...
+```
+
+For stable results, run on a quiet system with CPU frequency scaling disabled.
