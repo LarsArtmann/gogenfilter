@@ -2,7 +2,7 @@
   "name": "gogenfilter-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Website and documentation for gogenfilter — detect and filter auto-generated Go code files",
+  "description": "Website and documentation for gogenfilter \u2014 detect and filter auto-generated Go code files",
   "keywords": [
     "astro",
     "code-generation",
@@ -43,5 +43,8 @@
     "@astrojs/check": "^0.9.9",
     "html-validate": "^10.15.0",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "vite": "7.3.2"
   }
 }
