@@ -173,10 +173,26 @@
 
 ---
 
-## Remaining Items (🔲 PENDING — require manual/live environment)
+## Remaining Items (PENDING — require manual/live environment)
 
-| #   | Task                                   | Reason                               |
-| --- | -------------------------------------- | ----------------------------------- |
-| A   | Run Lighthouse audit                   | Requires live browser + network     |
-| B   | Browser visual QA (desktop + mobile)  | Requires live browser + network     |
-| C   | Source real brand logos                | Requires access to actual logo files |
+| # | Task | Reason |
+|---|------|--------|
+| A | Run Lighthouse audit | Requires live browser + network |
+| B | Browser visual QA (desktop + mobile) | Requires live browser + network |
+| C | Source real brand logos | Requires access to actual logo files |
+
+## Astro Best Practices — New Findings (2026-05-04)
+
+From `docs/research/2026-05-04_astro-best-practices.md`:
+
+| # | Task | Impact | Effort | Status |
+|---|------|--------|--------|--------|
+| D | Enable `prefetch` in astro.config.mjs | Perceived perf | 5min | PENDING |
+| E | Add `data-astro-prefetch` to key nav links | Perceived perf | 5min | PENDING |
+| F | Add View Transitions (ClientRouter) | Navigation speed | 15min | PENDING |
+| G | Move logos from `public/` to `src/assets/` | Image opt | 30min | PENDING |
+| H | Configure Shiki dual light/dark themes | Code quality | 10min | PENDING |
+| I | Add `og:image` meta to landing page | Social sharing | 5min | PENDING |
+| J | Add security headers in firebase.json | Security | 5min | PENDING |
+| K | Tighten Icon.astro Props to union type | Type safety | 10min | PENDING |
+| L | Enhance robots.txt with Sitemap reference | SEO | 1min | PENDING |
