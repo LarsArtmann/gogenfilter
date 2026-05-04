@@ -3,9 +3,9 @@
     "collect": {
       "url": [
         "https://gogenfilter.web.app/",
-        "https://gogenfilter.web.app/docs/",
-        "https://gogenfilter.web.app/docs/api/filter",
-        "https://gogenfilter.web.app/docs/changelog"
+        "https://gogenfilter.web.app/getting-started/installation/",
+        "https://gogenfilter.web.app/api/filter",
+        "https://gogenfilter.web.app/changelog"
       ],
       "numberOfRuns": 3
     },
