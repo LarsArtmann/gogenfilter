@@ -1,28 +1,29 @@
 ---
-import { generators } from '../data/generators';
+import { generators, generatorCount } from '../data/generators';
+import { siteConfig } from '../data/config';
 ---
 
 <div>
   <div class="text-center mb-12">
-    <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">11 generators. One filter.</h2>
+    <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">{generatorCount} generators. One filter.</h2>
     <p class="text-lg text-text-muted">Detects output from every major Go code generation tool.</p>
   </div>
 
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {generators.map((gen) => (
       gen.url ? (
-        <a href={gen.url} target="_blank" rel="noopener noreferrer" class="p-4 rounded-xl border border-border bg-bg-card hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200 block no-underline">
+        <a href={gen.url} target="_blank" rel="noopener noreferrer" title={`Visit ${gen.name}`} class="p-4 rounded-xl border border-border bg-bg-card hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200 block no-underline">
           <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" />
+            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" loading="lazy" />
             <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
-            <svg class="ml-auto text-text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            <svg class="ml-auto text-text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
           </div>
           <div class="text-xs text-text-muted font-mono">{gen.file}</div>
         </a>
       ) : (
-        <div class="p-4 rounded-xl border border-border bg-bg-card">
+        <div class="p-4 rounded-xl border border-border border-dashed bg-bg-card">
           <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" />
+            <img src={gen.logo} alt="" class="w-6 h-6" width="24" height="24" loading="lazy" />
             <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
           </div>
           <div class="text-xs text-text-muted font-mono">{gen.file}</div>
@@ -32,6 +33,6 @@ import { generators } from '../data/generators';
   </div>
 
   <p class="text-center mt-6 text-sm text-text-muted">
-    Built by <a href="https://larsartmann.com" target="_blank" rel="noopener noreferrer" class="text-accent font-semibold hover:underline">LarsArtmann</a>
+    Built by <a href={siteConfig.author.url} target="_blank" rel="noopener noreferrer" class="text-accent font-semibold hover:underline">{siteConfig.author.name}</a>
   </p>
 </div>

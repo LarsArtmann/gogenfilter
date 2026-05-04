@@ -1,17 +1,18 @@
 ---
 import Logo from './Logo.astro';
+import { siteConfig } from '../data/config';
 ---
 
 <footer class="border-t border-border mt-32">
   <div class="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2.5">
       <Logo width={20} height={20} />
-      <span class="text-sm text-text-muted">gogenfilter — MIT License — Built by <a href="https://larsartmann.com/" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150 underline">LarsArtmann</a></span>
+      <span class="text-sm text-text-muted">gogenfilter — MIT License — Built by <a href={siteConfig.author.url} target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150 underline">{siteConfig.author.name}</a></span>
     </div>
     <div class="flex items-center gap-6 text-sm">
       <a href="/docs/" class="text-text-muted hover:text-stone-300 transition-colors duration-150">Documentation</a>
-      <a href="https://github.com/LarsArtmann/gogenfilter" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150">GitHub</a>
-      <a href="https://pkg.go.dev/github.com/LarsArtmann/gogenfilter" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150">pkg.go.dev</a>
+      <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150">GitHub</a>
+      <a href={siteConfig.pkgGoDev} target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150">pkg.go.dev</a>
     </div>
   </div>
 </footer>
