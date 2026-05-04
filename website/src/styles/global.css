@@ -19,8 +19,8 @@
 
   --color-amber: #fbbf24;
 
-  --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: var(--font-space-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 
   --animate-fade-in: fade-in 0.6s ease both;
 }
