@@ -14,7 +14,11 @@ import { siteConfig } from '../data/config';
       <span class="menu-icon"><Icon name="menu" size={24} /></span>
       <span class="close-icon hidden"><Icon name="close" size={24} /></span>
     </button>
-    <div class="nav-links flex items-center gap-6" id="nav-links">
+    <div class="nav-links flex items-center gap-4" id="nav-links">
+      <button id="theme-toggle" class="bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors" aria-label="Toggle light/dark mode">
+        <span class="theme-icon-light"><Icon name="sun" size={18} /></span>
+        <span class="theme-icon-dark hidden"><Icon name="moon" size={18} /></span>
+      </button>
       <a href="/docs/" class="text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-1.5 nav-link">Docs</a>
       <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" class="text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-1.5 nav-link">
         <span class="text-text-muted"><Icon name="github" size={18} /></span>
@@ -25,6 +29,34 @@ import { siteConfig } from '../data/config';
 </nav>
 
 <script is:inline>
+  // Theme initialization
+  (function() {
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isLight = stored === 'light' || (!stored && !prefersDark);
+    if (isLight) document.documentElement.classList.add('light');
+  })();
+
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const lightIcon = themeToggle.querySelector('.theme-icon-light');
+  const darkIcon = themeToggle.querySelector('.theme-icon-dark');
+
+  function applyTheme() {
+    const isLight = document.documentElement.classList.contains('light');
+    lightIcon.classList.toggle('hidden', !isLight);
+    darkIcon.classList.toggle('hidden', isLight);
+  }
+
+  applyTheme();
+
+  themeToggle.addEventListener('click', () => {
+    const isLight = document.documentElement.classList.toggle('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    applyTheme();
+  });
+
+  // Nav toggle
   const toggle = document.getElementById('nav-toggle');
   const navLinks = document.getElementById('nav-links');
   const menuIcon = toggle.querySelector('.menu-icon');

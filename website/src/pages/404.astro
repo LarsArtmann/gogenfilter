@@ -1,0 +1,19 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<LandingLayout title="404 — Page Not Found | gogenfilter">
+  <div class="min-h-screen flex items-center justify-center px-6">
+    <div class="text-center">
+      <div class="text-accent mb-6 flex justify-center">
+        <Icon name="bolt" size={64} />
+      </div>
+      <h1 class="text-6xl font-bold text-text-primary mb-4">404</h1>
+      <p class="text-xl text-text-muted mb-8">Page not found.</p>
+      <a href="/" class="px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg text-sm hover:bg-accent-hover transition-colors duration-150 inline-flex items-center gap-2">
+        Back to Home
+      </a>
+    </div>
+  </div>
+</LandingLayout>
