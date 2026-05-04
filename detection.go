@@ -40,6 +40,19 @@ var detectors = []detector{
 	{FilterGeneric, ReasonGeneric, nil, IsGenericGenerated},
 }
 
+// filterOptionToReason maps FilterOption values to their FilterReason using the
+// detectors table. This eliminates the implicit string-equality invariant between
+// FilterOption and FilterReason constants. Panics on unregistered options.
+func filterOptionToReason(opt FilterOption) FilterReason {
+	for _, d := range detectors {
+		if d.option == opt {
+			return d.reason
+		}
+	}
+
+	panic("gogenfilter: FilterOption.Reason() called on unregistered option: " + opt.String())
+}
+
 // allSpecificOptions returns all FilterOption values that correspond to specific
 // code generators (i.e., everything except FilterGeneric and FilterAll).
 // Derived from the detectors table so adding a new detector automatically updates this list.
