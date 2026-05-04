@@ -69,12 +69,13 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **SQLC v1 config supported** — `sqlcV1Config` struct maps v1 `packages[].path` to output dirs. Version dispatch in `unmarshalSQLCConfig` routes v1 to `parseV1AsV2` which converts to v2 format. Unsupported versions return a parse error.
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 - **art-dupl known false positive** — `unmarshalSQLCConfig` and `parseV1AsV2` in `sqlc.go` share identical signatures `([]byte, string) → (*sqlcConfig, *SQLCConfigError)` but are fundamentally different functions (version dispatch vs v1→v2 conversion). Art-dupl's structural matching flags them; fixed via `--exclude-pattern 'sqlc.go'` in the dedup command.
+- **`errors.AsType` migration complete (Go 1.26)** — All code and tests use `errors.AsType[T]` exclusively. No `errors.As` calls remain in the codebase. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
 
 ### Testing
 
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
-- Generic helper functions in `helpers_test.go`: `assertErrorType[T]()`, `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`
+- Generic helper functions in `helpers_test.go`: `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`. Error extraction helper `assertErrorType[T]()` is in `errors_test.go` (uses `errors.AsType` from Go 1.26).
 - Run tests with: `go test ./...`
 
 ### Linting
