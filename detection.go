@@ -240,7 +240,7 @@ func DetectReason(filePath, content string, opts ...FilterOption) FilterReason {
 func DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error) {
 	content, err := io.ReadAll(r)
 	if err != nil {
-		return ReasonNotFiltered, fmt.Errorf("read content: %w", err)
+		return ReasonNotFiltered, fmt.Errorf("read content from %q: %w", filePath, err)
 	}
 
 	return DetectReason(filePath, string(content), opts...), nil
