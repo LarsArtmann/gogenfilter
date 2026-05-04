@@ -53,7 +53,6 @@ for i, dir := range dirs {
 }
 
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
     gogenfilter.WithIncludePatterns(includePatterns...),
 )
