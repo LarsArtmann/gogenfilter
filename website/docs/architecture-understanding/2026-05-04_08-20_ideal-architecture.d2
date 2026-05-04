@@ -1,0 +1,94 @@
+direction: down
+
+title: {
+  near: top-center
+  shape: text
+  label: gogenfilter Website -- Ideal Architecture
+}
+
+group landing {
+  label: Landing Page (index.astro)
+  shape: rectangle
+
+  hero_section: HeroSection
+  generators_section: GeneratorsSection
+  features_section: FeaturesSection
+  two_phase_section: TwoPhaseSection
+  comparison_section: ComparisonSection
+  use_cases_section: UseCasesSection
+  cta_section: CTASection
+}
+
+group primitives {
+  label: Primitive Components
+  shape: rectangle
+
+  section: Section
+  card: Card
+  svg_icon: Icon
+  heading: SectionHeading
+  header: Header
+  footer: Footer
+  logo: Logo
+  code_block: CodeBlock
+}
+
+group data {
+  label: Data Layer (single source of truth)
+  shape: rectangle
+
+  config: config.ts
+  generators: generators.ts
+  features: features.ts
+  comparisons: comparisons.ts
+  use_cases: use-cases.ts
+  types: types.ts
+}
+
+group docs {
+  label: Starlight Docs
+  shape: rectangle
+
+  content: content/docs/*.mdx
+  starlight: Starlight Plugin
+  pagefind: PageFind Search
+}
+
+group infra {
+  label: Infrastructure
+  shape: rectangle
+
+  landing_layout: LandingLayout
+  global_css: global.css
+  og_gen: og/slug.ts
+  firebase: Firebase Hosting
+}
+
+hero_section -> section: wraps with
+hero_section -> heading: leverages
+hero_section -> svg_icon: leverages
+generators_section -> section: wraps with
+generators_section -> card: renders each
+features_section -> section: wraps with
+features_section -> card: renders each
+features_section -> svg_icon: renders svg_icon
+comparison_section -> card: renders each
+use_cases_section -> card: renders each
+card -> section: composes
+heading -> svg_icon: composes
+
+generators_section -> generators: consumes
+features_section -> features: data-reads
+comparison_section -> comparisons: consumes
+use_cases_section -> use_cases: consumes
+
+landing_layout -> header: renders
+landing_layout -> footer: renders
+landing_layout -> global_css: imports
+header -> logo: renders
+header -> config: url-reads
+footer -> config: url-reads
+
+docs -> starlight: leverages
+starlight -> pagefind: builds index
+og_gen -> content: consumes

@@ -1,0 +1,87 @@
+direction: down
+
+title: {
+  near: top-center
+  shape: text
+  label: gogenfilter Website -- Current Architecture
+}
+
+group landing {
+  label: Landing Page (index.astro)
+  shape: rectangle
+  style.fill: "#1c1917"
+
+  hero: Hero Section
+  code_preview: Code Preview
+  generator_grid_section: Generator Grid Section
+  feature_grid_section: Feature Grid Section
+  two_phase: Two-Phase Explainer
+  comparison: Comparison Table
+  use_cases: Use Cases
+  cta: CTA Section
+}
+
+group components {
+  label: Components
+  shape: rectangle
+
+  header: Header.astro
+  footer: Footer.astro
+  logo: Logo.astro
+  generator_grid: GeneratorGrid.astro
+  feature_grid: FeatureGrid.astro
+  code_block: CodeBlock.astro
+}
+
+group data {
+  label: Data Layer
+  shape: rectangle
+
+  config: config.ts
+  generators: generators.ts
+  features: features.ts
+  types: types.ts
+}
+
+group docs {
+  label: Starlight Docs
+  shape: rectangle
+
+  content: content/docs/*.mdx
+  starlight: Starlight Plugin
+  pagefind: PageFind Search
+}
+
+group infra {
+  label: Infrastructure
+  shape: rectangle
+
+  landing_layout: LandingLayout.astro
+  global_css: global.css
+  og_gen: og/slug.ts
+  firebase: Firebase Hosting
+}
+
+landing_layout -> header: renders
+landing_layout -> footer: renders
+landing_layout -> global_css: imports
+
+hero -> logo: renders
+header -> logo: renders
+header -> config: reads URL
+footer -> config: reads URL
+
+generator_grid_section -> generator_grid: renders
+feature_grid_section -> feature_grid: renders
+
+generator_grid -> generators: reads
+generator_grid -> config: reads URL
+feature_grid -> features: reads
+
+generators -> types: implements
+features -> types: implements
+
+docs -> starlight: uses
+starlight -> pagefind: builds index
+
+og_gen -> content: reads titles
