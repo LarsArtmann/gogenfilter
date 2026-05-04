@@ -1,11 +1,16 @@
 ---
 import { siteConfig } from '../data/config';
 import { generatorCount } from '../data/generators';
+import Icon from './Icon.astro';
 ---
 
 <section class="relative flex items-center justify-center overflow-hidden pt-32 pb-16">
   <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none"></div>
   <div class="relative max-w-3xl xl:max-w-6xl mx-auto px-6 text-center">
+    <a class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-border rounded-md text-text-secondary text-[0.8125rem] font-medium no-underline hover:border-accent hover:text-accent transition-all duration-150 mb-6" href={siteConfig.github} target="_blank" rel="noopener">
+      <Icon name="star" size={14} />
+      Star on GitHub
+    </a>
     <h1 class="text-[clamp(3rem,8vw,4.5rem)] font-bold tracking-tighter leading-tight mb-6">
       <span>Skip the </span><span class="bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">generated</span><span> noise.</span>
     </h1>
@@ -21,8 +26,6 @@ import { generatorCount } from '../data/generators';
       <a href="/docs/getting-started/installation/" data-astro-prefetch class="px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg text-sm hover:bg-accent-hover transition-colors duration-150 inline-flex items-center gap-2 border-none cursor-pointer">Get Started &rarr;</a>
       <div class="flex items-center gap-2 py-2.5 px-4 rounded-lg bg-bg-card-solid border border-border font-mono text-sm text-text-primary select-all">$ go get {siteConfig.github.replace('https://github.com', 'github.com')}</div>
     </div>
-
-    <a class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-border rounded-md text-text-secondary text-[0.8125rem] font-medium no-underline hover:border-accent hover:text-accent transition-all duration-150 mt-3" href={siteConfig.github} target="_blank" rel="noopener">Star on GitHub</a>
 
     <div class="relative max-w-xl mx-auto">
       <div class="absolute -inset-4 bg-gradient-to-r from-accent/10 via-transparent to-accent/10 rounded-2xl blur-6 pointer-events-none"></div>
