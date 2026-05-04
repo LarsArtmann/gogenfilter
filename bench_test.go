@@ -24,9 +24,9 @@ func benchmarkShouldFilter(b *testing.B, enabled bool) {
 
 	var filter *Filter
 	if enabled {
-		filter = NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(fsys))
+		filter = NewFilter(WithFilterOptions(FilterAll), WithFS(fsys))
 	} else {
-		filter = NewFilter(Disabled(), WithFilterOptions(FilterAll), WithFS(fsys))
+		filter = NewFilter(WithFS(fsys))
 	}
 
 	for b.Loop() {

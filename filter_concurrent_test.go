@@ -16,7 +16,6 @@ func TestShouldFilterConcurrent(t *testing.T) {
 	}
 
 	filter := NewFilter(
-		Enabled(),
 		WithFilterOptions(FilterAll),
 		WithFS(mapFS),
 	)

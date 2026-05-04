@@ -5,34 +5,34 @@
 
 ## 🔴 HIGH Priority
 
-| # | Task                                                                                           | Source    | Effort |
-|---|------------------------------------------------------------------------------------------------|-----------|--------|
-| 1 | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST | 30min  |
+| #   | Task                                                                                               | Source    | Effort |
+| --- | -------------------------------------------------------------------------------------------------- | --------- | ------ |
+| 1   | Resolve include patterns design question — confirm "restrict scope" is the intended final behavior | TODO_LIST | 30min  |
 
 ## 🟡 MEDIUM Priority
 
-| # | Task                                                              | Source      | Effort |
-|---|-------------------------------------------------------------------|-------------|--------|
-| 2 | Performance profile and optimize hot paths                        | TODO_LIST   | 30min  |
-| 3 | Add Codecov or similar coverage tracking                          | TODO_LIST   | 15min  |
-| 4 | Consider `//go:generate` for detector table generation            | TODO_LIST   | 45min  |
-| 5 | Add `RegisterDetector()` API for custom detectors without forking | status docs | 60min  |
-| 6 | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API  | code review | 30min  |
+| #   | Task                                                              | Source      | Effort |
+| --- | ----------------------------------------------------------------- | ----------- | ------ |
+| 2   | Performance profile and optimize hot paths                        | TODO_LIST   | 30min  |
+| 3   | Add Codecov or similar coverage tracking                          | TODO_LIST   | 15min  |
+| 4   | Consider `//go:generate` for detector table generation            | TODO_LIST   | 45min  |
+| 5   | Add `RegisterDetector()` API for custom detectors without forking | status docs | 60min  |
+| 6   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API  | code review | 30min  |
 
 ## 🟢 LOW Priority
 
-| # | Task                                                              | Source      | Effort | Status                                    |
-|---|-------------------------------------------------------------------|-------------|--------|-------------------------------------------|
-| 7 | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  | **Won't do** — false positive risk        |
-| 8 | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  | **Won't do** — 228ns cold path            |
-| 9 | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  | **Won't do** — breaking rename, cosmetic  |
+| #   | Task                                                              | Source      | Effort | Status                                   |
+| --- | ----------------------------------------------------------------- | ----------- | ------ | ---------------------------------------- |
+| 7   | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  | **Won't do** — false positive risk       |
+| 8   | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  | **Won't do** — 228ns cold path           |
+| 9   | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  | **Won't do** — breaking rename, cosmetic |
 
 ## Website (Separate Concern)
 
-| #  | Task                                | Source      | Effort |
-|----|-------------------------------------|-------------|--------|
-| 10 | Run Lighthouse audit and fix issues | status docs | 60min  |
-| 11 | Add custom 404 page                 | status docs | 30min  |
+| #   | Task                                | Source      | Effort |
+| --- | ----------------------------------- | ----------- | ------ |
+| 10  | Run Lighthouse audit and fix issues | status docs | 60min  |
+| 11  | Add custom 404 page                 | status docs | 30min  |
 
 ## ✅ Completed
 

@@ -52,20 +52,7 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 ### Skip Directives
 
-For intentionally partial code snippets, place a directive before the code block:
-
-```markdown
-<!-- skip-validate -->
-
-```go
-// intentionally partial code
-type MyStruct struct {
-    Name string
-}
-```
-```
-
-Available directives: `<!-- skip-validate -->`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
+For intentionally partial code snippets, place a directive before the code block. The `<!-- skip-validate -->` HTML comment goes on the line above the code fence. Other options: `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate` (inside code), `//nolint` (inside code).
 
 ### Library Usage
 

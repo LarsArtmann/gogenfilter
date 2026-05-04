@@ -33,7 +33,6 @@ func mapFSWithFiles(files map[string]string) fstest.MapFS {
 // newTestFilter creates a Filter with enabled state, filter options, and filesystem.
 func newTestFilter(opts gogenfilter.FilterOption, mapFS fstest.MapFS) *gogenfilter.Filter {
 	return gogenfilter.NewFilter(
-		gogenfilter.Enabled(),
 		gogenfilter.WithFilterOptions(opts),
 		gogenfilter.WithFS(mapFS),
 	)
@@ -46,7 +45,6 @@ func newTestFilterWithInclude(
 	mapFS fstest.MapFS,
 ) *gogenfilter.Filter {
 	return gogenfilter.NewFilter(
-		gogenfilter.Enabled(),
 		gogenfilter.WithFilterOptions(opts),
 		gogenfilter.WithIncludePatterns(include),
 		gogenfilter.WithFS(mapFS),
@@ -55,7 +53,6 @@ func newTestFilterWithInclude(
 
 func ExampleNewFilter() {
 	filter := gogenfilter.NewFilter(
-		gogenfilter.Enabled(),
 		gogenfilter.WithFilterOptions(
 			gogenfilter.FilterSQLC,
 			gogenfilter.FilterTempl,
@@ -69,7 +66,6 @@ func ExampleNewFilter() {
 
 func ExampleNewFilter_withExcludePatterns() {
 	filter := gogenfilter.NewFilter(
-		gogenfilter.Enabled(),
 		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 		gogenfilter.WithExcludePatterns("**/db/*.go"),
 	)

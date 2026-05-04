@@ -12,7 +12,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 	t.Run("empty path returns error", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
+		filter := NewFilter(WithFilterOptions(FilterAll))
 
 		_, err := filter.ShouldFilter("")
 		if err == nil {
@@ -64,7 +64,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 			longName: newMapFile("package main\n"),
 		}
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
 		filtered, err := filter.ShouldFilter(longName)
 		if err != nil {
@@ -79,7 +79,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 	t.Run("nil FS defaults to OS filesystem", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(nil))
+		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(nil))
 
 		filtered, err := filter.ShouldFilter("nonexistent_deffile_12345.go")
 		if err == nil {
@@ -94,7 +94,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 	t.Run("MustFilter panics on error", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(nil))
+		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(nil))
 
 		defer func() {
 			recovered := recover()

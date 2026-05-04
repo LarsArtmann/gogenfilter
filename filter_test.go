@@ -33,7 +33,7 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Disabled())
+		filter := NewFilter()
 
 		if filter.IsEnabled() {
 			t.Error("Expected disabled filter")
@@ -47,7 +47,7 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
+		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
@@ -65,7 +65,7 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
+		filter := NewFilter(WithFilterOptions(FilterAll))
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
@@ -89,7 +89,7 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns reasons for enabled options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
+		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 2 {
@@ -113,7 +113,7 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns all reasons for FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll))
+		filter := NewFilter(WithFilterOptions(FilterAll))
 		reasons := filter.FilterReasons()
 
 		expected := len(allSpecificOptions()) + 1 // +1 for FilterGeneric
@@ -125,7 +125,7 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns empty for no options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled())
+		filter := NewFilter()
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 0 {
@@ -156,7 +156,7 @@ func TestWithFilterOptionsPanicsOnInvalid(t *testing.T) {
 			}
 		}()
 
-		_ = NewFilter(Enabled(), WithFilterOptions(FilterOption("nonexistent")))
+		_ = NewFilter(WithFilterOptions(FilterOption("nonexistent")))
 	})
 }
 
@@ -166,7 +166,7 @@ func TestShouldFilter(t *testing.T) {
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter(Disabled(), WithFilterOptions(FilterAll))
+		f := NewFilter()
 
 		if mustShouldFilter(t, f, "any/file.go") {
 			t.Error("Disabled filter should not filter")
@@ -180,7 +180,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("matching include pattern still detects generated code", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(),
+		filter := NewFilter(
 			WithFilterOptions(FilterSQLC),
 			WithIncludePatterns("models.go"),
 		)
@@ -197,7 +197,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			"main.go": newMapFile("package main\nfunc main() {}"),
 		}
 
-		filter := NewFilter(Enabled(),
+		filter := NewFilter(
 			WithFilterOptions(FilterSQLC),
 			WithIncludePatterns("main.go"),
 			WithFS(mapFS),
@@ -211,7 +211,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("non-matching path is filtered with include reason", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(),
+		filter := NewFilter(
 			WithIncludePatterns("pkg/*.go"),
 		)
 
@@ -227,7 +227,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 	t.Run("include pattern with wildcard", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(),
+		filter := NewFilter(
 			WithIncludePatterns("*.go"),
 		)
 
@@ -240,7 +240,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 func TestShouldFilterWithIncludesMultiple(t *testing.T) {
 	t.Parallel()
 
-	filter := NewFilter(Enabled(),
+	filter := NewFilter(
 		WithIncludePatterns("keep.go", "safe.go"),
 	)
 
@@ -301,7 +301,7 @@ func TestFilterWithMetrics(t *testing.T) {
 		}
 	}
 
-	fltr := NewFilter(Enabled(),
+	fltr := NewFilter(
 		WithFilterOptions(FilterAll),
 		WithFS(os.DirFS(tmpDir)),
 	)
@@ -322,7 +322,7 @@ func TestFilterWithMetrics(t *testing.T) {
 func TestGetStatsDisabledFilter(t *testing.T) {
 	t.Parallel()
 
-	f := NewFilter(Disabled())
+	f := NewFilter()
 	stats := f.GetStats()
 
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
@@ -336,14 +336,14 @@ func TestFilterString(t *testing.T) {
 	t.Run("disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Disabled())
+		filter := NewFilter()
 		assertContains(t, filter.String(), "disabled")
 	})
 
 	t.Run("enabled with options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl))
+		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
 		str := filter.String()
 
 		assertContains(t, str, "sqlc")
@@ -354,14 +354,14 @@ func TestFilterString(t *testing.T) {
 	t.Run("enabled with include patterns", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithIncludePatterns("pkg/*.go"))
+		filter := NewFilter(WithIncludePatterns("pkg/*.go"))
 		assertContains(t, filter.String(), "includes=")
 	})
 
 	t.Run("enabled with exclude patterns", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(Enabled(), WithExcludePatterns("vendor/**"))
+		filter := NewFilter(WithExcludePatterns("vendor/**"))
 		assertContains(t, filter.String(), "excludes=")
 	})
 
@@ -369,7 +369,6 @@ func TestFilterString(t *testing.T) {
 		t.Parallel()
 
 		filter := NewFilter(
-			Enabled(),
 			WithFilterOptions(FilterAll),
 			WithIncludePatterns("pkg/*.go"),
 			WithExcludePatterns("vendor/**"),

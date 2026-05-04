@@ -23,8 +23,8 @@
 
 | Feature                       | Status           | Details                                                     |
 | ----------------------------- | ---------------- | ----------------------------------------------------------- |
-| Functional options API        | FULLY_FUNCTIONAL | `NewFilter(Enabled(), WithFilterOptions(FilterAll))`        |
-| Enable/disable toggle         | FULLY_FUNCTIONAL | `Enabled()` / `Disabled()` options                          |
+| Functional options API        | FULLY_FUNCTIONAL | `NewFilter(WithFilterOptions(FilterAll))` — enabled when options/patterns provided |
+| Enable/disable toggle         | FULLY_FUNCTIONAL | Implicit: `NewFilter()` = disabled, `NewFilter(WithFilterOptions(...))` = enabled |
 | Selective generator filtering | FULLY_FUNCTIONAL | `WithFilterOptions(FilterSQLC, FilterTempl, ...)`           |
 | FilterAll expansion           | FULLY_FUNCTIONAL | Expands to all specific + generic detectors                 |
 | Custom filesystem             | FULLY_FUNCTIONAL | `WithFS(fs.FS)` for testability with `fstest.MapFS`         |
