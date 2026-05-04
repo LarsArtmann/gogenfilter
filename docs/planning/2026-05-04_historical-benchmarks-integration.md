@@ -1,44 +1,55 @@
 # Integration Plan: Historical Go Benchmarks with `github-action-benchmark`
 
 **Date:** 2026-05-04
-**Status:** Planning
+**Status:** Ready to Execute
 **Tool:** [`benchmark-action/github-action-benchmark@v1`](https://github.com/benchmark-action/github-action-benchmark) (1.2k stars)
+**Cost:** Free (public repo, GitHub Pages free tier, unlimited bandwidth)
 
 ---
 
 ## Current State
 
-| Item            | Detail                                                                                  |
-| --------------- | --------------------------------------------------------------------------------------- |
-| Benchmarks      | 17 across `bench_test.go` and `errors_bench_test.go`                                    |
-| CI step         | `go test -bench=. -benchmem -count=1 ./...` — **output discarded**                      |
-| Website         | Astro + Starlight, deployed to Firebase at `gogenfilter.lars.software`                  |
-| Docs page       | `docs/guides/benchmarks.mdx` — static numbers, manually updated                         |
-| gh-pages branch | **Does not exist yet**                                                                  |
-| Repo            | `github.com/LarsArtmann/gogenfilter`                                                    |
-| CI path filters | `**.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.yml`, `.github/workflows/ci.yml` |
+| Item            | Detail                                                                 |
+| --------------- | ---------------------------------------------------------------------- |
+| Benchmarks      | 17 across `bench_test.go` and `errors_bench_test.go`                   |
+| CI step         | `go test -bench=. -benchmem -count=1 ./...` — **output discarded**     |
+| Website         | Astro + Starlight, deployed to Firebase at `gogenfilter.lars.software` |
+| Docs page       | `docs/guides/benchmarks.mdx` — static numbers, manually updated        |
+| gh-pages branch | **Does not exist yet**                                                 |
+| Repo            | `github.com/LarsArtmann/gogenfilter`                                   |
 
 ---
 
-## Architecture Decision: Separate Workflow
+## Architecture Decision: Separate Workflow + gh-pages
 
-**Create `.github/workflows/benchmark.yml`** — do NOT modify the existing CI workflow.
+**Create `.github/workflows/benchmark.yml`** — do NOT modify existing CI beyond removing the redundant benchmark step.
 
-### Rationale
+### Why Separate Workflow
 
-| Factor            | Separate Workflow                     | Modify Existing CI                  |
-| ----------------- | ------------------------------------- | ----------------------------------- |
-| Benchmark noise   | Isolated — won't affect test pipeline | Adds flakiness to critical path     |
-| Concurrency       | Independent controls                  | Shares concurrency group with tests |
-| Permissions       | `contents: write` only where needed   | Escalates permissions for all jobs  |
-| Toggle            | Can disable without touching CI       | Tangled with test job               |
-| Failure isolation | Benchmark failure ≠ test failure      | One fails, whole job fails          |
+| Factor            | Separate Workflow                          | Modify Existing CI                  |
+| ----------------- | ------------------------------------------ | ----------------------------------- |
+| Benchmark noise   | Isolated from test pipeline                | Adds flakiness to critical path     |
+| Concurrency       | Independent controls                       | Shares concurrency group with tests |
+| Permissions       | `contents: write` scoped to benchmark only | Escalates permissions for all jobs  |
+| Failure isolation | Benchmark failure ≠ test failure           | One fails, whole job fails          |
+
+### Why gh-pages (not embedded in Astro)
+
+| Factor       | gh-pages                                               | Embed in Astro                               |
+| ------------ | ------------------------------------------------------ | -------------------------------------------- |
+| Effort       | 30 min                                                 | 8-10 hours (custom chart.js + React wrapper) |
+| Dashboard    | Pre-built, feature-complete                            | Must build from scratch                      |
+| PR feedback  | Built-in `comment-on-alert` + `comment-always`         | Lost — only works in gh-pages mode           |
+| Maintenance  | Zero                                                   | Ongoing                                      |
+| Domain split | `larsartmann.github.io` vs `gogenfilter.lars.software` | Unified                                      |
+
+The domain split is cosmetic — users click a link from the docs page. Not worth 8-10 hours of custom work.
 
 ---
 
 ## Execution Plan
 
-### Phase 1: Infrastructure Setup (one-time)
+### Phase 1: Infrastructure Setup (one-time, manual)
 
 #### Step 1.1 — Create `gh-pages` branch
 
@@ -57,15 +68,15 @@ git checkout master
 3. Select branch `gh-pages`, root `/`
 4. Save — wait for initial deployment
 
-**Dashboard URL after setup:** `https://larsartmann.github.io/gogenfilter/dev/bench/`
+#### Step 1.3 — Verify
 
-#### Step 1.3 — Verify GitHub Pages is active
+Confirm `https://larsartmann.github.io/gogenfilter/` returns something (even a 404 means Pages is active).
 
-Confirm `https://larsartmann.github.io/gogenfilter/` returns something (even a 404 page means Pages is active).
+**Dashboard URL:** `https://larsartmann.github.io/gogenfilter/dev/bench/`
 
 ---
 
-### Phase 2: Workflow File
+### Phase 2: Create Benchmark Workflow
 
 #### Step 2.1 — Create `.github/workflows/benchmark.yml`
 
@@ -79,12 +90,14 @@ on:
       - "**.go"
       - go.mod
       - go.sum
+      - .github/workflows/benchmark.yml
   pull_request:
     branches: [master]
     paths:
       - "**.go"
       - go.mod
       - go.sum
+      - .github/workflows/benchmark.yml
 
 permissions:
   contents: write
@@ -119,46 +132,50 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: ${{ github.event_name == 'push' }}
           alert-threshold: "150%"
+          fail-threshold: "300%"
           comment-on-alert: true
-          fail-on-alert: false
+          comment-always: true
           summary-always: true
+          fail-on-alert: false
           max-items-in-chart: 100
 ```
 
-#### Step 2.2 — Key design decisions in this workflow
+#### Step 2.2 — Design decisions
 
-| Decision                  | Choice                        | Why                                                          |
-| ------------------------- | ----------------------------- | ------------------------------------------------------------ |
-| Separate workflow         | `benchmark.yml`               | Isolates benchmark failures from CI                          |
-| `auto-push` conditional   | `github.event_name == 'push'` | Only master pushes update dashboard; PRs get comparison only |
-| `fail-on-alert: false`    | Don't block on regression     | CI variance is ~10-20%; would cause false positives          |
-| `comment-on-alert: true`  | Notify on regressions         | PRs get comments when performance degrades >150%             |
-| `summary-always: true`    | Always show comparison        | Developers see benchmark diff in every run                   |
-| `max-items-in-chart: 100` | Keep last 100 runs            | Prevents chart clutter; ~3 months of commits                 |
-| `count=1`                 | Single benchmark run          | Standard for CI; `count=5+` for local benchstat analysis     |
+| Decision                                   | Choice                        | Why                                                                         |
+| ------------------------------------------ | ----------------------------- | --------------------------------------------------------------------------- |
+| Separate workflow file                     | `benchmark.yml`               | Isolates failures, independent permissions                                  |
+| `auto-push` conditional                    | `github.event_name == 'push'` | Only master commits update dashboard; PRs get comparison only               |
+| `alert-threshold: 150%`                    | Flag at 50% degradation       | Sensitive enough to catch real regressions                                  |
+| `fail-threshold: 300%`                     | Catastrophic ceiling          | 3x worse = something is very wrong; alerts even with `fail-on-alert: false` |
+| `fail-on-alert: false`                     | Don't block CI on regression  | CI variance is 10-20%; blocking would cause false positives                 |
+| `comment-on-alert: true`                   | Notify on regressions         | PRs get comments when performance degrades >150%                            |
+| `comment-always: true`                     | Every PR sees benchmark diff  | Performance visibility on every change, not just regressions                |
+| `summary-always: true`                     | Job summary in every run      | Developers see benchmark comparison in Actions tab                          |
+| `max-items-in-chart: 100`                  | Keep last 100 data points     | ~3 months of commits; prevents chart clutter                                |
+| `count=1`                                  | Single benchmark run          | Standard for CI; use `benchstat` locally with `count=5+` when debugging     |
+| `.github/workflows/benchmark.yml` in paths | Self-referential trigger      | Editing the workflow itself triggers validation                             |
 
 ---
 
 ### Phase 3: Remove Redundant CI Benchmark Step
 
-#### Step 3.1 — Remove benchmark step from `.github/workflows/ci.yml`
+#### Step 3.1 — Remove from `.github/workflows/ci.yml`
 
-Remove the existing fire-and-forget step (lines 62-63):
+Remove lines 62-63:
 
 ```yaml
 - name: Benchmarks
   run: go test -bench=. -benchmem -count=1 ./...
 ```
 
-This is now redundant — the dedicated `benchmark.yml` workflow handles it with proper tracking.
+Now redundant — `benchmark.yml` handles it with full tracking.
 
 ---
 
-### Phase 4: Docs Integration
+### Phase 4: Update Docs
 
 #### Step 4.1 — Update `website/src/content/docs/docs/guides/benchmarks.mdx`
-
-Add a section linking to the live dashboard. Keep existing static numbers as "reference results" but make it clear they're a snapshot, not live data.
 
 Add after the "Reproducing" section:
 
@@ -179,69 +196,60 @@ Results above are a point-in-time snapshot (Go 1.24, AMD Ryzen AI MAX+ 395).
 The dashboard provides continuous, hardware-consistent tracking from CI.
 ```
 
-#### Step 4.2 — Add sidebar link (optional)
+#### Step 4.2 — No sidebar changes needed
 
-In `astro.config.mjs`, the "Benchmarks" guide already exists in the sidebar at `docs/guides/benchmarks`. No change needed — the dashboard link is inside the existing page.
-
----
-
-### Phase 5: CI Path Filters Update
-
-#### Step 5.1 — Add `benchmark.yml` to its own path triggers
-
-The workflow already watches `**.go`, `go.mod`, `go.sum`. If benchmarks themselves change (e.g., new benchmark functions), the `**.go` glob already catches `*_test.go` files. No additional path filter needed.
-
-#### Step 5.2 — Verify the CI workflow path filters
-
-The existing `ci.yml` path filters don't need to change — we're only **removing** a step from it, not adding one.
+The "Benchmarks" guide already exists in the sidebar at `docs/guides/benchmarks`.
 
 ---
 
-### Phase 6: Verification Checklist
+### Phase 5: Verify
 
-After merging, verify all of the following:
+After the first push to master:
 
-- [ ] **Workflow runs on push** — Check Actions tab for "Benchmark" workflow
+- [ ] **Workflow runs** — Check Actions tab for "Benchmark" workflow
 - [ ] **Dashboard deploys** — Visit `https://larsartmann.github.io/gogenfilter/dev/bench/`
 - [ ] **Charts render** — All 17 benchmarks appear with data points
-- [ ] **PR comparison works** — Open a PR, check that benchmark summary appears
-- [ ] **Alert threshold correct** — A >150% regression triggers a comment
 - [ ] **CI still passes** — Test/lint jobs unaffected
-- [ ] **Old benchmark step removed** — CI no longer runs fire-and-forget benchmarks
+- [ ] **Old step removed** — CI no longer runs fire-and-forget benchmarks
+
+After opening a test PR:
+
+- [ ] **PR gets benchmark comment** — `comment-always` shows diff
+- [ ] **Job summary visible** — Benchmark comparison in Actions summary
+- [ ] **Dashboard NOT updated by PR** — `auto-push` only on push events
 
 ---
 
-## Security Considerations
+## Security
 
-| Concern                      | Mitigation                                                                    |
-| ---------------------------- | ----------------------------------------------------------------------------- |
-| `contents: write` permission | Scoped to `benchmark.yml` only; CI workflow keeps `contents: read`            |
-| `GITHUB_TOKEN` scope         | Default token — can only push to `gh-pages`, not `master`                     |
-| Branch protection            | `gh-pages` has no protection rules (by design — auto-push needs write access) |
-| No secrets exposure          | Uses default `GITHUB_TOKEN`, no custom PAT needed                             |
-
----
-
-## Rollback Plan
-
-If something goes wrong:
-
-1. **Disable the workflow** — Delete `benchmark.yml` or add `if: false` to the job
-2. **Re-add CI step** — Restore the removed benchmark step in `ci.yml`
-3. **Dashboard remains** — `gh-pages` branch stays live; no harm in keeping historical data
-4. **Clean slate** — To reset dashboard: delete and recreate `gh-pages` branch
+| Concern                      | Mitigation                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| `contents: write` permission | Scoped to `benchmark.yml` only; CI keeps `contents: read`                      |
+| `GITHUB_TOKEN` scope         | Default token — can push to `gh-pages`, not `master`                           |
+| Branch protection            | `gh-pages` has no rules (by design — auto-push needs write access)             |
+| No secrets                   | Uses default `GITHUB_TOKEN`, no custom PAT needed                              |
+| Fork PRs                     | `comment-always`/`comment-on-alert` silently fail (read-only token from forks) |
 
 ---
 
-## Future Enhancements (out of scope, but noted)
+## Rollback
 
-| Enhancement                           | Description                                                           | When                          |
-| ------------------------------------- | --------------------------------------------------------------------- | ----------------------------- |
-| `benchstat` integration               | Run `count=5` locally, compare with `benchstat old.txt new.txt`       | When debugging regressions    |
-| `go-force-package-suffix: true`       | Disambiguate benchmarks across packages (not needed — single package) | If multi-package in future    |
-| Separate benchmark repo               | `LarsArtmann/gogenfilter-benchmarks` for isolated data                | If repo size becomes concern  |
-| Custom alert thresholds per benchmark | Not supported by this action (single global threshold)                | Would need fork/custom action |
-| Self-hosted runner                    | Eliminate CI variance (~10-20% on GitHub runners)                     | If precision becomes critical |
+1. **Disable** — Delete `benchmark.yml` or add `if: false` to the job
+2. **Restore CI step** — Re-add the removed benchmark step in `ci.yml`
+3. **Dashboard stays** — `gh-pages` keeps historical data; no harm in leaving it
+4. **Clean slate** — Delete and recreate `gh-pages` branch to reset data
+
+---
+
+## Future Enhancements (out of scope)
+
+| Enhancement                                           | When                                                         |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| `benchstat` for local A/B analysis                    | When debugging a regression                                  |
+| Hybrid Firebase deployment (embed dashboard in Astro) | If domain split becomes a real problem (~2 hour migration)   |
+| Separate benchmark data repo                          | If repo size becomes a concern                               |
+| `go-force-package-suffix: true`                       | If multi-package in future (not needed — single package now) |
+| Self-hosted runner                                    | If CI precision becomes critical                             |
 
 ---
 
@@ -253,6 +261,5 @@ If something goes wrong:
 | 2         | Create `benchmark.yml` workflow         | 10 min      |
 | 3         | Remove redundant CI benchmark step      | 1 min       |
 | 4         | Update docs with dashboard link         | 5 min       |
-| 5         | Path filter verification                | 1 min       |
-| 6         | End-to-end verification                 | 10 min      |
+| 5         | End-to-end verification                 | 10 min      |
 | **Total** |                                         | **~30 min** |

@@ -440,6 +440,48 @@ func ValidSQLCConfig(engine string) string {
 		"        out: \"db\"\n"
 }
 
+func assertSQLGoOut(t *testing.T, config *sqlcConfig, expectedOut string) {
+	t.Helper()
+
+	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, expectedOut)
+}
+
+func assertCodegenLen(t *testing.T, config *sqlcConfig, want int) {
+	t.Helper()
+
+	assertLen(t, "Codegen entries", len(config.SQL[0].Codegen), want)
+}
+
+func assertCodegenEntry(
+	t *testing.T,
+	config *sqlcConfig,
+	index int,
+	expectedOut, expectedPlugin string,
+) {
+	t.Helper()
+
+	prefix := fmt.Sprintf("Codegen[%d]", index)
+
+	assertStringField(t, prefix+".Out", config.SQL[0].Codegen[index].Out, expectedOut)
+	assertStringField(t, prefix+".Plugin", config.SQL[0].Codegen[index].Plugin, expectedPlugin)
+}
+
+func parseSQLCConfigFromYAML(t *testing.T, yamlContent string) *sqlcConfig {
+	t.Helper()
+
+	tmpDir := t.TempDir()
+	configPath := filepath.Join(tmpDir, "sqlc.yaml")
+
+	writeFile(t, configPath, yamlContent)
+
+	config, err := parseSQLCConfig(configPath)
+	if err != nil {
+		t.Fatalf("parseSQLCConfig() error = %v", err)
+	}
+
+	return config
+}
+
 func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 	t.Helper()
 

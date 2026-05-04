@@ -97,7 +97,7 @@ Nothing fucked up. All changes compile, pass tests, pass lint, and the website b
 ### Documentation & Website
 
 5. **Run `npx astro check`** — Type check the website Astro files.
-6. **Run `npx html-validate 'dist/**/*.html'`** — Validate generated HTML.
+6. **Run `npx html-validate 'dist/**/\*.html'`\*\* — Validate generated HTML.
 7. **Cross-link research doc → website** — Add URL reference in `docs/research/` to `/docs/limitations`.
 8. **Audit website docs for consistency** — Ensure all pages reference current API (no stale `Enabled()`/`Disabled()` references).
 9. **Add integration test fixtures** — Real-world `sqlc.yaml` v1 configs in `testdata/` for integration testing.
