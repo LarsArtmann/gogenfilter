@@ -34,16 +34,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/checkout@v6
+      - name: Checkout md-go-validator
+        continue-on-error: true
+        id: checkout-md-go-validator
+        uses: actions/checkout@v6
         with:
           repository: LarsArtmann/md-go-validator
           path: md-go-validator
-          token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}
-
-      - uses: actions/checkout@v6
-        with:
-          repository: LarsArtmann/go-output
-          path: go-output
           token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}
 
       - uses: actions/setup-node@v6
@@ -66,12 +63,15 @@ jobs:
         working-directory: website
 
       - name: Build md-go-validator from source
-        run: |
-          cd md-go-validator && go build -o ../md-go-validator-bin ./cmd/md-go-validator
+        if: steps.checkout-md-go-validator.outcome == 'success'
+        id: build-md-go-validator
+        working-directory: md-go-validator
+        run: go build -o ../md-go-validator-bin ./cmd/md-go-validator
 
       - name: Validate documentation code blocks
+        if: steps.build-md-go-validator.outcome == 'success'
         continue-on-error: true
-        run: ./md-go-validator-bin -f json -o website/validation-results.json website/src/content/docs/
+        run: ../md-go-validator-bin -f json -o validation-results.json src/content/docs/
 
       - name: Upload validation results
         if: always()
