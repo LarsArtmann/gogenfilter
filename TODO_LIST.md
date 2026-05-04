@@ -1,7 +1,7 @@
 # TODO List
 
 **Generated:** 2026-05-03
-**Updated:** 2026-05-03
+**Updated:** 2026-05-04
 **Files Processed:** All .md files in docs/ + TODO_LIST.md + CHANGELOG.md + README.md + FEATURES.md
 **Verified Against:** Actual source code (all .go files)
 
@@ -14,39 +14,34 @@
 
 ## 🟡 MEDIUM Priority
 
-| #   | Task                                                                                                                                                                                                                                                                    | Source                 | Effort |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------ |
-| 3   | Performance profile and optimize hot paths                                                                                                                                                                                                                              | TODO_LIST.md           | 30min  |
-| 4   | Add Codecov or similar coverage tracking                                                                                                                                                                                                                                | TODO_LIST.md           | 15min  |
-| 5   | Document API stability guarantees / Go module lifecycle                                                                                                                                                                                                                 | TODO_LIST.md           | 15min  |
-| 6   | Consider `//go:generate` for detector table generation                                                                                                                                                                                                                  | TODO_LIST.md           | 45min  |
-| 7   | Add `RegisterDetector()` API for custom detectors without forking                                                                                                                                                                                                       | status docs            | 60min  |
-| 8   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API                                                                                                                                                                                                        | code review 2026-05-03 | 30min  |
-| 9   | Expose filtered file paths in FilterStats for debugging                                                                                                                                                                                                                 | code review 2026-05-03 | 15min  |
-| 10  | Document undocumented public APIs in README (DetectReasonReader, MustFilter, IsEnabled, FilterReasons, String methods, FindSQLCConfigsFS, GetSQLOutputDirsFS, FindProjectRoot, AllFilterOptions, AllFilterReasons, AllErrorCodes, CodeHelp, error types, phantom types) | README audit           | 30min  |
-| 11  | Add BDD/ginkgo tests for user-facing behaviors                                                                                                                                                                                                                          | code review 2026-05-03 | 60min  |
+| #   | Task                                                                  | Source                 | Effort |
+| --- | --------------------------------------------------------------------- | ---------------------- | ------ |
+| 3   | Performance profile and optimize hot paths                            | TODO_LIST.md           | 30min  |
+| 4   | Add Codecov or similar coverage tracking                              | TODO_LIST.md           | 15min  |
+| 5   | Consider `//go:generate` for detector table generation                | TODO_LIST.md           | 45min  |
+| 6   | Add `RegisterDetector()` API for custom detectors without forking     | status docs            | 60min  |
+| 7   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API      | code review 2026-05-03 | 30min  |
+| 8   | Expose filtered file paths in FilterStats for debugging               | code review 2026-05-03 | 15min  |
+| 9   | Add BDD/ginkgo tests for user-facing behaviors                        | code review 2026-05-03 | 60min  |
 
 ## 🟢 LOW Priority
 
 | #   | Task                                                              | Source      | Effort |
 | --- | ----------------------------------------------------------------- | ----------- | ------ |
-| 12  | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  |
-| 13  | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  |
-| 14  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  |
-| 15  | Cross-platform path testing (Windows-style paths)                 | status docs | 15min  |
-| 16  | Test SQLC config v1 format (current tests only cover v2)          | status docs | 15min  |
-| 17  | Add error handling examples (errors.Is, ErrorCode(), Help())      | status docs | 15min  |
-| 18  | Benchmark CodeHelp() lookup                                       | status docs | 5min   |
-| 19  | Add `go test -bench` to CI                                        | status docs | 10min  |
+| 10  | Add `*.gen.go` filename heuristic for oapi-codegen detector       | code review | 10min  |
+| 11  | Performance: Error() allocation optimization with strings.Builder | status docs | 15min  |
+| 12  | Consider renaming ReasonIncludePattern to ReasonNotInScope        | status docs | 10min  |
+| 13  | Cross-platform path testing (Windows-style paths)                 | status docs | 15min  |
+| 14  | Test SQLC config v1 format (current tests only cover v2)          | status docs | 15min  |
 
 ## Website (Separate Concern)
 
 | #   | Task                                | Source      | Effort |
 | --- | ----------------------------------- | ----------- | ------ |
-| 20  | Run Lighthouse audit and fix issues | status docs | 60min  |
-| 23  | Add custom 404 page                 | status docs | 30min  |
+| 15  | Run Lighthouse audit and fix issues | status docs | 60min  |
+| 16  | Add custom 404 page                 | status docs | 30min  |
 
-## ✅ Completed (2026-05-03 Verification)
+## ✅ Completed (2026-05-04 Verification)
 
 All items below verified as DONE by reading actual source code:
 
@@ -56,6 +51,7 @@ All items below verified as DONE by reading actual source code:
 - [x] FilterAll expansion via optionsMap — `filter.go`, `detection.go`
 - [x] ShouldFilter returns (bool, error) — `filter.go:137`
 - [x] MustFilter panic-on-error variant — `filter.go:153`
+- [x] MustFilter panic path tested — `filter_edge_test.go`
 - [x] Filter.IsEnabled() — `filter.go:119`
 - [x] Filter.FilterReasons() — `filter.go:125`
 - [x] Filter.String() — `filter.go:256`
@@ -98,21 +94,26 @@ All items below verified as DONE by reading actual source code:
 - [x] Fuzz tests — `fuzz_test.go`
 - [x] Property-based tests — `property_test.go`
 - [x] Benchmark tests — `bench_test.go`, `errors_bench_test.go`
+- [x] Benchmark CodeHelp() — `errors_bench_test.go` (4.9ns, zero alloc)
 - [x] Concurrent tests — `filter_concurrent_test.go`
 - [x] Edge case tests — `filter_edge_test.go`
 - [x] Integration tests with real fixtures — `integration_test.go`, `testdata/`
-- [x] Runnable examples (12) — `example_test.go`
+- [x] Runnable examples (19) — `example_test.go`
+- [x] Error handling examples (errors.Is, ErrorCode, Help, CodeHelp, AllErrorCodes) — `example_test.go`
 - [x] Generic test helpers — `helpers_test.go`
 - [x] Filter.String() tests — `filter_test.go`
 - [x] BDD tests with ginkgo — `bdd_test.go`
 - [x] Self-host Google Fonts — Astro font provider in `astro.config.mjs`
 - [x] Analytics (Plausible) — `LandingLayout.astro` with preconnect
 - [x] Starlight logo is SVG throughout — `Logo.astro`, `public/logo.svg`
-- [x] GitHub Actions CI (test, race, lint, coverage) — `.github/workflows/ci.yml`
+- [x] GitHub Actions CI (test, race, lint, coverage, bench) — `.github/workflows/ci.yml`
+- [x] Benchmarks run in CI — `ci.yml` bench step
 - [x] golangci-lint v2 configured — `.golangci.yaml`
 - [x] Coverage threshold 95% — CI workflow
 - [x] Package-level godoc — `types.go`
 - [x] CHANGELOG.md updated — comprehensive [Unreleased] section
+- [x] Public API documented in README (Filter API, error handling, SQLC discovery, DetectReasonReader)
+- [x] API stability statement in README (pre-v1.0.0 policy)
 - [x] .editorconfig added
 - [x] Architecture diagrams created — `docs/architecture-understanding/`
 - [x] Features audit completed — `FEATURES.md`
