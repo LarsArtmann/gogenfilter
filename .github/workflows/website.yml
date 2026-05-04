@@ -28,7 +28,6 @@ jobs:
         working-directory: website
     steps:
       - uses: actions/checkout@v4
-        path: website
 
       - uses: actions/checkout@v4
         path: md-go-validator
