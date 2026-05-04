@@ -52,7 +52,14 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 ### Skip Directives
 
-For intentionally partial code snippets, place a directive before the code block. The `<!-- skip-validate -->` HTML comment goes on the line above the code fence. Other options: `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate` (inside code), `//nolint` (inside code).
+For intentionally partial code snippets, place a skip directive before the code block. Available directives:
+
+- `<` + `!-- skip-validate -->` — HTML comment before the code fence
+- `<` + `!-- skip-md-validate -->` — alternative HTML comment
+- `<` + `!-- md-skip -->` — short form
+- `<` + `!-- no-validate -->` — generic form
+- `// skip-validate` — inline, inside the code block
+- `//nolint` — familiar linter directive
 
 ### Library Usage
 
