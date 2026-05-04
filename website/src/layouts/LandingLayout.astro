@@ -31,7 +31,7 @@ const ogDesc = siteConfig.ogDescription.replace('{count}', '11');
     <link rel="canonical" href={siteConfig.siteUrl} />
   </head>
   <body class="font-sans bg-bg-primary text-text-secondary antialiased leading-relaxed">
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "gogenfilter",
