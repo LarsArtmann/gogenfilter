@@ -1,0 +1,20 @@
+---
+import PhaseSection from './PhaseSection.astro';
+import ComparisonSection from './ComparisonSection.astro';
+import UseCasesSection from './UseCasesSection.astro';
+import CTASection from './CTASection.astro';
+import Section from './Section.astro';
+
+const sections = [
+  { component: PhaseSection, key: 'phase' },
+  { component: ComparisonSection, key: 'comparison' },
+  { component: UseCasesSection, key: 'usecases' },
+  { component: CTASection, key: 'cta' },
+] as const;
+---
+
+{sections.map(({ component: SectionComponent }) => (
+  <Section width="narrow" class="text-center">
+    <SectionComponent />
+  </Section>
+))}
