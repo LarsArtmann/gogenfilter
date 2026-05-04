@@ -29,14 +29,14 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 | File           | Purpose                                                                                                                                                                                       |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `Filter` returns `(bool, error)`. Enabled when options/patterns are set. |
-| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                         |
-| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                       |
+| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`, `WithMetricsCap`). `Filter` returns `(bool, error)`, `FilterDetailed` returns `(FilterResult, error)`. Enabled when options/patterns are set. |
+| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers, trace-aware detection functions |
+| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `FilterResult` struct, `AllFilterOptions()`, `AllGeneratorOptions()`, `AllFilterReasons()` |
 | `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                |
 | `sqlc.go`      | SQLC config discovery and parsing (v1 and v2 formats, Go/JSON/Codegen output dirs)                                                                                                            |
 | `errors.go`    | Branded error types with sentinel errors                                                                                                                                                      |
 | `project.go`   | Project root discovery                                                                                                                                                                        |
-| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                    |
+| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()`, `FilteredBy()` accessors, configurable `maxFilteredFiles` cap |
 | `phantom.go`   | Phantom type constructors                                                                                                                                                                     |
 
 ### Website
@@ -78,6 +78,10 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 - **art-dupl known false positive** — `unmarshalSQLCConfig` and `parseV1AsV2` in `sqlc.go` share identical signatures `([]byte, string) → (*sqlcConfig, *SQLCConfigError)` but are fundamentally different functions (version dispatch vs v1→v2 conversion). Art-dupl's structural matching flags them; fixed via `--exclude-pattern 'sqlc.go'` in the dedup command.
 - **`errors.AsType` migration complete (Go 1.26)** — All code and tests use `errors.AsType[T]` exclusively. No `errors.As` calls remain in the codebase. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
+- **`FilterResult` is additive, not replacing** — `Filter()` returns `(bool, error)` unchanged. `FilterDetailed()` returns `(FilterResult, error)` with trace info. No breaking changes to existing API.
+- **`FilterOption.Reason()` returns `(FilterReason, bool)`** — Previously panicked on `FilterAll`. Now returns `("", false)` for meta-options. This is the correct Go pattern — no panics in library code.
+- **`AllGeneratorOptions()` vs `AllFilterOptions()`** — `AllFilterOptions()` includes `FilterAll` (for validation). `AllGeneratorOptions()` excludes `FilterAll` (for enumeration). Both are derived from the detectors table.
+- **`WithMetricsCap(0)` means unlimited** — Backward-compatible default. Non-zero cap limits `FilteredFiles()` path storage but not `FilteredBy()` counts.
 
 ### Testing
 
@@ -185,6 +189,19 @@ filtered, err := f.FilterContext(ctx, "file.go")
 reason := gogenfilter.DetectReason("file.go", content,
     gogenfilter.FilterSQLC, gogenfilter.FilterGeneric,
 )
+
+// Detailed result with trace info
+result, err := f.FilterDetailed("file.go")
+fmt.Printf("filtered=%v reason=%s trace=%s\n", result.Filtered, result.Reason, result.Trace)
+
+// Reason returns (FilterReason, bool) — no panics
+reason, ok := gogenfilter.FilterSQLC.Reason()
+
+// Enumerate generator options (excludes FilterAll)
+for _, opt := range gogenfilter.AllGeneratorOptions() { ... }
+
+// Limit stored file paths in metrics
+filter, _ := gogenfilter.NewFilter(opts, gogenfilter.WithMetricsCap(1000))
 ```
 
 ## Dependencies

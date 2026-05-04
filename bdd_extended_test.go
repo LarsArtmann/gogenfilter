@@ -444,18 +444,29 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		})
 
 		ginkgo.It("FilterOption.Reason() maps to matching FilterReason", func() {
-			gomega.Expect(gogenfilter.FilterGoEnum.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonGoEnum))
-			gomega.Expect(gogenfilter.FilterWire.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonWire))
-			gomega.Expect(gogenfilter.FilterMoq.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonMoq))
-			gomega.Expect(gogenfilter.FilterMockgen.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonMockgen))
-			gomega.Expect(gogenfilter.FilterDeepcopy.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonDeepcopy))
-			gomega.Expect(gogenfilter.FilterOapi.Reason()).
-				To(gomega.Equal(gogenfilter.ReasonOapi))
+			reason, found := gogenfilter.FilterGoEnum.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonGoEnum))
+
+			reason, found = gogenfilter.FilterWire.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonWire))
+
+			reason, found = gogenfilter.FilterMoq.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonMoq))
+
+			reason, found = gogenfilter.FilterMockgen.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonMockgen))
+
+			reason, found = gogenfilter.FilterDeepcopy.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonDeepcopy))
+
+			reason, found = gogenfilter.FilterOapi.Reason()
+			gomega.Expect(found).To(gomega.BeTrue())
+			gomega.Expect(reason).To(gomega.Equal(gogenfilter.ReasonOapi))
 		})
 	})
 

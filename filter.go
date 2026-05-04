@@ -76,6 +76,17 @@ func WithExcludePatterns(patterns ...string) FilterConfig {
 	}
 }
 
+// WithMetricsCap limits the number of file paths stored per reason in metrics.
+// A value of 0 means unlimited (default). When the cap is reached, new file paths
+// are counted in FilteredBy() but not stored in FilteredFiles().
+func WithMetricsCap(maxFilteredFiles int) FilterConfig {
+	return func(filter *Filter) error {
+		filter.metricsCap = maxFilteredFiles
+
+		return nil
+	}
+}
+
 // Filter provides smart filtering of auto-generated Go code.
 // A Filter is immutable after construction — all configuration is applied via NewFilter.
 type Filter struct {
@@ -83,6 +94,7 @@ type Filter struct {
 	includePatterns []string
 	excludePatterns []string
 	metrics         *Metrics
+	metricsCap      int
 	fsys            fs.FS
 }
 
@@ -104,6 +116,7 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
 		metrics:         nil,
+		metricsCap:      0,
 		fsys:            os.DirFS("."),
 	}
 
@@ -125,7 +138,7 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	}
 
 	if filter.IsEnabled() {
-		filter.metrics = NewMetrics()
+		filter.metrics = NewMetrics(filter.metricsCap)
 	}
 
 	return filter, nil
@@ -139,11 +152,14 @@ func (f *Filter) IsEnabled() bool {
 
 // FilterReasons returns the FilterReason values that this filter will detect.
 // Each enabled FilterOption maps to its corresponding FilterReason.
+// Meta-options (FilterAll) that don't map to a specific reason are skipped.
 func (f *Filter) FilterReasons() []FilterReason {
 	reasons := make([]FilterReason, 0, len(f.options))
 
 	for opt := range f.options {
-		reasons = append(reasons, opt.Reason())
+		if reason, ok := opt.Reason(); ok {
+			reasons = append(reasons, reason)
+		}
 	}
 
 	return reasons
@@ -161,6 +177,68 @@ func (f *Filter) Filter(filePath string) (bool, error) {
 	}
 
 	return f.shouldFilterWithExcludes(filePath)
+}
+
+// FilterDetailed is like Filter but returns a FilterResult with detailed information
+// about why the file was or wasn't filtered, including a human-readable trace string.
+//
+// Example:
+//
+//	filter, _ := NewFilter(WithFilterOptions(FilterSQLC))
+//	result, err := filter.FilterDetailed("db/models.go")
+//	if err != nil { log.Fatal(err) }
+//	if result.Filtered {
+//	    fmt.Printf("filtered: reason=%s trace=%s\n", result.Reason, result.Trace)
+//	}
+func (f *Filter) FilterDetailed(filePath string) (FilterResult, error) {
+	if !f.IsEnabled() {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, nil
+	}
+
+	if len(f.includePatterns) > 0 {
+		return f.shouldFilterDetailedWithIncludes(filePath)
+	}
+
+	return f.shouldFilterDetailedWithExcludes(filePath)
+}
+
+// FilterPathsDetailed is like FilterPaths but returns FilterResult values with
+// detailed information about each file.
+func (f *Filter) FilterPathsDetailed(paths []string) ([]FilterResult, error) {
+	results := make([]FilterResult, 0, len(paths))
+
+	for _, path := range paths {
+		result, err := f.FilterDetailed(path)
+		if err != nil {
+			return results, err
+		}
+
+		results = append(results, result)
+	}
+
+	return results, nil
+}
+
+// FilterDetailedContext is like FilterDetailed but respects context cancellation.
+func (f *Filter) FilterDetailedContext(ctx context.Context, filePath string) (FilterResult, error) {
+	err := ctx.Err()
+	if err != nil {
+		return FilterResult{
+			Filtered: false, Reason: "", Path: filePath, Trace: "",
+		}, fmt.Errorf("context check: %w", err)
+	}
+
+	result, err := f.FilterDetailed(filePath)
+	if err != nil {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
+	}
+
+	err = ctx.Err()
+	if err != nil {
+		return result, fmt.Errorf("context check after filter: %w", err)
+	}
+
+	return result, nil
 }
 
 // FilterPaths filters multiple file paths in batch, returning a slice of booleans
@@ -309,6 +387,68 @@ func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (f *Filter) shouldFilterDetailedWithIncludes(filePath string) (FilterResult, error) {
+	return f.shouldFilterDetailedByPattern(
+		filePath,
+		!f.matchesAnyPattern(filePath, f.includePatterns),
+		ReasonOutsideScope,
+		"excluded by include pattern scope",
+	)
+}
+
+func (f *Filter) shouldFilterDetailedWithExcludes(filePath string) (FilterResult, error) {
+	return f.shouldFilterDetailedByPattern(
+		filePath,
+		f.matchesAnyPattern(filePath, f.excludePatterns),
+		ReasonExcludePattern,
+		"matched exclude pattern",
+	)
+}
+
+func (f *Filter) shouldFilterDetailedByPattern(
+	filePath string,
+	patternMatched bool,
+	reason FilterReason,
+	trace string,
+) (FilterResult, error) {
+	if patternMatched {
+		f.recordFiltered(filePath, reason)
+
+		return FilterResult{
+			Filtered: true,
+			Reason:   reason,
+			Path:     filePath,
+			Trace:    trace,
+		}, nil
+	}
+
+	result, err := f.shouldFilterDetailedByDetection(filePath)
+	if err != nil {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
+	}
+
+	if result.Filtered {
+		return result, nil
+	}
+
+	f.recordChecked(filePath)
+
+	return result, nil
+}
+
+func (f *Filter) shouldFilterDetailedByDetection(filePath string) (FilterResult, error) {
+	result, err := detectReasonFSWithTrace(f.fsys, filePath, f.options)
+	if err != nil {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
+	}
+
+	if result.Filtered {
+		f.recordFiltered(filePath, result.Reason)
+	}
+
+	return result, nil
 }
 
 func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {

@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`FilterResult` struct** — structured result type with `Filtered bool`, `Reason FilterReason`, `Path string`, `Trace string` fields. Provides detailed information about why a file was or wasn't filtered.
+- **`FilterDetailed(filePath) (FilterResult, error)`** — like `Filter()` but returns a `FilterResult` with trace information (e.g., "detected as sqlc via filename pattern"). Additive API — existing `Filter()` unchanged.
+- **`FilterPathsDetailed(paths) ([]FilterResult, error)`** — batch variant of `FilterDetailed`.
+- **`FilterDetailedContext(ctx, filePath) (FilterResult, error)`** — context-aware variant of `FilterDetailed`.
+- **`AllGeneratorOptions()`** — returns all detector `FilterOption` values (excluding meta-option `FilterAll`). Use for enumerating generators; `AllFilterOptions()` still includes `FilterAll` for validation.
+- **`WithMetricsCap(n int) FilterConfig`** — limits the number of file paths stored per reason in metrics. `0` means unlimited (default). Counts in `FilteredBy()` are always accurate; only `FilteredFiles()` path storage is capped.
+- **`FilterResult.String()`** — human-readable representation of filter results.
+
+### Changed
+
+- **Breaking: `FilterOption.Reason()` now returns `(FilterReason, bool)`** — previously returned `FilterReason` and panicked on `FilterAll`. Now returns `("", false)` for meta-options and unregistered options. This is the correct Go pattern — no panics in library code.
+
 ### Fixed
 
 - **Website CI: checkout `path` parameter placement** — `path:` was outside `with:` block for `md-go-validator` and `go-output` checkouts, causing `actions/checkout` to ignore it and overwrite the workspace root
