@@ -8,55 +8,59 @@ _Documentation Accuracy Sprint — Complete_
 
 ### Commits Pushed
 
-| Commit | Description |
-|--------|-------------|
-| `8b1a1c8` | fix(ci): add sparse-checkout for website directory |
-| `a43b3d6` | chore(website): comprehensive CI and Firebase Hosting improvements |
+| Commit    | Description                                                                    |
+| --------- | ------------------------------------------------------------------------------ |
+| `8b1a1c8` | fix(ci): add sparse-checkout for website directory                             |
+| `a43b3d6` | chore(website): comprehensive CI and Firebase Hosting improvements             |
 | `4409352` | security(firebase): add HSTS header and improve Firebase Hosting configuration |
-| `f90ab60` | docs(website): add FilterStats type reference to api/types.mdx |
-| `bdb5dab` | docs(website): comprehensive doc accuracy sprint — 11 files fixed |
-| `67c14ba` | docs(status): comprehensive documentation accuracy audit — 2026-05-04 12:33 |
+| `f90ab60` | docs(website): add FilterStats type reference to api/types.mdx                 |
+| `bdb5dab` | docs(website): comprehensive doc accuracy sprint — 11 files fixed              |
+| `67c14ba` | docs(status): comprehensive documentation accuracy audit — 2026-05-04 12:33    |
 
 ### All 21 TODO Items Completed
 
-| # | Task | Status | File(s) Changed |
-|---|------|--------|----------------|
-| 1 | Push to origin | ✅ | — |
-| 2 | Add Firebase redirect `/docs/docs/**` → `/docs/:dest` | ✅ | `firebase.json` |
-| 3 | Fix `pattern-matching.mdx` corrupted `**` glob syntax | ✅ | `guides/pattern-matching.mdx` |
-| 4 | Fix `changelog.mdx` false `FilteredByReason` export claim | ✅ | `changelog.mdx` (root + website) |
-| 5 | Fix `benchmarks.mdx` non-exported `DetectGenerated` reference | ✅ | `guides/benchmarks.mdx` |
-| 6 | Fix `benchmarks.mdx` misaligned summary table | ✅ | `guides/benchmarks.mdx` |
-| 7 | Fix `benchmarks.mdx` `Is*Generated` description | ✅ | `guides/benchmarks.mdx` |
-| 8 | Add `FilteredFiles()` to `metrics.mdx` | ✅ | `guides/metrics.mdx` |
-| 9 | Add `FindSQLCConfigsFS`/`GetSQLOutputDirsFS` to `sqlc-config.mdx` | ✅ | `guides/sqlc-config.mdx` |
-| 10 | Add `MatchPattern` to `detection.mdx` | ✅ | `api/detection.mdx` |
-| 11 | Remove misleading doublestar import from `installation.mdx` | ✅ | `getting-started/installation.mdx` |
-| 12 | Fix `errors.mdx` `errors.AsType` example | ✅ | `api/errors.mdx` |
-| 13 | Fix `benchmarks.mdx` Go 1.24 → 1.26 | ✅ | `guides/benchmarks.mdx` |
-| 14 | Fix `filter-options.mdx` add `_moq_test.go` for FilterMoq | ✅ | `guides/filter-options.mdx` |
-| 15 | Add parent directory search to `sqlc-config.mdx` | ✅ | `guides/sqlc-config.mdx` |
-| 16 | Document phantom types in `types.mdx` | ✅ | `api/types.mdx` |
-| 17 | Add `FindProjectRoot` to API reference | ✅ | `api/errors.mdx` |
-| 18 | Document `ErrorCode` type definition | ✅ | `api/errors.mdx` |
-| 19 | Document `FilterStats.String()` in `metrics.mdx` | ✅ | `guides/metrics.mdx` |
-| 20 | Fix `types.mdx` "derived from detectors" description | ✅ | `api/types.mdx` |
-| 21 | Add `FilterStats` type reference to `types.mdx` | ✅ | `api/types.mdx` |
+| #   | Task                                                              | Status | File(s) Changed                    |
+| --- | ----------------------------------------------------------------- | ------ | ---------------------------------- |
+| 1   | Push to origin                                                    | ✅     | —                                  |
+| 2   | Add Firebase redirect `/docs/docs/**` → `/docs/:dest`             | ✅     | `firebase.json`                    |
+| 3   | Fix `pattern-matching.mdx` corrupted `**` glob syntax             | ✅     | `guides/pattern-matching.mdx`      |
+| 4   | Fix `changelog.mdx` false `FilteredByReason` export claim         | ✅     | `changelog.mdx` (root + website)   |
+| 5   | Fix `benchmarks.mdx` non-exported `DetectGenerated` reference     | ✅     | `guides/benchmarks.mdx`            |
+| 6   | Fix `benchmarks.mdx` misaligned summary table                     | ✅     | `guides/benchmarks.mdx`            |
+| 7   | Fix `benchmarks.mdx` `Is*Generated` description                   | ✅     | `guides/benchmarks.mdx`            |
+| 8   | Add `FilteredFiles()` to `metrics.mdx`                            | ✅     | `guides/metrics.mdx`               |
+| 9   | Add `FindSQLCConfigsFS`/`GetSQLOutputDirsFS` to `sqlc-config.mdx` | ✅     | `guides/sqlc-config.mdx`           |
+| 10  | Add `MatchPattern` to `detection.mdx`                             | ✅     | `api/detection.mdx`                |
+| 11  | Remove misleading doublestar import from `installation.mdx`       | ✅     | `getting-started/installation.mdx` |
+| 12  | Fix `errors.mdx` `errors.AsType` example                          | ✅     | `api/errors.mdx`                   |
+| 13  | Fix `benchmarks.mdx` Go 1.24 → 1.26                               | ✅     | `guides/benchmarks.mdx`            |
+| 14  | Fix `filter-options.mdx` add `_moq_test.go` for FilterMoq         | ✅     | `guides/filter-options.mdx`        |
+| 15  | Add parent directory search to `sqlc-config.mdx`                  | ✅     | `guides/sqlc-config.mdx`           |
+| 16  | Document phantom types in `types.mdx`                             | ✅     | `api/types.mdx`                    |
+| 17  | Add `FindProjectRoot` to API reference                            | ✅     | `api/errors.mdx`                   |
+| 18  | Document `ErrorCode` type definition                              | ✅     | `api/errors.mdx`                   |
+| 19  | Document `FilterStats.String()` in `metrics.mdx`                  | ✅     | `guides/metrics.mdx`               |
+| 20  | Fix `types.mdx` "derived from detectors" description              | ✅     | `api/types.mdx`                    |
+| 21  | Add `FilterStats` type reference to `types.mdx`                   | ✅     | `api/types.mdx`                    |
 
 ---
 
 ## What I Got Wrong / Brutal Self-Assessment
 
 ### Issue 1: Firebase redirect was in wrong position initially
+
 My first attempt at adding the Firebase redirect put the `redirects` key before `headers` but the file had already been modified by another process. The redirect ended up in a stale version of `firebase.json`. I had to re-verify and fix it. **Lesson**: Always re-read files after complex multi-session environments.
 
-### Issue 2: `detection.mdx` Is*Generated audit was wrong
+### Issue 2: `detection.mdx` Is\*Generated audit was wrong
+
 The sub-agent reported that `IsDeepcopyGenerated`, `IsWireGenerated`, `IsMoqGenerated`, and `IsMockgenGenerated` "only check content" because their function signatures use `_` for the filePath parameter. This is misleading — these functions ARE the `checkContent` callbacks in the detectors table, but the detectors table ALSO has `matchFilename` entries for phase-1 detection. The doc table was actually correct. **Lesson**: Don't trust sub-agent analysis of code without cross-referencing the detectors table.
 
 ### Issue 3: Website changelog was massively out of sync
+
 The website `changelog.mdx` was missing 15+ changes that existed in `CHANGELOG.md`. This was a critical oversight from the previous session. I should have audited the changelog as part of my initial doc sweep. **Lesson**: Always cross-reference the root CHANGELOG.md against website docs when doing doc audits.
 
 ### Issue 4: Unstaged changes from another process
+
 After committing and pushing, I discovered 3 additional commits (`8b1a1c8`, `a43b3d6`, `4409352`) in the git history that were not from my session. These were already committed locally before my session started. I should have verified the git state more carefully at the start of the session.
 
 ---
@@ -91,14 +95,14 @@ After committing and pushing, I discovered 3 additional commits (`8b1a1c8`, `a43
 
 ## Final Verification
 
-| Check | Result |
-|-------|--------|
-| `go test ./...` | ✅ PASS |
-| `golangci-lint run` | ✅ 0 issues |
-| `npm run build` | ✅ 19 pages built |
-| `html-validate dist/**/*.html` | ✅ 0 errors |
-| Git status | ✅ Clean, up to date with origin |
-| All 21 TODO items | ✅ Completed |
+| Check                          | Result                           |
+| ------------------------------ | -------------------------------- |
+| `go test ./...`                | ✅ PASS                          |
+| `golangci-lint run`            | ✅ 0 issues                      |
+| `npm run build`                | ✅ 19 pages built                |
+| `html-validate dist/**/*.html` | ✅ 0 errors                      |
+| Git status                     | ✅ Clean, up to date with origin |
+| All 21 TODO items              | ✅ Completed                     |
 
 ---
 

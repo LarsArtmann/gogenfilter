@@ -14,17 +14,17 @@ Firebase Hosting configuration is now **SUPERB** after security header improveme
 
 ## WORK STATUS
 
-| Category | Status | Details |
-|----------|--------|---------|
-| **Firebase Hosting** | ✅ FULLY DONE | 10 security headers, optimal caching, HSTS preload ready |
-| **Type Checking** | ✅ FULLY DONE | 0 errors, 0 warnings, 0 hints |
-| **Build** | ✅ FULLY DONE | 19 pages, clean build |
-| **Documentation** | ✅ FULLY DONE | 100+ items completed across 3 sessions |
-| **Code Quality** | ✅ FULLY DONE | Centralized components, typed data layer |
-| **SEO** | ✅ FULLY DONE | OG images, sitemap, robots.txt, JSON-LD |
-| **Accessibility** | 🔲 PARTIALLY DONE | Focus styles added, reduced motion, aria labels |
-| **Lighthouse Audit** | 🔲 NOT STARTED | Requires live environment |
-| **Browser Visual QA** | 🔲 NOT STARTED | Requires live environment |
+| Category              | Status            | Details                                                  |
+| --------------------- | ----------------- | -------------------------------------------------------- |
+| **Firebase Hosting**  | ✅ FULLY DONE     | 10 security headers, optimal caching, HSTS preload ready |
+| **Type Checking**     | ✅ FULLY DONE     | 0 errors, 0 warnings, 0 hints                            |
+| **Build**             | ✅ FULLY DONE     | 19 pages, clean build                                    |
+| **Documentation**     | ✅ FULLY DONE     | 100+ items completed across 3 sessions                   |
+| **Code Quality**      | ✅ FULLY DONE     | Centralized components, typed data layer                 |
+| **SEO**               | ✅ FULLY DONE     | OG images, sitemap, robots.txt, JSON-LD                  |
+| **Accessibility**     | 🔲 PARTIALLY DONE | Focus styles added, reduced motion, aria labels          |
+| **Lighthouse Audit**  | 🔲 NOT STARTED    | Requires live environment                                |
+| **Browser Visual QA** | 🔲 NOT STARTED    | Requires live environment                                |
 
 ---
 
@@ -33,6 +33,7 @@ Firebase Hosting configuration is now **SUPERB** after security header improveme
 ### 1. **Content-Security-Policy (CSP) Header** ⚠️
 
 Currently NOT configured. For a documentation site this is lower priority, but if you add:
+
 - User-generated comments
 - Third-party scripts (except Plausible)
 - Inline styles/scripts beyond what's needed
@@ -73,30 +74,30 @@ Could add `Crawl-delay` for rate limiting, but not critical for docs site.
 
 ### High Priority (Do Next Session)
 
-| # | Improvement | Impact | Effort | Reason |
-|---|-------------|--------|--------|--------|
-| 1 | Add Content-Security-Policy | Security | 15min | Proactive XSS protection |
-| 2 | Add Sitemap to HSTS preload list | Security | 5min | Google requires for preload |
-| 3 | Verify Firebase deployment works | Deployment | 10min | Ensure changes deploy |
-| 4 | Add structured data for documentation pages | SEO | 20min | Enhance search results |
+| #   | Improvement                                 | Impact     | Effort | Reason                      |
+| --- | ------------------------------------------- | ---------- | ------ | --------------------------- |
+| 1   | Add Content-Security-Policy                 | Security   | 15min  | Proactive XSS protection    |
+| 2   | Add Sitemap to HSTS preload list            | Security   | 5min   | Google requires for preload |
+| 3   | Verify Firebase deployment works            | Deployment | 10min  | Ensure changes deploy       |
+| 4   | Add structured data for documentation pages | SEO        | 20min  | Enhance search results      |
 
 ### Medium Priority
 
-| # | Improvement | Impact | Effort | Reason |
-|---|-------------|--------|--------|--------|
-| 5 | Move logos from `public/` to `src/assets/` | Performance | 30min | Astro image optimization |
-| 6 | Add `loading="lazy"` to below-fold images | Performance | 10min | Faster initial load |
-| 7 | Configure Astro image service for AVIF | Performance | 15min | Better compression |
-| 8 | Add `<meta name="theme-color">` | Mobile | 5min | Better PWA experience |
+| #   | Improvement                                | Impact      | Effort | Reason                   |
+| --- | ------------------------------------------ | ----------- | ------ | ------------------------ |
+| 5   | Move logos from `public/` to `src/assets/` | Performance | 30min  | Astro image optimization |
+| 6   | Add `loading="lazy"` to below-fold images  | Performance | 10min  | Faster initial load      |
+| 7   | Configure Astro image service for AVIF     | Performance | 15min  | Better compression       |
+| 8   | Add `<meta name="theme-color">`            | Mobile      | 5min   | Better PWA experience    |
 
 ### Low Priority (Nice to Have)
 
-| # | Improvement | Impact | Effort | Reason |
-|---|-------------|--------|--------|--------|
-| 9 | Add OpenGraph video tags | Social | 10min | If video content added |
-| 10 | Add Twitter Card animations | Social | 10min | If shared on Twitter |
-| 11 | Add AMP pages | SEO | 60min | Deprecated, skip |
-| 12 | Add hreflang for i18n | SEO | 20min | Only if multiple languages |
+| #   | Improvement                 | Impact | Effort | Reason                     |
+| --- | --------------------------- | ------ | ------ | -------------------------- |
+| 9   | Add OpenGraph video tags    | Social | 10min  | If video content added     |
+| 10  | Add Twitter Card animations | Social | 10min  | If shared on Twitter       |
+| 11  | Add AMP pages               | SEO    | 60min  | Deprecated, skip           |
+| 12  | Add hreflang for i18n       | SEO    | 20min  | Only if multiple languages |
 
 ---
 
@@ -159,12 +160,14 @@ website/
 ### Type Model Analysis ✅ STRONG
 
 **Good patterns:**
+
 - `FeatureIcon` union type for icon keys
 - `UseCaseIcon` union type for use case icons
 - `Generator` interface with all properties typed
 - `Section`, `PhaseCard`, `ComparisonItem` types
 
 **Could improve:**
+
 - `Section` type is generic `Record<string, any>` — could be more specific
 - `FeatureGrid` props could use `ComponentProps` pattern
 - No Zod schema validation for data files
@@ -177,7 +180,7 @@ website/
 
 ```typescript
 // src/data/schemas.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 export const GeneratorSchema = z.object({
   name: z.string(),
@@ -193,11 +196,36 @@ export type Generator = z.infer<typeof GeneratorSchema>;
 
 ```typescript
 // Current
-export type FeatureIcon = 'lightning' | 'sliders' | 'glob' | 'chart' | 'folder' | 'database' | 'cog' | 'refresh' | 'bolt' | 'check' | 'arrow-external' | 'arrow-right';
+export type FeatureIcon =
+  | "lightning"
+  | "sliders"
+  | "glob"
+  | "chart"
+  | "folder"
+  | "database"
+  | "cog"
+  | "refresh"
+  | "bolt"
+  | "check"
+  | "arrow-external"
+  | "arrow-right";
 
 // Better
-export const FEATURE_ICON_KEYS = ['lightning', 'sliders', 'glob', 'chart', 'folder', 'database', 'cog', 'refresh', 'bolt', 'check', 'arrow-external', 'arrow-right'] as const;
-export type FeatureIcon = typeof FEATURE_ICON_KEYS[number];
+export const FEATURE_ICON_KEYS = [
+  "lightning",
+  "sliders",
+  "glob",
+  "chart",
+  "folder",
+  "database",
+  "cog",
+  "refresh",
+  "bolt",
+  "check",
+  "arrow-external",
+  "arrow-right",
+] as const;
+export type FeatureIcon = (typeof FEATURE_ICON_KEYS)[number];
 ```
 
 ### 3. Use `satisfies` Operator for Data Objects
@@ -212,14 +240,14 @@ export const generators = [
 
 ## Well-Established Libraries to Consider
 
-| Library | Purpose | When to Add |
-|---------|---------|-------------|
-| **Zod** | Runtime validation | If data files need runtime checks |
-| **tRPC** | Type-safe APIs | If adding dynamic content |
-| **Astro-i18n** | Internationalization | If adding other languages |
-| **Partytown** | Analytics offloading | If Plausible slows page |
-| **Sentry** | Error tracking | After deployment |
-| **Upptime** | Uptime monitoring | After deployment |
+| Library        | Purpose              | When to Add                       |
+| -------------- | -------------------- | --------------------------------- |
+| **Zod**        | Runtime validation   | If data files need runtime checks |
+| **tRPC**       | Type-safe APIs       | If adding dynamic content         |
+| **Astro-i18n** | Internationalization | If adding other languages         |
+| **Partytown**  | Analytics offloading | If Plausible slows page           |
+| **Sentry**     | Error tracking       | After deployment                  |
+| **Upptime**    | Uptime monitoring    | After deployment                  |
 
 ---
 
@@ -238,11 +266,13 @@ export const generators = [
 **❓ Should we add a Content-Security-Policy (CSP) header to firebase.json?**
 
 **Arguments for:**
+
 - Proactive XSS protection
 - Industry best practice
 - Required for certain compliance (PCI-DSS, etc.)
 
 **Arguments against:**
+
 - Documentation site with GitHub links — may need unsafe-inline for styles
 - Plausible analytics may need adjustments
 - Debugging CSP issues is painful
@@ -267,11 +297,11 @@ a3f8124 docs(status): comprehensive post-benchmark-integration status report
 
 ## Files Modified Today
 
-| File | Change | Lines |
-|------|--------|-------|
-| firebase.json | Added HSTS + security headers | +8 |
-| Footer.astro | Added data-animate | +1 |
-| changelog.mdx | Added recent changes | +6 |
+| File          | Change                        | Lines |
+| ------------- | ----------------------------- | ----- |
+| firebase.json | Added HSTS + security headers | +8    |
+| Footer.astro  | Added data-animate            | +1    |
+| changelog.mdx | Added recent changes          | +6    |
 
 ---
 
@@ -292,8 +322,8 @@ a3f8124 docs(status): comprehensive post-benchmark-integration status report
 
 ---
 
-*Report generated: 2026-05-04 12:48*
-*Next action: Deploy changes + decide on CSP header*
+_Report generated: 2026-05-04 12:48_
+_Next action: Deploy changes + decide on CSP header_
 
 ---
 
@@ -319,34 +349,34 @@ a3f8124 docs(status): comprehensive post-benchmark-integration status report
     "headers": [
       {
         "source": "**/*.@(css|js|jpg|jpeg|gif|png|svg|ico|webp|avif|woff|woff2)",
-        "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
       },
       {
         "source": "**/*.html",
-        "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
       },
       {
         "source": "**",
         "headers": [
-          { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=63072000; includeSubDomains; preload"
+          },
           { "key": "X-Content-Type-Options", "value": "nosniff" },
           { "key": "X-Frame-Options", "value": "DENY" },
           { "key": "X-XSS-Protection", "value": "1; mode=block" },
           { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+          },
           { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
           { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
         ]
       },
       {
         "source": "404.html",
-        "headers": [
-          { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }]
       }
     ]
   }
@@ -357,16 +387,16 @@ a3f8124 docs(status): comprehensive post-benchmark-integration status report
 
 ## Appendix B: Security Headers Explained
 
-| Header | Value | Purpose |
-|--------|-------|---------|
-| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Force HTTPS for 2 years, include subdomains, submit to preload list |
-| `X-Content-Type-Options` | `nosniff` | Prevent MIME-type sniffing attacks |
-| `X-Frame-Options` | `DENY` | Prevent clickjacking via iframe embedding |
-| `X-XSS-Protection` | `1; mode=block` | Legacy XSS filter (modern browsers use CSP) |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | Control referrer information shared |
-| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Disable unused browser features |
-| `Cross-Origin-Resource-Policy` | `same-origin` | Prevent cross-origin resource loading attacks |
-| `Cross-Origin-Opener-Policy` | `same-origin` | Prevent cross-origin window access |
+| Header                         | Value                                                          | Purpose                                                             |
+| ------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `Strict-Transport-Security`    | `max-age=63072000; includeSubDomains; preload`                 | Force HTTPS for 2 years, include subdomains, submit to preload list |
+| `X-Content-Type-Options`       | `nosniff`                                                      | Prevent MIME-type sniffing attacks                                  |
+| `X-Frame-Options`              | `DENY`                                                         | Prevent clickjacking via iframe embedding                           |
+| `X-XSS-Protection`             | `1; mode=block`                                                | Legacy XSS filter (modern browsers use CSP)                         |
+| `Referrer-Policy`              | `strict-origin-when-cross-origin`                              | Control referrer information shared                                 |
+| `Permissions-Policy`           | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Disable unused browser features                                     |
+| `Cross-Origin-Resource-Policy` | `same-origin`                                                  | Prevent cross-origin resource loading attacks                       |
+| `Cross-Origin-Opener-Policy`   | `same-origin`                                                  | Prevent cross-origin window access                                  |
 
 ---
 
@@ -403,19 +433,20 @@ Once domain is verified and HSTS header is live:
 
 ## Appendix E: Excluded Headers & Rationale
 
-| Header | Reason for Exclusion |
-|--------|---------------------|
-| `Content-Security-Policy` | Low risk static site; would complicate Plausible analytics |
-| `HPKP` (Public-Key-Pins) | **Deprecated** — high risk of permanently breaking site |
-| `Expect-CT` | Optional; HSTS provides similar protection |
-| `X-Permitted-Cross-Domain-Policies` | Not applicable — no Flash/ PDFs |
-| `Clear-Site-Data` | Would clear user data on logout — not needed |
+| Header                              | Reason for Exclusion                                       |
+| ----------------------------------- | ---------------------------------------------------------- |
+| `Content-Security-Policy`           | Low risk static site; would complicate Plausible analytics |
+| `HPKP` (Public-Key-Pins)            | **Deprecated** — high risk of permanently breaking site    |
+| `Expect-CT`                         | Optional; HSTS provides similar protection                 |
+| `X-Permitted-Cross-Domain-Policies` | Not applicable — no Flash/ PDFs                            |
+| `Clear-Site-Data`                   | Would clear user data on logout — not needed               |
 
 ---
 
 ## Appendix F: CDN Performance Notes
 
 Firebase Hosting CDN automatically:
+
 - ✅ Serves content from edge locations globally
 - ✅ Compresses with gzip/Brotli (negotiated with client)
 - ✅ Adds `Vary: Accept-Encoding` header
@@ -426,13 +457,13 @@ Firebase Hosting CDN automatically:
 
 ## Appendix G: Monitoring & Observability
 
-| Service | Purpose | Status |
-|---------|---------|--------|
-| **Plausible Analytics** | Privacy-friendly page analytics | ✅ Installed |
-| **Firebase Console** | Hosting logs, bandwidth, errors | ✅ Available |
-| **GitHub Actions** | CI/CD status | ✅ Configured |
-| **PageFind** | Full-text search | ✅ Built-in |
+| Service                 | Purpose                         | Status        |
+| ----------------------- | ------------------------------- | ------------- |
+| **Plausible Analytics** | Privacy-friendly page analytics | ✅ Installed  |
+| **Firebase Console**    | Hosting logs, bandwidth, errors | ✅ Available  |
+| **GitHub Actions**      | CI/CD status                    | ✅ Configured |
+| **PageFind**            | Full-text search                | ✅ Built-in   |
 
 ---
 
-*Appendix added: 2026-05-04 12:50*
+_Appendix added: 2026-05-04 12:50_
