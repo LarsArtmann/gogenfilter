@@ -13,7 +13,7 @@ export const generators: Generator[] = [
   {
     name: "mockgen",
     file: "_mock.go",
-    url: "https://github.com/golang/mock",
+    url: "https://github.com/uber-go/mock",
     logo: "/logos/mockgen.svg",
   },
   { name: "moq", file: "_moq.go", url: "https://github.com/matryer/moq", logo: "/logos/moq.png" },
