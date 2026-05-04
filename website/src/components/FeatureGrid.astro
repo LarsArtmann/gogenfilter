@@ -43,17 +43,17 @@ const icons: Record<string, string> = {
 ---
 
 <div>
-  <div class="text-center" style="margin-bottom: 3rem;">
-    <h2 class="section-title">Engineered for performance.</h2>
-    <p class="section-desc">Every API decision optimized for real-world static analysis pipelines.</p>
+  <div class="text-center mb-12">
+    <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Engineered for performance.</h2>
+    <p class="text-lg text-text-muted">Every API decision optimized for real-world static analysis pipelines.</p>
   </div>
 
-  <div class="feature-grid">
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
-      <div class="feature-card">
-        <div class="feature-icon" set:html={icons[feature.icon]} />
-        <h3 class="feature-title">{feature.title}</h3>
-        <p class="feature-desc">{feature.desc}</p>
+      <div class="p-6 rounded-xl border border-border bg-bg-card hover:border-border-hover transition-colors duration-150">
+        <div class="text-accent mb-3" set:html={icons[feature.icon]} />
+        <h3 class="font-semibold text-text-primary mb-2">{feature.title}</h3>
+        <p class="text-sm text-text-muted leading-relaxed">{feature.desc}</p>
       </div>
     ))}
   </div>
