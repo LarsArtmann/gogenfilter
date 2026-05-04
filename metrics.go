@@ -11,14 +11,13 @@ import (
 // MetricsMixin provides common fields for filter metrics.
 // It is embedded in FilterStats to provide read-only access to metrics data.
 //
-// The filteredByReason field is intentionally unexported to enforce
-// encapsulation: callers must use the FilteredBy() and TotalFiltered()
-// methods rather than reading or mutating the map directly. This prevents
-// external code from breaking the invariant that counts are non-negative
-// and consistent with the total.
+// Unexported fields enforce encapsulation: callers must use the FilteredBy(),
+// FilteredFiles(), and TotalFiltered() methods rather than reading or mutating
+// data directly. This prevents external code from breaking invariants.
 type MetricsMixin struct {
 	TotalFilesChecked TotalFilesChecked
 	filteredByReason  map[FilterReason]int
+	filteredFiles     map[FilterReason][]string
 }
 
 // Metrics tracks filter statistics for analysis and debugging.
@@ -26,8 +25,6 @@ type Metrics struct {
 	MetricsMixin
 
 	mu sync.RWMutex
-
-	filteredFiles map[FilterReason][]string
 }
 
 // NewMetrics creates a new filter metrics tracker.
@@ -36,9 +33,9 @@ func NewMetrics() *Metrics {
 		MetricsMixin: MetricsMixin{
 			TotalFilesChecked: 0,
 			filteredByReason:  make(map[FilterReason]int),
+			filteredFiles:     make(map[FilterReason][]string),
 		},
-		mu:            sync.RWMutex{},
-		filteredFiles: make(map[FilterReason][]string),
+		mu: sync.RWMutex{},
 	}
 }
 
@@ -77,6 +74,7 @@ func (m *Metrics) GetStats() FilterStats {
 			MetricsMixin: MetricsMixin{
 				TotalFilesChecked: 0,
 				filteredByReason:  nil,
+				filteredFiles:     nil,
 			},
 		}
 	}
@@ -86,10 +84,18 @@ func (m *Metrics) GetStats() FilterStats {
 
 	filteredByReason := maps.Clone(m.filteredByReason)
 
+	clonedFiles := make(map[FilterReason][]string, len(m.filteredFiles))
+	for reason, files := range m.filteredFiles {
+		cloned := make([]string, len(files))
+		copy(cloned, files)
+		clonedFiles[reason] = cloned
+	}
+
 	return FilterStats{
 		MetricsMixin: MetricsMixin{
 			TotalFilesChecked: m.TotalFilesChecked,
 			filteredByReason:  filteredByReason,
+			filteredFiles:     clonedFiles,
 		},
 	}
 }
@@ -114,6 +120,21 @@ func (fs FilterStats) TotalFiltered() int {
 // Returns 0 if no files were filtered for that reason.
 func (fs FilterStats) FilteredBy(reason FilterReason) int {
 	return fs.filteredByReason[reason]
+}
+
+// FilteredFiles returns the file paths filtered for a specific reason.
+// Returns nil if no files were filtered for that reason.
+// The returned slice is a copy and safe to mutate.
+func (fs FilterStats) FilteredFiles(reason FilterReason) []string {
+	files := fs.filteredFiles[reason]
+	if files == nil {
+		return nil
+	}
+
+	cloned := make([]string, len(files))
+	copy(cloned, files)
+
+	return cloned
 }
 
 func (fs FilterStats) String() string {

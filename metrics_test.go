@@ -12,6 +12,9 @@ func TestFilterMetrics(t *testing.T) {
 	t.Run("nil metrics handler", testNilMetricsHandler)
 	t.Run("String with zero state", testStringWithZeroState)
 	t.Run("String with data", testStringWithData)
+	t.Run("FilteredFiles returns paths by reason", testFilteredFilesPaths)
+	t.Run("FilteredFiles returns nil for unknown reason", testFilteredFilesUnknownReason)
+	t.Run("FilteredFiles returns defensive copy", testFilteredFilesDefensiveCopy)
 }
 
 func testTracksFilteredByReason(t *testing.T) {
@@ -79,4 +82,52 @@ func testStringWithData(t *testing.T) {
 	got := stats.String()
 
 	assertStringContainsAll(t, got, "checked=3", "filtered=3", "sqlc=2", "templ=1")
+}
+
+func testFilteredFilesPaths(t *testing.T) {
+	t.Parallel()
+
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+	metrics.record("db/query.sql.go", ReasonSQLC)
+	metrics.record("header_templ.go", ReasonTempl)
+
+	stats := metrics.GetStats()
+
+	sqlcFiles := stats.FilteredFiles(ReasonSQLC)
+	assertEqual(t, "sqlc file count", len(sqlcFiles), 2)
+	assertStringContainsAll(t, sqlcFiles[0], "db/models.go")
+
+	templFiles := stats.FilteredFiles(ReasonTempl)
+	assertEqual(t, "templ file count", len(templFiles), 1)
+	assertStringContainsAll(t, templFiles[0], "header_templ.go")
+}
+
+func testFilteredFilesUnknownReason(t *testing.T) {
+	t.Parallel()
+
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+
+	stats := metrics.GetStats()
+	unknownFiles := stats.FilteredFiles(ReasonMoq)
+
+	if unknownFiles != nil {
+		t.Errorf("expected nil for unknown reason, got %v", unknownFiles)
+	}
+}
+
+func testFilteredFilesDefensiveCopy(t *testing.T) {
+	t.Parallel()
+
+	metrics := NewMetrics()
+	metrics.record("db/models.go", ReasonSQLC)
+
+	stats := metrics.GetStats()
+
+	files := stats.FilteredFiles(ReasonSQLC)
+	files[0] = "mutated.go"
+
+	original := stats.FilteredFiles(ReasonSQLC)
+	assertStringContainsAll(t, original[0], "db/models.go")
 }
