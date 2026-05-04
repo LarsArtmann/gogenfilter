@@ -73,6 +73,9 @@ jobs:
 
       - run: npm run build
 
+      - name: HTML Validation
+        run: npx html-validate --config .htmlvalidate.json dist/**/*.html || true
+
       - uses: actions/upload-artifact@v4
         with:
           name: website-dist
