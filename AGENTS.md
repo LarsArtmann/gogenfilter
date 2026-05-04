@@ -27,17 +27,17 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 ### Key Source Files
 
-| File           | Purpose                                                                                                                                                                                                                           |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `ShouldFilter` returns `(bool, error)`. `MustFilter` panics on error. Enabled when options/patterns are set. |
-| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                                                             |
-| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                                                           |
-| `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                                    |
-| `sqlc.go`      | SQLC config discovery and parsing (v1 and v2 formats, Go/JSON/Codegen output dirs)                                                                                                                                                |
-| `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                                          |
-| `project.go`   | Project root discovery                                                                                                                                                                                                            |
-| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                                                        |
-| `phantom.go`   | Phantom type constructors                                                                                                                                                                                                         |
+| File           | Purpose                                                                                                                                                                                       |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `Filter` returns `(bool, error)`. Enabled when options/patterns are set. |
+| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                         |
+| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                       |
+| `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                |
+| `sqlc.go`      | SQLC config discovery and parsing (v1 and v2 formats, Go/JSON/Codegen output dirs)                                                                                                            |
+| `errors.go`    | Branded error types with sentinel errors                                                                                                                                                      |
+| `project.go`   | Project root discovery                                                                                                                                                                        |
+| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                    |
+| `phantom.go`   | Phantom type constructors                                                                                                                                                                     |
 
 ### Website
 
@@ -134,11 +134,8 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
-// ShouldFilter returns (bool, error) — I/O errors propagate
-filtered, err := f.ShouldFilter("file.go")
-
-// MustFilter panics on error — for tests/benchmarks
-filtered := f.MustFilter("file.go")
+// Filter returns (bool, error) — I/O errors propagate
+filtered, err := f.Filter("file.go")
 
 // Variadic DetectReason (no I/O)
 reason := gogenfilter.DetectReason("file.go", content,

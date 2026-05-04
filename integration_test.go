@@ -39,16 +39,16 @@ func assertFilterResult(t *testing.T, path string, got bool, expectedReason Filt
 
 	expected := expectedReason != ReasonNotFiltered
 	if got != expected {
-		t.Errorf("ShouldFilter(%q) = %v, want %v", path, got, expected)
+		t.Errorf("Filter(%q) = %v, want %v", path, got, expected)
 	}
 }
 
-func mustShouldFilterFromFS(t *testing.T, f *Filter, path string) bool {
+func filterFromFS(t *testing.T, f *Filter, path string) bool {
 	t.Helper()
 
-	got, err := f.ShouldFilter(path)
+	got, err := f.Filter(path)
 	if err != nil {
-		t.Fatalf("ShouldFilter(%q) error: %v", path, err)
+		t.Fatalf("Filter(%q) error: %v", path, err)
 	}
 
 	return got
@@ -86,7 +86,7 @@ func TestIntegrationFilterWithEmbedFS(t *testing.T) {
 
 			f := NewFilter(WithFilterOptions(FilterAll), WithFS(testdataFS))
 
-			got := mustShouldFilterFromFS(t, f, fixture.path)
+			got := filterFromFS(t, f, fixture.path)
 
 			assertFilterResult(t, fixture.path, got, fixture.expectedReason)
 		})
@@ -109,7 +109,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 
 			f := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
-			got := mustShouldFilterFromFS(t, f, fixture.path)
+			got := filterFromFS(t, f, fixture.path)
 
 			assertFilterResult(t, fixture.path, got, fixture.expectedReason)
 		})
@@ -149,13 +149,13 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 
 			f := NewFilter(WithFilterOptions(tc.option), WithFS(mapFS))
 
-			got, err := f.ShouldFilter(tc.path)
+			got, err := f.Filter(tc.path)
 			if err != nil {
-				t.Fatalf("ShouldFilter(%q) error: %v", tc.path, err)
+				t.Fatalf("Filter(%q) error: %v", tc.path, err)
 			}
 
 			if got != tc.want {
-				t.Errorf("ShouldFilter(%q) with %v = %v, want %v", tc.path, tc.option, got, tc.want)
+				t.Errorf("Filter(%q) with %v = %v, want %v", tc.path, tc.option, got, tc.want)
 			}
 		})
 	}

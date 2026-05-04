@@ -74,7 +74,7 @@ type Filter struct {
 }
 
 // NewFilter creates a new filter configured with the given functional options.
-// A filter with no options is disabled — ShouldFilter always returns false.
+// A filter with no options is disabled — Filter always returns false.
 // A filter is enabled when it has filter options, include patterns, or exclude patterns.
 //
 // Examples:
@@ -120,9 +120,9 @@ func (f *Filter) FilterReasons() []FilterReason {
 	return reasons
 }
 
-// ShouldFilter determines if a file should be filtered out (excluded from analysis).
+// Filter determines if a file should be filtered out (excluded from analysis).
 // Returns an error if the file could not be read for content-based detection.
-func (f *Filter) ShouldFilter(filePath string) (bool, error) {
+func (f *Filter) Filter(filePath string) (bool, error) {
 	if !f.IsEnabled() {
 		return false, nil
 	}
@@ -132,17 +132,6 @@ func (f *Filter) ShouldFilter(filePath string) (bool, error) {
 	}
 
 	return f.shouldFilterWithExcludes(filePath)
-}
-
-// MustFilter is like ShouldFilter but panics on error.
-// Use this in property tests and benchmarks where errors are unexpected.
-func (f *Filter) MustFilter(filePath string) bool {
-	filtered, err := f.ShouldFilter(filePath)
-	if err != nil {
-		panic("gogenfilter: MustFilter error: " + err.Error())
-	}
-
-	return filtered
 }
 
 // GetStats returns a snapshot of filter statistics.

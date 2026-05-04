@@ -180,7 +180,7 @@ func TestWithFilterOptionsPanicsOnInvalid(t *testing.T) {
 	})
 }
 
-func TestShouldFilter(t *testing.T) {
+func TestFilter(t *testing.T) {
 	t.Parallel()
 
 	t.Run("disabled filter never filters", func(t *testing.T) {
@@ -188,13 +188,13 @@ func TestShouldFilter(t *testing.T) {
 
 		f := NewFilter()
 
-		if mustShouldFilter(t, f, "any/file.go") {
+		if mustFilter(t, f, "any/file.go") {
 			t.Error("Disabled filter should not filter")
 		}
 	})
 }
 
-func TestShouldFilterWithIncludes(t *testing.T) {
+func TestFilterWithIncludes(t *testing.T) {
 	t.Parallel()
 
 	t.Run("matching include pattern still detects generated code", func(t *testing.T) {
@@ -205,7 +205,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			WithIncludePatterns("models.go"),
 		)
 
-		if !mustShouldFilter(t, filter, "models.go") {
+		if !mustFilter(t, filter, "models.go") {
 			t.Error("expected generated file matching include pattern to still be filtered")
 		}
 	})
@@ -223,7 +223,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			WithFS(mapFS),
 		)
 
-		if mustShouldFilter(t, filter, "main.go") {
+		if mustFilter(t, filter, "main.go") {
 			t.Error("expected non-generated file matching include pattern to not be filtered")
 		}
 	})
@@ -235,7 +235,7 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			WithIncludePatterns("pkg/*.go"),
 		)
 
-		if !mustShouldFilter(t, filter, "other/file.go") {
+		if !mustFilter(t, filter, "other/file.go") {
 			t.Error("expected non-matching path to be filtered")
 		}
 
@@ -251,33 +251,33 @@ func TestShouldFilterWithIncludes(t *testing.T) {
 			WithIncludePatterns("*.go"),
 		)
 
-		if mustShouldFilter(t, filter, "main.go") {
+		if mustFilter(t, filter, "main.go") {
 			t.Error("expected *.go to match main.go")
 		}
 	})
 }
 
-func TestShouldFilterWithIncludesMultiple(t *testing.T) {
+func TestFilterWithIncludesMultiple(t *testing.T) {
 	t.Parallel()
 
 	filter := NewFilter(
 		WithIncludePatterns("keep.go", "safe.go"),
 	)
 
-	if mustShouldFilter(t, filter, "keep.go") {
+	if mustFilter(t, filter, "keep.go") {
 		t.Error("expected keep.go to match")
 	}
 
-	if mustShouldFilter(t, filter, "safe.go") {
+	if mustFilter(t, filter, "safe.go") {
 		t.Error("expected safe.go to match")
 	}
 
-	if !mustShouldFilter(t, filter, "remove.go") {
+	if !mustFilter(t, filter, "remove.go") {
 		t.Error("expected remove.go to be filtered")
 	}
 }
 
-func TestShouldFilterIntegration(t *testing.T) {
+func TestFilterIntegration(t *testing.T) {
 	t.Parallel()
 
 	for _, tt := range shouldFilterTestCases() {
@@ -327,7 +327,7 @@ func TestFilterWithMetrics(t *testing.T) {
 	)
 
 	for name := range files {
-		_, _ = fltr.ShouldFilter(name)
+		_, _ = fltr.Filter(name)
 	}
 
 	stats := fltr.GetStats()

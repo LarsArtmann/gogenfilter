@@ -6,7 +6,7 @@ import (
 	"testing/fstest"
 )
 
-func TestShouldFilterEdgeCases(t *testing.T) {
+func TestFilterEdgeCases(t *testing.T) {
 	t.Parallel()
 
 	t.Run("empty path returns error", func(t *testing.T) {
@@ -14,7 +14,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 
 		filter := NewFilter(WithFilterOptions(FilterAll))
 
-		_, err := filter.ShouldFilter("")
+		_, err := filter.Filter("")
 		if err == nil {
 			t.Error("expected error for empty path")
 		}
@@ -50,7 +50,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 					caze.filePath: newMapFile(caze.content),
 				}
 
-				assertShouldFilter(t, mapFS, caze.filePath, true)
+				assertFilter(t, mapFS, caze.filePath, true)
 			})
 		}
 	})
@@ -66,7 +66,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 
 		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
-		filtered, err := filter.ShouldFilter(longName)
+		filtered, err := filter.Filter(longName)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -81,7 +81,7 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 
 		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(nil))
 
-		filtered, err := filter.ShouldFilter("nonexistent_deffile_12345.go")
+		filtered, err := filter.Filter("nonexistent_deffile_12345.go")
 		if err == nil {
 			t.Error("expected error for nonexistent file with OS FS")
 		}
@@ -89,29 +89,5 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 		if filtered {
 			t.Error("expected nonexistent file to not be filtered even on error")
 		}
-	})
-
-	t.Run("MustFilter panics on error", func(t *testing.T) {
-		t.Parallel()
-
-		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(nil))
-
-		defer func() {
-			recovered := recover()
-			if recovered == nil {
-				t.Fatal("expected MustFilter to panic on error")
-			}
-
-			msg, ok := recovered.(string)
-			if !ok {
-				t.Fatalf("expected string panic, got %T: %v", recovered, recovered)
-			}
-
-			if !strings.Contains(msg, "gogenfilter: MustFilter error:") {
-				t.Errorf("panic message should contain prefix, got: %s", msg)
-			}
-		}()
-
-		filter.MustFilter("nonexistent_deffile_12345.go")
 	})
 }
