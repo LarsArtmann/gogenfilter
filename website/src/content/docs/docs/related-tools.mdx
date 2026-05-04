@@ -54,10 +54,10 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 For intentionally partial code snippets, use a skip directive before the code block:
 
-{/* skip-validate */}
+<!-- skip-validate -->
 
 ```markdown
-{/* skip-validate */}
+<!-- skip-validate -->
 
 ```go
 type MyStruct struct {
@@ -66,7 +66,7 @@ type MyStruct struct {
 ```
 ```
 
-Available directives: `{/* skip-validate */}`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
+Available directives: `<!-- skip-validate -->`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
 
 ### Library Usage
 
