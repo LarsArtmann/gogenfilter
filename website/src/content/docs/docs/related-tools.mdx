@@ -9,10 +9,10 @@ description: Tools that complement gogenfilter in your Go toolchain.
 
 ### Why It Complements gogenfilter
 
-| Tool | What It Does | Scope |
-|------|-------------|-------|
-| **gogenfilter** | Detects and filters auto-generated Go source files | Production code |
-| **md-go-validator** | Validates code blocks in documentation files | Documentation |
+| Tool                | What It Does                                       | Scope           |
+| ------------------- | -------------------------------------------------- | --------------- |
+| **gogenfilter**     | Detects and filters auto-generated Go source files | Production code |
+| **md-go-validator** | Validates code blocks in documentation files       | Documentation   |
 
 Use them together to keep both your codebase and documentation healthy.
 
@@ -54,7 +54,7 @@ Add to your GitHub Actions workflow alongside gogenfilter:
 
 For intentionally partial code snippets, use a skip directive before the code block:
 
-```markdown
+````markdown
 <!-- skip-validate -->
 
 ```go
@@ -62,7 +62,9 @@ type MyStruct struct {
     Name string
 }
 ```
-```
+````
+
+````
 
 Available directives: `<!-- skip-validate -->`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
 
@@ -99,4 +101,4 @@ func main() {
         }
     }
 }
-```
+````

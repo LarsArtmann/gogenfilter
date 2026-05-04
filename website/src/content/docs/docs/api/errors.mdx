@@ -44,15 +44,15 @@ type SQLCConfigError struct {
 
 All error codes are defined as `ErrorCode` constants. Use `AllErrorCodes()` to retrieve them programmatically.
 
-| Constant | Code | Help |
-|---|---|---|
-| `CodeProjectRootNotFound` | `project_root_not_found` | Ensure the directory is within a Go project containing a go.mod file or other project marker file. |
-| `CodeProjectRootInvalidPath` | `project_root_invalid_path` | Verify the start path exists and is a valid directory. |
-| `CodeSQLCConfigRead` | `sqlc_config_read` | Check that the sqlc config file exists and has appropriate read permissions. |
-| `CodeSQLCConfigParse` | `sqlc_config_parse` | Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format. |
-| `CodeSQLCConfigWalk` | `sqlc_config_walk` | Ensure the search path exists and is accessible for directory traversal. |
-| `CodeSQLCConfigCollect` | `sqlc_config_collect` | Verify that all sqlc config files are valid and accessible. |
-| `CodeSQLCConfigFind` | `sqlc_config_find` | Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file. |
+| Constant                     | Code                        | Help                                                                                                     |
+| ---------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `CodeProjectRootNotFound`    | `project_root_not_found`    | Ensure the directory is within a Go project containing a go.mod file or other project marker file.       |
+| `CodeProjectRootInvalidPath` | `project_root_invalid_path` | Verify the start path exists and is a valid directory.                                                   |
+| `CodeSQLCConfigRead`         | `sqlc_config_read`          | Check that the sqlc config file exists and has appropriate read permissions.                             |
+| `CodeSQLCConfigParse`        | `sqlc_config_parse`         | Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format. |
+| `CodeSQLCConfigWalk`         | `sqlc_config_walk`          | Ensure the search path exists and is accessible for directory traversal.                                 |
+| `CodeSQLCConfigCollect`      | `sqlc_config_collect`       | Verify that all sqlc config files are valid and accessible.                                              |
+| `CodeSQLCConfigFind`         | `sqlc_config_find`          | Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file.                              |
 
 ```go
 codes := gogenfilter.AllErrorCodes()
@@ -64,15 +64,15 @@ fmt.Println(len(codes))
 
 Sentinel errors have zero-value domain fields — matching is by `ErrorCode` only. Use `errors.Is` for comparison.
 
-| Sentinel | Error Type | Code |
-|---|---|---|
-| `ErrProjectRootNotFound` | `*ProjectRootError` | `project_root_not_found` |
+| Sentinel                    | Error Type          | Code                        |
+| --------------------------- | ------------------- | --------------------------- |
+| `ErrProjectRootNotFound`    | `*ProjectRootError` | `project_root_not_found`    |
 | `ErrProjectRootInvalidPath` | `*ProjectRootError` | `project_root_invalid_path` |
-| `ErrSQLCConfigRead` | `*SQLCConfigError` | `sqlc_config_read` |
-| `ErrSQLCConfigParse` | `*SQLCConfigError` | `sqlc_config_parse` |
-| `ErrSQLCConfigWalk` | `*SQLCConfigError` | `sqlc_config_walk` |
-| `ErrSQLCConfigCollect` | `*SQLCConfigError` | `sqlc_config_collect` |
-| `ErrSQLCConfigFind` | `*SQLCConfigError` | `sqlc_config_find` |
+| `ErrSQLCConfigRead`         | `*SQLCConfigError`  | `sqlc_config_read`          |
+| `ErrSQLCConfigParse`        | `*SQLCConfigError`  | `sqlc_config_parse`         |
+| `ErrSQLCConfigWalk`         | `*SQLCConfigError`  | `sqlc_config_walk`          |
+| `ErrSQLCConfigCollect`      | `*SQLCConfigError`  | `sqlc_config_collect`       |
+| `ErrSQLCConfigFind`         | `*SQLCConfigError`  | `sqlc_config_find`          |
 
 ## Interfaces
 
