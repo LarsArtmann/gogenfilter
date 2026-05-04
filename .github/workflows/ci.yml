@@ -8,32 +8,26 @@ on:
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version: ["1.26"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: "1.26"
 
-      - name: Download dependencies
-        run: go mod download
+      - run: go mod download
 
-      - name: Verify dependencies
-        run: go mod verify
+      - run: go mod verify
 
-      - name: Build
-        run: go build ./...
+      - run: go build ./...
 
-      - name: Test
-        run: go test -race -coverprofile=coverage.out ./...
+      - run: go test -race -coverprofile=coverage.out ./...
 
       - name: Coverage threshold
         run: |
@@ -44,8 +38,7 @@ jobs:
             exit 1
           fi
 
-      - name: Vet
-        run: go vet ./...
+      - run: go vet ./...
 
   lint:
     name: Lint
@@ -60,3 +53,49 @@ jobs:
       - uses: golangci/golangci-lint-action@v7
         with:
           version: v2
+
+  build-website:
+    name: Build Website
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website-dist
+          path: website/dist/
+
+  deploy-website:
+    name: Deploy Website
+    needs: build-website
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: website-dist
+          path: website/dist/
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: lars-software
+          channelId: live
+          target: gogenfilter
+          entryPoint: website
