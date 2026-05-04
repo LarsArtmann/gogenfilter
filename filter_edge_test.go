@@ -90,4 +90,28 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 			t.Error("expected nonexistent file to not be filtered even on error")
 		}
 	})
+
+	t.Run("MustFilter panics on error", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(nil))
+
+		defer func() {
+			r := recover()
+			if r == nil {
+				t.Fatal("expected MustFilter to panic on error")
+			}
+
+			msg, ok := r.(string)
+			if !ok {
+				t.Fatalf("expected string panic, got %T: %v", r, r)
+			}
+
+			if !strings.Contains(msg, "gogenfilter: MustFilter error:") {
+				t.Errorf("panic message should contain prefix, got: %s", msg)
+			}
+		}()
+
+		filter.MustFilter("nonexistent_deffile_12345.go")
+	})
 }
