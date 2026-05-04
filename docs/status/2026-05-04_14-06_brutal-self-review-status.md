@@ -63,14 +63,14 @@ No.
 
 ### Q7: Ghost Systems
 
-| System | Status | Issue |
-|--------|--------|-------|
-| jscpd in CI | Ghost | Runs but doesn't fail the build — only outputs to console |
-| Codecov step | Ghost | Runs but has no token — fails silently |
-| flake.nix `validate-docs` | Ghost | Completely broken — `go install @latest` never works |
-| Browser visual QA | Ghost | Never done |
-| Lighthouse audit | Ghost | Never done |
-| 22 archived docs | Ghost | Noise, should be deleted |
+| System                    | Status | Issue                                                     |
+| ------------------------- | ------ | --------------------------------------------------------- |
+| jscpd in CI               | Ghost  | Runs but doesn't fail the build — only outputs to console |
+| Codecov step              | Ghost  | Runs but has no token — fails silently                    |
+| flake.nix `validate-docs` | Ghost  | Completely broken — `go install @latest` never works      |
+| Browser visual QA         | Ghost  | Never done                                                |
+| Lighthouse audit          | Ghost  | Never done                                                |
+| 22 archived docs          | Ghost  | Noise, should be deleted                                  |
 
 ### Q8: Scope Creep?
 
@@ -82,12 +82,12 @@ Yes. Hours spent writing status reports about fixes instead of committing fixes.
 
 ### Q10: Split Brains?
 
-| Location | Severity | Status |
-|----------|----------|--------|
+| Location                                                     | Severity     | Status                 |
+| ------------------------------------------------------------ | ------------ | ---------------------- |
 | `filter.go` (source) has `ShouldFilter`; tests have `Filter` | **CRITICAL** | FIXED — now consistent |
-| `types.go` package doc still mentioned `ShouldFilter` | MEDIUM | FIXED in this session |
-| `flake.nix` validate-docs broken | HIGH | FIXED in this session |
-| 3 test helper functions still used old naming | LOW | FIXED in this session |
+| `types.go` package doc still mentioned `ShouldFilter`        | MEDIUM       | FIXED in this session  |
+| `flake.nix` validate-docs broken                             | HIGH         | FIXED in this session  |
+| 3 test helper functions still used old naming                | LOW          | FIXED in this session  |
 
 ### Q11: Testing
 
@@ -102,19 +102,19 @@ Yes. Hours spent writing status reports about fixes instead of committing fixes.
 
 ### Split-Brain Fixes
 
-| File | Change | Verified |
-|------|--------|---------|
-| `types.go` | Updated package doc: `ShouldFilter` → `Filter` | ✅ |
-| `helpers_test.go` | Renamed `newShouldFilterTest` → `newFilterTest` | ✅ |
-| `filter_mapfs_test.go` | Renamed `TestShouldFilterExcludePattern` → `TestFilterExcludePattern` | ✅ |
-| `testdata_test.go` | Updated all 8 calls to `newFilterTest` | ✅ |
-| `website/flake.nix` | `validate-docs` now uses `npm run validate:docs` + correct path | ✅ |
+| File                   | Change                                                                | Verified |
+| ---------------------- | --------------------------------------------------------------------- | -------- |
+| `types.go`             | Updated package doc: `ShouldFilter` → `Filter`                        | ✅       |
+| `helpers_test.go`      | Renamed `newShouldFilterTest` → `newFilterTest`                       | ✅       |
+| `filter_mapfs_test.go` | Renamed `TestShouldFilterExcludePattern` → `TestFilterExcludePattern` | ✅       |
+| `testdata_test.go`     | Updated all 8 calls to `newFilterTest`                                | ✅       |
+| `website/flake.nix`    | `validate-docs` now uses `npm run validate:docs` + correct path       | ✅       |
 
 ### Corruption Fixes
 
-| File | Change | Verified |
-|------|--------|---------|
-| `website/src/content/docs/guides/pattern-matching.mdx` | Reverted incorrect `**` escaping (would have rendered broken docs) | ✅ |
+| File                                                   | Change                                                             | Verified |
+| ------------------------------------------------------ | ------------------------------------------------------------------ | -------- |
+| `website/src/content/docs/guides/pattern-matching.mdx` | Reverted incorrect `**` escaping (would have rendered broken docs) | ✅       |
 
 ### Test Results (All Pass)
 
@@ -139,31 +139,31 @@ grep -rn "ShouldFilter\|MustFilter" --include="*.go" .
 
 ### P0 — Must Do Before Push
 
-| #   | Task | Status |
-|-----|------|--------|
-| 1   | Write this status report | 🔄 IN PROGRESS |
-| 2   | Commit all 30 modified files | ⬜ PENDING |
-| 3   | Push to origin | ⬜ PENDING |
+| #   | Task                         | Status         |
+| --- | ---------------------------- | -------------- |
+| 1   | Write this status report     | 🔄 IN PROGRESS |
+| 2   | Commit all 30 modified files | ⬜ PENDING     |
+| 3   | Push to origin               | ⬜ PENDING     |
 
 ### P1 — Should Do
 
-| #   | Task | Reason |
-|-----|------|--------|
-| 4   | Delete 22 archived docs | Noise, no value |
-| 5   | Configure Codecov token OR remove Codecov step | Ghost system |
-| 6   | Set up Codecov token for CI | Currently fails silently |
-| 7   | Browser visual QA | Requires live environment |
-| 8   | Lighthouse audit | Requires live environment |
+| #   | Task                                           | Reason                    |
+| --- | ---------------------------------------------- | ------------------------- |
+| 4   | Delete 22 archived docs                        | Noise, no value           |
+| 5   | Configure Codecov token OR remove Codecov step | Ghost system              |
+| 6   | Set up Codecov token for CI                    | Currently fails silently  |
+| 7   | Browser visual QA                              | Requires live environment |
+| 8   | Lighthouse audit                               | Requires live environment |
 
 ### Ghost Systems (Worth Knowing)
 
-| System | Current State | Recommendation |
-|--------|---------------|----------------|
-| jscpd CI | Runs, logs, doesn't fail | Accept as-is or add threshold enforcement |
-| Codecov | Step added, no token | Configure token or remove step |
-| flake.nix `validate-docs` | Now delegates to npm | Accept as-is |
-| Browser visual QA | Never done | Accept as manual step |
-| Lighthouse | Never done | Accept as manual step |
+| System                    | Current State            | Recommendation                            |
+| ------------------------- | ------------------------ | ----------------------------------------- |
+| jscpd CI                  | Runs, logs, doesn't fail | Accept as-is or add threshold enforcement |
+| Codecov                   | Step added, no token     | Configure token or remove step            |
+| flake.nix `validate-docs` | Now delegates to npm     | Accept as-is                              |
+| Browser visual QA         | Never done               | Accept as manual step                     |
+| Lighthouse                | Never done               | Accept as manual step                     |
 
 ---
 
@@ -172,6 +172,7 @@ grep -rn "ShouldFilter\|MustFilter" --include="*.go" .
 ### Go Library (gogenfilter/)
 
 **Strengths:**
+
 - Clean table-driven detector system
 - Phantom types for API safety
 - 95% test coverage with enforcement
@@ -179,11 +180,13 @@ grep -rn "ShouldFilter\|MustFilter" --include="*.go" .
 - Strong error branding with sentinel errors
 
 **Issues:**
+
 - `FilterOption` and `FilterReason` use string types — intentional (Go idiomatic), but `FilterOption.Reason()` relies on an undocumented invariant that both constants share the same string value. This is fragile.
 - The `FilterOption` / `FilterReason` pairing invariant is enforced only by the detectors table — adding a new detector without matching constants would silently break `FilterOption.Reason()`.
 - No integration test for the sqlc config parsing against a real sqlc.yaml.
 
 **Improvement opportunity:**
+
 ```go
 // Current (fragile):
 func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
@@ -202,6 +205,7 @@ func (o FilterOption) Reason() FilterReason {
 ### Website (website/)
 
 **Strengths:**
+
 - Clean component architecture (Icon, Section, Card, Header, Footer, etc.)
 - Typed data layer (types.ts, generators.ts, features.ts, sections.ts)
 - Starlight for docs with PageFind search
@@ -209,6 +213,7 @@ func (o FilterOption) Reason() FilterReason {
 - Self-hosted fonts, OG image generation, JSON-LD
 
 **Issues:**
+
 - `Sections.astro` is a new deduplication component — needs to be verified it works correctly.
 - The `Sections.astro` pattern of 3 identical sections is now deduplicated — good.
 - No real-time content sync between gogenfilter source and website docs.
@@ -243,13 +248,13 @@ func (o FilterOption) Reason() FilterReason {
 
 ## Files Summary
 
-| Category | Count | Status |
-|----------|-------|--------|
-| Go source (API rename) | 12 | ✅ Ready to commit |
-| Website components | 3 | ✅ Ready to commit |
-| Documentation | 14 | ✅ Ready to commit |
-| CI/CD | 1 | ✅ Ready to commit |
-| **Total** | **30** | **✅ All verified clean** |
+| Category               | Count  | Status                    |
+| ---------------------- | ------ | ------------------------- |
+| Go source (API rename) | 12     | ✅ Ready to commit        |
+| Website components     | 3      | ✅ Ready to commit        |
+| Documentation          | 14     | ✅ Ready to commit        |
+| CI/CD                  | 1      | ✅ Ready to commit        |
+| **Total**              | **30** | **✅ All verified clean** |
 
 ---
 

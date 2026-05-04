@@ -1,0 +1,56 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - website/**
+      - lighthouserc.json
+      - budget.json
+      - .github/workflows/lighthouse.yml
+  pull_request:
+    branches: [master]
+    paths:
+      - website/**
+      - lighthouserc.json
+      - budget.json
+      - .github/workflows/lighthouse.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
+          budgetPath: ./budget.json
+          uploadArtifacts: true
+          artifactName: lighthouse-results-${{ github.sha }}
+          temporaryPublicStorage: true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload LHCI results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-ci-results-${{ github.run_number }}-${{ github.sha }}
+          path: .lighthouseci/
+          retention-days: 14

@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/",
+    "resourceSizes": [
+      { "resourceType": "script", "budget": 300 },
+      { "resourceType": "stylesheet", "budget": 100 },
+      { "resourceType": "image", "budget": 500 },
+      { "resourceType": "font", "budget": 100 },
+      { "resourceType": "total", "budget": 2000 }
+    ],
+    "timings": [
+      { "metric": "first-contentful-paint", "budget": 1800 },
+      { "metric": "largest-contentful-paint", "budget": 2500 },
+      { "metric": "interactive", "budget": 3500 },
+      { "metric": "total-blocking-time", "budget": 300 },
+      { "metric": "cumulative-layout-shift", "budget": 0.1 },
+      { "metric": "speed-index", "budget": 3500 }
+    ]
+  },
+  {
+    "path": "/docs/*",
+    "resourceSizes": [
+      { "resourceType": "script", "budget": 300 },
+      { "resourceType": "stylesheet", "budget": 100 },
+      { "resourceType": "image", "budget": 300 },
+      { "resourceType": "font", "budget": 100 },
+      { "resourceType": "total", "budget": 1500 }
+    ],
+    "timings": [
+      { "metric": "first-contentful-paint", "budget": 1500 },
+      { "metric": "largest-contentful-paint", "budget": 2000 },
+      { "metric": "interactive", "budget": 3000 },
+      { "metric": "total-blocking-time", "budget": 200 },
+      { "metric": "cumulative-layout-shift", "budget": 0.1 },
+      { "metric": "speed-index", "budget": 3000 }
+    ]
+  }
+]

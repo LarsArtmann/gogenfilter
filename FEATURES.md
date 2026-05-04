@@ -115,7 +115,7 @@
 | Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                         |
 | Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants             |
 | Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                      |
-| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                              |
+| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                                    |
 | Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
 | Runnable examples    | FULLY_FUNCTIONAL | 12 `Example*` functions in `example_test.go`                   |
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |

@@ -5,6 +5,7 @@
 **What was asked:** Run `branching-flow panic` analysis, evaluate findings, change API from `ShouldFilter`/`MustFilter` to just `Filter` with error.
 
 **What was done:**
+
 - ✅ Ran `branching-flow panic` analysis
 - ✅ Identified 6 findings (2 explicit panics, 4 false positive index warnings)
 - ✅ Renamed `ShouldFilter` → `Filter` in API
@@ -20,44 +21,47 @@
 
 ### Fully Done ✅
 
-| Item | Status | Notes |
-|------|--------|-------|
-| `branching-flow panic` analysis | ✅ | 6 findings identified and assessed |
-| `ShouldFilter` → `Filter` rename | ✅ | Committed as `21c2eef` |
-| `MustFilter` removal | ✅ | Committed as `21c2eef` |
-| All test files updated | ✅ | 11 test files updated |
-| Documentation updated | ✅ | README, AGENTS, FEATURES, CHANGELOG |
-| Tests pass | ✅ | `go test ./...` passes |
-| Lint clean | ✅ | `golangci-lint run` — 0 issues |
+| Item                             | Status | Notes                               |
+| -------------------------------- | ------ | ----------------------------------- |
+| `branching-flow panic` analysis  | ✅     | 6 findings identified and assessed  |
+| `ShouldFilter` → `Filter` rename | ✅     | Committed as `21c2eef`              |
+| `MustFilter` removal             | ✅     | Committed as `21c2eef`              |
+| All test files updated           | ✅     | 11 test files updated               |
+| Documentation updated            | ✅     | README, AGENTS, FEATURES, CHANGELOG |
+| Tests pass                       | ✅     | `go test ./...` passes              |
+| Lint clean                       | ✅     | `golangci-lint run` — 0 issues      |
 
 ### Partially Done ⚠️
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Website docs (`guides/`) | ⚠️ | 6 docs still show `ShouldFilter` in code examples |
-| HeroSection/hero-code.ts | ⚠️ | Still shows `ShouldFilter` in hero code |
-| Status docs formatting | ⚠️ | Parallel session applied table formatting — pending commit |
+| Item                     | Status | Notes                                                      |
+| ------------------------ | ------ | ---------------------------------------------------------- |
+| Website docs (`guides/`) | ⚠️     | 6 docs still show `ShouldFilter` in code examples          |
+| HeroSection/hero-code.ts | ⚠️     | Still shows `ShouldFilter` in hero code                    |
+| Status docs formatting   | ⚠️     | Parallel session applied table formatting — pending commit |
 
 ### Not Started ❌
 
-| Item | Status | Notes |
-|------|--------|-------|
-| `WithFilterOptions` panic | ❌ | Not addressed — requires API decision |
-| 4x false positive index warnings | ❌ | Not addressed — tool limitation |
+| Item                             | Status | Notes                                 |
+| -------------------------------- | ------ | ------------------------------------- |
+| `WithFilterOptions` panic        | ❌     | Not addressed — requires API decision |
+| 4x false positive index warnings | ❌     | Not addressed — tool limitation       |
 
 ---
 
 ## B) WHAT I FORGOT / COULD HAVE DONE BETTER
 
 ### 1. Parallel Session Awareness
+
 **Problem:** I didn't check git log at the start. The parallel session (`21c2eef`) had already committed the same API rename before I started. I spent time editing files that were already committed.
 
 **Better approach:** Run `git log --oneline -5` + `git status` BEFORE making any edits to know the current state.
 
 ### 2. Scope Creep — Didn't Finish Website Docs
+
 **Problem:** I only updated the API filter.mdx but left 6 other website docs (`guides/`) with stale `ShouldFilter` references.
 
 **Files needing update:**
+
 - `website/src/content/docs/guides/metrics.mdx`
 - `website/src/content/docs/guides/benchmarks.mdx`
 - `website/src/content/docs/getting-started/installation.mdx`
@@ -67,26 +71,29 @@
 - `website/src/data/hero-code.ts`
 
 ### 3. Didn't Fix the `WithFilterOptions` Panic
+
 The only **legitimate** panic remaining (`filter.go:20`) — the `WithFilterOptions` constructor guard. The user asked "why do we need these panics?" and concluded we don't need `MustFilter`. But `WithFilterOptions` still panics on invalid input. This is the same class of issue.
 
 ### 4. False Positives Not Addressed
+
 The 4 "Index Out of Range" warnings are all `for i := range detectors` loop index access. These are provably safe by the language spec. Should suppress with a nolint comment or ignore directive if `branching-flow` supports it.
 
 ### 5. Didn't Ask: What About `WithFilterOptions` Error Return?
+
 The user's question "why do we need these panics?" pointed at `MustFilter`. But `WithFilterOptions` has the same issue. Should have asked: "Do you also want to change `WithFilterOptions` to return `(FilterConfig, error)`?"
 
 ---
 
 ## C) BRANCHING-FLOW PANIC FINDINGS
 
-| # | File:Line | Issue | Severity | Verdict |
-|---|-----------|-------|----------|---------|
-| 1 | `filter.go:20` | `panic("gogenfilter: invalid FilterOption: " + opt.String())` | 🔴 High | **Legitimate** — constructor guard, but could return error |
-| 2 | `filter.go:142` | `MustFilter` panic | 🔴 High | **Gone** — `MustFilter` removed |
-| 3 | `detection.go:311` | `d := &detectors[i]` | 🟡 Medium | **False positive** — `for i := range detectors` guarantees `i < len` |
-| 4 | `detection.go:330` | `d := &detectors[i]` | 🟡 Medium | **False positive** — same as above |
-| 5 | `detection.go:346` | `d := &detectors[i]` | 🟡 Medium | **False positive** — same as above |
-| 6 | `errors.go:66` | `codes[i] = def.Code` | 🟡 Medium | **False positive** — `for i, def := range errorCodeDefs` guarantees `i < len(codes)` |
+| #   | File:Line          | Issue                                                         | Severity  | Verdict                                                                              |
+| --- | ------------------ | ------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------ |
+| 1   | `filter.go:20`     | `panic("gogenfilter: invalid FilterOption: " + opt.String())` | 🔴 High   | **Legitimate** — constructor guard, but could return error                           |
+| 2   | `filter.go:142`    | `MustFilter` panic                                            | 🔴 High   | **Gone** — `MustFilter` removed                                                      |
+| 3   | `detection.go:311` | `d := &detectors[i]`                                          | 🟡 Medium | **False positive** — `for i := range detectors` guarantees `i < len`                 |
+| 4   | `detection.go:330` | `d := &detectors[i]`                                          | 🟡 Medium | **False positive** — same as above                                                   |
+| 5   | `detection.go:346` | `d := &detectors[i]`                                          | 🟡 Medium | **False positive** — same as above                                                   |
+| 6   | `errors.go:66`     | `codes[i] = def.Code`                                         | 🟡 Medium | **False positive** — `for i, def := range errorCodeDefs` guarantees `i < len(codes)` |
 
 **Before:** 6 issues (2 explicit panics, 4 false positives)
 **After:** 5 issues (1 explicit panic, 4 false positives — `MustFilter` removed)
@@ -97,6 +104,7 @@ The user's question "why do we need these panics?" pointed at `MustFilter`. But 
 ## D) ARCHITECTURE REFLECTION
 
 ### What Works Well
+
 - **Two-phase detection** — filename check (zero I/O) → content check (conditional I/O) is elegant and performant
 - **Table-driven detectors** — 11 generators in one `[]detector` table, easy to extend
 - **Functional options** — clean API, immutable Filter
@@ -125,15 +133,16 @@ All I/O operations lack `context.Context`. Cannot cancel long-running walks or e
 
 ## E) WELL-ESTABLISHED LIBRARIES TO CONSIDER
 
-| Library | Use Case | Notes |
-|---------|----------|-------|
-| `github.com/samber/mo` | `Result[T]`, `Either[L,R]` types | Railway-oriented programming; could replace error tuples |
-| `github.com/ox小三/result` | `Result[T]` for Go | Alternative to samber/mo, simpler API |
-| `github.com/googleapis/gax-go/v2` | `WithContext` for `fs.FS` | Standard way to add context to filesystem operations |
-| `github.com/go-logr/logr` | Structured logging interface | If logging is needed; `slog` already in stdlib though |
-| `github.com/gobwas/glob` | Pattern matching | Alternative to `doublestar/v4`; different syntax |
+| Library                           | Use Case                         | Notes                                                    |
+| --------------------------------- | -------------------------------- | -------------------------------------------------------- |
+| `github.com/samber/mo`            | `Result[T]`, `Either[L,R]` types | Railway-oriented programming; could replace error tuples |
+| `github.com/ox小三/result`        | `Result[T]` for Go               | Alternative to samber/mo, simpler API                    |
+| `github.com/googleapis/gax-go/v2` | `WithContext` for `fs.FS`        | Standard way to add context to filesystem operations     |
+| `github.com/go-logr/logr`         | Structured logging interface     | If logging is needed; `slog` already in stdlib though    |
+| `github.com/gobwas/glob`          | Pattern matching                 | Alternative to `doublestar/v4`; different syntax         |
 
 **Most impactful suggestion:** `samber/mo` `Result[T]` type. Could provide:
+
 ```go
 // Current API
 filtered, err := f.Filter("file.go")
@@ -195,6 +204,7 @@ But this adds a dependency and changes the API significantly. Not a small decisi
 The user asked "why do we need these panics?" — pointing at `MustFilter`. I identified that `WithFilterOptions` has the same design issue: panicking on invalid input instead of returning an error. The user hasn't explicitly asked me to change it yet.
 
 **The trade-off:**
+
 - **Keep panic:** Fail fast on programmer error (like `regexp.MustCompile`). Invalid options are bugs, not recoverable runtime conditions.
 - **Return error:** More flexible. Callers can decide how to handle invalid options (panic, log, use defaults).
 
@@ -208,11 +218,11 @@ The user asked "why do we need these panics?" — pointing at `MustFilter`. I id
 
 ## COMMIT LOG (THIS SESSION)
 
-| Hash | Message |
-|------|---------|
+| Hash      | Message                                                                |
+| --------- | ---------------------------------------------------------------------- |
 | `21c2eef` | refactor(gogenfilter): rename ShouldFilter → Filter, remove MustFilter |
-| `e2986f8` | docs: update CHANGELOG for ShouldFilter → Filter rename |
-| `ff85804` | chore(docs): apply table formatting improvements (pending push) |
+| `e2986f8` | docs: update CHANGELOG for ShouldFilter → Filter rename                |
+| `ff85804` | chore(docs): apply table formatting improvements (pending push)        |
 
 **Pending push:** 4 commits behind origin/master.
 
@@ -230,4 +240,4 @@ The user asked "why do we need these panics?" — pointing at `MustFilter`. I id
 
 ---
 
-*Generated: 2026-05-04 13:10*
+_Generated: 2026-05-04 13:10_
