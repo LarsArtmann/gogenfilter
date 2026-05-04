@@ -1,7 +1,7 @@
 import type { Generator, LogoPath } from "./types";
 
 export const generators: Generator[] = [
-  { name: "sqlc", file: ".sql.go", url: "https://sqlc.dev", logo: "/logos/sqlc.svg" },
+  { name: "sqlc", file: ".sql.go", url: "https://sqlc.dev", logo: "/logos/sqlc.png" },
   { name: "templ", file: "_templ.go", url: "https://templ.guide", logo: "/logos/templ.svg" },
   { name: "protobuf", file: ".pb.go", url: "https://protobuf.dev", logo: "/logos/protobuf.svg" },
   {
@@ -16,7 +16,7 @@ export const generators: Generator[] = [
     url: "https://github.com/golang/mock",
     logo: "/logos/mockgen.svg",
   },
-  { name: "moq", file: "_moq.go", url: "https://github.com/matryer/moq", logo: "/logos/moq.svg" },
+  { name: "moq", file: "_moq.go", url: "https://github.com/matryer/moq", logo: "/logos/moq.png" },
   {
     name: "wire",
     file: "wire_gen.go",
