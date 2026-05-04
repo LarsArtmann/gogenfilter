@@ -107,12 +107,11 @@ code {
 /* Hero */
 .hero {
   position: relative;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding-top: 4rem;
+  padding: 8rem 0 4rem;
 }
 
 .hero-glow {
@@ -140,27 +139,6 @@ code {
   .hero-inner {
     max-width: 72rem;
   }
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-bottom: 2rem;
-}
-
-.badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse {
@@ -685,14 +663,25 @@ code.inline {
   }
 }
 
-/* GitHub Stars Badge */
-.github-btn {
-  display: inline-block;
-  margin-bottom: 1.5rem;
+/* GitHub Star Button */
+.btn-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s;
+  margin-top: 0.75rem;
 }
 
-.github-btn .github-button {
-  font-size: 0.75rem;
+.btn-github:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Copy Button */
