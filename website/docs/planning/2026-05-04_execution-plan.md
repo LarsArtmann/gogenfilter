@@ -10,11 +10,13 @@
 ### 1. Logo Authenticity — Critical Mistake
 
 **What I did:** Created 9 custom SVG logos pretending they were "real" logos for:
+
 - sqlc, templ, protobuf — These **DO** have official branding
 - mockgen, go-enum, oapi-codegen, wire — Need verification
 - generic — Correctly custom
 
 **What I forgot:**
+
 - I assumed "no logo found" meant "doesn't exist" — this is WRONG
 - sqlc has DISTINCTIVE branding (orange gradient is from their actual site)
 - Protocol Buffers has an OFFICIAL Google logo
@@ -54,22 +56,22 @@
 
 ### Official Logos Available:
 
-| Tool | Official Logo? | Source |
-|------|---------------|--------|
-| Go/Stringer | ✅ YES | go.dev brand kit |
-| Kubernetes/deepcopy-gen | ✅ YES | cncf/artwork repo |
-| Protocol Buffers | ✅ YES | Google brand assets |
-| sqlc | 🤔 VERIFY | sqlc.dev or GitHub |
-| templ | 🤔 VERIFY | GitHub repo assets |
-| moq | ✅ YES | matryer/moq repo (PNG found) |
+| Tool                    | Official Logo? | Source                       |
+| ----------------------- | -------------- | ---------------------------- |
+| Go/Stringer             | ✅ YES         | go.dev brand kit             |
+| Kubernetes/deepcopy-gen | ✅ YES         | cncf/artwork repo            |
+| Protocol Buffers        | ✅ YES         | Google brand assets          |
+| sqlc                    | 🤔 VERIFY      | sqlc.dev or GitHub           |
+| templ                   | 🤔 VERIFY      | GitHub repo assets           |
+| moq                     | ✅ YES         | matryer/moq repo (PNG found) |
 
 ### Icon Libraries Available:
 
-| Library | Pros | Cons |
-|---------|------|------|
-| `lucide-astro` | Tree-shaking, accessible, 1000+ icons | Adds dependency |
-| Current inline | Zero deps, fully custom, tiny | Maintenance burden |
-| Hybrid (selected lucide + custom) | Best of both | Slightly complex |
+| Library                           | Pros                                  | Cons               |
+| --------------------------------- | ------------------------------------- | ------------------ |
+| `lucide-astro`                    | Tree-shaking, accessible, 1000+ icons | Adds dependency    |
+| Current inline                    | Zero deps, fully custom, tiny         | Maintenance burden |
+| Hybrid (selected lucide + custom) | Best of both                          | Slightly complex   |
 
 ---
 
@@ -77,31 +79,31 @@
 
 ### Tier 1: Critical Fixes (5 min each, 80% impact)
 
-| # | Task | Impact | Effort | Why |
-|---|------|--------|--------|-----|
-| 1 | **Research actual sqlc logo** | HIGH | 10min | Wrong branding = credibility loss |
-| 2 | **Research actual protobuf logo** | HIGH | 10min | Google has official brand guidelines |
-| 3 | **Research actual templ logo** | HIGH | 10min | Repo may have assets |
-| 4 | **Fix hardcoded `'11'` in LandingLayout** | HIGH | 2min | Already identified as BUG |
-| 5 | **Type `features.ts` icons record** | MEDIUM | 5min | Inconsistent with Icon.astro |
+| #   | Task                                      | Impact | Effort | Why                                  |
+| --- | ----------------------------------------- | ------ | ------ | ------------------------------------ |
+| 1   | **Research actual sqlc logo**             | HIGH   | 10min  | Wrong branding = credibility loss    |
+| 2   | **Research actual protobuf logo**         | HIGH   | 10min  | Google has official brand guidelines |
+| 3   | **Research actual templ logo**            | HIGH   | 10min  | Repo may have assets                 |
+| 4   | **Fix hardcoded `'11'` in LandingLayout** | HIGH   | 2min   | Already identified as BUG            |
+| 5   | **Type `features.ts` icons record**       | MEDIUM | 5min   | Inconsistent with Icon.astro         |
 
 ### Tier 2: Quality Improvements (15 min each, 15% impact)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 6 | Add `lucide-astro` for generic icons (arrow, github, menu) | MEDIUM | 15min |
-| 7 | Keep custom icons only for brand-specific needs | LOW | — |
-| 8 | Verify Icon.astro Props uses strict union | LOW | 5min |
-| 9 | Add Icon component to Storybook/HMR testing | LOW | 20min |
-| 10 | Lighthouse audit for performance | MEDIUM | 30min |
+| #   | Task                                                       | Impact | Effort |
+| --- | ---------------------------------------------------------- | ------ | ------ |
+| 6   | Add `lucide-astro` for generic icons (arrow, github, menu) | MEDIUM | 15min  |
+| 7   | Keep custom icons only for brand-specific needs            | LOW    | —      |
+| 8   | Verify Icon.astro Props uses strict union                  | LOW    | 5min   |
+| 9   | Add Icon component to Storybook/HMR testing                | LOW    | 20min  |
+| 10  | Lighthouse audit for performance                           | MEDIUM | 30min  |
 
 ### Tier 3: Nice-to-Have (60 min each, 5% impact)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 11 | Inline generator logos instead of `<img>` | LOW | 30min |
-| 12 | Add SVG sprite map for all icons | LOW | 45min |
-| 13 | Theme-aware OG images | LOW | 60min |
+| #   | Task                                      | Impact | Effort |
+| --- | ----------------------------------------- | ------ | ------ |
+| 11  | Inline generator logos instead of `<img>` | LOW    | 30min  |
+| 12  | Add SVG sprite map for all icons          | LOW    | 45min  |
+| 13  | Theme-aware OG images                     | LOW    | 60min  |
 
 ---
 
@@ -144,18 +146,20 @@ Look for: logo.*, docs assets, README images
 interface IconDef {
   path: string;
   viewBox: string;
-  category: 'feature' | 'ui' | 'useCase';
+  category: "feature" | "ui" | "useCase";
 }
 ```
 
 ### Component Architecture
 
 Current flow:
+
 ```
 Icon.astro → allIcons[name].replace() → <svg>
 ```
 
 Proposed flow with validation:
+
 ```
 Icon.astro → validate name against union → lookup in typed map → render
 ```
@@ -182,6 +186,7 @@ Error handling: Runtime `"Unknown icon: ${name}"` for bad icon names.
 ## Next Step: Execute Tier 1
 
 **Do now:**
+
 1. Research sqlc/templ/protobuf logos
 2. Fix hardcoded '11'
 3. Type the icons record

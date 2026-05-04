@@ -15,25 +15,25 @@ The gogenfilter website already follows **~80% of Astro 6 best practices** — t
 
 ## 1. What the Project Does Well (No Changes Needed)
 
-| Area | Implementation | Verdict |
-|------|---------------|---------|
-| Static output | No SSR adapter, pure static generation | **Correct** — ideal for landing + docs |
-| Tailwind v4 | `@tailwindcss/vite` plugin (not deprecated `@astrojs/tailwind`) | **Correct** — modern approach |
-| Font providers | `fontProviders.google()` and `fontProviders.fontsource()` | **Correct** — self-hosted, no external requests |
-| Content collections | `content.config.ts` with `docsLoader()` | **Correct** — Astro 6 Content Layer API |
-| Strict TypeScript | `extends: "astro/tsconfigs/strict"` | **Correct** |
-| Sitemap | `@astrojs/sitemap` with `site` URL configured | **Correct** |
-| JSON-LD | Structured data for `SoftwareApplication` | **Correct** |
-| Canonical URL | `<link rel="canonical">` in LandingLayout | **Correct** |
-| OG images | `astro-og-canvas` per-page generation | **Correct** |
-| SEO meta tags | Description, OG, Twitter cards | **Correct** |
-| `prefers-reduced-motion` | Both CSS and JS respect it | **Correct** |
-| `focus-visible` | Global focus ring with accent color | **Correct** |
-| Firebase caching | Immutable assets (1yr), HTML must-revalidate | **Correct** |
-| ARIA | `aria-expanded`, `aria-controls`, `aria-label` on nav | **Correct** |
-| Data layer | Centralized `siteConfig`, `generators`, `features`, `sections` | **Excellent** |
-| Component decomposition | 12 focused components, index.astro is 64 lines | **Excellent** |
-| Deployment | Nix flake with dev/build/preview/deploy | **Correct** |
+| Area                     | Implementation                                                  | Verdict                                         |
+| ------------------------ | --------------------------------------------------------------- | ----------------------------------------------- |
+| Static output            | No SSR adapter, pure static generation                          | **Correct** — ideal for landing + docs          |
+| Tailwind v4              | `@tailwindcss/vite` plugin (not deprecated `@astrojs/tailwind`) | **Correct** — modern approach                   |
+| Font providers           | `fontProviders.google()` and `fontProviders.fontsource()`       | **Correct** — self-hosted, no external requests |
+| Content collections      | `content.config.ts` with `docsLoader()`                         | **Correct** — Astro 6 Content Layer API         |
+| Strict TypeScript        | `extends: "astro/tsconfigs/strict"`                             | **Correct**                                     |
+| Sitemap                  | `@astrojs/sitemap` with `site` URL configured                   | **Correct**                                     |
+| JSON-LD                  | Structured data for `SoftwareApplication`                       | **Correct**                                     |
+| Canonical URL            | `<link rel="canonical">` in LandingLayout                       | **Correct**                                     |
+| OG images                | `astro-og-canvas` per-page generation                           | **Correct**                                     |
+| SEO meta tags            | Description, OG, Twitter cards                                  | **Correct**                                     |
+| `prefers-reduced-motion` | Both CSS and JS respect it                                      | **Correct**                                     |
+| `focus-visible`          | Global focus ring with accent color                             | **Correct**                                     |
+| Firebase caching         | Immutable assets (1yr), HTML must-revalidate                    | **Correct**                                     |
+| ARIA                     | `aria-expanded`, `aria-controls`, `aria-label` on nav           | **Correct**                                     |
+| Data layer               | Centralized `siteConfig`, `generators`, `features`, `sections`  | **Excellent**                                   |
+| Component decomposition  | 12 focused components, index.astro is 64 lines                  | **Excellent**                                   |
+| Deployment               | Nix flake with dev/build/preview/deploy                         | **Correct**                                     |
 
 ---
 
@@ -49,13 +49,14 @@ The gogenfilter website already follows **~80% of Astro 6 best practices** — t
 export default defineConfig({
   prefetch: {
     prefetchAll: false,
-    defaultStrategy: 'hover', // loads on hover, not viewport
+    defaultStrategy: "hover", // loads on hover, not viewport
   },
   // ...
 });
 ```
 
 Then add `data-astro-prefetch` to key navigation links:
+
 ```astro
 <a href="/docs/" data-astro-prefetch>Docs</a>
 ```
@@ -99,6 +100,7 @@ import sqlcLogo from '../assets/logos/sqlc.svg';
 ```
 
 **Why:** Astro's `<Image>` component:
+
 - Converts to WebP/AVIF automatically
 - Sets explicit `width`/`height` (prevents CLS)
 - Adds `decoding="async"` and `loading="lazy"`
@@ -119,8 +121,8 @@ export default defineConfig({
   markdown: {
     shikiConfig: {
       themes: {
-        light: 'github-light',
-        dark: 'github-dark',
+        light: "github-light",
+        dark: "github-dark",
       },
       defaultColor: false, // use CSS variables instead
     },
@@ -153,6 +155,7 @@ const ogDesc = siteConfig.ogDescription.replace('{count}', String(generatorCount
 ### 3.1 Add `data-astro-prefetch` to Key Links (5 min)
 
 **Target links:**
+
 - Header: "Docs" link → `data-astro-prefetch`
 - HeroSection: "Get Started" button → `data-astro-prefetch`
 - Footer: "Docs" link → `data-astro-prefetch`
@@ -186,6 +189,7 @@ export interface Props {
 ### 3.3 Consolidate Inline Scripts (20 min — Bundle Optimization)
 
 **Current:** Three `is:inline` scripts across Header and index pages:
+
 1. `Header.astro:31-80` — theme toggle + nav toggle (80 lines)
 2. `index.astro:53-67` — IntersectionObserver (15 lines)
 3. `LandingLayout.astro:33` — Plausible analytics (1 line, correctly inline)
@@ -245,10 +249,10 @@ Uses Speculation Rules API for even faster prefetching. Chrome-only for now. Con
 
 ```js
 sitemap({
-  changefreq: 'weekly',
+  changefreq: "weekly",
   priority: 0.7,
   lastmod: new Date(),
-})
+});
 ```
 
 Note: Google ignores `changefreq` and `priority`, but other crawlers may use them.
@@ -260,6 +264,7 @@ Starlight supports custom 404 pages. Add `src/content/docs/404.mdx` for a brande
 ### 4.4 Robots.txt Enhancement
 
 Current `public/robots.txt` should include sitemap reference:
+
 ```
 Sitemap: https://gogenfilter.lars.software/sitemap-index.xml
 ```
@@ -270,12 +275,12 @@ Sitemap: https://gogenfilter.lars.software/sitemap-index.xml
 
 The project correctly uses the Astro 6 Content Layer API:
 
-| Feature | Status | Implementation |
-|---------|--------|---------------|
-| `content.config.ts` | **Correct** | Not legacy `content/config.ts` |
-| `docsLoader()` | **Correct** | Starlight-specific loader |
-| `docsSchema()` | **Correct** | Starlight schema with Zod |
-| `getCollection('docs')` | **Correct** | Used in OG image generation |
+| Feature                 | Status      | Implementation                 |
+| ----------------------- | ----------- | ------------------------------ |
+| `content.config.ts`     | **Correct** | Not legacy `content/config.ts` |
+| `docsLoader()`          | **Correct** | Starlight-specific loader      |
+| `docsSchema()`          | **Correct** | Starlight schema with Zod      |
+| `getCollection('docs')` | **Correct** | Used in OG image generation    |
 
 **No changes needed** — the content layer implementation is already on the latest API.
 
@@ -298,6 +303,7 @@ src/
 ```
 
 This is textbook Astro architecture:
+
 - **Zero client JavaScript** (no React/Vue/Svelte islands needed)
 - **Server-only rendering** (no hydration overhead)
 - **Content-first** (Starlight for docs, custom landing page)
@@ -306,6 +312,7 @@ This is textbook Astro architecture:
 ### Areas Where It Could Grow
 
 If the project ever needs client-side interactivity (interactive playground, live demos):
+
 1. Use `client:visible` for below-fold interactive components
 2. Keep the Astro component shell, add a framework island only where needed
 3. Consider `client:only` for browser-API-dependent widgets
@@ -314,18 +321,18 @@ If the project ever needs client-side interactivity (interactive playground, liv
 
 ## 7. Performance Checklist
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Zero JS by default | **Pass** | No framework islands |
-| Font self-hosting | **Pass** | Astro font providers |
+| Check              | Status      | Notes                                  |
+| ------------------ | ----------- | -------------------------------------- |
+| Zero JS by default | **Pass**    | No framework islands                   |
+| Font self-hosting  | **Pass**    | Astro font providers                   |
 | Image optimization | **Partial** | Logos in `public/` bypass optimization |
-| CSS-first Tailwind | **Pass** | v4 `@tailwindcss/vite` |
-| Static output | **Pass** | Pre-rendered HTML |
-| Cache headers | **Pass** | Firebase immutable + must-revalidate |
-| Prefetching | **Missing** | Not enabled |
-| View transitions | **Missing** | Full page reloads |
-| Bundle analysis | **Unknown** | Not audited |
-| Lighthouse | **Unknown** | Not in TODO |
+| CSS-first Tailwind | **Pass**    | v4 `@tailwindcss/vite`                 |
+| Static output      | **Pass**    | Pre-rendered HTML                      |
+| Cache headers      | **Pass**    | Firebase immutable + must-revalidate   |
+| Prefetching        | **Missing** | Not enabled                            |
+| View transitions   | **Missing** | Full page reloads                      |
+| Bundle analysis    | **Unknown** | Not audited                            |
+| Lighthouse         | **Unknown** | Not in TODO                            |
 
 ---
 
@@ -333,24 +340,25 @@ If the project ever needs client-side interactivity (interactive playground, liv
 
 All high-impact items completed. 12 commits, 0 errors, 0 warnings.
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | Fix hardcoded generator count in LandingLayout | DONE |
-| 2 | Enable prefetch in astro.config.mjs | DONE |
-| 3 | Add \`data-astro-prefetch\` to nav links | DONE |
-| 4 | Add \`og:image\` to landing page | DONE |
-| 5 | Configure Shiki dual themes | DONE |
-| 6 | Tighten Icon component types | DONE |
-| 7 | Add security headers | DONE |
-| 8 | Enable View Transitions | DONE |
-| 9 | Remove dead \`icons\` export from features.ts | DONE |
-| 10 | Remove dead \`useCaseIcons\` export from sections.ts | DONE |
-| 11 | Centralize IconName type in types.ts | DONE |
-| 12 | Use Section.astro component in index.astro | DONE |
-| 13 | Move logos to src/assets/ | Skipped: SVGs dont benefit from Astro image optimization |
-| 14 | Consolidate inline scripts | Skipped: \`is:inline\` required for FOUC prevention |
-| 15 | Enhance robots.txt | Already done |
-| 16 | Custom 404 page | Already done (Starlight built-in) |
+| #   | Task                                                 | Status                                                   |
+| --- | ---------------------------------------------------- | -------------------------------------------------------- |
+| 1   | Fix hardcoded generator count in LandingLayout       | DONE                                                     |
+| 2   | Enable prefetch in astro.config.mjs                  | DONE                                                     |
+| 3   | Add \`data-astro-prefetch\` to nav links             | DONE                                                     |
+| 4   | Add \`og:image\` to landing page                     | DONE                                                     |
+| 5   | Configure Shiki dual themes                          | DONE                                                     |
+| 6   | Tighten Icon component types                         | DONE                                                     |
+| 7   | Add security headers                                 | DONE                                                     |
+| 8   | Enable View Transitions                              | DONE                                                     |
+| 9   | Remove dead \`icons\` export from features.ts        | DONE                                                     |
+| 10  | Remove dead \`useCaseIcons\` export from sections.ts | DONE                                                     |
+| 11  | Centralize IconName type in types.ts                 | DONE                                                     |
+| 12  | Use Section.astro component in index.astro           | DONE                                                     |
+| 13  | Move logos to src/assets/                            | Skipped: SVGs dont benefit from Astro image optimization |
+| 14  | Consolidate inline scripts                           | Skipped: \`is:inline\` required for FOUC prevention      |
+| 15  | Enhance robots.txt                                   | Already done                                             |
+| 16  | Custom 404 page                                      | Already done (Starlight built-in)                        |
+
 ## 9. Key Takeaways
 
 1. **The foundation is excellent.** Astro 6, Tailwind v4, Starlight, strict TS, self-hosted fonts, content layer API — all correct choices.
