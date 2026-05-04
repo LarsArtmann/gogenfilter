@@ -130,6 +130,15 @@ func TestMatchPattern_MalformedPattern(t *testing.T) {
 	}
 }
 
+func TestMatchPattern_MalformedPatternWithSlash(t *testing.T) {
+	t.Parallel()
+
+	result := MatchPattern("src/file.go", "src/[")
+	if result {
+		t.Error("malformed pattern with slash should not match")
+	}
+}
+
 func TestMatchPattern_AbsolutePathWithStarSlash(t *testing.T) {
 	t.Parallel()
 
@@ -137,6 +146,18 @@ func TestMatchPattern_AbsolutePathWithStarSlash(t *testing.T) {
 	if !result {
 		t.Error("absolute path with *.go pattern should match via base name fallback")
 	}
+}
+
+func TestUnmarshalSQLCConfig_V2ParseError(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("version: \"2\"\nsql: [invalid\n")
+	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
+	if err == nil {
+		t.Fatal("unmarshalSQLCConfig should return error for invalid v2 YAML")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
 }
 
 func TestUnmarshalSQLCConfig_UnsupportedVersion(t *testing.T) {
@@ -153,6 +174,18 @@ func TestUnmarshalSQLCConfig_UnsupportedVersion(t *testing.T) {
 	if !contains(err.Error(), "unsupported") {
 		t.Errorf("error should mention unsupported version, got: %s", err.Error())
 	}
+}
+
+func TestParseV1AsV2_ParseError(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("version: \"1\"\npackages: [invalid\n")
+	_, err := parseV1AsV2(data, "sqlc.yaml")
+	if err == nil {
+		t.Fatal("parseV1AsV2 should return error for invalid v1 YAML")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
 }
 
 func TestParseV1AsV2_EmptyPackagePath(t *testing.T) {
