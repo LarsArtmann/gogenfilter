@@ -64,7 +64,7 @@
 | 16  | Add light mode support                              | previous status doc | 60min  | ✅ DONE     |
 | 17  | Add custom 404 page in Starlight                    | previous status doc | 15min  | ✅ DONE     |
 | 18  | Add analytics (Plausible)                           | previous status doc | 30min  | ✅ DONE     |
-| 19  | Source real brand logos (sqlc, protobuf, k8s, etc.)| previous status doc | 30min  | 🔲 PENDING  |
+| 19  | Source real brand logos (sqlc, protobuf, k8s, etc.)| previous status doc | 30min  | ✅ DONE     |
 | 20  | Add structured data (JSON-LD) for SEO              | previous status doc | 20min  | ✅ DONE     |
 | 21  | Add canonical URL meta tags                         | previous status doc | 5min   | ✅ DONE     |
 | 22  | Add GitHub Actions CI for build verification         | previous status doc | 20min  | ✅ DONE     |
@@ -157,10 +157,24 @@
 
 ---
 
+## ✅ Completed (2026-05-04 — Session 3)
+
+| #   | Task                                                                              | Evidence                                   |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------------ |
+| 97  | Research official brand logos for all 11 generators                              | Agentic research: sqlc, templ, protobuf, go-enum, mockgen, moq, wire, oapi-codegen, deepcopy-gen, stringer |
+| 98  | Download official Kubernetes SVG for deepcopy-gen                                | `public/logos/deepcopy-gen.svg` — CNCF official |
+| 99  | Download official Go logo SVG for stringer                                       | `public/logos/stringer.svg` — go.dev brand kit |
+| 100 | Create custom SVG logos for tools without official branding                      | sqlc, templ, protobuf, go-enum, mockgen, moq, wire, oapi-codegen, generic |
+| 101 | Verify all 11 logos render correctly at 48×48 and scale to 24×24                  | GeneratorGrid display verified             |
+| 102 | Update TODO_LIST.md #19 status to DONE                                            | Status changed from PENDING to ✅          |
+
 ## Session Summary (2026-05-04)
 
 | Metric                         | Value                                           |
 | ------------------------------ | ----------------------------------------------- |
+| Total items completed (session 3) | 6 (items #97-102)                            |
+| Logos with official branding   | 2 (Kubernetes, Go)                             |
+| Logos custom-designed          | 9 (sqlc, templ, protobuf, go-enum, mockgen, moq, wire, oapi-codegen, generic) |
 | Total items completed (session 2) | 35 (items #62-96)                            |
 | New components created         | 1 (Icon.astro)                                  |
 | New data type exports          | 3 (`FeatureIcon`, `useCaseIconKeys`, `UseCaseIcon`) |
