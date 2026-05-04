@@ -21,8 +21,8 @@ This project provides detection and filtering capabilities for auto-generated Go
 - Root-level `.go` files: Core library implementation (standard Go library convention)
 - Test files: `*_test.go` alongside source files
 - `docs/`: Planning documents and status reports
-- `.github/workflows/ci.yml`: Go CI — tests, lint, vet, benchmarks (path-filtered: `*.go`, `go.mod`, `go.sum`, `.golangci.*`)
-- `.github/workflows/website.yml`: Website CI/CD — build, validate docs, deploy to Firebase (path-filtered: `website/**`)
+- `.github/workflows/ci.yml`: Go CI — test, vet, lint, benchmarks (path-filtered: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`)
+- `.github/workflows/website.yml`: Website CI/CD — typecheck, build, validate docs, deploy to Firebase (path-filtered: `website/**`)
 
 ### Key Source Files
 
@@ -101,17 +101,16 @@ golangci-lint run
 Two separate GitHub Actions workflows, both triggered on push/PR to master with path filters:
 
 **Go CI** (`.github/workflows/ci.yml`):
-- Tests with race detector and coverage (95% threshold)
-- Build verification
-- `go vet`
-- golangci-lint
-- Benchmarks
+- Path filters: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`
+- Concurrency group cancels in-progress runs
+- `go vet` → tests with race detector and coverage (95% threshold) → benchmarks
+- golangci-lint (separate job, parallel)
 
 **Website** (`.github/workflows/website.yml`):
-- Build Astro site
-- Validate documentation code blocks (md-go-validator)
-- HTML validation
-- Deploy to Firebase Hosting (master push only)
+- Path filters: `website/**`
+- Concurrency group cancels in-progress runs
+- `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation
+- Deploy to Firebase Hosting (master push only, least-privilege permissions)
 
 ## Key API Patterns
 
