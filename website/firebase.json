@@ -5,7 +5,13 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/src/**"],
     "cleanUrls": true,
     "trailingSlash": false,
-    "redirects": [],
+    "redirects": [
+      {
+        "source": "/docs/docs/**",
+        "destination": "/docs/:dest",
+        "type": 301
+      }
+    ],
     "headers": [
       {
         "source": "**/*.@(css|js|jpg|jpeg|gif|png|svg|ico|webp|avif|woff|woff2)",

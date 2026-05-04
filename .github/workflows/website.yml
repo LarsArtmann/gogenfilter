@@ -28,6 +28,17 @@ jobs:
         working-directory: website
     steps:
       - uses: actions/checkout@v4
+        path: website
+
+      - uses: actions/checkout@v4
+        path: md-go-validator
+        with:
+          repository: LarsArtmann/md-go-validator
+
+      - uses: actions/checkout@v4
+        path: go-output
+        with:
+          repository: LarsArtmann/go-output
 
       - uses: actions/setup-node@v4
         with:
@@ -40,18 +51,21 @@ jobs:
           go-version: "1.26"
 
       - run: npm ci
+        working-directory: website
 
       - run: npx astro check
+        working-directory: website
 
       - run: npm run build
+        working-directory: website
 
-      - name: Install md-go-validator
-        continue-on-error: true
-        run: go install github.com/larsartmann/md-go-validator@latest
+      - name: Build md-go-validator from source
+        run: |
+          cd md-go-validator && go build -o ../md-go-validator-bin ./cmd/md-go-validator
 
       - name: Validate documentation code blocks
         continue-on-error: true
-        run: md-go-validator -f json -o validation-results.json src/content/docs/
+        run: ./md-go-validator-bin -f json -o website/validation-results.json website/src/content/docs/
 
       - name: Upload validation results
         if: always()
@@ -63,6 +77,7 @@ jobs:
 
       - name: HTML Validation
         run: npx html-validate --config .htmlvalidate.json "dist/**/*.html"
+        working-directory: website
 
       - uses: actions/upload-artifact@v4
         with:
