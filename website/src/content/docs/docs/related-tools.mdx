@@ -1,0 +1,102 @@
+---
+title: Related Tools
+description: Tools that complement gogenfilter in your Go toolchain.
+---
+
+## md-go-validator
+
+[md-go-validator](https://github.com/larsartmann/md-go-validator) validates code blocks in Markdown and MDX files. It ensures code examples in your documentation are syntactically valid.
+
+### Why It Complements gogenfilter
+
+| Tool | What It Does | Scope |
+|------|-------------|-------|
+| **gogenfilter** | Detects and filters auto-generated Go source files | Production code |
+| **md-go-validator** | Validates code blocks in documentation files | Documentation |
+
+Use them together to keep both your codebase and documentation healthy.
+
+### Supported Languages
+
+md-go-validator validates code blocks for Go, TypeScript, Rust, Nix, HCL/Terraform, and Templ — all with pure Go, no CGO required.
+
+### Installation
+
+```bash
+go install github.com/larsartmann/md-go-validator@latest
+```
+
+### Usage
+
+```bash
+# Validate all Go code blocks in your docs
+md-go-validator docs/
+
+# Validate multiple languages
+md-go-validator -l go,typescript,rust docs/
+
+# JSON output for CI integration
+md-go-validator -f json -o results.json docs/
+```
+
+### CI Integration
+
+Add to your GitHub Actions workflow alongside gogenfilter:
+
+```yaml
+- name: Validate documentation code blocks
+  run: |
+    go install github.com/larsartmann/md-go-validator@latest
+    md-go-validator -f json -o validation-results.json docs/
+```
+
+### Skip Directives
+
+For intentionally partial code snippets, use a skip directive before the code block:
+
+```markdown
+<!-- skip-validate -->
+
+```go
+type MyStruct struct {
+    Name string
+}
+```
+```
+
+Available directives: `<!-- skip-validate -->`, `<!-- skip-md-validate -->`, `<!-- md-skip -->`, `<!-- no-validate -->`, `// skip-validate`, `//nolint`.
+
+### Library Usage
+
+Use md-go-validator as a Go library for custom tooling:
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+
+    mdgovalidator "github.com/larsartmann/md-go-validator/pkg"
+    "github.com/larsartmann/md-go-validator/pkg/languages"
+)
+
+func main() {
+    validator := mdgovalidator.New(true).
+        WithLanguages([]languages.Language{
+            languages.LangGo,
+            languages.LangTypeScript,
+        })
+
+    results, err := validator.ValidateFile(context.Background(), "README.md")
+    if err != nil {
+        panic(err)
+    }
+
+    for _, r := range results {
+        if r.HasError() {
+            fmt.Printf("Error at line %s: %v\n", r.LineNumber, r.Error)
+        }
+    }
+}
+```
