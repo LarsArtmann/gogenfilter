@@ -50,7 +50,7 @@ func assertContains(t *testing.T, got, substr string) {
 	}
 }
 
-func assertNotContains(t *testing.T, got, substr string, msg string) {
+func assertNotContains(t *testing.T, got, substr, msg string) {
 	t.Helper()
 
 	if strings.Contains(got, substr) {

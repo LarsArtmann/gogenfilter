@@ -29,9 +29,9 @@ type sqlcConfig struct {
 
 // sqlcEngine represents a single SQL engine configuration in sqlc.yaml.
 type sqlcEngine struct {
-	Schema  string         `yaml:"schema"`
-	Engine  string         `yaml:"engine"`
-	Gen     sqlcGenConfig  `yaml:"gen"`
+	Schema  string        `yaml:"schema"`
+	Engine  string        `yaml:"engine"`
+	Gen     sqlcGenConfig `yaml:"gen"`
 	Codegen []sqlcCodegen `yaml:"codegen"`
 }
 
@@ -222,7 +222,8 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 }
 
 func unmarshalSQLCYAML(data []byte, target any, configPath, errMsg string) *SQLCConfigError {
-	if err := yaml.Unmarshal(data, target); err != nil {
+	err := yaml.Unmarshal(data, target)
+	if err != nil {
 		return newSQLCConfigError(
 			CodeSQLCConfigParse,
 			ConfigPath(configPath),
@@ -240,7 +241,8 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 		Version string `yaml:"version"`
 	}
 
-	if err := unmarshalSQLCYAML(data, &version, configPath, "detecting sqlc config version"); err != nil {
+	err := unmarshalSQLCYAML(data, &version, configPath, "detecting sqlc config version")
+	if err != nil {
 		return nil, err
 	}
 
@@ -250,7 +252,8 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 	case "2", "":
 		var config sqlcConfig
 
-		if err := unmarshalSQLCYAML(data, &config, configPath, "parsing sqlc config"); err != nil {
+		err := unmarshalSQLCYAML(data, &config, configPath, "parsing sqlc config")
+		if err != nil {
 			return nil, err
 		}
 
@@ -271,7 +274,8 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var v1 sqlcV1Config
 
-	if err := unmarshalSQLCYAML(data, &v1, configPath, "parsing sqlc v1 config"); err != nil {
+	err := unmarshalSQLCYAML(data, &v1, configPath, "parsing sqlc v1 config")
+	if err != nil {
 		return nil, err
 	}
 
