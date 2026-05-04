@@ -29,6 +29,7 @@
     "preview": "astro preview",
     "typecheck": "astro check",
     "clean": "rm -rf dist .astro node_modules/.cache",
+    "validate:docs": "command -v md-go-validator &>/dev/null || go install github.com/larsartmann/md-go-validator@latest && md-go-validator -f table src/content/docs/docs/",
     "astro": "astro"
   },
   "dependencies": {
