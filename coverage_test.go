@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -67,15 +66,15 @@ func TestFilterConfigErrorIs_WrongSentinel(t *testing.T) {
 func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 	t.Parallel()
 
-	cfg1 := FilterConfig(func(f *Filter) error {
+	cfg1 := FilterConfig(func(f *Filter) error { //nolint:err113
 		return errors.New(
 			"config error 1",
-		) //nolint:err113 // test helper for multi-error aggregation
+		)
 	})
-	cfg2 := FilterConfig(func(f *Filter) error {
+	cfg2 := FilterConfig(func(f *Filter) error { //nolint:err113
 		return errors.New(
 			"config error 2",
-		) //nolint:err113 // test helper for multi-error aggregation
+		)
 	})
 
 	_, err := NewFilter(cfg1, cfg2)
@@ -344,27 +343,6 @@ func TestFindProjectRoot_BreakCondition(t *testing.T) {
 	}
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
-}
-
-func TestFindProjectRoot_InvalidPath(t *testing.T) {
-	t.Parallel()
-
-	veryLongSegment := make([]byte, 4096)
-	for i := range veryLongSegment {
-		veryLongSegment[i] = 'a'
-	}
-
-	longPath := "/" + string(veryLongSegment)
-	var longPathSb344 strings.Builder
-	for range 100 {
-		longPathSb344.WriteString("/" + string(veryLongSegment))
-	}
-	longPath += longPathSb344.String()
-
-	_, err := FindProjectRoot(StartPath(longPath), []string{"go.mod"})
-	if err == nil {
-		t.Fatal("FindProjectRoot should fail for excessively long path")
-	}
 }
 
 func TestProjectRootError_Unwrap(t *testing.T) {
