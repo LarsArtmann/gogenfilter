@@ -82,7 +82,10 @@ This project provides detection and filtering capabilities for auto-generated Go
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
 - Generic helper functions in `helpers_test.go`: `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`. Error extraction helper `assertErrorType[T]()` is in `errors_test.go` (uses `errors.AsType` from Go 1.26).
+- **BDD tests**: 175 ginkgo specs in `bdd_test.go` (110) + `bdd_extended_test.go` (65). Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
+- **Coverage tests**: Targeted tests in `coverage_test.go` for hard-to-reach error paths (cross-type `errors.Is`, multi-error aggregation, SQLC parse errors, malformed patterns).
 - Run tests with: `go test ./...`
+- **Coverage**: 99.8% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains at 92.9%)
 
 ### Linting
 
@@ -163,6 +166,8 @@ reason := gogenfilter.DetectReason("file.go", content,
 
 - `github.com/bmatcuk/doublestar/v4` - `**` glob pattern matching
 - `github.com/go-faster/yaml` - YAML parsing for SQLC config
+- `github.com/onsi/ginkgo/v2` - BDD testing framework (test-only)
+- `github.com/onsi/gomega` - BDD matchers (test-only)
 
 ## License
 
