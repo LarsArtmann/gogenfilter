@@ -14,40 +14,28 @@ import { siteConfig } from '../data/config';
 <LandingLayout title={siteConfig.title}>
   <HeroSection />
 
-  <Section>
-    <div class="max-w-6xl mx-auto px-6">
-      <GeneratorGrid />
-    </div>
+  <Section width="wide">
+    <GeneratorGrid />
   </Section>
 
-  <Section>
-    <div class="max-w-6xl mx-auto px-6">
-      <FeatureGrid />
-    </div>
+  <Section width="wide">
+    <FeatureGrid />
   </Section>
 
-  <Section class="text-center">
-    <div class="max-w-3xl mx-auto px-6">
-      <PhaseSection />
-    </div>
+  <Section width="narrow" class="text-center">
+    <PhaseSection />
   </Section>
 
-  <Section class="text-center">
-    <div class="max-w-3xl mx-auto px-6">
-      <ComparisonSection />
-    </div>
+  <Section width="narrow" class="text-center">
+    <ComparisonSection />
   </Section>
 
-  <Section class="text-center">
-    <div class="max-w-3xl mx-auto px-6">
-      <UseCasesSection />
-    </div>
+  <Section width="narrow" class="text-center">
+    <UseCasesSection />
   </Section>
 
-  <Section class="text-center">
-    <div class="max-w-3xl mx-auto px-6">
-      <CTASection />
-    </div>
+  <Section width="narrow" class="text-center">
+    <CTASection />
   </Section>
 </LandingLayout>
 

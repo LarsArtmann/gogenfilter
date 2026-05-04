@@ -2,12 +2,14 @@
 export interface Props {
   animate?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  width?: 'narrow' | 'wide';
   class?: string;
 }
 
 const {
   animate = true,
   padding = 'md',
+  width,
   class: className,
 } = Astro.props;
 
@@ -16,6 +18,11 @@ const paddingClasses: Record<string, string> = {
   sm: 'py-12',
   md: 'py-24',
   lg: 'py-32',
+};
+
+const widthClasses: Record<string, string> = {
+  narrow: 'max-w-3xl',
+  wide: 'max-w-6xl',
 };
 ---
 
@@ -27,5 +34,5 @@ const paddingClasses: Record<string, string> = {
   ]}
   data-animate={animate ? '' : undefined}
 >
-  <slot />
+  {width ? <div class={`${widthClasses[width]} mx-auto px-6`}><slot /></div> : <slot />}
 </section>
