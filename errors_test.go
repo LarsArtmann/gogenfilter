@@ -142,6 +142,7 @@ func TestErrorCode(t *testing.T) {
 		}{
 			{CodeProjectRootNotFound, "project_root_not_found"},
 			{CodeProjectRootInvalidPath, "project_root_invalid_path"},
+			{CodeInvalidFilterOption, "invalid_filter_option"},
 			{CodeSQLCConfigRead, "sqlc_config_read"},
 			{CodeSQLCConfigParse, "sqlc_config_parse"},
 			{CodeSQLCConfigWalk, "sqlc_config_walk"},
@@ -170,8 +171,8 @@ func TestErrorCode(t *testing.T) {
 
 		codes := AllErrorCodes()
 
-		if len(codes) != 7 {
-			t.Errorf("AllErrorCodes() returned %d codes, want 7", len(codes))
+		if len(codes) != 8 {
+			t.Errorf("AllErrorCodes() returned %d codes, want 8", len(codes))
 		}
 	})
 
@@ -192,6 +193,7 @@ func TestErrorCode(t *testing.T) {
 		allConsts := []ErrorCode{
 			CodeProjectRootNotFound,
 			CodeProjectRootInvalidPath,
+			CodeInvalidFilterOption,
 			CodeSQLCConfigRead,
 			CodeSQLCConfigParse,
 			CodeSQLCConfigWalk,

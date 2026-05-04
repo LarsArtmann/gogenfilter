@@ -105,8 +105,14 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	}
 
 	var errs []error
+
 	for _, cfg := range configs {
-		if err := cfg(filter); err != nil {
+		if cfg == nil {
+			continue
+		}
+
+		err := cfg(filter)
+		if err != nil {
 			errs = append(errs, err)
 		}
 	}
