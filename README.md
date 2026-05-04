@@ -175,6 +175,79 @@ reason := gogenfilter.DetectReason("file.go", content,
     gogenfilter.FilterSQLC,
     gogenfilter.FilterGeneric,
 )
+
+// From an io.Reader
+reason, err := gogenfilter.DetectReasonReader("file.go", reader,
+    gogenfilter.FilterSQLC,
+)
+```
+
+## Filter API Reference
+
+```go
+f := gogenfilter.NewFilter(
+    gogenfilter.Enabled(),
+    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+)
+
+filtered, err := f.ShouldFilter("db/models.go") // (bool, error)
+filtered := f.MustFilter("db/models.go")        // panics on error
+
+f.IsEnabled()           // bool
+f.FilterReasons()       // []FilterReason
+f.String()              // human-readable debug state
+f.GetStats()            // FilterStats snapshot
+```
+
+## Error Handling
+
+All errors carry structured codes and user-friendly help text:
+
+```go
+import "errors"
+
+_, err := gogenfilter.FindProjectRoot(
+    gogenfilter.StartPath("/some/path"),
+    []string{"go.mod"},
+)
+if err != nil {
+    // Check by sentinel error
+    if errors.Is(err, gogenfilter.ErrProjectRootNotFound) {
+        // handle not found
+    }
+
+    // Get the structured error code
+    fmt.Println(err.ErrorCode()) // project_root_not_found
+
+    // Get user-friendly guidance
+    fmt.Println(err.Help())
+}
+
+// Look up help text for any error code
+gogenfilter.CodeHelp(gogenfilter.CodeSQLCConfigParse)
+
+// List all error codes
+gogenfilter.AllErrorCodes() // []ErrorCode
+```
+
+## SQLC Config Discovery
+
+Find sqlc configuration files and extract output directories:
+
+```go
+// Find sqlc.yaml files in the project
+gogenfilter.FindSQLCConfigs(".")            // []string, error
+gogenfilter.FindSQLCConfigsFS(fsys, ".")  // []string, error
+
+// Extract output directories from configs
+gogenfilter.GetSQLOutputDirs(".")           // []string, error
+gogenfilter.GetSQLOutputDirsFS(fsys, ".") // []string, error
+
+// Find the project root by walking up for marker files
+root, err := gogenfilter.FindProjectRoot(
+    gogenfilter.StartPath("."),
+    []string{"go.mod", "sqlc.yaml"},
+)
 ```
 
 ## Metrics
@@ -205,6 +278,15 @@ stats := f.GetStats()
 - **Immutable Filter** — `NewFilter` returns a fully constructed, thread-safe Filter. No mutating methods.
 - **`fs.FS` abstraction** — Test with `fstest.MapFS`, run with `os.DirFS`. No filesystem coupling.
 - **Derived constants** — `AllFilterOptions()`, `AllFilterReasons()`, and `allSpecificOptions()` are all derived from the detector table. Nothing to forget.
+
+## API Stability
+
+This library follows [Go module versioning](https://go.dev/doc/modules/version-numbers):
+
+- **Pre-v1.0.0** (`v0.x.y`): The API may change between minor versions. We minimize breaking changes, but reserve the right to rename or adjust public symbols based on user feedback.
+- **Post-v1.0.0**: Standard Go compatibility guarantees apply. No breaking changes without a major version bump.
+
+The core `Filter` / `ShouldFilter` / `DetectReason` API is stable and unlikely to change.
 
 ## Contributing
 
