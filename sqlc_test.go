@@ -379,8 +379,8 @@ func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
 
 	assertErrorsIs(t, err, ErrSQLCConfigCollect)
 
-	var inner *SQLCConfigError
-	if !errors.As(err.Unwrap(), &inner) {
+	inner, ok := errors.AsType[*SQLCConfigError](err.Unwrap())
+	if !ok {
 		t.Fatal("unwrap should expose inner SQLCConfigError")
 	}
 

@@ -14,17 +14,17 @@
 
 ## 🟡 MEDIUM Priority
 
-| #   | Task                                                                                                                                                                                                                                                                          | Source                 | Effort |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------ |
-| 3   | Performance profile and optimize hot paths                                                                                                                                                                                                                                    | TODO_LIST.md           | 30min  |
-| 4   | Add Codecov or similar coverage tracking                                                                                                                                                                                                                                      | TODO_LIST.md           | 15min  |
-| 5   | Document API stability guarantees / Go module lifecycle                                                                                                                                                                                                                       | TODO_LIST.md           | 15min  |
-| 6   | Consider `//go:generate` for detector table generation                                                                                                                                                                                                                        | TODO_LIST.md           | 45min  |
-| 7   | Add `RegisterDetector()` API for custom detectors without forking                                                                                                                                                                                                             | status docs            | 60min  |
-| 8   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API                                                                                                                                                                                                              | code review 2026-05-03 | 30min  |
-| 9   | Expose filtered file paths in FilterStats for debugging                                                                                                                                                                                                                       | code review 2026-05-03 | 15min  |
-| 10  | Document undocumented public APIs in README (DetectReasonReader, MustShouldFilter, IsEnabled, FilterReasons, String methods, FindSQLCConfigsFS, GetSQLOutputDirsFS, FindProjectRoot, AllFilterOptions, AllFilterReasons, AllErrorCodes, CodeHelp, error types, phantom types) | README audit           | 30min  |
-| 11  | Add BDD/ginkgo tests for user-facing behaviors                                                                                                                                                                                                                                | code review 2026-05-03 | 60min  |
+| #   | Task                                                                                                                                                                                                                                                                    | Source                 | Effort |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------ |
+| 3   | Performance profile and optimize hot paths                                                                                                                                                                                                                              | TODO_LIST.md           | 30min  |
+| 4   | Add Codecov or similar coverage tracking                                                                                                                                                                                                                                | TODO_LIST.md           | 15min  |
+| 5   | Document API stability guarantees / Go module lifecycle                                                                                                                                                                                                                 | TODO_LIST.md           | 15min  |
+| 6   | Consider `//go:generate` for detector table generation                                                                                                                                                                                                                  | TODO_LIST.md           | 45min  |
+| 7   | Add `RegisterDetector()` API for custom detectors without forking                                                                                                                                                                                                       | status docs            | 60min  |
+| 8   | Add `WalkAndFilter(dir string) map[string]FilterReason` bulk API                                                                                                                                                                                                        | code review 2026-05-03 | 30min  |
+| 9   | Expose filtered file paths in FilterStats for debugging                                                                                                                                                                                                                 | code review 2026-05-03 | 15min  |
+| 10  | Document undocumented public APIs in README (DetectReasonReader, MustFilter, IsEnabled, FilterReasons, String methods, FindSQLCConfigsFS, GetSQLOutputDirsFS, FindProjectRoot, AllFilterOptions, AllFilterReasons, AllErrorCodes, CodeHelp, error types, phantom types) | README audit           | 30min  |
+| 11  | Add BDD/ginkgo tests for user-facing behaviors                                                                                                                                                                                                                          | code review 2026-05-03 | 60min  |
 
 ## 🟢 LOW Priority
 
@@ -58,7 +58,7 @@ All items below verified as DONE by reading actual source code:
 - [x] Filter immutable after construction — `filter.go`
 - [x] FilterAll expansion via optionsMap — `filter.go`, `detection.go`
 - [x] ShouldFilter returns (bool, error) — `filter.go:137`
-- [x] MustShouldFilter panic-on-error variant — `filter.go:153`
+- [x] MustFilter panic-on-error variant — `filter.go:153`
 - [x] Filter.IsEnabled() — `filter.go:119`
 - [x] Filter.FilterReasons() — `filter.go:125`
 - [x] Filter.String() — `filter.go:256`

@@ -148,12 +148,12 @@ func (f *Filter) ShouldFilter(filePath string) (bool, error) {
 	return f.shouldFilterWithExcludes(filePath)
 }
 
-// MustShouldFilter is like ShouldFilter but panics on error.
+// MustFilter is like ShouldFilter but panics on error.
 // Use this in property tests and benchmarks where errors are unexpected.
-func (f *Filter) MustShouldFilter(filePath string) bool {
+func (f *Filter) MustFilter(filePath string) bool {
 	filtered, err := f.ShouldFilter(filePath)
 	if err != nil {
-		panic("gogenfilter: ShouldFilter error: " + err.Error())
+		panic("gogenfilter: MustFilter error: " + err.Error())
 	}
 
 	return filtered
