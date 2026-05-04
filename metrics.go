@@ -67,16 +67,20 @@ func (m *Metrics) RecordFiltered(filePath string, reason FilterReason) {
 	m.record(filePath, reason)
 }
 
+func zeroFilterStats() FilterStats {
+	return FilterStats{
+		MetricsMixin: MetricsMixin{
+			TotalFilesChecked: 0,
+			filteredByReason:  nil,
+			filteredFiles:     nil,
+		},
+	}
+}
+
 // GetStats returns the current filter statistics.
 func (m *Metrics) GetStats() FilterStats {
 	if m == nil {
-		return FilterStats{
-			MetricsMixin: MetricsMixin{
-				TotalFilesChecked: 0,
-				filteredByReason:  nil,
-				filteredFiles:     nil,
-			},
-		}
+		return zeroFilterStats()
 	}
 
 	m.mu.RLock()

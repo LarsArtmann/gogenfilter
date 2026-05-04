@@ -5,23 +5,7 @@ import "testing"
 func TestMatchPattern(t *testing.T) {
 	t.Parallel()
 
-	for _, testCase := range matchPatternTestCases() {
-		t.Run(testCase.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := MatchPattern(testCase.path, testCase.pattern)
-
-			if got != testCase.expected {
-				t.Errorf(
-					"MatchPattern(%q, %q) = %v, want %v",
-					testCase.path,
-					testCase.pattern,
-					got,
-					testCase.expected,
-				)
-			}
-		})
-	}
+	runMatchPatternTests(t, matchPatternTestCases())
 }
 
 func matchPatternTestCases() []matchPatternTestCase {
@@ -157,6 +141,12 @@ func TestMatchPatternCrossPlatform(t *testing.T) {
 			path: "any", pattern: "vendor\\*", expected: false,
 		},
 	}
+
+	runMatchPatternTests(t, tests)
+}
+
+func runMatchPatternTests(t *testing.T, tests []matchPatternTestCase) {
+	t.Helper()
 
 	for _, testCase := range tests {
 		t.Run(testCase.name, func(t *testing.T) {

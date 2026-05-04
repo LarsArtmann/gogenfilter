@@ -148,13 +148,7 @@ func (f *Filter) MustFilter(filePath string) bool {
 // GetStats returns a snapshot of filter statistics.
 func (f *Filter) GetStats() FilterStats {
 	if f.metrics == nil {
-		return FilterStats{
-			MetricsMixin: MetricsMixin{
-				TotalFilesChecked: 0,
-				filteredByReason:  nil,
-				filteredFiles:     nil,
-			},
-		}
+		return zeroFilterStats()
 	}
 
 	return f.metrics.GetStats()
