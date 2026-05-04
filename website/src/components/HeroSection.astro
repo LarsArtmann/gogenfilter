@@ -49,7 +49,14 @@ import { generatorCount } from '../data/generators';
     filtered, _ := f.<span class="text-accent">ShouldFilter</span>(<span class="text-amber">"db/models.go"</span>)
     fmt.<span class="text-accent">Println</span>(filtered) <span class="text-stone-600">// true — sqlc generated</span>
 }`} /></pre>
-        <button class="absolute top-2 right-2 bg-stone-800/80 border border-border rounded-md text-text-muted px-1.5 py-1.5 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={`package main
+        <button class="absolute top-2 right-2 bg-stone-800/80 border border-border rounded-md text-text-muted px-1.5 py-1.5 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const code = `package main
 
 import (
     "fmt"
@@ -64,22 +71,19 @@ func main() {
 
     filtered, _ := f.ShouldFilter("db/models.go")
     fmt.Println(filtered) // true — sqlc generated
-}`}>Copy</button>
-      </div>
-    </div>
-  </div>
-</section>
+}`;
 
-<script is:inline>
-  document.getElementById('copy-btn').addEventListener('click', function() {
-    const code = this.getAttribute('data-code').replace(/&quot;/g, '"');
-    navigator.clipboard.writeText(code).then(() => {
-      this.textContent = 'Copied!';
-      this.classList.add('text-green-400');
-      setTimeout(() => {
-        this.textContent = 'Copy';
-        this.classList.remove('text-green-400');
-      }, 2000);
+  const btn = document.getElementById('copy-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('text-green-400');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('text-green-400');
+        }, 2000);
+      });
     });
-  });
+  }
 </script>
