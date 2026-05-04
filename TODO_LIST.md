@@ -1,7 +1,17 @@
 # TODO List
 
 **Generated:** 2026-05-03
-**Updated:** 2026-05-04 (session 3 freshness verification)
+**Updated:** 2026-05-04 (BDD suite complete — 175 specs, 97.3% coverage)
+
+## ✅ COMPLETED
+
+| #   | Task                                                                                          | Completed |
+| --- | --------------------------------------------------------------------------------------------- | --------- |
+| 10  | Add comprehensive BDD test suite (175 specs across bdd_test.go + bdd_extended_test.go)        | 2026-05-04 |
+| 11  | Fix nil-pointer panic in NewFilter when WithFilterOptions returns (nil, error)                 | 2026-05-04 |
+| 12  | Fix stale test counts (7→8 error codes) in errors_test.go and example_test.go                 | 2026-05-04 |
+| 13  | Update all test files to handle error-returning API (property_test.go, bench_test.go, etc.)    | 2026-05-04 |
+| 14  | Update all website docs and code examples for new error-returning API                         | 2026-05-04 |
 
 ## 🔴 HIGH Priority
 
