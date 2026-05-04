@@ -50,7 +50,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			})
 
 			ginkgo.It("never filters any file", func() {
-				filtered, err := filter.ShouldFilter("db/models.go")
+				filtered, err := filter.Filter("db/models.go")
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				gomega.Expect(filtered).To(gomega.BeFalse())
 			})
@@ -207,7 +207,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
 					gogenfilter.WithIncludePatterns("models.go"),
 				)
-				filtered, err := filter.ShouldFilter("models.go")
+				filtered, err := filter.Filter("models.go")
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				gomega.Expect(filtered).To(gomega.BeTrue())
 			})
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				filter := gogenfilter.NewFilter(
 					gogenfilter.WithIncludePatterns("pkg/*.go"),
 				)
-				filtered, err := filter.ShouldFilter("other/file.go")
+				filtered, err := filter.Filter("other/file.go")
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				gomega.Expect(filtered).To(gomega.BeTrue())
 
@@ -235,9 +235,9 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				filter := gogenfilter.NewFilter(
 					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC, gogenfilter.FilterTempl),
 				)
-				_, _ = filter.ShouldFilter("db/models.go")
-				_, _ = filter.ShouldFilter("page_templ.go")
-				_, _ = filter.ShouldFilter("main.go")
+				_, _ = filter.Filter("db/models.go")
+				_, _ = filter.Filter("page_templ.go")
+				_, _ = filter.Filter("main.go")
 
 				stats := filter.GetStats()
 				gomega.Expect(stats.TotalFilesChecked).To(gomega.BeNumerically(">=", 1))

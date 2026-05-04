@@ -183,8 +183,7 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
-filtered, err := f.ShouldFilter("db/models.go") // (bool, error)
-filtered := f.MustFilter("db/models.go")        // panics on error
+filtered, err := f.Filter("db/models.go") // (bool, error)
 
 f.IsEnabled()           // bool
 f.FilterReasons()       // []FilterReason
@@ -252,9 +251,9 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
-f.ShouldFilter("db/models.go")
-f.ShouldFilter("page_templ.go")
-f.ShouldFilter("main.go")
+f.Filter("db/models.go")
+f.Filter("page_templ.go")
+f.Filter("main.go")
 
 stats := f.GetStats()
 // stats.TotalFilesChecked == 3
@@ -278,7 +277,7 @@ This library follows [Go module versioning](https://go.dev/doc/modules/version-n
 - **Pre-v1.0.0** (`v0.x.y`): The API may change between minor versions. We minimize breaking changes, but reserve the right to rename or adjust public symbols based on user feedback.
 - **Post-v1.0.0**: Standard Go compatibility guarantees apply. No breaking changes without a major version bump.
 
-The core `Filter` / `ShouldFilter` / `DetectReason` API is stable and unlikely to change.
+The core `Filter` / `DetectReason` API is stable and unlikely to change.
 
 ## Contributing
 

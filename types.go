@@ -16,9 +16,9 @@
 //	    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 //	)
 //
-// Check files — ShouldFilter returns (bool, error) to propagate I/O errors:
+// Check files — Filter returns (bool, error) to propagate I/O errors:
 //
-//	filtered, err := f.ShouldFilter("db/models.go")
+//	filtered, err := f.Filter("db/models.go")
 //	if err != nil {
 //	    log.Fatal(err)
 //	}

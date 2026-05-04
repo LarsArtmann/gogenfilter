@@ -124,33 +124,33 @@ func assertFilterBehavior(
 	tmpFile := createTempFile(t, name, content)
 	f := NewFilter(WithFilterOptions(opts...), WithFS(os.DirFS(filepath.Dir(tmpFile))))
 
-	got, err := f.ShouldFilter(filepath.Base(tmpFile))
+	got, err := f.Filter(filepath.Base(tmpFile))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	assertCallResult(t, "ShouldFilter", nil, got, shouldFilter)
+	assertCallResult(t, "Filter", nil, got, shouldFilter)
 }
 
-func mustShouldFilter(t *testing.T, f *Filter, filePath string) bool {
+func mustFilter(t *testing.T, f *Filter, filePath string) bool {
 	t.Helper()
 
-	got, err := f.ShouldFilter(filePath)
+	got, err := f.Filter(filePath)
 	if err != nil {
-		t.Fatalf("ShouldFilter(%q) error: %v", filePath, err)
+		t.Fatalf("Filter(%q) error: %v", filePath, err)
 	}
 
 	return got
 }
 
-func assertShouldFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bool) {
+func assertFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bool) {
 	t.Helper()
 
 	filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
-	got := mustShouldFilter(t, filter, filePath)
+	got := mustFilter(t, filter, filePath)
 	if got != expected {
-		t.Errorf("ShouldFilter(%q) = %v, want %v", filePath, got, expected)
+		t.Errorf("Filter(%q) = %v, want %v", filePath, got, expected)
 	}
 }
 
@@ -356,7 +356,7 @@ type shouldFilterTestCase struct {
 	shouldFilter bool
 }
 
-func newShouldFilterTest(
+func newFilterTest(
 	name, fileName, content string,
 	opts ...FilterOption,
 ) shouldFilterTestCase {

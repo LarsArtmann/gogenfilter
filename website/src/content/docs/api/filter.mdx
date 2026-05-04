@@ -35,13 +35,9 @@ Files matching any pattern are always filtered.
 
 ## Methods
 
-### `ShouldFilter(filePath string) (bool, error)`
+### `Filter(filePath string) (bool, error)`
 
 Determines if a file should be filtered. Returns `true` if the file is generated. I/O errors propagate.
-
-### `MustFilter(filePath string) bool`
-
-Like `ShouldFilter` but panics on error. For tests and benchmarks.
 
 ### `IsEnabled() bool`
 

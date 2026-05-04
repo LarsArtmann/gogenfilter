@@ -6,7 +6,7 @@ import (
 	"testing/fstest"
 )
 
-func TestShouldFilterConcurrent(t *testing.T) {
+func TestFilterConcurrent(t *testing.T) {
 	t.Parallel()
 
 	mapFS := fstest.MapFS{
@@ -32,9 +32,9 @@ func TestShouldFilterConcurrent(t *testing.T) {
 			files := []string{"db/models.go", "main.go", "api.go"}
 			file := files[i%len(files)]
 
-			filtered, err := filter.ShouldFilter(file)
+			filtered, err := filter.Filter(file)
 			if err != nil {
-				t.Errorf("ShouldFilter(%q) error: %v", file, err)
+				t.Errorf("Filter(%q) error: %v", file, err)
 			}
 
 			switch file {

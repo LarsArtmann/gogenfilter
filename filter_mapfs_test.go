@@ -32,7 +32,7 @@ func testMapFSDetectsSQLC(t *testing.T) {
 		WithFS(mapFS),
 	)
 
-	if !mustShouldFilter(t, fltr, "db/models.go") {
+	if !mustFilter(t, fltr, "db/models.go") {
 		t.Error("expected sqlc-generated file to be filtered")
 	}
 
@@ -52,7 +52,7 @@ func testMapFSNonGenerated(t *testing.T) {
 		WithFS(mapFS),
 	)
 
-	if mustShouldFilter(t, fltr, "main.go") {
+	if mustFilter(t, fltr, "main.go") {
 		t.Error("expected non-generated file to not be filtered")
 	}
 }
@@ -67,7 +67,7 @@ func testMapFSNonExistent(t *testing.T) {
 		WithFS(mapFS),
 	)
 
-	_, err := fltr.ShouldFilter("nonexistent.go")
+	_, err := fltr.Filter("nonexistent.go")
 	if err == nil {
 		t.Error("expected error for non-existent file")
 	}
@@ -95,9 +95,9 @@ func testMapFSMultipleGenerators(t *testing.T) {
 		WithFS(mapFS),
 	)
 
-	_, _ = fltr.ShouldFilter("db/models.go")
-	_, _ = fltr.ShouldFilter("components/header_templ.go")
-	_, _ = fltr.ShouldFilter("main.go")
+	_, _ = fltr.Filter("db/models.go")
+	_, _ = fltr.Filter("components/header_templ.go")
+	_, _ = fltr.Filter("main.go")
 
 	stats := fltr.GetStats()
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
@@ -248,7 +248,7 @@ func testParseNonExistent(t *testing.T) {
 	}
 }
 
-func TestShouldFilterExcludePattern(t *testing.T) {
+func TestFilterExcludePattern(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
@@ -266,7 +266,7 @@ func TestShouldFilterExcludePattern(t *testing.T) {
 		WithFS(os.DirFS(tmpDir)),
 	)
 
-	if !mustShouldFilter(t, filter, filepath.Join("db", "models.go")) {
+	if !mustFilter(t, filter, filepath.Join("db", "models.go")) {
 		t.Error("expected exclude pattern match to be filtered")
 	}
 

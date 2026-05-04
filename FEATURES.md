@@ -31,8 +31,7 @@
 | Include patterns              | FULLY_FUNCTIONAL | `WithIncludePatterns("**/pkg/*.go")` — whitelist scope                             |
 | Exclude patterns              | FULLY_FUNCTIONAL | `WithExcludePatterns("**/*.pb.go")` — always filter matches                        |
 | Filter immutability           | FULLY_FUNCTIONAL | Filter is immutable after `NewFilter` construction                                 |
-| ShouldFilter with error       | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                                            |
-| MustFilter                    | FULLY_FUNCTIONAL | Panics on error — for tests/benchmarks                                             |
+| Filter with error             | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                                            |
 | FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                                            |
 | IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                                               |
 | String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                                        |
@@ -116,7 +115,7 @@
 | Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                         |
 | Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants             |
 | Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                      |
-| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `ShouldFilter` test                              |
+| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                              |
 | Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
 | Runnable examples    | FULLY_FUNCTIONAL | 12 `Example*` functions in `example_test.go`                   |
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
