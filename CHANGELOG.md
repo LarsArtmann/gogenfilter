@@ -32,15 +32,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Error code derivation tests — verify `errorCodeDefs` covers every const, has no duplicates, and matches `AllErrorCodes()` exactly
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool` — values were never `false`
 - `fmt.Stringer` implementation on all 5 phantom types (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`)
-- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, `MustFilter`, and `DetectReasonReader`
+- Runnable examples for `Filter`, `WithFS`, `WithIncludePatterns`, `GetStats`/`FilteredBy`/`TotalFiltered`, and `DetectReasonReader`
 - Error handling examples (`errors.Is`, `ErrorCode()`, `Help()`, `CodeHelp`, `AllErrorCodes`, `FindProjectRoot`)
 - Phantom type `String()` method tests — 5 types × 3 cases each
 - `BenchmarkCodeHelp` — 4.9ns/op, zero allocations (map lookup)
-- `MustFilter` panic path test — covers the panic-on-error branch
+- `Filter` method — replaces `ShouldFilter` with cleaner name; `MustFilter` removed
 - CI bench step (`go test -bench=. -benchmem`)
 
 ### Changed
 
+- **`ShouldFilter` renamed to `Filter`** — the method `ShouldFilter(filePath string) (bool, error)` is now `Filter(filePath string) (bool, error)`. The `MustFilter` panic-on-error variant has been removed; callers should handle errors explicitly.
 - **`MustShouldFilter` renamed to `MustFilter`** — the double-modal name was unnecessarily verbose; the new name follows the standard Go `Must` prefix convention
 - **`IsValid()` methods derived from tables** — `FilterOption.IsValid()` and `FilterReason.IsValid()` now iterate `AllFilterOptions()`/`AllFilterReasons()` instead of manual switches, eliminating split-brain bugs when adding new detectors
 - **SQLC patterns consolidated** — `sqlcFilePatterns`/`sqlcCodePatterns` inlined into their consuming functions (`matchesSQLCFilenamePattern`, `HasSQLCContent`, `HasSQLCCodePatterns`)
