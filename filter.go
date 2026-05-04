@@ -11,18 +11,6 @@ import (
 // FilterConfig is a functional option for configuring a Filter.
 type FilterConfig func(*Filter)
 
-// Enabled enables the filter. When enabled, files matching configured generators
-// are filtered out. Metrics collection is activated.
-func Enabled() FilterConfig {
-	return func(filter *Filter) { filter.enabled = true }
-}
-
-// Disabled creates a filter that does not filter any files.
-// This is the default if neither Enabled nor Disabled is passed.
-func Disabled() FilterConfig {
-	return func(f *Filter) { f.enabled = false }
-}
-
 // WithFilterOptions specifies which generated code types to filter.
 // FilterAll expands to all specific detectors plus FilterGeneric.
 // Panics if any option is not a valid FilterOption.
@@ -79,7 +67,6 @@ func WithExcludePatterns(patterns ...string) FilterConfig {
 // A Filter is immutable after construction — all configuration is applied via NewFilter.
 type Filter struct {
 	options         map[FilterOption]struct{}
-	enabled         bool
 	includePatterns []string
 	excludePatterns []string
 	metrics         *Metrics
@@ -87,17 +74,17 @@ type Filter struct {
 }
 
 // NewFilter creates a new filter configured with the given functional options.
-// By default, the filter is disabled with no filter options.
+// A filter with no options is disabled — ShouldFilter always returns false.
+// A filter is enabled when it has filter options, include patterns, or exclude patterns.
 //
 // Examples:
 //
-//	NewFilter(Enabled(), WithFilterOptions(FilterAll))
-//	NewFilter(Enabled(), WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
-//	NewFilter(Disabled())
+//	NewFilter(WithFilterOptions(FilterAll))
+//	NewFilter(WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
+//	NewFilter() // disabled
 func NewFilter(configs ...FilterConfig) *Filter {
 	filter := &Filter{
 		options:         make(map[FilterOption]struct{}),
-		enabled:         false,
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
 		metrics:         nil,
@@ -108,7 +95,7 @@ func NewFilter(configs ...FilterConfig) *Filter {
 		cfg(filter)
 	}
 
-	if filter.enabled {
+	if filter.IsEnabled() {
 		filter.metrics = NewMetrics()
 	}
 
@@ -116,8 +103,9 @@ func NewFilter(configs ...FilterConfig) *Filter {
 }
 
 // IsEnabled returns whether the filter is active.
+// A filter is enabled when it has filter options, include patterns, or exclude patterns.
 func (f *Filter) IsEnabled() bool {
-	return f.enabled
+	return len(f.options) > 0 || len(f.includePatterns) > 0 || len(f.excludePatterns) > 0
 }
 
 // FilterReasons returns the FilterReason values that this filter will detect.
@@ -135,9 +123,7 @@ func (f *Filter) FilterReasons() []FilterReason {
 // ShouldFilter determines if a file should be filtered out (excluded from analysis).
 // Returns an error if the file could not be read for content-based detection.
 func (f *Filter) ShouldFilter(filePath string) (bool, error) {
-	if !f.enabled {
-		f.recordChecked(filePath)
-
+	if !f.IsEnabled() {
 		return false, nil
 	}
 
@@ -166,6 +152,7 @@ func (f *Filter) GetStats() FilterStats {
 			MetricsMixin: MetricsMixin{
 				TotalFilesChecked: 0,
 				filteredByReason:  nil,
+				filteredFiles:     nil,
 			},
 		}
 	}
@@ -254,7 +241,7 @@ func (f *Filter) appendPatternPart(parts []string, label string, patterns []stri
 }
 
 func (f *Filter) String() string {
-	if !f.enabled {
+	if !f.IsEnabled() {
 		return "Filter(disabled)"
 	}
 

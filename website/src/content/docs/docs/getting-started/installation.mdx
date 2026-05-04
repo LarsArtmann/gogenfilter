@@ -29,14 +29,13 @@ import (
 func main() {
     // Create a filter that detects all supported generator types
     filter := gogenfilter.NewFilter(
-        gogenfilter.Enabled(),
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
     // Check if a file should be filtered
-    filtered, reason := filter.DetectReason("user.sql.go")
+    filtered, err := filter.ShouldFilter("user.sql.go")
     if filtered {
-        fmt.Printf("Filtered: %s - Reason: %s\n", "user.sql.go", reason)
+        fmt.Printf("Filtered: %s\n", "user.sql.go")
     }
 }
 ```
