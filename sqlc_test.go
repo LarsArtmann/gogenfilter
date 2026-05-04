@@ -386,3 +386,45 @@ func TestGetSQLOutputDirsFS_InvalidYAML_ErrorCode(t *testing.T) {
 
 	assertEqual(t, "inner ErrorCode", inner.ErrorCode(), CodeSQLCConfigParse)
 }
+
+func TestParseSQLCConfig_V1Format(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	configPath := filepath.Join(tmpDir, "sqlc.yaml")
+
+	content := `version: "1"
+packages:
+  - name: "db"
+    path: "internal/db"
+    queries: "./sql/query/"
+    schema: "./sql/schema/"
+    engine: "postgresql"
+`
+	writeFile(t, configPath, content)
+
+	config, err := parseSQLCConfig(configPath)
+	if err != nil {
+		t.Fatalf("parseSQLCConfig() error = %v", err)
+	}
+
+	assertStringField(t, "Version", config.Version, "1")
+
+	if len(config.SQL) != 0 {
+		t.Errorf("v1 format should have empty SQL array, got %d entries", len(config.SQL))
+	}
+}
+
+func TestGetSQLOutputDirs_V1Format_ReturnsEmptyDirs(t *testing.T) {
+	t.Parallel()
+
+	v1YAML := `version: "1"
+packages:
+  - name: "db"
+    path: "internal/db"
+    queries: "./sql/query/"
+    schema: "./sql/schema/"
+    engine: "postgresql"
+`
+	testSQLOutputDirs(t, v1YAML, 0)
+}
