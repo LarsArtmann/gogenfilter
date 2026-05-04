@@ -119,7 +119,7 @@ cd website && npm run dedup
 
 ## CI
 
-Four separate GitHub Actions workflows, all triggered on push/PR to master with path filters + `workflow_dispatch` for manual triggering:
+Four separate GitHub Actions workflows, all triggered on push to master with path filters + `workflow_dispatch` for manual triggering (CI and Website also run on PRs):
 
 **Go CI** (`.github/workflows/ci.yml`):
 
@@ -131,6 +131,7 @@ Four separate GitHub Actions workflows, all triggered on push/PR to master with 
 
 **Benchmark** (`.github/workflows/benchmark.yml`):
 
+- Push to master only (no PR trigger — avoids `contents: write` permission on fork PRs)
 - Path filters: `*.go`, `go.mod`, `go.sum`, `.github/workflows/benchmark.yml`
 - `workflow_dispatch` enabled
 - `go test -bench=. -benchmem` → `benchmark-action/github-action-benchmark@v1`

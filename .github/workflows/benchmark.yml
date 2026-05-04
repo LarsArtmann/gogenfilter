@@ -8,13 +8,6 @@ on:
       - go.mod
       - go.sum
       - .github/workflows/benchmark.yml
-  pull_request:
-    branches: [master]
-    paths:
-      - "**.go"
-      - go.mod
-      - go.sum
-      - .github/workflows/benchmark.yml
   workflow_dispatch:
 
 permissions:
