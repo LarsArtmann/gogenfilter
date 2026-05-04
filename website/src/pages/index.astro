@@ -2,210 +2,55 @@
 import LandingLayout from '../layouts/LandingLayout.astro';
 import GeneratorGrid from '../components/GeneratorGrid.astro';
 import FeatureGrid from '../components/FeatureGrid.astro';
+import HeroSection from '../components/HeroSection.astro';
+import PhaseSection from '../components/PhaseSection.astro';
+import ComparisonSection from '../components/ComparisonSection.astro';
+import UseCasesSection from '../components/UseCasesSection.astro';
+import CTASection from '../components/CTASection.astro';
 import { siteConfig } from '../data/config';
-import { generatorCount } from '../data/generators';
 ---
 
 <LandingLayout title={siteConfig.title}>
-  <section class="relative flex items-center justify-center overflow-hidden pt-32 pb-16">
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/5 blur-[120px] rounded-full pointer-events-none"></div>
-    <div class="relative max-w-3xl xl:max-w-6xl mx-auto px-6 text-center">
-      <h1 class="text-[clamp(3rem,8vw,4.5rem)] font-bold tracking-tighter leading-tight mb-6">
-        <span>Skip the </span><span class="bg-gradient-to-r from-accent to-[#a5f3fc] bg-clip-text text-transparent">generated</span><span> noise.</span>
-      </h1>
+  <HeroSection />
 
-      <p class="text-[clamp(1.125rem,2.5vw,1.25rem)] text-text-muted max-w-3xl mx-auto mb-10 leading-relaxed">
-        Detect and filter auto-generated Go code files from
-        <em class="not-italic text-text-primary">sqlc</em>, <em class="not-italic text-text-primary">protobuf</em>, <em class="not-italic text-text-primary">templ</em>, <em class="not-italic text-text-primary">mockgen</em>,
-        and {generatorCount - 4} more tools.
-        Built for linters and static analysis.
-      </p>
-
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-        <a href="/docs/getting-started/installation/" class="px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg text-sm hover:bg-accent-hover transition-colors duration-150 inline-flex items-center gap-2 border-none cursor-pointer">Get Started &rarr;</a>
-        <div class="flex items-center gap-2 py-2.5 px-4 rounded-lg bg-bg-card-solid border border-border font-mono text-sm text-text-primary select-all">$ go get {siteConfig.github.replace('https://github.com', 'github.com')}</div>
-      </div>
-
-      <a class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-border rounded-md text-text-secondary text-[0.8125rem] font-medium no-underline hover:border-accent hover:text-accent transition-all duration-150 mt-3" href={siteConfig.github} target="_blank" rel="noopener">Star on GitHub</a>
-
-      <div class="relative max-w-xl mx-auto">
-        <div class="absolute -inset-4 bg-gradient-to-r from-accent/10 via-transparent to-accent/10 rounded-2xl blur-6 pointer-events-none"></div>
-        <div class="relative rounded-xl border border-border bg-bg-code shadow-2xl overflow-hidden code-preview">
-          <div class="flex items-center gap-1.5 px-4 py-3 border-b border-border">
-            <span class="w-3 h-3 rounded-full bg-stone-700"></span>
-            <span class="w-3 h-3 rounded-full bg-stone-700"></span>
-            <span class="w-3 h-3 rounded-full bg-stone-700"></span>
-            <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
-          </div>
-          <pre class="p-4 text-left text-sm font-mono leading-relaxed overflow-x-auto relative"><code id="hero-code" set:html={`<span class="text-text-muted">package</span> <span class="text-text-secondary">main</span>
-
-<span class="text-text-muted">import</span> (
-    <span class="text-amber">"fmt"</span>
-    <span class="text-accent-hover">"${siteConfig.github.replace('https://github.com/', 'github.com/')}"</span>
-)
-
-<span class="text-text-muted">func</span> <span class="text-accent">main</span>() {
-    f := gogenfilter.<span class="text-accent">NewFilter</span>(
-        gogenfilter.<span class="text-accent">Enabled</span>(),
-        gogenfilter.<span class="text-accent">WithFilterOptions</span>(gogenfilter.FilterAll),
-    )
-
-    filtered, _ := f.<span class="text-accent">ShouldFilter</span>(<span class="text-amber">"db/models.go"</span>)
-    fmt.<span class="text-accent">Println</span>(filtered) <span class="text-stone-600">// true — sqlc generated</span>
-}`} /></pre>
-          <button class="absolute top-2 right-2 bg-stone-800/80 border border-border rounded-md text-text-muted px-1.5 py-1.5 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={`package main
-
-import (
-    "fmt"
-    gogenfilter "${siteConfig.github.replace('https://github.com/', 'github.com/')}"
-)
-
-func main() {
-    f := gogenfilter.NewFilter(
-        gogenfilter.Enabled(),
-        gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
-    )
-
-    filtered, _ := f.ShouldFilter("db/models.go")
-    fmt.Println(filtered) // true — sqlc generated
-}`}>Copy</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-6xl mx-auto px-6">
       <GeneratorGrid />
     </div>
-  </section>
+  </div>
 
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-6xl mx-auto px-6">
       <FeatureGrid />
     </div>
-  </section>
+  </div>
 
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
-      <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Two-phase detection.</h2>
-      <p class="text-lg text-text-muted mb-12">Filename first, content second. Most files are classified without reading a single byte.</p>
-
-      <div class="grid gap-4 text-left sm:grid-cols-2">
-        <div class="p-6 rounded-xl border border-border bg-bg-card">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-mono font-bold bg-accent-dim text-accent">P1</div>
-            <h3 class="font-semibold text-text-primary">Phase 1: Filename</h3>
-          </div>
-          <p class="text-sm text-text-muted mb-3">
-            Match suffixes like <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">.pb.go</code>, <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">_templ.go</code>, <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">wire_gen.go</code>
-          </p>
-          <span class="inline-flex items-center gap-1.5 text-xs text-accent">
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            Zero I/O — no file reads
-          </span>
-        </div>
-
-        <div class="p-6 rounded-xl border border-border bg-bg-card">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-mono font-bold bg-amber/10 text-amber">P2</div>
-            <h3 class="font-semibold text-text-primary">Phase 2: Content</h3>
-          </div>
-          <p class="text-sm text-text-muted mb-3">
-            Scan for <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">Code generated by</code> markers and tool-specific patterns
-          </p>
-          <span class="inline-flex items-center gap-1.5 text-xs text-amber">
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Only runs when Phase 1 is inconclusive
-          </span>
-        </div>
-      </div>
+      <PhaseSection />
     </div>
-  </section>
+  </div>
 
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
-      <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Why gogenfilter?</h2>
-      <p class="text-lg text-text-muted mb-12">Purpose-built for Go. Not a generic file filter.</p>
-
-      <div class="grid gap-4 sm:grid-cols-3">
-        <div class="p-6 rounded-xl border border-border bg-bg-card text-center">
-          <div class="font-semibold text-text-primary mb-2 text-base">Regex Grep</div>
-          <div class="text-2xl font-bold text-accent mb-3">DIY</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> No filename detection</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> Manual pattern maintenance</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> No metrics</div>
-        </div>
-        <div class="p-6 rounded-xl border border-accent bg-accent-dim text-center">
-          <div class="font-semibold text-text-primary mb-2 text-base">gogenfilter</div>
-          <div class="text-2xl font-bold text-accent mb-3">Free</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> {generatorCount} generators, table-driven</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> Two-phase (zero I/O first)</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> Thread-safe metrics</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> fs.FS testable</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> Pattern scoping</div>
-        </div>
-        <div class="p-6 rounded-xl border border-border bg-bg-card text-center">
-          <div class="font-semibold text-text-primary mb-2 text-base">Full AST Parse</div>
-          <div class="text-2xl font-bold text-accent mb-3">Heavy</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> Requires go/ast import</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> Slow (parse entire file)</div>
-          <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> Overkill for filtering</div>
-        </div>
-      </div>
+      <ComparisonSection />
     </div>
-  </section>
+  </div>
 
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
-      <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Built for real tools.</h2>
-      <p class="text-lg text-text-muted mb-12">Drop it into any linter, analyzer, or CI pipeline.</p>
-
-      <div class="grid gap-4 sm:grid-cols-3">
-        <div class="p-5 rounded-xl border border-border bg-bg-card text-center">
-          <svg class="mx-auto mb-2 text-text-secondary" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          <h3 class="font-semibold text-text-primary text-sm mb-1">Linters</h3>
-          <p class="text-xs text-text-muted">Skip generated files in static analysis</p>
-        </div>
-        <div class="p-5 rounded-xl border border-border bg-bg-card text-center">
-          <svg class="mx-auto mb-2 text-text-secondary" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          <h3 class="font-semibold text-text-primary text-sm mb-1">Code Quality</h3>
-          <p class="text-xs text-text-muted">Exclude generated code from metrics</p>
-        </div>
-        <div class="p-5 rounded-xl border border-border bg-bg-card text-center">
-          <svg class="mx-auto mb-2 text-text-secondary" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <h3 class="font-semibold text-text-primary text-sm mb-1">CI / CD</h3>
-          <p class="text-xs text-text-muted">Filter noise from review tooling</p>
-        </div>
-      </div>
+      <UseCasesSection />
     </div>
-  </section>
+  </div>
 
-  <section data-animate class="py-24 relative">
+  <div data-animate class="py-24 relative">
     <div class="max-w-3xl mx-auto px-6 text-center">
-      <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Start filtering in seconds.</h2>
-      <p class="text-lg text-text-muted mb-12">Three lines to filter all generated code from your project.</p>
-      <a href="/docs/getting-started/installation/" class="px-8 py-4 bg-accent text-bg-primary font-semibold rounded-lg text-base hover:bg-accent-hover transition-colors duration-150 inline-flex items-center gap-2 border-none cursor-pointer">
-        Read the Docs
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-      </a>
+      <CTASection />
     </div>
-  </section>
+  </div>
 </LandingLayout>
 
 <script is:inline>
-  document.getElementById('copy-btn').addEventListener('click', function() {
-    const code = this.getAttribute('data-code').replace(/&quot;/g, '"');
-    navigator.clipboard.writeText(code).then(() => {
-      this.textContent = 'Copied!';
-      this.classList.add('text-green-400');
-      setTimeout(() => {
-        this.textContent = 'Copy';
-        this.classList.remove('text-green-400');
-      }, 2000);
-    });
-  });
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -217,15 +62,3 @@ func main() {
 
   document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
 </script>
-
-<style>
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-</style>

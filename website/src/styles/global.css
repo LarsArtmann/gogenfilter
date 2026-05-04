@@ -16,6 +16,7 @@
   --color-accent: #22d3ee;
   --color-accent-hover: #67e8f9;
   --color-accent-dim: rgba(34, 211, 238, 0.1);
+  --color-accent-light: #a5f3fc;
 
   --color-amber: #fbbf24;
 
@@ -39,4 +40,12 @@
 [data-animate]:not(.animate-fade-in) {
   opacity: 0;
   transform: translateY(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate]:not(.animate-fade-in) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

@@ -1,0 +1,31 @@
+---
+export interface Props {
+  animate?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const {
+  animate = true,
+  padding = 'md',
+  class: className,
+} = Astro.props;
+
+const paddingClasses: Record<string, string> = {
+  none: '',
+  sm: 'py-12',
+  md: 'py-24',
+  lg: 'py-32',
+};
+---
+
+<section
+  class:list={[
+    'relative',
+    paddingClasses[padding],
+    className,
+  ]}
+  data-animate={animate ? '' : undefined}
+>
+  <slot />
+</section>
