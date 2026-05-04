@@ -2,6 +2,7 @@
 import { generators, generatorCount } from '../data/generators';
 import { siteConfig } from '../data/config';
 import Icon from './Icon.astro';
+import Card from './Card.astro';
 import SectionHeader from './SectionHeader.astro';
 ---
 
@@ -10,24 +11,14 @@ import SectionHeader from './SectionHeader.astro';
 
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {generators.map((gen) => (
-      gen.url ? (
-        <a href={gen.url} target="_blank" rel="noopener noreferrer" title={`Visit ${gen.name}`} class="p-4 rounded-xl border border-border bg-bg-card hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200 block no-underline">
-          <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
-            <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
-            <span class="ml-auto text-text-muted"><Icon name="arrow-external" size={14} /></span>
-          </div>
-          <div class="text-xs text-text-muted font-mono">{gen.file}</div>
-        </a>
-      ) : (
-        <div class="p-4 rounded-xl border border-border border-dashed bg-bg-card">
-          <div class="flex items-center gap-2 mb-1">
-            <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
-            <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
-          </div>
-          <div class="text-xs text-text-muted font-mono">{gen.file}</div>
+      <Card padding="xs" dashed={!gen.url} href={gen.url || undefined} external={!!gen.url} class="hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200">
+        <div class="flex items-center gap-2 mb-1">
+          <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
+          <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
+          {gen.url && <span class="ml-auto text-text-muted"><Icon name="arrow-external" size={14} /></span>}
         </div>
-      )
+        <div class="text-xs text-text-muted font-mono">{gen.file}</div>
+      </Card>
     ))}
   </div>
 
