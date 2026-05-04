@@ -49,3 +49,16 @@ export interface UseCase {
   desc: string;
   icon: UseCaseIcon;
 }
+
+export const uiIconKeys = [
+  "arrow-external",
+  "arrow-right",
+  "github",
+  "menu",
+  "close",
+  "sun",
+  "moon",
+] as const;
+export type UIIcon = (typeof uiIconKeys)[number];
+
+export type IconName = FeatureIcon | UseCaseIcon | UIIcon;
