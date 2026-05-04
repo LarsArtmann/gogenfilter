@@ -1,13 +1,11 @@
 ---
+import Logo from './Logo.astro';
 ---
 
 <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-2xl bg-bg-primary/70">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2.5 group">
-      <svg class="transition-transform group-hover:rotate-12" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="28" height="28" rx="6" fill="#22d3ee" />
-        <path d="M7 9h6v2H9v2h3v2H9v4H7V9zm8 0h4c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-2v4h-2V9zm2 2v2h2v-2h-2z" fill="#0c0a09" />
-      </svg>
+      <Logo class="transition-transform group-hover:rotate-12" />
       <span class="text-lg font-semibold text-text-primary tracking-tight">gogenfilter</span>
     </a>
     <button class="nav-toggle bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary" id="nav-toggle" aria-label="Toggle navigation">

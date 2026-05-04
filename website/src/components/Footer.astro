@@ -1,13 +1,11 @@
 ---
+import Logo from './Logo.astro';
 ---
 
 <footer class="border-t border-border mt-32">
   <div class="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2.5">
-      <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="28" height="28" rx="6" fill="#22d3ee" />
-        <path d="M7 9h6v2H9v2h3v2H9v4H7V9zm8 0h4c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-2v4h-2V9zm2 2v2h2v-2h-2z" fill="#0c0a09" />
-      </svg>
+      <Logo width={20} height={20} />
       <span class="text-sm text-text-muted">gogenfilter — MIT License — Built by <a href="https://larsartmann.com/" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-stone-300 transition-colors duration-150 underline">LarsArtmann</a></span>
     </div>
     <div class="flex items-center gap-6 text-sm">
