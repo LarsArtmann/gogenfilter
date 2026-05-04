@@ -100,12 +100,12 @@
 
 ## b) PARTIALLY DONE 🟡
 
-| Item | What's Done | What's Missing | Why |
-|------|-------------|----------------|-----|
-| Nix flake | `flake.nix` exists | Uncommitted changes, not tested | Lower priority than library work |
-| Lighthouse audit | `lighthouse.yml` workflow exists | Full performance scores not recorded | Requires browser/network |
-| Accessibility | ARIA, focus, reduced-motion implemented | WCAG AA contrast audit, screen reader test | Requires manual testing |
-| FEATURES.md freshness | 85 features listed | Generated 2026-05-03, predates FilterPaths/FilterContext/ReasonOutsideScope | Needs regeneration |
+| Item                  | What's Done                             | What's Missing                                                              | Why                              |
+| --------------------- | --------------------------------------- | --------------------------------------------------------------------------- | -------------------------------- |
+| Nix flake             | `flake.nix` exists                      | Uncommitted changes, not tested                                             | Lower priority than library work |
+| Lighthouse audit      | `lighthouse.yml` workflow exists        | Full performance scores not recorded                                        | Requires browser/network         |
+| Accessibility         | ARIA, focus, reduced-motion implemented | WCAG AA contrast audit, screen reader test                                  | Requires manual testing          |
+| FEATURES.md freshness | 85 features listed                      | Generated 2026-05-03, predates FilterPaths/FilterContext/ReasonOutsideScope | Needs regeneration               |
 
 ---
 
@@ -164,33 +164,33 @@
 
 ## f) Top #25 Things We Should Get Done Next
 
-| # | Task | Category | Impact | Effort | ≤12min |
-|---|------|----------|--------|--------|--------|
-| 1 | Update FEATURES.md: add FilterPaths, FilterContext, ReasonOutsideScope, 98.9% coverage | Docs | HIGH | 8min | ✅ |
-| 2 | Create TODO_LIST.md or remove references from AGENTS.md | Docs | HIGH | 5min | ✅ |
-| 3 | Deduplicate `errors.Is(err, context.Canceled)` assertions in filter_test.go | Quality | MED | 5min | ✅ |
-| 4 | Verify `pkg.go.dev` renders godoc correctly for v3.0.0 | Docs | HIGH | 5min | ✅ |
-| 5 | Run `cd website && npm run build` to verify site still builds | QA | MED | 3min | ✅ |
-| 6 | Run `cd website && npm run dedup` and fix any website clones | Quality | LOW | 10min | ✅ |
-| 7 | Add `//go:generate` for detector table auto-derivation | Feature | MED | 12min | ✅ |
-| 8 | Add `RegisterDetector()` plugin API | Feature | MED | 12min | ✅ |
-| 9 | Add `WalkAndFilter(dir) map[string]FilterReason` bulk API | Feature | MED | 10min | ✅ |
-| 10 | Add benchmark regression threshold to CI (fail if >10% slower) | Infra | MED | 10min | ✅ |
-| 11 | Save and commit fuzz corpus for regression detection | QA | LOW | 8min | ✅ |
-| 12 | Add Codecov badge + GitHub Action step | Infra | LOW | 8min | ✅ |
-| 13 | Run Lighthouse audit on deployed website, record baseline scores | QA | MED | 12min | ✅ |
-| 14 | WCAG AA color contrast audit on website | QA | MED | 10min | ✅ |
-| 15 | Create `gogenfilter-example` standalone repo | Growth | MED | 12min | ✅ |
-| 16 | Submit to awesome-go | Growth | MED | 8min | ✅ |
-| 17 | Verify `go install github.com/LarsArtmann/gogenfilter@v3.0.0` works | QA | HIGH | 3min | ✅ |
-| 18 | Finalize nix flake or remove PARTIALLY_FUNCTIONAL from FEATURES.md | Cleanup | LOW | 10min | ✅ |
-| 19 | Archive/consolidate remaining status reports if needed | Cleanup | LOW | 5min | ✅ |
-| 20 | Add CODE_OF_CONDUCT.md if not present | Docs | LOW | 3min | ✅ |
-| 21 | Screen reader testing (VoiceOver/NVDA basic check) | QA | LOW | 12min | ✅ |
-| 22 | Add GitHub release notes for v3.0.0 if not done | Release | MED | 8min | ✅ |
-| 23 | Verify all 4 CI workflows pass on current master | QA | HIGH | 5min | ✅ |
-| 24 | Add CSP header verification to website CI | Infra | LOW | 8min | ✅ |
-| 25 | Blog post / announcement draft for v3.0.0 | Growth | MED | 12min | ✅ |
+| #   | Task                                                                                   | Category | Impact | Effort | ≤12min |
+| --- | -------------------------------------------------------------------------------------- | -------- | ------ | ------ | ------ |
+| 1   | Update FEATURES.md: add FilterPaths, FilterContext, ReasonOutsideScope, 98.9% coverage | Docs     | HIGH   | 8min   | ✅     |
+| 2   | Create TODO_LIST.md or remove references from AGENTS.md                                | Docs     | HIGH   | 5min   | ✅     |
+| 3   | Deduplicate `errors.Is(err, context.Canceled)` assertions in filter_test.go            | Quality  | MED    | 5min   | ✅     |
+| 4   | Verify `pkg.go.dev` renders godoc correctly for v3.0.0                                 | Docs     | HIGH   | 5min   | ✅     |
+| 5   | Run `cd website && npm run build` to verify site still builds                          | QA       | MED    | 3min   | ✅     |
+| 6   | Run `cd website && npm run dedup` and fix any website clones                           | Quality  | LOW    | 10min  | ✅     |
+| 7   | Add `//go:generate` for detector table auto-derivation                                 | Feature  | MED    | 12min  | ✅     |
+| 8   | Add `RegisterDetector()` plugin API                                                    | Feature  | MED    | 12min  | ✅     |
+| 9   | Add `WalkAndFilter(dir) map[string]FilterReason` bulk API                              | Feature  | MED    | 10min  | ✅     |
+| 10  | Add benchmark regression threshold to CI (fail if >10% slower)                         | Infra    | MED    | 10min  | ✅     |
+| 11  | Save and commit fuzz corpus for regression detection                                   | QA       | LOW    | 8min   | ✅     |
+| 12  | Add Codecov badge + GitHub Action step                                                 | Infra    | LOW    | 8min   | ✅     |
+| 13  | Run Lighthouse audit on deployed website, record baseline scores                       | QA       | MED    | 12min  | ✅     |
+| 14  | WCAG AA color contrast audit on website                                                | QA       | MED    | 10min  | ✅     |
+| 15  | Create `gogenfilter-example` standalone repo                                           | Growth   | MED    | 12min  | ✅     |
+| 16  | Submit to awesome-go                                                                   | Growth   | MED    | 8min   | ✅     |
+| 17  | Verify `go install github.com/LarsArtmann/gogenfilter@v3.0.0` works                    | QA       | HIGH   | 3min   | ✅     |
+| 18  | Finalize nix flake or remove PARTIALLY_FUNCTIONAL from FEATURES.md                     | Cleanup  | LOW    | 10min  | ✅     |
+| 19  | Archive/consolidate remaining status reports if needed                                 | Cleanup  | LOW    | 5min   | ✅     |
+| 20  | Add CODE_OF_CONDUCT.md if not present                                                  | Docs     | LOW    | 3min   | ✅     |
+| 21  | Screen reader testing (VoiceOver/NVDA basic check)                                     | QA       | LOW    | 12min  | ✅     |
+| 22  | Add GitHub release notes for v3.0.0 if not done                                        | Release  | MED    | 8min   | ✅     |
+| 23  | Verify all 4 CI workflows pass on current master                                       | QA       | HIGH   | 5min   | ✅     |
+| 24  | Add CSP header verification to website CI                                              | Infra    | LOW    | 8min   | ✅     |
+| 25  | Blog post / announcement draft for v3.0.0                                              | Growth   | MED    | 12min  | ✅     |
 
 ---
 
@@ -199,6 +199,7 @@
 **Do we need `TODO_LIST.md` back, or should we remove it from AGENTS.md references and rely on FEATURES.md + GitHub Issues instead?**
 
 The file was deleted at some point. AGENTS.md doesn't reference it currently. OPTIONS:
+
 - **A)** Recreate it with current priorities (a few minutes, keeps local tracking)
 - **B)** Remove permanently, use GitHub Issues for tracking (simpler, single source of truth)
 - **C)** Keep it as-is (deleted) — the project is mature enough that FEATURES.md + CHANGELOG.md are sufficient
@@ -211,12 +212,12 @@ This is a workflow preference, not a technical question. I need your call.
 
 Today's work across multiple sessions:
 
-| Session | Focus | Key Changes |
-|---------|-------|-------------|
-| ~07:00-10:30 | Website polish, API stabilization | Landing page, docs, Enabled/Disabled removal |
-| ~11:00-11:40 | Deduplication + lint | 5 helpers extracted, all lint issues fixed, art-dupl 4→3 |
-| ~11:40-12:00 | Breaking rename + release prep | ReasonIncludePattern → ReasonOutsideScope, status report |
-| ~16:15-16:50 | CI audit + fixes | 4 workflow fixes, PAT token, workflow_dispatch, budget.json cleanup |
-| ~16:50-17:16 | FilterPaths + FilterContext APIs | Batch filtering, context cancellation, coverage 98.9% |
+| Session      | Focus                             | Key Changes                                                         |
+| ------------ | --------------------------------- | ------------------------------------------------------------------- |
+| ~07:00-10:30 | Website polish, API stabilization | Landing page, docs, Enabled/Disabled removal                        |
+| ~11:00-11:40 | Deduplication + lint              | 5 helpers extracted, all lint issues fixed, art-dupl 4→3            |
+| ~11:40-12:00 | Breaking rename + release prep    | ReasonIncludePattern → ReasonOutsideScope, status report            |
+| ~16:15-16:50 | CI audit + fixes                  | 4 workflow fixes, PAT token, workflow_dispatch, budget.json cleanup |
+| ~16:50-17:16 | FilterPaths + FilterContext APIs  | Batch filtering, context cancellation, coverage 98.9%               |
 
 **Current state**: Clean tree, fully pushed, 4 tags, all green.
