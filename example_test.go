@@ -37,6 +37,7 @@ func newTestFilter(opts gogenfilter.FilterOption, mapFS fstest.MapFS) *gogenfilt
 	if err != nil {
 		panic(err)
 	}
+
 	filter, err := gogenfilter.NewFilter(
 		configOpts,
 		gogenfilter.WithFS(mapFS),
@@ -44,6 +45,7 @@ func newTestFilter(opts gogenfilter.FilterOption, mapFS fstest.MapFS) *gogenfilt
 	if err != nil {
 		panic(err)
 	}
+
 	return filter
 }
 
@@ -57,6 +59,7 @@ func newTestFilterWithInclude(
 	if err != nil {
 		panic(err)
 	}
+
 	filter, err := gogenfilter.NewFilter(
 		configOpts,
 		gogenfilter.WithIncludePatterns(include),
@@ -65,6 +68,7 @@ func newTestFilterWithInclude(
 	if err != nil {
 		panic(err)
 	}
+
 	return filter
 }
 
@@ -77,6 +81,7 @@ func ExampleNewFilter() {
 	if err != nil {
 		return
 	}
+
 	filter, err := gogenfilter.NewFilter(opts)
 	if err != nil {
 		return
@@ -91,6 +96,7 @@ func ExampleNewFilter_withExcludePatterns() {
 	if err != nil {
 		return
 	}
+
 	filter, err := gogenfilter.NewFilter(
 		opts,
 		gogenfilter.WithExcludePatterns("**/db/*.go"),
@@ -273,5 +279,5 @@ func ExampleCodeHelp() {
 func ExampleAllErrorCodes() {
 	codes := gogenfilter.AllErrorCodes()
 	fmt.Println(len(codes))
-	// Output: 7
+	// Output: 8
 }
