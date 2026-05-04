@@ -518,3 +518,92 @@ func TestFilterString(t *testing.T) {
 		assertContains(t, str, "stats=")
 	})
 }
+
+func TestFilterPaths(t *testing.T) {
+	t.Parallel()
+
+	t.Run("filters multiple valid paths", func(t *testing.T) {
+		t.Parallel()
+
+		filter, err := NewFilter(
+			WithIncludePatterns("keep.go", "safe.go"),
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		results, err := filter.FilterPaths([]string{"keep.go", "remove.go", "safe.go"})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assertLen(t, "results", len(results), 3)
+		assertEqual(t, "keep.go", results[0], false)
+		assertEqual(t, "remove.go", results[1], true)
+		assertEqual(t, "safe.go", results[2], false)
+	})
+
+	t.Run("empty paths slice", func(t *testing.T) {
+		t.Parallel()
+
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		results, err := filter.FilterPaths([]string{})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assertLen(t, "results", len(results), 0)
+	})
+
+	t.Run("returns partial results on error", func(t *testing.T) {
+		t.Parallel()
+
+		mapFS := fstest.MapFS{
+			"main.go": newMapFile("package main\nfunc main() {}"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithFS(mapFS))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		results, err := filter.FilterPaths([]string{"main.go", "nonexistent.go"})
+		if err == nil {
+			t.Fatal("expected error for nonexistent file")
+		}
+
+		assertLen(t, "partial results", len(results), 1)
+		assertEqual(t, "main.go result", results[0], false)
+	})
+
+	t.Run("disabled filter returns all false", func(t *testing.T) {
+		t.Parallel()
+
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		results, err := filter.FilterPaths([]string{"a.go", "b.go", "c.go"})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assertLen(t, "results", len(results), 3)
+
+		for i, got := range results {
+			if got {
+				t.Errorf("disabled filter should not filter path %d", i)
+			}
+		}
+	})
+}

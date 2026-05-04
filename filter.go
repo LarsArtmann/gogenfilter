@@ -162,6 +162,30 @@ func (f *Filter) Filter(filePath string) (bool, error) {
 	return f.shouldFilterWithExcludes(filePath)
 }
 
+// FilterPaths filters multiple file paths in batch, returning a slice of booleans
+// indicating whether each file should be filtered.
+// If an error occurs on any path, partial results collected so far and the error are returned.
+//
+// Example:
+//
+//	filter, _ := NewFilter(WithIncludePatterns("pkg/*.go"))
+//	results, err := filter.FilterPaths([]string{"pkg/main.go", "vendor/util.go", "pkg/handler.go"})
+//	// results: [false, true, false] — vendor/util.go filtered as outside scope
+func (f *Filter) FilterPaths(paths []string) ([]bool, error) {
+	results := make([]bool, 0, len(paths))
+
+	for _, path := range paths {
+		filtered, err := f.Filter(path)
+		if err != nil {
+			return results, err
+		}
+
+		results = append(results, filtered)
+	}
+
+	return results, nil
+}
+
 // GetStats returns a snapshot of filter statistics.
 func (f *Filter) GetStats() FilterStats {
 	if f.metrics == nil {
