@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Website CI: checkout `path` parameter placement** — `path:` was outside `with:` block for `md-go-validator` and `go-output` checkouts, causing `actions/checkout` to ignore it and overwrite the workspace root
+- **Website CI: private repo access** — added `token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}` fallback for cross-repo checkouts (requires PAT secret for private repos)
+- **Benchmark CI: missing `gh-pages` branch** — created orphan `gh-pages` branch for `benchmark-action/github-action-benchmark` data storage
+- **Lighthouse CI: budgets+assertions conflict** — removed `budgetPath` input from workflow; LHCI v12 rejects using both simultaneously. Assertions in `lighthouserc.json` cover all checks.
+- **Node.js 20 deprecation** — updated `actions/setup-go@v5` → `@v6` across all workflows (forced upgrade June 2, 2026)
+
+### Changed
+
+- **`workflow_dispatch` added** to website.yml and benchmark.yml for manual triggering
+- **`budget.json` removed** from path filters in lighthouse.yml and website.yml
+- **`budget.json` deleted** from repository — no longer referenced by any workflow
+
 ## [v3.0.0] — 2026-05-04
 
 ### Added
