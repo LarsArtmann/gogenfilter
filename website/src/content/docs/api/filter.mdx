@@ -26,15 +26,15 @@ if err != nil {
 
 Specifies which generators to detect. Returns an error with `*FilterConfigError` for invalid options.
 
-### `WithFS(fsys fs.FS) (FilterConfig, error)`
+### `WithFS(fsys fs.FS) FilterConfig`
 
 Sets a custom filesystem. Defaults to `os.DirFS(".")`.
 
-### `WithIncludePatterns(patterns ...string) (FilterConfig, error)`
+### `WithIncludePatterns(patterns ...string) FilterConfig`
 
 Restricts scope to files matching at least one pattern.
 
-### `WithExcludePatterns(patterns ...string) (FilterConfig, error)`
+### `WithExcludePatterns(patterns ...string) FilterConfig`
 
 Files matching any pattern are always filtered.
 
