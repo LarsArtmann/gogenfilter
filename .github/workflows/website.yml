@@ -38,11 +38,13 @@ jobs:
         with:
           repository: LarsArtmann/md-go-validator
           path: md-go-validator
+          token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}
 
       - uses: actions/checkout@v6
         with:
           repository: LarsArtmann/go-output
           path: go-output
+          token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}
 
       - uses: actions/setup-node@v6
         with:
