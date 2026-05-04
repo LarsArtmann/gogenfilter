@@ -28,7 +28,7 @@ export interface PhaseCard {
   patterns: string[];
   note: string;
   noteColor: "accent" | "amber";
-  noteIcon: string;
+  noteIcon: UseCaseIcon;
 }
 
 export type ComparisonVariant = "DIY" | "gogenfilter" | "Heavy";
@@ -41,8 +41,11 @@ export interface ComparisonItem {
   accent: boolean;
 }
 
+export const useCaseIconKeys = ["cog", "chart", "refresh", "bolt", "check"] as const;
+export type UseCaseIcon = (typeof useCaseIconKeys)[number];
+
 export interface UseCase {
   title: string;
   desc: string;
-  icon: string;
+  icon: UseCaseIcon;
 }
