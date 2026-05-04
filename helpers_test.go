@@ -171,6 +171,12 @@ func assertFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bo
 	}
 }
 
+func failingFilterConfig(msg string) FilterConfig {
+	return FilterConfig(func(f *Filter) error {
+		return errors.New(msg) //nolint:err113
+	})
+}
+
 func writeSQLCConfigFile(t *testing.T, dir, filename string) {
 	t.Helper()
 
@@ -430,11 +436,27 @@ func createFSWithFile(t *testing.T, filename, content string) fstest.MapFS {
 	}
 }
 
+func createFSWithPath(t *testing.T, relPath, content string) fstest.MapFS {
+	t.Helper()
+
+	return fstest.MapFS{
+		relPath: newMapFile(content),
+	}
+}
+
 func assertErrorsIs(t *testing.T, err, sentinel error) {
 	t.Helper()
 
 	if !errors.Is(err, sentinel) {
 		t.Errorf("errors.Is should match %v", sentinel)
+	}
+}
+
+func assertUnwrapSentinel(t *testing.T, err error) {
+	t.Helper()
+
+	if !errors.Is(err, os.ErrPermission) {
+		t.Error("Unwrap should expose inner error")
 	}
 }
 

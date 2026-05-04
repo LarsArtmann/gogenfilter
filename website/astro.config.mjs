@@ -39,6 +39,7 @@ export default defineConfig({
     starlight({
       title: "gogenfilter",
       favicon: "/favicon.svg",
+      customCss: ["./src/styles/starlight.css"],
       expressiveCode: {
         themes: ["github-light", "github-dark"],
         frames: {
