@@ -47,11 +47,11 @@ type validatable interface {
 func (o FilterOption) String() string { return string(o) }
 
 // Reason returns the FilterReason corresponding to this FilterOption.
-// This relies on the invariant that each FilterOption constant and its matching
-// FilterReason constant share the same underlying string value (e.g., FilterSQLC == "sqlc" == ReasonSQLC).
-// The detectors table enforces this pairing via explicit (option, reason) fields.
-// When adding a new detector, both a FilterOption and FilterReason const with identical values must be defined.
-func (o FilterOption) Reason() FilterReason { return FilterReason(o) }
+// Derived from the detectors table so adding a new detector automatically
+// updates this mapping. Panics if called on an unregistered option (e.g., FilterAll).
+func (o FilterOption) Reason() FilterReason {
+	return filterOptionToReason(o)
+}
 
 // IsValid reports whether the FilterOption is a recognized value.
 func (o FilterOption) IsValid() bool {
