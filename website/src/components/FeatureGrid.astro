@@ -1,5 +1,6 @@
 ---
 import { features, icons } from '../data/features';
+import Card from './Card.astro';
 ---
 
 <div>
@@ -10,11 +11,11 @@ import { features, icons } from '../data/features';
 
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
-      <div class="p-6 rounded-xl border border-border bg-bg-card hover:border-border-hover transition-colors duration-150">
+      <Card variant="feature">
         <div class="text-accent mb-3" set:html={icons[feature.icon]} />
         <h3 class="font-semibold text-text-primary mb-2">{feature.title}</h3>
         <p class="text-sm text-text-muted leading-relaxed">{feature.desc}</p>
-      </div>
+      </Card>
     ))}
   </div>
 </div>

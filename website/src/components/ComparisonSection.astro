@@ -1,0 +1,24 @@
+---
+import { comparisons } from '../data/sections';
+import { generatorCount } from '../data/generators';
+---
+
+<div class="text-center mb-12">
+  <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Why gogenfilter?</h2>
+  <p class="text-lg text-text-muted mb-12">Purpose-built for Go. Not a generic file filter.</p>
+</div>
+
+<div class="grid gap-4 sm:grid-cols-3">
+  {comparisons.map((item) => (
+    <div class={`p-6 rounded-xl border bg-bg-card text-center ${item.accent ? 'border-accent bg-accent-dim' : 'border-border'}`}>
+      <div class="font-semibold text-text-primary mb-2 text-base">{item.variant}</div>
+      <div class="text-2xl font-bold text-accent mb-3">{item.price}</div>
+      {item.pros.map((pro) => (
+        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-green-400">&#x2713;</span> {item.variant === 'gogenfilter' && pro.includes('11 generators') ? `${generatorCount} generators, table-driven` : pro}</div>
+      ))}
+      {item.cons.map((con) => (
+        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted">&#x2717;</span> {con}</div>
+      ))}
+    </div>
+  ))}
+</div>

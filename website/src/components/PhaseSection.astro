@@ -1,0 +1,34 @@
+---
+import { phases, useCaseIcons } from '../data/sections';
+---
+
+<div class="text-center mb-12">
+  <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">Two-phase detection.</h2>
+  <p class="text-lg text-text-muted mb-12">Filename first, content second. Most files are classified without reading a single byte.</p>
+</div>
+
+<div class="grid gap-4 text-left sm:grid-cols-2">
+  {phases.map((phase) => (
+    <div class="p-6 rounded-xl border border-border bg-bg-card">
+      <div class="flex items-center gap-3 mb-3">
+        <div class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-mono font-bold ${phase.phaseColor === 'accent' ? 'bg-accent-dim text-accent' : 'bg-amber/10 text-amber'}`}>{phase.phase}</div>
+        <h3 class="font-semibold text-text-primary">{phase.title}</h3>
+      </div>
+      <p class="text-sm text-text-muted mb-3">
+        Scan for{' '}
+        {phase.patterns.map((p, i) => (
+          <>
+            <code class="bg-stone-800 px-1.5 py-0.5 rounded text-xs text-accent/80">{p}</code>
+            {i < phase.patterns.length - 1 && ' and '}
+          </>
+        ))}
+      </p>
+      <span class={`inline-flex items-center gap-1.5 text-xs ${phase.noteColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={useCaseIcons[phase.noteIcon]}/>
+        </svg>
+        {phase.note}
+      </span>
+    </div>
+  ))}
+</div>

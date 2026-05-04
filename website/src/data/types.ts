@@ -10,3 +10,29 @@ export interface Feature {
   title: string;
   desc: string;
 }
+
+export interface PhaseCard {
+  phase: string;
+  phaseColor: 'accent' | 'amber';
+  title: string;
+  patterns: string[];
+  note: string;
+  noteColor: 'accent' | 'amber';
+  noteIcon: string;
+}
+
+export type ComparisonVariant = 'DIY' | 'gogenfilter' | 'Heavy';
+
+export interface ComparisonItem {
+  variant: ComparisonVariant;
+  price: string;
+  pros: string[];
+  cons: string[];
+  accent: boolean;
+}
+
+export interface UseCase {
+  title: string;
+  desc: string;
+  icon: string;
+}
