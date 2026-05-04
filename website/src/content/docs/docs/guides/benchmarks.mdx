@@ -120,3 +120,18 @@ go test -bench=. -benchmem ./...
 ```
 
 For stable results, run on a quiet system with CPU frequency scaling disabled.
+
+## Live Dashboard
+
+Historical benchmark trends are tracked automatically on every push to master:
+
+**[View Live Benchmark Dashboard](https://larsartmann.github.io/gogenfilter/dev/bench/)**
+
+The dashboard shows:
+
+- Time-series charts for all 17 benchmarks
+- Commit-level granularity with tooltips showing commit messages
+- Automatic regression highlighting when performance degrades >150%
+
+Results above are a point-in-time snapshot (Go 1.24, AMD Ryzen AI MAX+ 395).
+The dashboard provides continuous, hardware-consistent tracking from CI.
