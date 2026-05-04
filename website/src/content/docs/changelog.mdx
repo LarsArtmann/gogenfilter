@@ -17,6 +17,12 @@ description: All notable changes to gogenfilter.
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool`
 - `fmt.Stringer` on all phantom types
 - Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`, `MustFilter`, `DetectReasonReader`
+- `FilterStats.FilteredFiles(reason FilterReason) []string` — file paths filtered by reason (defensive copy)
+- `DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error)`
+- `MustFilter(filePath string) bool` — panics on error, replaces `MustShouldFilter`
+- `BenchmarkCodeHelp` benchmark
+- SQLC config v1 format test coverage
+- Cross-platform path matching tests
 
 ### Changed
 
