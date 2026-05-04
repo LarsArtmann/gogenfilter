@@ -4,6 +4,7 @@ import Icon from './Icon.astro';
 import { siteConfig } from '../data/config';
 ---
 
+<header role="banner">
 <nav class="fixed top-0 left-0 right-0 z-50 border-b border-border backdrop-blur-2xl bg-bg-primary/70" aria-label="Main navigation">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="/" class="flex items-center gap-2.5 group">
@@ -27,6 +28,7 @@ import { siteConfig } from '../data/config';
     </div>
   </div>
 </nav>
+</header>
 
 <script is:inline>
   // Theme toggle
