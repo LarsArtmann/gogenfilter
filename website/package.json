@@ -2,7 +2,7 @@
   "name": "gogenfilter-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Website and documentation for gogenfilter \u2014 detect and filter auto-generated Go code files",
+  "description": "Website and documentation for gogenfilter — detect and filter auto-generated Go code files",
   "keywords": [
     "astro",
     "code-generation",
