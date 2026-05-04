@@ -142,10 +142,10 @@ Four separate GitHub Actions workflows, all triggered on push/PR to master with 
 - Path filters: `website/**`, `.github/workflows/website.yml`, `.github/workflows/lighthouse.yml`, `lighthouserc.json`
 - `workflow_dispatch` enabled
 - Concurrency group cancels in-progress runs
-- `npm ci` → `astro check` (typecheck) → build → doc validation (md-go-validator) → HTML validation (enforced, not suppressed) → code dedup check
-- Cross-repo checkouts for `LarsArtmann/md-go-validator` and `LarsArtmann/go-output` use `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback
+- `npm ci` → `astro check` (typecheck) → build → doc validation (md-go-validator, optional) → HTML validation (enforced, not suppressed) → code dedup check
+- Cross-repo checkout for `LarsArtmann/md-go-validator` uses `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback; `continue-on-error: true` so build/deploy proceeds even without access. `LarsArtmann/go-output` checkout removed (was unused).
 - Deploy to Firebase Hosting (master push only, least-privilege permissions)
-- Node version pinned via `website/.node-version` (used by volta/fnm/nvm)
+- Node version pinned via `website/.node-version` (currently Node 24)
 
 **Lighthouse CI** (`.github/workflows/lighthouse.yml`):
 
@@ -159,7 +159,7 @@ Four separate GitHub Actions workflows, all triggered on push/PR to master with 
 
 ### CI Known Issues (2026-05-04)
 
-- **Website CI**: Requires `PRIVATE_REPO_TOKEN` secret (PAT with `contents:read` on `LarsArtmann/md-go-validator` and `LarsArtmann/go-output`) for cross-repo private checkout
+- **Website CI**: `PRIVATE_REPO_TOKEN` secret optional — md-go-validator checkout has `continue-on-error: true`, doc validation is skipped gracefully when unavailable
 - **Lighthouse CI**: Accessibility assertions fail on live site — `color-contrast`, `label-content-name-mismatch` on root page; `redirects` on `/docs`
 - **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped
 
