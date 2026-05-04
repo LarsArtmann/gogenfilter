@@ -1,6 +1,7 @@
 package gogenfilter
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -9,33 +10,38 @@ import (
 )
 
 // FilterConfig is a functional option for configuring a Filter.
-type FilterConfig func(*Filter)
+// Returns an error if the configuration is invalid.
+type FilterConfig func(*Filter) error
 
 // WithFilterOptions specifies which generated code types to filter.
 // FilterAll expands to all specific detectors plus FilterGeneric.
-// Panics if any option is not a valid FilterOption.
-func WithFilterOptions(opts ...FilterOption) FilterConfig {
+// Returns an error if any option is not a valid FilterOption.
+func WithFilterOptions(opts ...FilterOption) (FilterConfig, error) {
 	for _, opt := range opts {
 		if !opt.IsValid() {
-			panic("gogenfilter: invalid FilterOption: " + opt.String())
+			return nil, &FilterConfigError{Code: CodeInvalidFilterOption, Option: opt}
 		}
 	}
 
-	return func(filter *Filter) {
+	return func(filter *Filter) error {
 		expanded := optionsMap(opts...)
 		for opt := range expanded {
 			filter.options[opt] = struct{}{}
 		}
-	}
+
+		return nil
+	}, nil
 }
 
 // WithFS sets a custom filesystem for the filter.
 // Defaults to os.DirFS(".") if not provided.
 func WithFS(fsys fs.FS) FilterConfig {
-	return func(filter *Filter) {
+	return func(filter *Filter) error {
 		if fsys != nil {
 			filter.fsys = fsys
 		}
+
+		return nil
 	}
 }
 
@@ -50,16 +56,20 @@ func WithFS(fsys fs.FS) FilterConfig {
 // Patterns use the ** glob syntax supported by MatchPattern.
 // If no include patterns are set, all files are considered.
 func WithIncludePatterns(patterns ...string) FilterConfig {
-	return func(filter *Filter) {
+	return func(filter *Filter) error {
 		filter.includePatterns = append(filter.includePatterns, patterns...)
+
+		return nil
 	}
 }
 
 // WithExcludePatterns adds exclude patterns. Files matching any exclude pattern
 // are filtered regardless of generated-code detection.
 func WithExcludePatterns(patterns ...string) FilterConfig {
-	return func(filter *Filter) {
+	return func(filter *Filter) error {
 		filter.excludePatterns = append(filter.excludePatterns, patterns...)
+
+		return nil
 	}
 }
 
@@ -77,12 +87,15 @@ type Filter struct {
 // A filter with no options is disabled — Filter always returns false.
 // A filter is enabled when it has filter options, include patterns, or exclude patterns.
 //
+// Returns an error if any configuration option is invalid.
+// Use errors.Is to check for specific error types.
+//
 // Examples:
 //
-//	NewFilter(WithFilterOptions(FilterAll))
-//	NewFilter(WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
-//	NewFilter() // disabled
-func NewFilter(configs ...FilterConfig) *Filter {
+//	filter, err := NewFilter(WithFilterOptions(FilterAll))
+//	filter, err := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
+//	filter, err := NewFilter() // disabled, always returns (false, nil)
+func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	filter := &Filter{
 		options:         make(map[FilterOption]struct{}),
 		includePatterns: make([]string, 0),
@@ -91,15 +104,22 @@ func NewFilter(configs ...FilterConfig) *Filter {
 		fsys:            os.DirFS("."),
 	}
 
+	var errs []error
 	for _, cfg := range configs {
-		cfg(filter)
+		if err := cfg(filter); err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	if len(errs) > 0 {
+		return nil, errors.Join(errs...)
 	}
 
 	if filter.IsEnabled() {
 		filter.metrics = NewMetrics()
 	}
 
-	return filter
+	return filter, nil
 }
 
 // IsEnabled returns whether the filter is active.

@@ -122,7 +122,14 @@ func assertFilterBehavior(
 	t.Helper()
 
 	tmpFile := createTempFile(t, name, content)
-	f := NewFilter(WithFilterOptions(opts...), WithFS(os.DirFS(filepath.Dir(tmpFile))))
+	configOpts, err := WithFilterOptions(opts...)
+	if err != nil {
+		t.Fatalf("WithFilterOptions error: %v", err)
+	}
+	f, err := NewFilter(configOpts, WithFS(os.DirFS(filepath.Dir(tmpFile))))
+	if err != nil {
+		t.Fatalf("NewFilter error: %v", err)
+	}
 
 	got, err := f.Filter(filepath.Base(tmpFile))
 	if err != nil {
@@ -146,7 +153,14 @@ func mustFilter(t *testing.T, f *Filter, filePath string) bool {
 func assertFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bool) {
 	t.Helper()
 
-	filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
+	configOpts, err := WithFilterOptions(FilterAll)
+	if err != nil {
+		t.Fatal(err)
+	}
+	filter, err := NewFilter(configOpts, WithFS(mapFS))
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	got := mustFilter(t, filter, filePath)
 	if got != expected {

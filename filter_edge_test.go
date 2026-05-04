@@ -12,9 +12,16 @@ func TestFilterEdgeCases(t *testing.T) {
 	t.Run("empty path returns error", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterAll))
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-		_, err := filter.Filter("")
+		_, err = filter.Filter("")
 		if err == nil {
 			t.Error("expected error for empty path")
 		}
@@ -64,7 +71,14 @@ func TestFilterEdgeCases(t *testing.T) {
 			longName: newMapFile("package main\n"),
 		}
 
-		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts, WithFS(mapFS))
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		filtered, err := filter.Filter(longName)
 		if err != nil {
@@ -79,7 +93,14 @@ func TestFilterEdgeCases(t *testing.T) {
 	t.Run("nil FS defaults to OS filesystem", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterAll), WithFS(nil))
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts, WithFS(nil))
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		filtered, err := filter.Filter("nonexistent_deffile_12345.go")
 		if err == nil {

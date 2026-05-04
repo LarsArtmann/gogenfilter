@@ -33,10 +33,18 @@ func mapFSWithFiles(files map[string]string) fstest.MapFS {
 
 // newTestFilter creates a Filter with enabled state, filter options, and filesystem.
 func newTestFilter(opts gogenfilter.FilterOption, mapFS fstest.MapFS) *gogenfilter.Filter {
-	return gogenfilter.NewFilter(
-		gogenfilter.WithFilterOptions(opts),
+	configOpts, err := gogenfilter.WithFilterOptions(opts)
+	if err != nil {
+		panic(err)
+	}
+	filter, err := gogenfilter.NewFilter(
+		configOpts,
 		gogenfilter.WithFS(mapFS),
 	)
+	if err != nil {
+		panic(err)
+	}
+	return filter
 }
 
 // newTestFilterWithInclude creates a Filter with include patterns.
@@ -45,31 +53,51 @@ func newTestFilterWithInclude(
 	include string,
 	mapFS fstest.MapFS,
 ) *gogenfilter.Filter {
-	return gogenfilter.NewFilter(
-		gogenfilter.WithFilterOptions(opts),
+	configOpts, err := gogenfilter.WithFilterOptions(opts)
+	if err != nil {
+		panic(err)
+	}
+	filter, err := gogenfilter.NewFilter(
+		configOpts,
 		gogenfilter.WithIncludePatterns(include),
 		gogenfilter.WithFS(mapFS),
 	)
+	if err != nil {
+		panic(err)
+	}
+	return filter
 }
 
 func ExampleNewFilter() {
-	filter := gogenfilter.NewFilter(
-		gogenfilter.WithFilterOptions(
-			gogenfilter.FilterSQLC,
-			gogenfilter.FilterTempl,
-			gogenfilter.FilterGeneric,
-		),
+	opts, err := gogenfilter.WithFilterOptions(
+		gogenfilter.FilterSQLC,
+		gogenfilter.FilterTempl,
+		gogenfilter.FilterGeneric,
 	)
+	if err != nil {
+		return
+	}
+	filter, err := gogenfilter.NewFilter(opts)
+	if err != nil {
+		return
+	}
 
 	fmt.Println(filter.IsEnabled())
 	// Output: true
 }
 
 func ExampleNewFilter_withExcludePatterns() {
-	filter := gogenfilter.NewFilter(
-		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+	opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+	if err != nil {
+		return
+	}
+	filter, err := gogenfilter.NewFilter(
+		opts,
 		gogenfilter.WithExcludePatterns("**/db/*.go"),
 	)
+	if err != nil {
+		return
+	}
 
 	fmt.Println(filter.IsEnabled())
 	// Output: true

@@ -1,9 +1,9 @@
 package gogenfilter
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -33,7 +33,10 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter()
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if filter.IsEnabled() {
 			t.Error("Expected disabled filter")
@@ -47,7 +50,14 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
+		opts, err := WithFilterOptions(FilterSQLC, FilterTempl)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
@@ -65,7 +75,14 @@ func TestNewFilter(t *testing.T) {
 	t.Run("creates enabled filter with FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterAll))
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !filter.IsEnabled() {
 			t.Error("Expected enabled filter")
@@ -85,7 +102,10 @@ func TestNewFilter(t *testing.T) {
 	t.Run("include patterns alone enable the filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithIncludePatterns("pkg/*.go"))
+		filter, err := NewFilter(WithIncludePatterns("pkg/*.go"))
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !filter.IsEnabled() {
 			t.Error("Expected filter with include patterns to be enabled")
@@ -95,7 +115,10 @@ func TestNewFilter(t *testing.T) {
 	t.Run("exclude patterns alone enable the filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithExcludePatterns("vendor/**"))
+		filter, err := NewFilter(WithExcludePatterns("vendor/**"))
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !filter.IsEnabled() {
 			t.Error("Expected filter with exclude patterns to be enabled")
@@ -109,7 +132,14 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns reasons for enabled options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
+		opts, err := WithFilterOptions(FilterSQLC, FilterTempl)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 2 {
@@ -133,7 +163,14 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns all reasons for FilterAll", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterAll))
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 		reasons := filter.FilterReasons()
 
 		expected := len(allSpecificOptions()) + 1 // +1 for FilterGeneric
@@ -145,7 +182,10 @@ func TestFilterReasons(t *testing.T) {
 	t.Run("returns empty for no options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter()
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
 		reasons := filter.FilterReasons()
 
 		if len(reasons) != 0 {
@@ -154,29 +194,21 @@ func TestFilterReasons(t *testing.T) {
 	})
 }
 
-func TestWithFilterOptionsPanicsOnInvalid(t *testing.T) {
+func TestWithFilterOptionsReturnsError(t *testing.T) {
 	t.Parallel()
 
-	t.Run("panics on invalid option", func(t *testing.T) {
+	t.Run("returns error on invalid option", func(t *testing.T) {
 		t.Parallel()
 
-		defer func() {
-			recovered := recover()
-			if recovered == nil {
-				t.Fatal("expected panic for invalid FilterOption")
-			}
+		_, err := WithFilterOptions(FilterOption("nonexistent"))
+		if err == nil {
+			t.Fatal("expected error from WithFilterOptions for invalid FilterOption")
+		}
 
-			msg, ok := recovered.(string)
-			if !ok {
-				t.Fatalf("expected string panic, got %T: %v", recovered, recovered)
-			}
-
-			if !strings.Contains(msg, "invalid FilterOption") {
-				t.Errorf("panic message = %q, want to contain %q", msg, "invalid FilterOption")
-			}
-		}()
-
-		_ = NewFilter(WithFilterOptions(FilterOption("nonexistent")))
+		var cfgErr *FilterConfigError
+		if !errors.As(err, &cfgErr) {
+			t.Fatalf("expected FilterConfigError, got %T", err)
+		}
 	})
 }
 
@@ -186,7 +218,10 @@ func TestFilter(t *testing.T) {
 	t.Run("disabled filter never filters", func(t *testing.T) {
 		t.Parallel()
 
-		f := NewFilter()
+		f, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if mustFilter(t, f, "any/file.go") {
 			t.Error("Disabled filter should not filter")
@@ -200,10 +235,17 @@ func TestFilterWithIncludes(t *testing.T) {
 	t.Run("matching include pattern still detects generated code", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(
-			WithFilterOptions(FilterSQLC),
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(
+			opts,
 			WithIncludePatterns("models.go"),
 		)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !mustFilter(t, filter, "models.go") {
 			t.Error("expected generated file matching include pattern to still be filtered")
@@ -217,11 +259,18 @@ func TestFilterWithIncludes(t *testing.T) {
 			"main.go": newMapFile("package main\nfunc main() {}"),
 		}
 
-		filter := NewFilter(
-			WithFilterOptions(FilterSQLC),
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(
+			opts,
 			WithIncludePatterns("main.go"),
 			WithFS(mapFS),
 		)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if mustFilter(t, filter, "main.go") {
 			t.Error("expected non-generated file matching include pattern to not be filtered")
@@ -231,9 +280,12 @@ func TestFilterWithIncludes(t *testing.T) {
 	t.Run("non-matching path is filtered with include reason", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(
+		filter, err := NewFilter(
 			WithIncludePatterns("pkg/*.go"),
 		)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if !mustFilter(t, filter, "other/file.go") {
 			t.Error("expected non-matching path to be filtered")
@@ -247,9 +299,12 @@ func TestFilterWithIncludes(t *testing.T) {
 	t.Run("include pattern with wildcard", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(
+		filter, err := NewFilter(
 			WithIncludePatterns("*.go"),
 		)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		if mustFilter(t, filter, "main.go") {
 			t.Error("expected *.go to match main.go")
@@ -260,9 +315,12 @@ func TestFilterWithIncludes(t *testing.T) {
 func TestFilterWithIncludesMultiple(t *testing.T) {
 	t.Parallel()
 
-	filter := NewFilter(
+	filter, err := NewFilter(
 		WithIncludePatterns("keep.go", "safe.go"),
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if mustFilter(t, filter, "keep.go") {
 		t.Error("expected keep.go to match")
@@ -321,10 +379,20 @@ func TestFilterWithMetrics(t *testing.T) {
 		}
 	}
 
-	fltr := NewFilter(
-		WithFilterOptions(FilterAll),
+	fltr, err := NewFilter(
+		func(f *Filter) error {
+			// Replicate FilterAll expansion
+			expanded := optionsMap(FilterAll)
+			for opt := range expanded {
+				f.options[opt] = struct{}{}
+			}
+			return nil
+		},
 		WithFS(os.DirFS(tmpDir)),
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	for name := range files {
 		_, _ = fltr.Filter(name)
@@ -342,7 +410,10 @@ func TestFilterWithMetrics(t *testing.T) {
 func TestGetStatsDisabledFilter(t *testing.T) {
 	t.Parallel()
 
-	f := NewFilter()
+	f, err := NewFilter()
+	if err != nil {
+		t.Fatal(err)
+	}
 	stats := f.GetStats()
 
 	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 0)
@@ -356,14 +427,24 @@ func TestFilterString(t *testing.T) {
 	t.Run("disabled filter", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter()
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
 		assertContains(t, filter.String(), "disabled")
 	})
 
 	t.Run("enabled with options", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl))
+		opts, err := WithFilterOptions(FilterSQLC, FilterTempl)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(opts)
+		if err != nil {
+			t.Fatal(err)
+		}
 		str := filter.String()
 
 		assertContains(t, str, "sqlc")
@@ -374,7 +455,10 @@ func TestFilterString(t *testing.T) {
 	t.Run("enabled with include patterns", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithIncludePatterns("pkg/*.go"))
+		filter, err := NewFilter(WithIncludePatterns("pkg/*.go"))
+		if err != nil {
+			t.Fatal(err)
+		}
 		str := filter.String()
 		assertContains(t, str, "includes=")
 		assertContains(t, str, "Filter(")
@@ -384,7 +468,10 @@ func TestFilterString(t *testing.T) {
 	t.Run("enabled with exclude patterns", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(WithExcludePatterns("vendor/**"))
+		filter, err := NewFilter(WithExcludePatterns("vendor/**"))
+		if err != nil {
+			t.Fatal(err)
+		}
 		str := filter.String()
 		assertContains(t, str, "excludes=")
 		assertNotContains(t, str, "options=", "pattern-only filter should not show options")
@@ -393,11 +480,18 @@ func TestFilterString(t *testing.T) {
 	t.Run("enabled with all options and patterns", func(t *testing.T) {
 		t.Parallel()
 
-		filter := NewFilter(
-			WithFilterOptions(FilterAll),
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+		filter, err := NewFilter(
+			opts,
 			WithIncludePatterns("pkg/*.go"),
 			WithExcludePatterns("vendor/**"),
 		)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		str := filter.String()
 
