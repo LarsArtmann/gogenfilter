@@ -11,20 +11,11 @@ Creates a new filter with functional options. The filter is immutable after cons
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 ```
 
 ## Functional Options
-
-### `Enabled() FilterConfig`
-
-Enables the filter and activates metrics collection.
-
-### `Disabled() FilterConfig`
-
-Disables the filter. All calls to `ShouldFilter` return `false`.
 
 ### `WithFilterOptions(opts ...FilterOption) FilterConfig`
 
