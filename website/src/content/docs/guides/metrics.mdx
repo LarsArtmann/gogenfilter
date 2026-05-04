@@ -69,7 +69,7 @@ Returns a human-readable summary of the stats.
 A disabled filter returns zero stats:
 
 ```go
-f := gogenfilter.NewFilter()
+f, _ := gogenfilter.NewFilter()
 stats := f.GetStats()
 // stats.TotalFilesChecked == 0
 // stats.TotalFiltered() == 0

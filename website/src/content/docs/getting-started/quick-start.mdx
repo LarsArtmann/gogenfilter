@@ -83,7 +83,7 @@ fmt.Printf("Checked: %d, Filtered: %d\n",
 A disabled filter passes everything through — useful for feature flags:
 
 ```go
-f := gogenfilter.NewFilter()
+f, _ := gogenfilter.NewFilter()
 filtered, _ := f.Filter("db/models.go") // always false
 ```
 
