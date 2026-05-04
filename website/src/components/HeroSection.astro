@@ -83,16 +83,49 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
 
 <script define:vars={{ heroCode }}>
   const btn = document.getElementById('copy-btn');
+  
+  function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      return true;
+    } catch (err) {
+      return false;
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  }
+  
+  async function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    return fallbackCopy(text);
+  }
+  
   if (btn) {
-    btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(heroCode).then(() => {
+    btn.addEventListener('click', async () => {
+      const success = await copyToClipboard(heroCode);
+      if (success) {
         btn.textContent = 'Copied!';
         btn.classList.add('text-success');
         setTimeout(() => {
           btn.textContent = 'Copy';
           btn.classList.remove('text-success');
         }, 2000);
-      });
+      } else {
+        btn.textContent = 'Failed';
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+        }, 2000);
+      }
     });
   }
 </script>
