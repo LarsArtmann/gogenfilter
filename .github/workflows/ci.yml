@@ -40,6 +40,9 @@ jobs:
 
       - run: go vet ./...
 
+      - name: Benchmarks
+        run: go test -bench=. -benchmem -count=1 ./...
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
