@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "gogenfilter",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "**/src/**"],
     "cleanUrls": true,
