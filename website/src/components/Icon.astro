@@ -37,7 +37,13 @@ const uiIconPaths: Record<UIIcon, string> = {
 };
 
 const allIcons: Record<string, string> = { ...featureIcons, ...useCaseIconPaths, ...uiIconPaths };
-const svgContent = allIcons[name] ?? '';
+const content = allIcons[name] ?? '';
+
+// Determine if content is a full SVG or just paths
+const isFullSvg = content.trim().startsWith('<svg');
+const svgContent = isFullSvg
+  ? content.replace(/width="20" height="20"/, `width="${size}" height="${size}"`)
+  : `<svg width="${size}" height="${size}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
 ---
 
-{svgContent && <Fragment set:html={svgContent.replace(/width="20" height="20"/, `width="${size}" height="${size}"`)} />}
+{content && <Fragment set:html={svgContent} />}
