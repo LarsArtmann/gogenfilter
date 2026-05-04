@@ -32,10 +32,10 @@ This project provides detection and filtering capabilities for auto-generated Go
 | `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                                             |
 | `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                                           |
 | `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                    |
-| `sqlc.go`      | SQLC config discovery and parsing                                                                                                                                                                                 |
+| `sqlc.go`      | SQLC config discovery and parsing (v2 format only; v1 parses but returns zero output dirs)                                                                                                                        |
 | `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                          |
 | `project.go`   | Project root discovery                                                                                                                                                                                            |
-| `metrics.go`   | Thread-safe detection metrics tracking                                                                                                                                                                            |
+| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                                        |
 | `phantom.go`   | Phantom type constructors                                                                                                                                                                                         |
 
 ### Website
@@ -59,6 +59,13 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **SEO** — Canonical URL, JSON-LD SoftwareApplication schema, OG meta tags all in `LandingLayout.astro`.
 
 ## Development Guidelines
+
+### Design Decisions
+
+- **oapi-codegen has no filename heuristic** — `*.gen.go` is not specific to oapi-codegen (used by many generators). Adding it as phase-1 detection would cause false positives. Content-based detection is correct.
+- **`ReasonIncludePattern` name stays** — semantically "include pattern" describes the mechanism (file excluded because it didn't match an include pattern). Renaming to `ReasonNotInScope` would be a breaking API change for cosmetic improvement.
+- **SQLC v1 config not supported** — `sqlcConfig` struct only maps v2 `sql:` array. V1 configs parse successfully but return zero output dirs. This is documented and tested.
+- **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 
 ### Testing
 
