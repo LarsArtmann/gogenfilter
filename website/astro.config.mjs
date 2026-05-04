@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   site: "https://gogenfilter.lars.software",
+  compressHTML: true,
 
   prefetch: {
     prefetchAll: false,
