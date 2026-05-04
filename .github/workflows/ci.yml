@@ -42,6 +42,8 @@ jobs:
 
       - run: go build ./...
 
+      - run: go vet ./...
+
       - run: go test -race -coverprofile=coverage.out ./...
 
       - name: Coverage threshold
@@ -52,8 +54,6 @@ jobs:
             echo "Coverage ${COVERAGE}% is below 95% threshold"
             exit 1
           fi
-
-      - run: go vet ./...
 
       - name: Benchmarks
         run: go test -bench=. -benchmem -count=1 ./...
