@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `FilterStats.FilteredFiles(reason FilterReason) []string` — returns file paths filtered for a given reason (defensive copy, safe to mutate)
+- SQLC config v1 format test coverage — verifies v1 config parses but returns zero output dirs
+- Cross-platform path matching tests — forward slash and backslash detection patterns
+- `FilteredFiles` defensive copy test — verifies mutations don't affect snapshot
+- `FilteredFiles` unknown reason test — verifies nil return for unmatched reasons
+- `FilteredFiles` path tracking test — verifies correct file paths per reason
 - `DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error)` — detection from an `io.Reader`, useful when the caller already has file content in a stream
 - Integration test fixtures (`testdata/`) from 11 real code generators plus 2 handwritten negatives, loaded via `//go:embed`
 - `errorCodeDefs` single-source-of-truth table — `AllErrorCodes()` and `CodeHelp()` now derive from one table
