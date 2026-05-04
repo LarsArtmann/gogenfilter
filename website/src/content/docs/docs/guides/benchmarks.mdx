@@ -11,6 +11,20 @@ gogenfilter is designed for linters and static analysis tools where detection ov
 
 Benchmarked on Go 1.24, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
 
+### Summary
+
+|| Benchmark                    | ns/op  | B/op | allocs/op |
+| ----------------------------- | ------ | ---- | --------- |
+| ShouldFilter (enabled)        | 69     | 92   | 0         |
+| ShouldFilter (disabled)       | 1.2    | 0    | 0         |
+| Filename detection (Phase 1)  | 14     | 0    | 0         |
+| Per-generator check (avg)     | ~6     | 0    | 0         |
+| MatchPattern (doublestar `**`) | 72    | 0    | 0         |
+| DetectReason (filename)       | 353    | 632  | 4         |
+| DetectReason (content)        | 693    | 680  | 5         |
+| Error construction            | <2     | 0    | 0         |
+| errors.Is matching             | <9    | 0    | 0         |
+
 ### ShouldFilter
 
 The primary API. Full end-to-end detection including filesystem access.
