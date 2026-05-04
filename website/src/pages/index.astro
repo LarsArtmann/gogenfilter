@@ -7,47 +7,48 @@ import PhaseSection from '../components/PhaseSection.astro';
 import ComparisonSection from '../components/ComparisonSection.astro';
 import UseCasesSection from '../components/UseCasesSection.astro';
 import CTASection from '../components/CTASection.astro';
+import Section from '../components/Section.astro';
 import { siteConfig } from '../data/config';
 ---
 
 <LandingLayout title={siteConfig.title}>
   <HeroSection />
 
-  <div data-animate class="py-24 relative">
+  <Section>
     <div class="max-w-6xl mx-auto px-6">
       <GeneratorGrid />
     </div>
-  </div>
+  </Section>
 
-  <div data-animate class="py-24 relative">
+  <Section>
     <div class="max-w-6xl mx-auto px-6">
       <FeatureGrid />
     </div>
-  </div>
+  </Section>
 
-  <div data-animate class="py-24 relative">
-    <div class="max-w-3xl mx-auto px-6 text-center">
+  <Section class="text-center">
+    <div class="max-w-3xl mx-auto px-6">
       <PhaseSection />
     </div>
-  </div>
+  </Section>
 
-  <div data-animate class="py-24 relative">
-    <div class="max-w-3xl mx-auto px-6 text-center">
+  <Section class="text-center">
+    <div class="max-w-3xl mx-auto px-6">
       <ComparisonSection />
     </div>
-  </div>
+  </Section>
 
-  <div data-animate class="py-24 relative">
-    <div class="max-w-3xl mx-auto px-6 text-center">
+  <Section class="text-center">
+    <div class="max-w-3xl mx-auto px-6">
       <UseCasesSection />
     </div>
-  </div>
+  </Section>
 
-  <div data-animate class="py-24 relative">
-    <div class="max-w-3xl mx-auto px-6 text-center">
+  <Section class="text-center">
+    <div class="max-w-3xl mx-auto px-6">
       <CTASection />
     </div>
-  </div>
+  </Section>
 </LandingLayout>
 
 <script is:inline>
