@@ -66,15 +66,11 @@ func TestFilterConfigErrorIs_WrongSentinel(t *testing.T) {
 func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 	t.Parallel()
 
-	cfg1 := FilterConfig(func(f *Filter) error { //nolint:err113
-		return errors.New(
-			"config error 1",
-		)
+	cfg1 := FilterConfig(func(f *Filter) error {
+		return errors.New("config error 1") //nolint:err113
 	})
-	cfg2 := FilterConfig(func(f *Filter) error { //nolint:err113
-		return errors.New(
-			"config error 2",
-		)
+	cfg2 := FilterConfig(func(f *Filter) error {
+		return errors.New("config error 2") //nolint:err113
 	})
 
 	_, err := NewFilter(cfg1, cfg2)
@@ -157,11 +153,11 @@ func TestMatchPattern_AbsolutePathWithStarSlash(t *testing.T) {
 func TestUnmarshalSQLCConfig_V2ParseError(t *testing.T) {
 	t.Parallel()
 
-	data := []byte("version: \"2\"\nsql: [invalid\n")
+	data := []byte("version: \"2\"\nsql: not_a_list\n")
 
 	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
 	if err == nil {
-		t.Fatal("unmarshalSQLCConfig should return error for invalid v2 YAML")
+		t.Fatal("unmarshalSQLCConfig should return error for invalid v2 config")
 	}
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
