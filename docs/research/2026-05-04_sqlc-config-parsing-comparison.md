@@ -21,13 +21,13 @@ sqlc uses `gopkg.in/yaml.v3` to parse `sqlc.{yaml,yml}`. gogenfilter uses `githu
 
 **Potential risks of this divergence:**
 
-| Risk | Severity | Detail |
-|------|----------|--------|
-| Behavioral edge cases | **Low** | Both libraries implement YAML 1.2 spec. For the simple key-value structures in `sqlc.yaml`, behavioral differences are extremely unlikely. |
-| `yaml.Node` incompatibility | **None** | gogenfilter never uses `yaml.Node` — only flat struct unmarshaling. sqlc uses `yaml.Node` for plugin `options` fields which we don't need. |
-| `KnownFields(true)` difference | **Low** | `go-faster/yaml` supports `KnownFields(true)` identically to `yaml.v3`. If we add strict parsing, this is a non-issue. |
+| Risk                           | Severity | Detail                                                                                                                                           |
+| ------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Behavioral edge cases          | **Low**  | Both libraries implement YAML 1.2 spec. For the simple key-value structures in `sqlc.yaml`, behavioral differences are extremely unlikely.       |
+| `yaml.Node` incompatibility    | **None** | gogenfilter never uses `yaml.Node` — only flat struct unmarshaling. sqlc uses `yaml.Node` for plugin `options` fields which we don't need.       |
+| `KnownFields(true)` difference | **Low**  | `go-faster/yaml` supports `KnownFields(true)` identically to `yaml.v3`. If we add strict parsing, this is a non-issue.                           |
 | Custom `UnmarshalYAML` methods | **None** | sqlc defines custom `UnmarshalYAML` on `Paths` and `AnalyzerDatabase` types. gogenfilter's structs don't use these types, so this doesn't apply. |
-| Future spec drift | **Low** | `go-faster/yaml` is a fork of `go-yaml/yaml` v3 with performance patches. Core YAML parsing logic is identical. |
+| Future spec drift              | **Low**  | `go-faster/yaml` is a fork of `go-yaml/yaml` v3 with performance patches. Core YAML parsing logic is identical.                                  |
 
 **Mitigation:** The test suite uses `fstest.MapFS` with realistic sqlc configs covering both v1 and v2 formats. Any parsing divergence would be caught by tests.
 
