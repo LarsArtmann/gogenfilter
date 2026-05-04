@@ -35,14 +35,8 @@ const uiIconPaths: Record<UIIcon, string> = {
   moon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>',
 };
 
-let svgContent = '';
-if (name in featureIcons) {
-  svgContent = featureIcons[name as FeatureIcon];
-} else if (name in useCaseIconPaths) {
-  svgContent = useCaseIconPaths[name as UseCaseIcon];
-} else if (name in uiIconPaths) {
-  svgContent = uiIconPaths[name as UIIcon];
-}
+const allIcons: Record<string, string> = { ...featureIcons, ...useCaseIconPaths, ...uiIconPaths };
+const svgContent = allIcons[name] ?? '';
 ---
 
-<Fragment set:html={svgContent.replace(/width="20" height="20"/, `width="${size}" height="${size}"`)} />
+{svgContent && <Fragment set:html={svgContent.replace(/width="20" height="20"/, `width="${size}" height="${size}"`)} />}
