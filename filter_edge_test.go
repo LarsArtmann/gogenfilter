@@ -97,14 +97,14 @@ func TestShouldFilterEdgeCases(t *testing.T) {
 		filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(nil))
 
 		defer func() {
-			r := recover()
-			if r == nil {
+			recovered := recover()
+			if recovered == nil {
 				t.Fatal("expected MustFilter to panic on error")
 			}
 
-			msg, ok := r.(string)
+			msg, ok := recovered.(string)
 			if !ok {
-				t.Fatalf("expected string panic, got %T: %v", r, r)
+				t.Fatalf("expected string panic, got %T: %v", recovered, recovered)
 			}
 
 			if !strings.Contains(msg, "gogenfilter: MustFilter error:") {
