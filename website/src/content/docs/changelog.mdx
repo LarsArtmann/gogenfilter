@@ -9,19 +9,19 @@ description: All notable changes to gogenfilter.
 
 - `DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error)` — detection from an `io.Reader`
 - `FilterStats.FilteredFiles(reason FilterReason) []string` — returns file paths filtered for a given reason (defensive copy, safe to mutate)
-- `MustFilter(filePath string) bool` — panics on error; replaces `MustShouldFilter`
+- `Filter(filePath string) (bool, error)` — replaces `ShouldFilter` with cleaner name; `MustFilter` removed
 - SQLC config v1 format test coverage
 - Cross-platform path matching tests
 - `errorCodeDefs` single-source-of-truth table
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool`
 - `fmt.Stringer` on all 5 phantom types
-- Runnable examples for `ShouldFilter`, `WithFS`, `WithIncludePatterns`, `GetStats`, `MustFilter`, `DetectReasonReader`
+- Runnable examples for `Filter`, `WithFS`, `WithIncludePatterns`, `GetStats`, and `DetectReasonReader`
 - Error handling examples (`errors.Is`, `ErrorCode()`, `Help()`, `CodeHelp`, `AllErrorCodes`, `FindProjectRoot`)
 - CI benchmark step (`go test -bench=. -benchmem`)
 
 ### Changed
 
-- **`MustShouldFilter` renamed to `MustFilter`** — follows standard Go `Must` prefix convention
+- **`ShouldFilter` renamed to `Filter`** — the method `ShouldFilter(filePath string) (bool, error)` is now `Filter(filePath string) (bool, error)`. The `MustFilter` panic-on-error variant has been removed; callers should handle errors explicitly.
 - **`Enabled()` and `Disabled()` removed** — filter is enabled by passing options to `NewFilter()`; `NewFilter()` with no args is disabled. This eliminates silent misconfiguration.
 - **`IsValid()` methods derived from tables** — `FilterOption.IsValid()` and `FilterReason.IsValid()` iterate `AllFilterOptions()`/`AllFilterReasons()` instead of manual switches
 - **Error codes derived from `errorCodeDefs` table** — `AllErrorCodes()` and `CodeHelp()` from one table

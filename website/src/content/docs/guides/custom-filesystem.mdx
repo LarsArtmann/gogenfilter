@@ -53,8 +53,8 @@ func main() {
         gogenfilter.WithFS(mapFS),
     )
 
-    filtered, _ := f.ShouldFilter("db/models.go") // true
-    filtered, _ = f.ShouldFilter("main.go")       // false
+    filtered, _ := f.Filter("db/models.go") // true
+    filtered, _ = f.Filter("main.go")       // false
     _ = filtered
 }
 ```

@@ -61,7 +61,7 @@ func main() {
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
-    filtered, err := f.ShouldFilter("db/models.go")
+    filtered, err := f.Filter("db/models.go")
     if err != nil {
         panic(err)
     }

@@ -20,7 +20,7 @@ func main() {
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
-    filtered, err := f.ShouldFilter("db/models.go")
+    filtered, err := f.Filter("db/models.go")
     if err != nil {
         panic(err)
     }
@@ -53,9 +53,9 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
-f.ShouldFilter("db/models.go")
-f.ShouldFilter("page_templ.go")
-f.ShouldFilter("main.go")
+f.Filter("db/models.go")
+f.Filter("page_templ.go")
+f.Filter("main.go")
 
 stats := f.GetStats()
 fmt.Printf("Checked: %d, Filtered: %d\n",
@@ -68,7 +68,7 @@ A disabled filter passes everything through — useful for feature flags:
 
 ```go
 f := gogenfilter.NewFilter()
-filtered, _ := f.ShouldFilter("db/models.go") // always false
+filtered, _ := f.Filter("db/models.go") // always false
 ```
 
 ## Low-Level Detection

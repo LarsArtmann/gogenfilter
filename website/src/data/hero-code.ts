@@ -14,6 +14,6 @@ func main() {
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
-    filtered, _ := f.ShouldFilter("db/models.go")
+    filtered, _ := f.Filter("db/models.go")
     fmt.Println(filtered) // true — sqlc generated
 }`;
