@@ -1,6 +1,7 @@
 package gogenfilter
 
 import (
+	"context"
 	"errors"
 	"os"
 	"path/filepath"
@@ -605,5 +606,100 @@ func TestFilterPaths(t *testing.T) {
 				t.Errorf("disabled filter should not filter path %d", i)
 			}
 		}
+	})
+}
+
+func TestFilterContext(t *testing.T) {
+	t.Parallel()
+
+	t.Run("respects cancelled context", func(t *testing.T) {
+		t.Parallel()
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		_, err = filter.FilterContext(ctx, "file.go")
+		if err == nil {
+			t.Fatal("expected error for cancelled context")
+		}
+
+		if !errors.Is(err, context.Canceled) {
+			t.Errorf("expected context.Canceled, got: %v", err)
+		}
+	})
+
+	t.Run("succeeds with active context", func(t *testing.T) {
+		t.Parallel()
+
+		ctx := context.Background()
+
+		filter, err := NewFilter()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filtered, err := filter.FilterContext(ctx, "file.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if filtered {
+			t.Error("disabled filter should not filter")
+		}
+	})
+}
+
+func TestFilterPathsContext(t *testing.T) {
+	t.Parallel()
+
+	t.Run("respects cancelled context mid-batch", func(t *testing.T) {
+		t.Parallel()
+
+		ctx, cancel := context.WithCancel(context.Background())
+
+		filter, err := NewFilter(
+			WithIncludePatterns("keep.go"),
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cancel()
+
+		_, err = filter.FilterPathsContext(ctx, []string{"keep.go", "drop.go"})
+		if err == nil {
+			t.Fatal("expected error for cancelled context")
+		}
+
+		if !errors.Is(err, context.Canceled) {
+			t.Errorf("expected context.Canceled, got: %v", err)
+		}
+	})
+
+	t.Run("succeeds with active context", func(t *testing.T) {
+		t.Parallel()
+
+		ctx := context.Background()
+
+		filter, err := NewFilter(
+			WithIncludePatterns("keep.go"),
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		results, err := filter.FilterPathsContext(ctx, []string{"keep.go", "drop.go"})
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assertLen(t, "results", len(results), 2)
+		assertEqual(t, "keep.go", results[0], false)
+		assertEqual(t, "drop.go", results[1], true)
 	})
 }
