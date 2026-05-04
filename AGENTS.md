@@ -53,6 +53,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 #### Website Patterns
 
+- **URL structure** — Landing page at `/` (from `src/pages/index.astro`), docs at root level (e.g., `/getting-started/installation/` from `src/content/docs/`). No `/docs/` prefix. Starlight docs collection at `src/content/docs/` renders at root. Firebase redirect `/docs/**` → `/:dest` handles old indexed URLs. Landing page components link directly to doc paths (e.g., `/getting-started/installation/`).
 - **`Icon.astro`** — Centralized SVG icon component. Import from `../components/Icon.astro`. Props: `name` (string), `size` (number, default 20). Available icons: Feature icons (lightning, sliders, glob, chart, folder, database), UseCase icons (cog, chart, refresh, bolt, check), UI icons (arrow-external, arrow-right, github, menu, close, sun, moon).
 - **Theme system** — Dark mode default. Light mode via `.light` class on `<html>`. Toggle persists to `localStorage`. Initialize with `prefers-color-scheme` as fallback. CSS variables in `src/styles/global.css` under `:root.light`.
 - **Type-safe icon keys** — `FeatureIcon` and `UseCaseIcon` exported from `src/data/types.ts` as `as const` + `typeof ...[number]` unions.

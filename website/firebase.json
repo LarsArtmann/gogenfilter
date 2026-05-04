@@ -7,8 +7,8 @@
     "trailingSlash": false,
     "redirects": [
       {
-        "source": "/docs/docs/**",
-        "destination": "/docs/:dest",
+        "source": "/docs/**",
+        "destination": "/:dest",
         "type": 301
       }
     ],
