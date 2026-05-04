@@ -221,19 +221,27 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 	return unmarshalSQLCConfig(data, configPath)
 }
 
+func unmarshalSQLCYAML(data []byte, target any, configPath, errMsg string) *SQLCConfigError {
+	if err := yaml.Unmarshal(data, target); err != nil {
+		return newSQLCConfigError(
+			CodeSQLCConfigParse,
+			ConfigPath(configPath),
+			Operation("parse"),
+			ErrorMessage(errMsg),
+			err,
+		)
+	}
+
+	return nil
+}
+
 func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var version struct {
 		Version string `yaml:"version"`
 	}
 
-	if err := yaml.Unmarshal(data, &version); err != nil {
-		return nil, newSQLCConfigError(
-			CodeSQLCConfigParse,
-			ConfigPath(configPath),
-			Operation("parse"),
-			ErrorMessage("detecting sqlc config version"),
-			err,
-		)
+	if err := unmarshalSQLCYAML(data, &version, configPath, "detecting sqlc config version"); err != nil {
+		return nil, err
 	}
 
 	switch version.Version {
@@ -242,14 +250,8 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 	case "2", "":
 		var config sqlcConfig
 
-		if err := yaml.Unmarshal(data, &config); err != nil {
-			return nil, newSQLCConfigError(
-				CodeSQLCConfigParse,
-				ConfigPath(configPath),
-				Operation("parse"),
-				ErrorMessage("parsing sqlc config"),
-				err,
-			)
+		if err := unmarshalSQLCYAML(data, &config, configPath, "parsing sqlc config"); err != nil {
+			return nil, err
 		}
 
 		return &config, nil
@@ -269,14 +271,8 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
 	var v1 sqlcV1Config
 
-	if err := yaml.Unmarshal(data, &v1); err != nil {
-		return nil, newSQLCConfigError(
-			CodeSQLCConfigParse,
-			ConfigPath(configPath),
-			Operation("parse"),
-			ErrorMessage("parsing sqlc v1 config"),
-			err,
-		)
+	if err := unmarshalSQLCYAML(data, &v1, configPath, "parsing sqlc v1 config"); err != nil {
+		return nil, err
 	}
 
 	config := &sqlcConfig{Version: v1.Version}
