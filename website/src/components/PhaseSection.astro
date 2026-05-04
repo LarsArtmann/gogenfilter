@@ -1,5 +1,6 @@
 ---
-import { phases, useCaseIcons } from '../data/sections';
+import { phases } from '../data/sections';
+import Icon from './Icon.astro';
 ---
 
 <div class="text-center mb-12">
@@ -24,9 +25,7 @@ import { phases, useCaseIcons } from '../data/sections';
         ))}
       </p>
       <span class={`inline-flex items-center gap-1.5 text-xs ${phase.noteColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
-        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={useCaseIcons[phase.noteIcon]}/>
-        </svg>
+        <Icon name={phase.noteIcon as 'bolt' | 'check'} size={14} />
         {phase.note}
       </span>
     </div>
