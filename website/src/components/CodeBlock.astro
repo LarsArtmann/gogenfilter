@@ -8,11 +8,11 @@ export interface Props {
 const { code, lang = 'go', filename } = Astro.props;
 ---
 
-<div class="rounded-xl border border-stone-800 bg-stone-900/80 overflow-hidden">
+<div class="rounded-xl border border-border bg-bg-code overflow-hidden">
   {filename && (
-    <div class="px-4 py-2 border-b border-stone-800/60 text-xs text-stone-500 font-mono">
+    <div class="px-4 py-2 border-b border-border text-xs text-text-muted font-mono">
       {filename}
     </div>
   )}
-  <pre class="p-4 text-sm font-mono text-stone-300 overflow-x-auto"><code>{code}</code></pre>
+  <pre class="p-4 text-sm font-mono text-text-secondary overflow-x-auto"><code>{code}</code></pre>
 </div>
