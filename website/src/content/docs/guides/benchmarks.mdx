@@ -15,8 +15,8 @@ Benchmarked on Go 1.26, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
 
 |                                | Benchmark | ns/op | B/op | allocs/op |
 | ------------------------------ | --------- | ----- | ---- | --------- |
-| ShouldFilter (enabled)         | 69        | 92    | 0    |
-| ShouldFilter (disabled)        | 1.2       | 0     | 0    |
+| Filter (enabled)             | 69        | 92    | 0    |
+| Filter (disabled)            | 1.2       | 0     | 0    |
 | Filename detection (Phase 1)   | 14        | 0     | 0    |
 | Per-generator check (avg)      | ~6        | 0     | 0    |
 | MatchPattern (doublestar `**`) | 72        | 0     | 0    |
@@ -25,13 +25,13 @@ Benchmarked on Go 1.26, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
 | Error construction             | 2         | 0     | 0    |
 | errors.Is matching             | 9         | 0     | 0    |
 
-### ShouldFilter
+### Filter
 
 The primary API. Full end-to-end detection including filesystem access.
 
 ```
-ShouldFilter/enabled    69 ns/op    92 B/op    0 allocs/op
-ShouldFilter/disabled   1.2 ns/op    0 B/op    0 allocs/op
+Filter/enabled    69 ns/op    92 B/op    0 allocs/op
+Filter/disabled   1.2 ns/op    0 B/op    0 allocs/op
 ```
 
 A disabled filter is essentially a branch prediction — 1.2 nanoseconds. An enabled filter with a known-generated file completes in ~69ns with zero heap allocations.

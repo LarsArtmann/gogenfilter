@@ -14,9 +14,9 @@ f := gogenfilter.NewFilter(
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
-f.ShouldFilter("db/models.go")
-f.ShouldFilter("page_templ.go")
-f.ShouldFilter("main.go")
+f.Filter("db/models.go")
+f.Filter("page_templ.go")
+f.Filter("main.go")
 
 stats := f.GetStats()
 fmt.Printf("Total checked: %d\n", stats.TotalFilesChecked)

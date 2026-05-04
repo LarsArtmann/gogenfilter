@@ -37,7 +37,7 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
         gogenfilter.<span class="text-accent">WithFilterOptions</span>(gogenfilter.FilterAll),
     )
 
-    filtered, _ := f.<span class="text-accent">ShouldFilter</span>(<span class="text-amber">"db/models.go"</span>)
+    filtered, _ := f.<span class="text-accent">Filter</span>(<span class="text-amber">"db/models.go"</span>)
     fmt.<span class="text-accent">Println</span>(filtered) <span class="text-code-comment">// true — sqlc generated</span>
 }`;
 ---

@@ -33,7 +33,7 @@ func main() {
     )
 
     // Check if a file should be filtered
-    filtered, err := filter.ShouldFilter("user.sql.go")
+    filtered, err := filter.Filter("user.sql.go")
     if filtered {
         fmt.Printf("Filtered: %s\n", "user.sql.go")
     }
