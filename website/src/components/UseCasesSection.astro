@@ -1,5 +1,6 @@
 ---
-import { useCases, useCaseIcons } from '../data/sections';
+import { useCases } from '../data/sections';
+import Icon from './Icon.astro';
 ---
 
 <div class="text-center mb-12">
@@ -10,9 +11,9 @@ import { useCases, useCaseIcons } from '../data/sections';
 <div class="grid gap-4 sm:grid-cols-3">
   {useCases.map((useCase) => (
     <div class="p-5 rounded-xl border border-border bg-bg-card text-center">
-      <svg class="mx-auto mb-2 text-text-secondary" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={useCaseIcons[useCase.icon]}/>
-      </svg>
+      <div class="mx-auto mb-2 text-text-secondary w-fit">
+        <Icon name={useCase.icon} size={24} />
+      </div>
       <h3 class="font-semibold text-text-primary text-sm mb-1">{useCase.title}</h3>
       <p class="text-xs text-text-muted">{useCase.desc}</p>
     </div>

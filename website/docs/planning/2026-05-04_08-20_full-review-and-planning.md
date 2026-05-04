@@ -11,13 +11,15 @@
 ### `src/pages/index.astro` (229 lines — LARGEST FILE)
 
 **Issues fixed in this session:**
-- Replaced hardcoded GitHub URL with `siteConfig.github` 
+
+- Replaced hardcoded GitHub URL with `siteConfig.github`
 - Replaced hardcoded "11" with `generatorCount`
 - Fixed `.code-preview:hover` — added `code-preview` class to parent div
 - Replaced emoji icons (⚙️📊🛠️) with inline SVGs
 - Fixed IntersectionObserver selector (`[data-animate]` instead of `.fade-in`)
 
 **Remaining issues:**
+
 - **229 lines is too large.** Should be broken into ~7 section components.
 - Card pattern repeated 8+ times. Needs `Card.astro` extraction.
 - Section wrapper pattern repeated 6 times. Needs `Section.astro` extraction.
@@ -29,6 +31,7 @@
 **Fixed:** Now uses `siteConfig` for GitHub URL and site name.
 
 **Remaining:**
+
 - Mobile nav CSS is hardcoded (background color `rgba(12, 10, 9, 0.95)` should use Tailwind token).
 - No close button in mobile menu — only hamburger toggle.
 - Mobile menu doesn't close when a link is clicked.
@@ -50,6 +53,7 @@
 **Fixed:** Uses `siteConfig` and `generatorCount`. Added `aria-hidden` on arrow SVG. Added `loading="lazy"` on images. Added `title` tooltips. Generic card uses `border-dashed` to differentiate.
 
 **Remaining:**
+
 - `.map()` branches (linked vs non-linked) could be simplified with a wrapper component.
 
 ### `src/components/FeatureGrid.astro` (20 lines)
@@ -61,6 +65,7 @@
 **Fixed:** Removed unused `lang` prop.
 
 **Remaining:**
+
 - `code` prop is plain text — no syntax highlighting. Consider using Shiki for proper highlighting.
 - Only used in docs, not on landing page (which uses raw `set:html`).
 
@@ -115,15 +120,15 @@
 
 ### What Needs Work
 
-| Priority | Issue | File(s) |
-|----------|-------|---------|
-| HIGH | Extract `Section.astro` component | index.astro |
-| HIGH | Extract `Card.astro` component | index.astro, FeatureGrid, GeneratorGrid |
-| MEDIUM | Break index.astro into section components | index.astro |
-| MEDIUM | Add HTML validation to CI | CI config |
-| MEDIUM | Add `loading="lazy"` to all below-fold images | index.astro |
-| LOW | Type `icons` record keys in features.ts | features.ts |
-| LOW | Add light mode support | global.css |
+| Priority | Issue                                         | File(s)                                 |
+| -------- | --------------------------------------------- | --------------------------------------- |
+| HIGH     | Extract `Section.astro` component             | index.astro                             |
+| HIGH     | Extract `Card.astro` component                | index.astro, FeatureGrid, GeneratorGrid |
+| MEDIUM   | Break index.astro into section components     | index.astro                             |
+| MEDIUM   | Add HTML validation to CI                     | CI config                               |
+| MEDIUM   | Add `loading="lazy"` to all below-fold images | index.astro                             |
+| LOW      | Type `icons` record keys in features.ts       | features.ts                             |
+| LOW      | Add light mode support                        | global.css                              |
 
 ### Pareto Analysis
 
@@ -137,28 +142,28 @@
 
 ### Phase 1: Component Extraction (51% impact, ~45 min)
 
-| # | Task | Effort |
-|---|------|--------|
-| 1 | Create `Section.astro` with maxWidth + centered props | 10min |
-| 2 | Create `Card.astro` with variant + padding props | 15min |
-| 3 | Refactor index.astro to use Section + Card | 10min |
-| 4 | Refactor FeatureGrid to use Card | 5min |
-| 5 | Refactor GeneratorGrid to use Card | 5min |
+| #   | Task                                                  | Effort |
+| --- | ----------------------------------------------------- | ------ |
+| 1   | Create `Section.astro` with maxWidth + centered props | 10min  |
+| 2   | Create `Card.astro` with variant + padding props      | 15min  |
+| 3   | Refactor index.astro to use Section + Card            | 10min  |
+| 4   | Refactor FeatureGrid to use Card                      | 5min   |
+| 5   | Refactor GeneratorGrid to use Card                    | 5min   |
 
 ### Phase 2: Section Components (64% impact, ~30 min)
 
-| # | Task | Effort |
-|---|------|--------|
-| 6 | Extract HeroSection from index.astro | 10min |
-| 7 | Extract ComparisonSection (data-driven) | 10min |
-| 8 | Extract UseCasesSection (data-driven) | 10min |
+| #   | Task                                    | Effort |
+| --- | --------------------------------------- | ------ |
+| 6   | Extract HeroSection from index.astro    | 10min  |
+| 7   | Extract ComparisonSection (data-driven) | 10min  |
+| 8   | Extract UseCasesSection (data-driven)   | 10min  |
 
 ### Phase 3: Polish (80% impact, ~45 min)
 
-| # | Task | Effort |
-|---|------|--------|
-| 9 | Create Icon.astro component | 15min |
-| 10 | Add mobile nav close-on-click | 5min |
-| 11 | Add `loading="lazy"` audit | 5min |
-| 12 | Type icons record in features.ts | 5min |
-| 13 | Add HTML validation to build | 15min |
+| #   | Task                             | Effort |
+| --- | -------------------------------- | ------ |
+| 9   | Create Icon.astro component      | 15min  |
+| 10  | Add mobile nav close-on-click    | 5min   |
+| 11  | Add `loading="lazy"` audit       | 5min   |
+| 12  | Type icons record in features.ts | 5min   |
+| 13  | Add HTML validation to build     | 15min  |

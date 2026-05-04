@@ -5,8 +5,15 @@ export interface Generator {
   logo: string;
 }
 
-export const featureIconKeys = ['lightning', 'sliders', 'glob', 'chart', 'folder', 'database'] as const;
-export type FeatureIcon = typeof featureIconKeys[number];
+export const featureIconKeys = [
+  "lightning",
+  "sliders",
+  "glob",
+  "chart",
+  "folder",
+  "database",
+] as const;
+export type FeatureIcon = (typeof featureIconKeys)[number];
 
 export interface Feature {
   icon: FeatureIcon;
@@ -16,15 +23,15 @@ export interface Feature {
 
 export interface PhaseCard {
   phase: string;
-  phaseColor: 'accent' | 'amber';
+  phaseColor: "accent" | "amber";
   title: string;
   patterns: string[];
   note: string;
-  noteColor: 'accent' | 'amber';
+  noteColor: "accent" | "amber";
   noteIcon: string;
 }
 
-export type ComparisonVariant = 'DIY' | 'gogenfilter' | 'Heavy';
+export type ComparisonVariant = "DIY" | "gogenfilter" | "Heavy";
 
 export interface ComparisonItem {
   variant: ComparisonVariant;

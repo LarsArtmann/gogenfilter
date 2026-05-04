@@ -33,12 +33,12 @@ src/
 
 ## Modularity Assessment
 
-| Aspect              | Rating | Notes                                                     |
-|---------------------|--------|-----------------------------------------------------------|
-| Component reuse     | 2/5    | Only 6 components; landing page sections not componentized |
-| Data centralization | 4/5    | Good — config, generators, features all in `data/`       |
-| Style system        | 4/5    | Tailwind v4 with design tokens — clean but needs Card/Section abstractions |
-| Layout flexibility  | 3/5    | Only `LandingLayout` — can't add new page types easily    |
+| Aspect              | Rating | Notes                                                                                               |
+| ------------------- | ------ | --------------------------------------------------------------------------------------------------- |
+| Component reuse     | 2/5    | Only 6 components; landing page sections not componentized                                          |
+| Data centralization | 4/5    | Good — config, generators, features all in `data/`                                                  |
+| Style system        | 4/5    | Tailwind v4 with design tokens — clean but needs Card/Section abstractions                          |
+| Layout flexibility  | 3/5    | Only `LandingLayout` — can't add new page types easily                                              |
 | Type safety         | 3/5    | `Generator`/`Feature` interfaces exist but `icons` in features.ts is untyped Record<string, string> |
 
 ## Service Orientation / Composability

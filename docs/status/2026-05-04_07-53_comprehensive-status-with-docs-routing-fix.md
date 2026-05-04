@@ -83,32 +83,32 @@ gogenfilter is a mature, production-ready Go library for detecting and filtering
 
 ## c) NOT STARTED
 
-| # | Item | Priority | Effort |
-|---|------|----------|--------|
-| 1 | Tag v0.1.0 release | HIGH | 5min |
-| 2 | Resolve include patterns design question | HIGH | 30min |
-| 3 | Performance profile and optimize hot paths | MEDIUM | 30min |
-| 4 | Add Codecov or similar coverage tracking | MEDIUM | 15min |
-| 5 | Document API stability guarantees | MEDIUM | 15min |
-| 6 | `//go:generate` for detector table generation | MEDIUM | 45min |
-| 7 | `RegisterDetector()` API for custom detectors | MEDIUM | 60min |
-| 8 | `WalkAndFilter(dir string)` bulk API | MEDIUM | 30min |
-| 9 | Expose filtered file paths in FilterStats | MEDIUM | 15min |
-| 10 | Document undocumented public APIs in README | MEDIUM | 30min |
-| 11 | BDD/ginkgo tests for user-facing behaviors | MEDIUM | 60min |
-| 12 | `*.gen.go` heuristic for oapi-codegen | LOW | 10min |
-| 13 | Error() allocation optimization | LOW | 15min |
-| 14 | Rename `ReasonIncludePattern` → `ReasonNotInScope` | LOW | 10min |
-| 15 | Cross-platform path testing (Windows) | LOW | 15min |
-| 16 | Test SQLC config v1 format | LOW | 15min |
-| 17 | Error handling examples in docs | LOW | 15min |
-| 18 | Benchmark `CodeHelp()` lookup | LOW | 5min |
-| 19 | Add `go test -bench` to CI | LOW | 10min |
-| 20 | Run Lighthouse audit | LOW | 60min |
-| 21 | Self-host Google Fonts | LOW | 30min |
-| 22 | Add analytics (Plausible/Umami) | LOW | 30min |
-| 23 | Custom 404 page | LOW | 30min |
-| 24 | Fix Starlight logo (PNG → SVG) | LOW | 15min |
+| #   | Item                                               | Priority | Effort |
+| --- | -------------------------------------------------- | -------- | ------ |
+| 1   | Tag v0.1.0 release                                 | HIGH     | 5min   |
+| 2   | Resolve include patterns design question           | HIGH     | 30min  |
+| 3   | Performance profile and optimize hot paths         | MEDIUM   | 30min  |
+| 4   | Add Codecov or similar coverage tracking           | MEDIUM   | 15min  |
+| 5   | Document API stability guarantees                  | MEDIUM   | 15min  |
+| 6   | `//go:generate` for detector table generation      | MEDIUM   | 45min  |
+| 7   | `RegisterDetector()` API for custom detectors      | MEDIUM   | 60min  |
+| 8   | `WalkAndFilter(dir string)` bulk API               | MEDIUM   | 30min  |
+| 9   | Expose filtered file paths in FilterStats          | MEDIUM   | 15min  |
+| 10  | Document undocumented public APIs in README        | MEDIUM   | 30min  |
+| 11  | BDD/ginkgo tests for user-facing behaviors         | MEDIUM   | 60min  |
+| 12  | `*.gen.go` heuristic for oapi-codegen              | LOW      | 10min  |
+| 13  | Error() allocation optimization                    | LOW      | 15min  |
+| 14  | Rename `ReasonIncludePattern` → `ReasonNotInScope` | LOW      | 10min  |
+| 15  | Cross-platform path testing (Windows)              | LOW      | 15min  |
+| 16  | Test SQLC config v1 format                         | LOW      | 15min  |
+| 17  | Error handling examples in docs                    | LOW      | 15min  |
+| 18  | Benchmark `CodeHelp()` lookup                      | LOW      | 5min   |
+| 19  | Add `go test -bench` to CI                         | LOW      | 10min  |
+| 20  | Run Lighthouse audit                               | LOW      | 60min  |
+| 21  | Self-host Google Fonts                             | LOW      | 30min  |
+| 22  | Add analytics (Plausible/Umami)                    | LOW      | 30min  |
+| 23  | Custom 404 page                                    | LOW      | 30min  |
+| 24  | Fix Starlight logo (PNG → SVG)                     | LOW      | 15min  |
 
 ---
 
@@ -162,33 +162,33 @@ gogenfilter is a mature, production-ready Go library for detecting and filtering
 
 ## f) Top 25 Things We Should Get Done Next
 
-| # | Task | Priority | Effort | Impact |
-|---|------|----------|--------|--------|
-| 1 | **Commit and push all current changes** | CRITICAL | 2min | Deploys website with /docs/ fix |
-| 2 | **Tag v0.1.0 release** | HIGH | 5min | Enables Go module versioning |
-| 3 | **Verify /docs/ routing on live site** | HIGH | 5min | Confirms fix works in production |
-| 4 | **Run Lighthouse audit on live site** | HIGH | 15min | Baseline performance metrics |
-| 5 | **Add Codecov integration** | MEDIUM | 15min | Coverage visibility over time |
-| 6 | **Document API stability guarantees** | MEDIUM | 15min | User confidence in adopting library |
-| 7 | **Add `WalkAndFilter()` bulk API** | MEDIUM | 30min | Most requested developer experience improvement |
-| 8 | **Add `RegisterDetector()` API** | MEDIUM | 60min | Extensibility without forking |
-| 9 | **Document all public APIs in README** | MEDIUM | 30min | Discoverability of features |
-| 10 | **Resolve include patterns design** | HIGH | 30min | API contract clarity |
-| 11 | **Self-host Google Fonts** | MEDIUM | 30min | Privacy + performance |
-| 12 | **Custom 404 page** | MEDIUM | 30min | Professional appearance |
-| 13 | **Fix Starlight logo** (PNG → SVG) | LOW | 15min | Visual quality |
-| 14 | **Performance profile hot paths** | MEDIUM | 30min | Data-driven optimization |
-| 15 | **Error handling examples in docs** | MEDIUM | 15min | User guidance |
-| 16 | **BDD/ginkgo user-facing tests** | MEDIUM | 60min | Behavior coverage |
-| 17 | **Expose filtered paths in FilterStats** | MEDIUM | 15min | Debugging capability |
-| 18 | **Test SQLC config v1 format** | LOW | 15min | Coverage gap |
-| 19 | **Cross-platform path testing** | LOW | 15min | Portability |
-| 20 | **Add `go test -bench` to CI** | LOW | 10min | Performance regression detection |
-| 21 | **`//go:generate` for detector table** | MEDIUM | 45min | DRY maintenance |
-| 22 | **Add analytics (Plausible/Umami)** | LOW | 30min | Adoption measurement |
-| 23 | **Error() allocation optimization** | LOW | 15min | Micro-optimization |
-| 24 | **Preview deploys for website PRs** | MEDIUM | 30min | Catch routing issues early |
-| 25 | **Install Firebase CLI locally** | LOW | 10min | Faster deployment iteration |
+| #   | Task                                     | Priority | Effort | Impact                                          |
+| --- | ---------------------------------------- | -------- | ------ | ----------------------------------------------- |
+| 1   | **Commit and push all current changes**  | CRITICAL | 2min   | Deploys website with /docs/ fix                 |
+| 2   | **Tag v0.1.0 release**                   | HIGH     | 5min   | Enables Go module versioning                    |
+| 3   | **Verify /docs/ routing on live site**   | HIGH     | 5min   | Confirms fix works in production                |
+| 4   | **Run Lighthouse audit on live site**    | HIGH     | 15min  | Baseline performance metrics                    |
+| 5   | **Add Codecov integration**              | MEDIUM   | 15min  | Coverage visibility over time                   |
+| 6   | **Document API stability guarantees**    | MEDIUM   | 15min  | User confidence in adopting library             |
+| 7   | **Add `WalkAndFilter()` bulk API**       | MEDIUM   | 30min  | Most requested developer experience improvement |
+| 8   | **Add `RegisterDetector()` API**         | MEDIUM   | 60min  | Extensibility without forking                   |
+| 9   | **Document all public APIs in README**   | MEDIUM   | 30min  | Discoverability of features                     |
+| 10  | **Resolve include patterns design**      | HIGH     | 30min  | API contract clarity                            |
+| 11  | **Self-host Google Fonts**               | MEDIUM   | 30min  | Privacy + performance                           |
+| 12  | **Custom 404 page**                      | MEDIUM   | 30min  | Professional appearance                         |
+| 13  | **Fix Starlight logo** (PNG → SVG)       | LOW      | 15min  | Visual quality                                  |
+| 14  | **Performance profile hot paths**        | MEDIUM   | 30min  | Data-driven optimization                        |
+| 15  | **Error handling examples in docs**      | MEDIUM   | 15min  | User guidance                                   |
+| 16  | **BDD/ginkgo user-facing tests**         | MEDIUM   | 60min  | Behavior coverage                               |
+| 17  | **Expose filtered paths in FilterStats** | MEDIUM   | 15min  | Debugging capability                            |
+| 18  | **Test SQLC config v1 format**           | LOW      | 15min  | Coverage gap                                    |
+| 19  | **Cross-platform path testing**          | LOW      | 15min  | Portability                                     |
+| 20  | **Add `go test -bench` to CI**           | LOW      | 10min  | Performance regression detection                |
+| 21  | **`//go:generate` for detector table**   | MEDIUM   | 45min  | DRY maintenance                                 |
+| 22  | **Add analytics (Plausible/Umami)**      | LOW      | 30min  | Adoption measurement                            |
+| 23  | **Error() allocation optimization**      | LOW      | 15min  | Micro-optimization                              |
+| 24  | **Preview deploys for website PRs**      | MEDIUM   | 30min  | Catch routing issues early                      |
+| 25  | **Install Firebase CLI locally**         | LOW      | 10min  | Faster deployment iteration                     |
 
 ---
 
@@ -202,26 +202,27 @@ The library is feature-complete, has 97.4% coverage, 0 linter issues, comprehens
 
 ## Metrics Snapshot
 
-| Metric | Value |
-|--------|-------|
-| Go source lines | 6,829 |
-| Test count | 126 |
-| Test coverage | 97.4% |
-| Linter issues | 0 |
-| Vet issues | 0 |
-| Race detector | Clean |
-| Go version | 1.26.2 |
-| Dependencies | 2 runtime, 2 test |
-| Generators supported | 11 |
-| Website pages | 17 |
-| Website docs | 15 |
-| Status reports | 19 (including this one) |
-| Open TODOs | 24 |
-| Completed TODOs | 43 |
+| Metric               | Value                   |
+| -------------------- | ----------------------- |
+| Go source lines      | 6,829                   |
+| Test count           | 126                     |
+| Test coverage        | 97.4%                   |
+| Linter issues        | 0                       |
+| Vet issues           | 0                       |
+| Race detector        | Clean                   |
+| Go version           | 1.26.2                  |
+| Dependencies         | 2 runtime, 2 test       |
+| Generators supported | 11                      |
+| Website pages        | 17                      |
+| Website docs         | 15                      |
+| Status reports       | 19 (including this one) |
+| Open TODOs           | 24                      |
+| Completed TODOs      | 43                      |
 
 ## Current Git State
 
 **22 files changed** (+266/-1679 lines):
+
 - Modified: `astro.config.mjs`, 4 components (FeatureGrid, Footer, GeneratorGrid, Header), `LandingLayout.astro`, `index.astro`, `global.css`
 - Deleted: 14 content `.mdx` files (moved to `docs/` subdirectory)
 - New: `website/public/logos/` (11 SVGs), `website/src/content/docs/docs/` (15 .mdx files + index)

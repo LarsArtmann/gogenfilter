@@ -4,15 +4,17 @@
   "private": true,
   "description": "Website and documentation for gogenfilter — detect and filter auto-generated Go code files",
   "keywords": [
-    "gogenfilter",
-    "go",
-    "golang",
-    "code-generation",
-    "static-analysis",
-    "code-quality",
     "astro",
-    "starlight"
+    "code-generation",
+    "code-quality",
+    "go",
+    "gogenfilter",
+    "golang",
+    "starlight",
+    "static-analysis"
   ],
+  "homepage": "https://gogenfilter.lars.software",
+  "bugs": "https://github.com/LarsArtmann/gogenfilter/issues",
   "license": "MIT",
   "author": "LarsArtmann <lars@larsartmann.com> (https://larsartmann.com/)",
   "repository": {
@@ -20,8 +22,6 @@
     "url": "https://github.com/LarsArtmann/gogenfilter.git",
     "directory": "website"
   },
-  "homepage": "https://gogenfilter.lars.software",
-  "bugs": "https://github.com/LarsArtmann/gogenfilter/issues",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
