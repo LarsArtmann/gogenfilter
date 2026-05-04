@@ -75,12 +75,13 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		})
 
 		ginkgo.When("given an invalid FilterOption", func() {
-			ginkgo.It("panics", func() {
-				gomega.Expect(func() {
-					gogenfilter.NewFilter(
-						gogenfilter.WithFilterOptions(gogenfilter.FilterOption("nonexistent")),
-					)
-				}).To(gomega.Panic())
+			ginkgo.It("returns an error", func() {
+				_, err := gogenfilter.NewFilter(
+					gogenfilter.WithFilterOptions(gogenfilter.FilterOption("nonexistent")),
+				)
+				gomega.Expect(err).To(gomega.HaveOccurred())
+				var cfgErr *gogenfilter.FilterConfigError
+				gomega.Expect(errors.As(err, &cfgErr)).To(gomega.BeTrue())
 			})
 		})
 	})
@@ -203,10 +204,13 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 	ginkgo.Describe("Filter with include patterns", func() {
 		ginkgo.When("a file matches include pattern and is generated", func() {
 			ginkgo.It("still filters it as generated", func() {
-				filter := gogenfilter.NewFilter(
-					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
+				opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
+				filter, err := gogenfilter.NewFilter(
+					opts,
 					gogenfilter.WithIncludePatterns("models.go"),
 				)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				filtered, err := filter.Filter("models.go")
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				gomega.Expect(filtered).To(gomega.BeTrue())
@@ -215,9 +219,10 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 		ginkgo.When("a file does not match any include pattern", func() {
 			ginkgo.It("filters it with outside-scope reason", func() {
-				filter := gogenfilter.NewFilter(
+				filter, err := gogenfilter.NewFilter(
 					gogenfilter.WithIncludePatterns("pkg/*.go"),
 				)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				filtered, err := filter.Filter("other/file.go")
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				gomega.Expect(filtered).To(gomega.BeTrue())
@@ -232,9 +237,10 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 	ginkgo.Describe("Metrics", func() {
 		ginkgo.When("multiple files are checked", func() {
 			ginkgo.It("tracks counts per reason", func() {
-				filter := gogenfilter.NewFilter(
-					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC, gogenfilter.FilterTempl),
-				)
+				opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC, gogenfilter.FilterTempl)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
+				filter, err := gogenfilter.NewFilter(opts)
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				_, _ = filter.Filter("db/models.go")
 				_, _ = filter.Filter("page_templ.go")
 				_, _ = filter.Filter("main.go")
@@ -246,7 +252,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 		ginkgo.When("filter is disabled", func() {
 			ginkgo.It("returns zero stats", func() {
-				filter := gogenfilter.NewFilter()
+				filter, err := gogenfilter.NewFilter()
+				gomega.Expect(err).NotTo(gomega.HaveOccurred())
 				stats := filter.GetStats()
 				gomega.Expect(stats.TotalFilesChecked).
 					To(gomega.Equal(gogenfilter.TotalFilesChecked(0)))

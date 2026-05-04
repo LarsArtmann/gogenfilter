@@ -15,10 +15,17 @@ func TestFilterConcurrent(t *testing.T) {
 		"api.go":       newMapFile("package main\n"),
 	}
 
-	filter := NewFilter(
-		WithFilterOptions(FilterAll),
+	opts, err := WithFilterOptions(FilterAll)
+	if err != nil {
+		t.Fatal(err)
+	}
+	filter, err := NewFilter(
+		opts,
 		WithFS(mapFS),
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	const goroutines = 100
 

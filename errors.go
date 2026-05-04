@@ -15,6 +15,7 @@ func (c ErrorCode) String() string { return string(c) }
 const (
 	CodeProjectRootNotFound    ErrorCode = "project_root_not_found"    // project root not found from start path
 	CodeProjectRootInvalidPath ErrorCode = "project_root_invalid_path" // start path could not be resolved
+	CodeInvalidFilterOption    ErrorCode = "invalid_filter_option"     // filter option is not valid
 	CodeSQLCConfigRead         ErrorCode = "sqlc_config_read"          // sqlc config file could not be read
 	CodeSQLCConfigParse        ErrorCode = "sqlc_config_parse"         // sqlc config file has invalid YAML
 	CodeSQLCConfigWalk         ErrorCode = "sqlc_config_walk"          // directory walk for sqlc configs failed
@@ -39,6 +40,10 @@ var errorCodeDefs = []errorCodeDef{
 		"Ensure the directory is within a Go project containing a go.mod file or other project marker file.",
 	},
 	{CodeProjectRootInvalidPath, "Verify the start path exists and is a valid directory."},
+	{
+		CodeInvalidFilterOption,
+		"Ensure the FilterOption is valid. Use FilterOption constants (FilterSQLC, FilterTempl, etc.) or FilterAll.",
+	},
 	{
 		CodeSQLCConfigRead,
 		"Check that the sqlc config file exists and has appropriate read permissions.",
@@ -103,6 +108,7 @@ type Helper interface {
 var (
 	ErrProjectRootNotFound    = &ProjectRootError{Code: CodeProjectRootNotFound}
 	ErrProjectRootInvalidPath = &ProjectRootError{Code: CodeProjectRootInvalidPath}
+	ErrInvalidFilterOption    = &FilterConfigError{Code: CodeInvalidFilterOption}
 	ErrSQLCConfigRead         = &SQLCConfigError{Code: CodeSQLCConfigRead}
 	ErrSQLCConfigParse        = &SQLCConfigError{Code: CodeSQLCConfigParse}
 	ErrSQLCConfigWalk         = &SQLCConfigError{Code: CodeSQLCConfigWalk}
@@ -154,6 +160,44 @@ func (e *ProjectRootError) ErrorCode() ErrorCode { return e.Code }
 
 // Help returns user-friendly guidance for resolving the error.
 func (e *ProjectRootError) Help() string { return CodeHelp(e.Code) }
+
+// FilterConfigError is returned when a filter configuration is invalid.
+type FilterConfigError struct {
+	Code   ErrorCode
+	Option FilterOption
+	Cause  error
+}
+
+func (e *FilterConfigError) Error() string {
+	if e.Cause != nil {
+		return fmt.Sprintf(
+			"[gogenfilter:%s] invalid filter option %q: %v",
+			e.Code,
+			e.Option,
+			e.Cause,
+		)
+	}
+
+	return fmt.Sprintf("[gogenfilter:%s] invalid filter option %q", e.Code, e.Option)
+}
+
+func (e *FilterConfigError) Unwrap() error { return e.Cause }
+
+// Is supports errors.Is by comparing error codes with sentinel errors.
+func (e *FilterConfigError) Is(target error) bool {
+	t, ok := target.(*FilterConfigError)
+	if !ok {
+		return false
+	}
+
+	return CodeEqual(e, t)
+}
+
+// ErrorCode returns the error code for programmatic matching.
+func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
+
+// Help returns user-friendly guidance for resolving the error.
+func (e *FilterConfigError) Help() string { return CodeHelp(e.Code) }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {

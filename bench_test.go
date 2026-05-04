@@ -23,10 +23,21 @@ func benchmarkFilter(b *testing.B, enabled bool) {
 	}
 
 	var filter *Filter
+	var err error
 	if enabled {
-		filter = NewFilter(WithFilterOptions(FilterAll), WithFS(fsys))
+		opts, optErr := WithFilterOptions(FilterAll)
+		if optErr != nil {
+			b.Fatal(optErr)
+		}
+		filter, err = NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			b.Fatal(err)
+		}
 	} else {
-		filter = NewFilter(WithFS(fsys))
+		filter, err = NewFilter(WithFS(fsys))
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 
 	for b.Loop() {
