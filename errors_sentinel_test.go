@@ -31,9 +31,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 
 		realErr := testProjectRootErrorNotFound(t)
 
-		coder := assertErrorsAs[ErrorCoder](t, realErr)
-
-		assertEqual(t, "ErrorCode", coder.ErrorCode(), CodeProjectRootNotFound)
+		assertEqual(t, "ErrorCode", realErr.ErrorCode(), CodeProjectRootNotFound)
 	})
 
 	t.Run("extracts Helper interface", func(t *testing.T) {
@@ -41,9 +39,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 
 		realErr := testProjectRootErrorNotFound(t)
 
-		helper := assertErrorsAs[Helper](t, realErr)
-
-		if helper.Help() == "" {
+		if realErr.Help() == "" {
 			t.Error("Help() returned empty string")
 		}
 	})
@@ -137,9 +133,7 @@ func TestSQLCConfigErrorErrorsAs(t *testing.T) {
 			os.ErrInvalid,
 		)
 
-		coder := assertErrorsAs[ErrorCoder](t, realErr)
-
-		assertEqual(t, "ErrorCode", coder.ErrorCode(), CodeSQLCConfigParse)
+		assertEqual(t, "ErrorCode", realErr.ErrorCode(), CodeSQLCConfigParse)
 	})
 }
 

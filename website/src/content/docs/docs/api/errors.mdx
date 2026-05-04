@@ -12,9 +12,7 @@ gogenfilter uses branded errors with `[gogenfilter:<code>]` prefixes for structu
 ```go
 filtered, err := f.ShouldFilter("nonexistent.go")
 if err != nil {
-    // Check for specific error types
-    var ferr *gogenfilter.FilterError
-    if errors.As(err, &ferr) {
+    if ferr, ok := errors.AsType[*gogenfilter.FilterError](err); ok {
         fmt.Println(ferr.Code())
     }
 }
