@@ -81,6 +81,26 @@ func TestNewFilter(t *testing.T) {
 			t.Error("Expected Generic option enabled for FilterAll")
 		}
 	})
+
+	t.Run("include patterns alone enable the filter", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(WithIncludePatterns("pkg/*.go"))
+
+		if !filter.IsEnabled() {
+			t.Error("Expected filter with include patterns to be enabled")
+		}
+	})
+
+	t.Run("exclude patterns alone enable the filter", func(t *testing.T) {
+		t.Parallel()
+
+		filter := NewFilter(WithExcludePatterns("vendor/**"))
+
+		if !filter.IsEnabled() {
+			t.Error("Expected filter with exclude patterns to be enabled")
+		}
+	})
 }
 
 func TestFilterReasons(t *testing.T) {
@@ -355,14 +375,25 @@ func TestFilterString(t *testing.T) {
 		t.Parallel()
 
 		filter := NewFilter(WithIncludePatterns("pkg/*.go"))
-		assertContains(t, filter.String(), "includes=")
+		str := filter.String()
+		assertContains(t, str, "includes=")
+		assertContains(t, str, "Filter(")
+
+		if strings.Contains(str, "options=") {
+			t.Errorf("pattern-only filter should not show options, got: %s", str)
+		}
 	})
 
 	t.Run("enabled with exclude patterns", func(t *testing.T) {
 		t.Parallel()
 
 		filter := NewFilter(WithExcludePatterns("vendor/**"))
-		assertContains(t, filter.String(), "excludes=")
+		str := filter.String()
+		assertContains(t, str, "excludes=")
+
+		if strings.Contains(str, "options=") {
+			t.Errorf("pattern-only filter should not show options, got: %s", str)
+		}
 	})
 
 	t.Run("enabled with all options and patterns", func(t *testing.T) {

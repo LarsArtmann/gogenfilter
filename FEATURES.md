@@ -21,21 +21,21 @@
 
 ## Filter API
 
-| Feature                       | Status           | Details                                                     |
-| ----------------------------- | ---------------- | ----------------------------------------------------------- |
+| Feature                       | Status           | Details                                                                            |
+| ----------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
 | Functional options API        | FULLY_FUNCTIONAL | `NewFilter(WithFilterOptions(FilterAll))` — enabled when options/patterns provided |
-| Enable/disable toggle         | FULLY_FUNCTIONAL | Implicit: `NewFilter()` = disabled, `NewFilter(WithFilterOptions(...))` = enabled |
-| Selective generator filtering | FULLY_FUNCTIONAL | `WithFilterOptions(FilterSQLC, FilterTempl, ...)`           |
-| FilterAll expansion           | FULLY_FUNCTIONAL | Expands to all specific + generic detectors                 |
-| Custom filesystem             | FULLY_FUNCTIONAL | `WithFS(fs.FS)` for testability with `fstest.MapFS`         |
-| Include patterns              | FULLY_FUNCTIONAL | `WithIncludePatterns("**/pkg/*.go")` — whitelist scope      |
-| Exclude patterns              | FULLY_FUNCTIONAL | `WithExcludePatterns("**/*.pb.go")` — always filter matches |
-| Filter immutability           | FULLY_FUNCTIONAL | Filter is immutable after `NewFilter` construction          |
-| ShouldFilter with error       | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                     |
-| MustFilter                    | FULLY_FUNCTIONAL | Panics on error — for tests/benchmarks                      |
-| FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                     |
-| IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                        |
-| String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                 |
+| Enable/disable toggle         | FULLY_FUNCTIONAL | Implicit: `NewFilter()` = disabled, `NewFilter(WithFilterOptions(...))` = enabled  |
+| Selective generator filtering | FULLY_FUNCTIONAL | `WithFilterOptions(FilterSQLC, FilterTempl, ...)`                                  |
+| FilterAll expansion           | FULLY_FUNCTIONAL | Expands to all specific + generic detectors                                        |
+| Custom filesystem             | FULLY_FUNCTIONAL | `WithFS(fs.FS)` for testability with `fstest.MapFS`                                |
+| Include patterns              | FULLY_FUNCTIONAL | `WithIncludePatterns("**/pkg/*.go")` — whitelist scope                             |
+| Exclude patterns              | FULLY_FUNCTIONAL | `WithExcludePatterns("**/*.pb.go")` — always filter matches                        |
+| Filter immutability           | FULLY_FUNCTIONAL | Filter is immutable after `NewFilter` construction                                 |
+| ShouldFilter with error       | FULLY_FUNCTIONAL | `(bool, error)` — propagates I/O errors                                            |
+| MustFilter                    | FULLY_FUNCTIONAL | Panics on error — for tests/benchmarks                                             |
+| FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                                            |
+| IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                                               |
+| String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                                        |
 
 ## Pattern Matching
 

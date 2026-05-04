@@ -252,7 +252,11 @@ func (f *Filter) String() string {
 
 	sort.Strings(opts)
 
-	parts := []string{fmt.Sprintf("options=[%s]", strings.Join(opts, ","))}
+	var parts []string
+
+	if len(opts) > 0 {
+		parts = []string{fmt.Sprintf("options=[%s]", strings.Join(opts, ","))}
+	}
 
 	parts = f.appendPatternPart(parts, "includes", f.includePatterns)
 	parts = f.appendPatternPart(parts, "excludes", f.excludePatterns)
