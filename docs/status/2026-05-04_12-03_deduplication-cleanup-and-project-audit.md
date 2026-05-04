@@ -15,20 +15,20 @@ The project is in **excellent shape**. A deduplication sprint reduced art-dupl c
 
 ## Metrics Dashboard
 
-| Metric                      | Value                  | Status |
-| --------------------------- | ---------------------- | ------ |
-| Test coverage               | 97.4%                  | ✅     |
-| Tests (race)                | PASS                   | ✅     |
-| golangci-lint               | 0 issues               | ✅     |
-| art-dupl clones             | 1 (false positive)     | ✅     |
-| Production LOC              | 1,709                  | —      |
-| Test LOC                    | 5,247                  | —      |
-| Test:Production ratio       | 3.07:1                 | ✅     |
-| Go version                  | 1.26.2                 | —      |
-| Website pages               | 20                     | ✅     |
-| Commits ahead of origin     | 2                      | ⚠️     |
-| Uncommitted changes         | 1 file (table fmt)     | ⚠️     |
-| Status reports accumulated  | 34 files               | ⚠️     |
+| Metric                     | Value              | Status |
+| -------------------------- | ------------------ | ------ |
+| Test coverage              | 97.4%              | ✅     |
+| Tests (race)               | PASS               | ✅     |
+| golangci-lint              | 0 issues           | ✅     |
+| art-dupl clones            | 1 (false positive) | ✅     |
+| Production LOC             | 1,709              | —      |
+| Test LOC                   | 5,247              | —      |
+| Test:Production ratio      | 3.07:1             | ✅     |
+| Go version                 | 1.26.2             | —      |
+| Website pages              | 20                 | ✅     |
+| Commits ahead of origin    | 2                  | ⚠️     |
+| Uncommitted changes        | 1 file (table fmt) | ⚠️     |
+| Status reports accumulated | 34 files           | ⚠️     |
 
 ---
 
@@ -36,14 +36,14 @@ The project is in **excellent shape**. A deduplication sprint reduced art-dupl c
 
 ### Deduplication Sprint (This Session)
 
-| Clone Group                                          | Fix Applied                                          |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| `assertStringField` for `"Out"` (lines 89, 417)     | → Extracted `assertSQLGoOut()` helper                |
-| `assertStringField` for Codegen entries (465, 467)   | → Extracted `assertCodegenEntry()` helper            |
-| `assertLen` for Codegen entries (463, 576)           | → Extracted `assertCodegenLen()` helper              |
-| `TestGetSQLOutputDirs_*` YAML fixtures (501–534)     | → Merged into `TestGetSQLOutputDirs` table           |
-| `testdata/moq/service_moq.go` mock file              | → Excluded via `.art-dupl.json` config                |
-| 5 tests using manual `tmpDir + writeFile + parse`    | → Unified via `parseSQLCConfigFromYAML()` helper      |
+| Clone Group                                        | Fix Applied                                      |
+| -------------------------------------------------- | ------------------------------------------------ |
+| `assertStringField` for `"Out"` (lines 89, 417)    | → Extracted `assertSQLGoOut()` helper            |
+| `assertStringField` for Codegen entries (465, 467) | → Extracted `assertCodegenEntry()` helper        |
+| `assertLen` for Codegen entries (463, 576)         | → Extracted `assertCodegenLen()` helper          |
+| `TestGetSQLOutputDirs_*` YAML fixtures (501–534)   | → Merged into `TestGetSQLOutputDirs` table       |
+| `testdata/moq/service_moq.go` mock file            | → Excluded via `.art-dupl.json` config           |
+| 5 tests using manual `tmpDir + writeFile + parse`  | → Unified via `parseSQLCConfigFromYAML()` helper |
 
 **New helpers added to `helpers_test.go`:**
 
@@ -54,38 +54,38 @@ The project is in **excellent shape**. A deduplication sprint reduced art-dupl c
 
 ### Core Library (Historical — All Complete)
 
-| Feature                       | File             | Status |
-| ----------------------------- | ---------------- | ------ |
-| Two-phase detection           | `detection.go`   | ✅     |
-| Functional options API        | `filter.go`      | ✅     |
-| 11 generators (detectors)     | `detection.go`   | ✅     |
-| FilterOption/FilterReason     | `types.go`       | ✅     |
-| Branded error system          | `errors.go`      | ✅     |
-| Phantom types                 | `phantom.go`     | ✅     |
-| `fs.FS` abstraction           | `filter.go`      | ✅     |
-| SQLC v1 + v2 + codegen + JSON | `sqlc.go`        | ✅     |
-| Thread-safe metrics           | `metrics.go`     | ✅     |
-| `**` glob patterns            | `pattern.go`     | ✅     |
-| Project root discovery        | `project.go`     | ✅     |
+| Feature                       | File           | Status |
+| ----------------------------- | -------------- | ------ |
+| Two-phase detection           | `detection.go` | ✅     |
+| Functional options API        | `filter.go`    | ✅     |
+| 11 generators (detectors)     | `detection.go` | ✅     |
+| FilterOption/FilterReason     | `types.go`     | ✅     |
+| Branded error system          | `errors.go`    | ✅     |
+| Phantom types                 | `phantom.go`   | ✅     |
+| `fs.FS` abstraction           | `filter.go`    | ✅     |
+| SQLC v1 + v2 + codegen + JSON | `sqlc.go`      | ✅     |
+| Thread-safe metrics           | `metrics.go`   | ✅     |
+| `**` glob patterns            | `pattern.go`   | ✅     |
+| Project root discovery        | `project.go`   | ✅     |
 
 ### Website (All Complete)
 
-| Component        | Status        |
-| ---------------- | ------------- |
-| Astro v6 + Starlight | ✅ Live    |
-| Landing page     | ✅ Complete    |
-| API docs         | ✅ Complete    |
-| Guides           | ✅ Complete    |
-| Firebase deploy  | ✅ Automated   |
-| CI/CD            | ✅ Split workflows |
+| Component            | Status             |
+| -------------------- | ------------------ |
+| Astro v6 + Starlight | ✅ Live            |
+| Landing page         | ✅ Complete        |
+| API docs             | ✅ Complete        |
+| Guides               | ✅ Complete        |
+| Firebase deploy      | ✅ Automated       |
+| CI/CD                | ✅ Split workflows |
 
 ### CI/CD (All Complete)
 
-| Workflow         | File                     | Status |
-| ---------------- | ------------------------ | ------ |
-| Go CI            | `.github/workflows/ci.yml`  | ✅   |
-| Website CI       | `.github/workflows/website.yml` | ✅ |
-| Dependabot       | `.github/dependabot.yml` | ✅     |
+| Workflow   | File                            | Status |
+| ---------- | ------------------------------- | ------ |
+| Go CI      | `.github/workflows/ci.yml`      | ✅     |
+| Website CI | `.github/workflows/website.yml` | ✅     |
+| Dependabot | `.github/dependabot.yml`        | ✅     |
 
 ---
 
@@ -236,15 +236,15 @@ Arguments FOR waiting:
 
 ## Session Summary
 
-| What              | Before Session | After Session  |
-| ----------------- | -------------- | -------------- |
-| art-dupl clones   | 6 groups       | 1 (false pos)  |
-| Test helpers      | Scattered      | 4 new extractors |
-| Test file LOC     | ~5,400         | ~5,247          |
-| Tests passing     | ✅             | ✅              |
-| Lint              | ✅             | ✅              |
-| Coverage          | —              | 97.4%           |
-| git status        | clean          | 2 ahead, 1 dirty |
+| What            | Before Session | After Session    |
+| --------------- | -------------- | ---------------- |
+| art-dupl clones | 6 groups       | 1 (false pos)    |
+| Test helpers    | Scattered      | 4 new extractors |
+| Test file LOC   | ~5,400         | ~5,247           |
+| Tests passing   | ✅             | ✅               |
+| Lint            | ✅             | ✅               |
+| Coverage        | —              | 97.4%            |
+| git status      | clean          | 2 ahead, 1 dirty |
 
 ---
 
