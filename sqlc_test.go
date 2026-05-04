@@ -410,12 +410,18 @@ packages:
 
 	assertStringField(t, "Version", config.Version, "1")
 
-	if len(config.SQL) != 0 {
-		t.Errorf("v1 format should have empty SQL array, got %d entries", len(config.SQL))
+	if len(config.SQL) != 1 {
+		t.Fatalf("v1 format should have 1 SQL entry, got %d", len(config.SQL))
 	}
+
+	if config.SQL[0].Gen.Go == nil {
+		t.Fatal("v1 SQL entry should have non-nil Go config")
+	}
+
+	assertStringField(t, "Out", config.SQL[0].Gen.Go.Out, "internal/db")
 }
 
-func TestGetSQLOutputDirs_V1Format_ReturnsEmptyDirs(t *testing.T) {
+func TestGetSQLOutputDirs_V1Format_ReturnsOutputDirs(t *testing.T) {
 	t.Parallel()
 
 	v1YAML := `version: "1"
@@ -426,5 +432,5 @@ packages:
     schema: "./sql/schema/"
     engine: "postgresql"
 `
-	testSQLOutputDirs(t, v1YAML, 0)
+	testSQLOutputDirs(t, v1YAML, 1)
 }

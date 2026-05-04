@@ -10,7 +10,18 @@ import (
 	"github.com/go-faster/yaml"
 )
 
-// sqlcConfig represents a sqlc.yaml configuration file structure.
+// sqlcV1Config represents a sqlc.yaml v1 configuration file structure.
+type sqlcV1Config struct {
+	Version  string          `yaml:"version"`
+	Packages []sqlcV1Package `yaml:"packages"`
+}
+
+// sqlcV1Package represents a single package in a v1 sqlc.yaml config.
+type sqlcV1Package struct {
+	Path string `yaml:"path"` // output directory in v1 format
+}
+
+// sqlcConfig represents a sqlc.yaml v2 configuration file structure.
 type sqlcConfig struct {
 	Version string       `yaml:"version"`
 	SQL     []sqlcEngine `yaml:"sql"`
@@ -18,20 +29,33 @@ type sqlcConfig struct {
 
 // sqlcEngine represents a single SQL engine configuration in sqlc.yaml.
 type sqlcEngine struct {
-	Schema string        `yaml:"schema"`
-	Engine string        `yaml:"engine"`
-	Gen    sqlcGenConfig `yaml:"gen"`
+	Schema  string         `yaml:"schema"`
+	Engine  string         `yaml:"engine"`
+	Gen     sqlcGenConfig  `yaml:"gen"`
+	Codegen []sqlcCodegen `yaml:"codegen"`
 }
 
 // sqlcGenConfig represents the generation configuration in sqlc.yaml.
 type sqlcGenConfig struct {
-	Go sqlcGoConfig `yaml:"go"`
+	Go   *sqlcGoConfig   `yaml:"go"`
+	JSON *sqlcJSONConfig `yaml:"json"`
 }
 
 // sqlcGoConfig represents the Go-specific generation configuration.
 type sqlcGoConfig struct {
 	Package string `yaml:"package"`
 	Out     string `yaml:"out"`
+}
+
+// sqlcJSONConfig represents the JSON generation configuration.
+type sqlcJSONConfig struct {
+	Out string `yaml:"out"`
+}
+
+// sqlcCodegen represents a plugin-based codegen entry in sqlc.yaml.
+type sqlcCodegen struct {
+	Out    string `yaml:"out"`
+	Plugin string `yaml:"plugin"`
 }
 
 // newSQLCConfigError creates a new SQLCConfigError with consistent formatting.
@@ -198,20 +222,76 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 }
 
 func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
-	var config sqlcConfig
+	var version struct {
+		Version string `yaml:"version"`
+	}
 
-	err := yaml.Unmarshal(data, &config)
-	if err != nil {
+	if err := yaml.Unmarshal(data, &version); err != nil {
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigParse,
 			ConfigPath(configPath),
 			Operation("parse"),
-			ErrorMessage("parsing sqlc config"),
+			ErrorMessage("detecting sqlc config version"),
 			err,
 		)
 	}
 
-	return &config, nil
+	switch version.Version {
+	case "1":
+		return parseV1AsV2(data, configPath)
+	case "2", "":
+		var config sqlcConfig
+
+		if err := yaml.Unmarshal(data, &config); err != nil {
+			return nil, newSQLCConfigError(
+				CodeSQLCConfigParse,
+				ConfigPath(configPath),
+				Operation("parse"),
+				ErrorMessage("parsing sqlc config"),
+				err,
+			)
+		}
+
+		return &config, nil
+	default:
+		return nil, newSQLCConfigError(
+			CodeSQLCConfigParse,
+			ConfigPath(configPath),
+			Operation("parse"),
+			ErrorMessage(fmt.Sprintf("unsupported sqlc config version %q", version.Version)),
+			nil,
+		)
+	}
+}
+
+// parseV1AsV2 parses a v1 config and converts it to v2 format.
+// v1 uses packages[].path as output dirs; v2 uses sql[].gen.go.out.
+func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError) {
+	var v1 sqlcV1Config
+
+	if err := yaml.Unmarshal(data, &v1); err != nil {
+		return nil, newSQLCConfigError(
+			CodeSQLCConfigParse,
+			ConfigPath(configPath),
+			Operation("parse"),
+			ErrorMessage("parsing sqlc v1 config"),
+			err,
+		)
+	}
+
+	config := &sqlcConfig{Version: v1.Version}
+
+	for _, pkg := range v1.Packages {
+		if pkg.Path != "" {
+			config.SQL = append(config.SQL, sqlcEngine{
+				Gen: sqlcGenConfig{
+					Go: &sqlcGoConfig{Out: pkg.Path},
+				},
+			})
+		}
+	}
+
+	return config, nil
 }
 
 // extractOutputDirs extracts output directories from a sqlc config's SQL engines.
@@ -219,10 +299,27 @@ func extractOutputDirs(config *sqlcConfig, projectRoot string) []string {
 	var outputDirs []string
 
 	for _, sqlEngine := range config.SQL {
-		if sqlEngine.Gen.Go.Out != "" {
+		// Go output: sql[].gen.go.out
+		if sqlEngine.Gen.Go != nil && sqlEngine.Gen.Go.Out != "" {
 			outDir := filepath.Join(projectRoot, sqlEngine.Gen.Go.Out)
 			outDir = filepath.Clean(outDir)
 			outputDirs = append(outputDirs, outDir)
+		}
+
+		// JSON output: sql[].gen.json.out
+		if sqlEngine.Gen.JSON != nil && sqlEngine.Gen.JSON.Out != "" {
+			outDir := filepath.Join(projectRoot, sqlEngine.Gen.JSON.Out)
+			outDir = filepath.Clean(outDir)
+			outputDirs = append(outputDirs, outDir)
+		}
+
+		// Plugin codegen: sql[].codegen[].out
+		for _, cg := range sqlEngine.Codegen {
+			if cg.Out != "" {
+				outDir := filepath.Join(projectRoot, cg.Out)
+				outDir = filepath.Clean(outDir)
+				outputDirs = append(outputDirs, outDir)
+			}
 		}
 	}
 
