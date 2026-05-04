@@ -18,7 +18,6 @@ Include patterns restrict scope: only files matching at least one include patter
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithIncludePatterns("pkg/**"),
 )
@@ -32,7 +31,6 @@ Exclude patterns broaden scope: matching files are always filtered, regardless o
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithExcludePatterns("**/*.pb.go", "mocks/*"),
 )
@@ -50,7 +48,6 @@ f := gogenfilter.NewFilter(
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithIncludePatterns("pkg/**"),
     gogenfilter.WithExcludePatterns("**/*.pb.go"),

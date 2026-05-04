@@ -17,7 +17,6 @@ import (
 
 func main() {
     f := gogenfilter.NewFilter(
-        gogenfilter.Enabled(),
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
@@ -38,7 +37,6 @@ Target only the generators you care about:
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(
         gogenfilter.FilterSQLC,
         gogenfilter.FilterTempl,
@@ -52,7 +50,6 @@ Track what gets filtered and why:
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
@@ -70,7 +67,7 @@ fmt.Printf("Checked: %d, Filtered: %d\n",
 A disabled filter passes everything through — useful for feature flags:
 
 ```go
-f := gogenfilter.NewFilter(gogenfilter.Disabled())
+f := gogenfilter.NewFilter()
 filtered, _ := f.ShouldFilter("db/models.go") // always false
 ```
 

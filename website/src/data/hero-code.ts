@@ -11,7 +11,6 @@ import (
 
 func main() {
     f := gogenfilter.NewFilter(
-        gogenfilter.Enabled(),
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 

@@ -13,7 +13,6 @@ By default, the filter uses `os.DirFS(".")` (the current working directory):
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 // Uses os.DirFS(".") internally
@@ -22,8 +21,6 @@ f := gogenfilter.NewFilter(
 ## Testing with MapFS
 
 Use `fstest.MapFS` for deterministic, isolated tests:
-
-{/* skip-validate */}
 
 ```go
 import "testing/fstest"
@@ -38,7 +35,6 @@ mapFS := fstest.MapFS{
 }
 
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
     gogenfilter.WithFS(mapFS),
 )
@@ -57,7 +53,6 @@ Implement `fs.FS` for any source — embedded files, archives, remote storage:
 var testdata embed.FS
 
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithFS(testdata),
 )

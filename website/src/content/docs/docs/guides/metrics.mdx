@@ -11,7 +11,6 @@ When a filter is enabled, it automatically collects thread-safe metrics about wh
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
@@ -57,7 +56,7 @@ fmt.Printf("Protobuf files: %d\n", stats.FilteredBy(gogenfilter.ReasonProtobuf))
 A disabled filter returns zero stats:
 
 ```go
-f := gogenfilter.NewFilter(gogenfilter.Disabled())
+f := gogenfilter.NewFilter()
 stats := f.GetStats()
 // stats.TotalFilesChecked == 0
 // stats.TotalFiltered() == 0
