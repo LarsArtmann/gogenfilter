@@ -6,28 +6,62 @@ description: Install gogenfilter in your Go project.
 ## Requirements
 
 - Go 1.26 or later
+- An active Go module (`go.mod`)
 
 ## Install
 
+Run this in your project directory:
+
 ```bash
-go get github.com/LarsArtmann/gogenfilter
+go get github.com/LarsArtmann/gogenfilter@latest
 ```
 
-## Verify
+## Quick Usage
 
 ```go
 package main
 
 import (
     "fmt"
-    _ "github.com/LarsArtmann/gogenfilter"
+    "github.com/LarsArtmann/gogenfilter"
 )
 
 func main() {
-    fmt.Println("gogenfilter installed successfully")
+    // Create a filter that detects all supported generator types
+    filter := gogenfilter.NewFilter(
+        gogenfilter.Enabled(),
+        gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+    )
+
+    // Check if a file should be filtered
+    filtered, reason := filter.DetectReason("user.sql.go")
+    if filtered {
+        fmt.Printf("Filtered: %s - Reason: %s\n", "user.sql.go", reason)
+    }
 }
 ```
 
-## Go Reference
+## Import Options
 
-Full API documentation is available on [pkg.go.dev](https://pkg.go.dev/github.com/LarsArtmann/gogenfilter).
+```go
+// Core functionality
+import "github.com/LarsArtmann/gogenfilter"
+
+// Specific types
+import (
+    "github.com/LarsArtmann/gogenfilter"
+    "github.com/bmatcuk/doublestar/v4" // for pattern matching
+)
+```
+
+## Verify Installation
+
+```bash
+go list -m github.com/LarsArtmann/gogenfilter
+```
+
+## Next Steps
+
+- Follow the [Quick Start](/docs/getting-started/quick-start/) for complete examples
+- Learn about [Filter Options](/docs/guides/filter-options/) to customize detection
+- See [Supported Generators](/docs/generators/) for the full list
