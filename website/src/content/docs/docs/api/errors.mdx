@@ -1,49 +1,175 @@
 ---
 title: Errors
-description: Branded error types with sentinel errors and error codes.
+description: Branded error types with sentinel errors, error codes, and structured help text.
 ---
 
 ## Overview
 
-gogenfilter uses branded errors with `[gogenfilter:<code>]` prefixes for structured error handling.
+gogenfilter uses branded errors with `[gogenfilter:<code>]` prefixes for structured error handling. Every error carries a machine-readable code, a human-readable message, and optional guidance text.
 
-## Pattern
+## Error Types
+
+### `ProjectRootError`
+
+Returned when the project root cannot be found or resolved.
 
 ```go
-filtered, err := f.ShouldFilter("nonexistent.go")
-if err != nil {
-    if ferr, ok := errors.AsType[*gogenfilter.FilterError](err); ok {
-        fmt.Println(ferr.Code())
-    }
+type ProjectRootError struct {
+    Code      ErrorCode
+    StartPath StartPath
+    Markers   []string
+    Cause     error
 }
 ```
 
-## Error Interface
+**When it occurs:** `FindProjectRoot` fails to locate a `go.mod` or other marker file, or cannot resolve the start path.
 
-Errors implement:
+### `SQLCConfigError`
 
-- `error` — standard Go error interface
-- `ErrorCoder` — returns a structured error code
-- `Helper` — provides user-friendly error messages
-
-## Sentinel Errors
-
-Use `errors.Is` for comparison:
+Returned when a sqlc configuration file cannot be found, read, parsed, or collected.
 
 ```go
-errors.Is(err, gogenfilter.ErrFileNotFound)
+type SQLCConfigError struct {
+    Code       ErrorCode
+    ConfigPath ConfigPath
+    Operation  Operation
+    Message    ErrorMessage
+    Cause      error
+}
 ```
+
+**When it occurs:** `FindSQLCConfigs`, `GetSQLOutputDirs`, or internal sqlc parsing fails.
 
 ## Error Codes
 
-Error codes use the pattern `[gogenfilter:<code>]` for easy grep and log filtering.
+All error codes are defined as `ErrorCode` constants. Use `AllErrorCodes()` to retrieve them programmatically.
 
-## Generic Code Matching
-
-Use `CodeEqual[T]` for type-safe error code comparison:
+| Constant | Code | Help |
+|---|---|---|
+| `CodeProjectRootNotFound` | `project_root_not_found` | Ensure the directory is within a Go project containing a go.mod file or other project marker file. |
+| `CodeProjectRootInvalidPath` | `project_root_invalid_path` | Verify the start path exists and is a valid directory. |
+| `CodeSQLCConfigRead` | `sqlc_config_read` | Check that the sqlc config file exists and has appropriate read permissions. |
+| `CodeSQLCConfigParse` | `sqlc_config_parse` | Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format. |
+| `CodeSQLCConfigWalk` | `sqlc_config_walk` | Ensure the search path exists and is accessible for directory traversal. |
+| `CodeSQLCConfigCollect` | `sqlc_config_collect` | Verify that all sqlc config files are valid and accessible. |
+| `CodeSQLCConfigFind` | `sqlc_config_find` | Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file. |
 
 ```go
-if gogenfilter.CodeEqual[gogenfilter.FileNotFoundCode](err) {
-    // handle file not found
+codes := gogenfilter.AllErrorCodes()
+fmt.Println(len(codes))
+// Output: 7
+```
+
+## Sentinel Errors
+
+Sentinel errors have zero-value domain fields — matching is by `ErrorCode` only. Use `errors.Is` for comparison.
+
+| Sentinel | Error Type | Code |
+|---|---|---|
+| `ErrProjectRootNotFound` | `*ProjectRootError` | `project_root_not_found` |
+| `ErrProjectRootInvalidPath` | `*ProjectRootError` | `project_root_invalid_path` |
+| `ErrSQLCConfigRead` | `*SQLCConfigError` | `sqlc_config_read` |
+| `ErrSQLCConfigParse` | `*SQLCConfigError` | `sqlc_config_parse` |
+| `ErrSQLCConfigWalk` | `*SQLCConfigError` | `sqlc_config_walk` |
+| `ErrSQLCConfigCollect` | `*SQLCConfigError` | `sqlc_config_collect` |
+| `ErrSQLCConfigFind` | `*SQLCConfigError` | `sqlc_config_find` |
+
+## Interfaces
+
+All error types implement these interfaces:
+
+### `ErrorCoder`
+
+Returns the structured error code for programmatic matching.
+
+```go
+type ErrorCoder interface {
+    ErrorCode() ErrorCode
 }
 ```
+
+### `Helper`
+
+Returns user-friendly guidance for resolving the error.
+
+```go
+type Helper interface {
+    Help() string
+}
+```
+
+## Error Matching
+
+### `errors.Is` — Sentinel Matching
+
+```go
+_, err := gogenfilter.FindProjectRoot(
+    gogenfilter.StartPath("/nonexistent"),
+    []string{"go.mod"},
+)
+if errors.Is(err, gogenfilter.ErrProjectRootNotFound) {
+    // handle project root not found
+}
+```
+
+### `errors.As` — Type Extraction
+
+```go
+var projErr *gogenfilter.ProjectRootError
+if errors.As(err, &projErr) {
+    fmt.Println(projErr.ErrorCode())
+    fmt.Println(projErr.StartPath)
+}
+```
+
+### `CodeEqual[T]` — Type-Safe Code Comparison
+
+Compares error codes without sentinel values:
+
+```go
+if gogenfilter.CodeEqual(err, gogenfilter.ErrProjectRootNotFound) {
+    // matches by error code
+}
+```
+
+### `Unwrap()` — Error Chains
+
+Both error types implement `Unwrap()` for error chain traversal with `errors.Is` and `errors.As`.
+
+## Help Text
+
+### `CodeHelp(code ErrorCode) string`
+
+Returns user-friendly guidance for any error code:
+
+```go
+help := gogenfilter.CodeHelp(gogenfilter.CodeSQLCConfigParse)
+fmt.Println(help)
+// Output: Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format.
+```
+
+### Via the `Helper` Interface
+
+```go
+_, err := gogenfilter.FindProjectRoot(
+    gogenfilter.StartPath("/nonexistent/path"),
+    []string{"go.mod"},
+)
+if err != nil {
+    fmt.Println(err.ErrorCode())
+    // project_root_not_found
+    fmt.Println(err.Help() != "")
+    // true
+}
+```
+
+## Error Message Format
+
+All errors produce branded messages with the `[gogenfilter:<code>]` prefix:
+
+```
+[gogenfilter:project_root_not_found] project root not found from "/some/path" (searched for: go.mod)
+[gogenfilter:sqlc_config_read] sqlc config read "sqlc.yaml": reading sqlc config: permission denied
+```
+
+This format enables easy `grep` and log filtering.
