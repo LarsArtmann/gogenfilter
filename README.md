@@ -58,7 +58,6 @@ import (
 
 func main() {
     f := gogenfilter.NewFilter(
-        gogenfilter.Enabled(),
         gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     )
 
@@ -84,19 +83,16 @@ func main() {
 ```go
 // Filter all known generated code
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
 // Filter specific generators only
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC, gogenfilter.FilterTempl),
 )
 
 // Include/exclude patterns with ** glob support
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithIncludePatterns("pkg/**", "internal/*.go"),
     gogenfilter.WithExcludePatterns("**/*.pb.go", "mocks/*"),
@@ -104,13 +100,12 @@ gogenfilter.NewFilter(
 
 // Pluggable filesystem for testing
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
     gogenfilter.WithFS(myFS),
 )
 
 // Disabled — passes everything through
-gogenfilter.NewFilter(gogenfilter.Disabled())
+gogenfilter.NewFilter()
 ```
 
 ## Filter Options
@@ -148,7 +143,6 @@ Include and exclude patterns support standard glob syntax:
 
 ```go
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithIncludePatterns("pkg/**"),
     gogenfilter.WithExcludePatterns("**/*.pb.go"),
 )
@@ -186,7 +180,6 @@ reason, err := gogenfilter.DetectReasonReader("file.go", reader,
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 
@@ -256,7 +249,6 @@ Track what was filtered and why — thread-safe, built in:
 
 ```go
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 

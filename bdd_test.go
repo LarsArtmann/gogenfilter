@@ -19,12 +19,11 @@ func TestGogenfilterBDD(t *testing.T) {
 
 var _ = ginkgo.Describe("gogenfilter", func() {
 	ginkgo.Describe("Filter creation", func() {
-		ginkgo.When("created with Enabled and FilterAll", func() {
+		ginkgo.When("created with FilterAll", func() {
 			var filter *gogenfilter.Filter
 
 			ginkgo.BeforeEach(func() {
 				filter = gogenfilter.NewFilter(
-					gogenfilter.Enabled(),
 					gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 				)
 			})
@@ -39,11 +38,11 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			})
 		})
 
-		ginkgo.When("created with Disabled", func() {
+		ginkgo.When("created with no options", func() {
 			var filter *gogenfilter.Filter
 
 			ginkgo.BeforeEach(func() {
-				filter = gogenfilter.NewFilter(gogenfilter.Disabled())
+				filter = gogenfilter.NewFilter()
 			})
 
 			ginkgo.It("is not enabled", func() {
@@ -62,7 +61,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 			ginkgo.BeforeEach(func() {
 				filter = gogenfilter.NewFilter(
-					gogenfilter.Enabled(),
 					gogenfilter.WithFilterOptions(
 						gogenfilter.FilterSQLC,
 						gogenfilter.FilterTempl,
@@ -80,7 +78,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			ginkgo.It("panics", func() {
 				gomega.Expect(func() {
 					gogenfilter.NewFilter(
-						gogenfilter.Enabled(),
 						gogenfilter.WithFilterOptions(gogenfilter.FilterOption("nonexistent")),
 					)
 				}).To(gomega.Panic())
@@ -207,7 +204,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		ginkgo.When("a file matches include pattern and is generated", func() {
 			ginkgo.It("still filters it as generated", func() {
 				filter := gogenfilter.NewFilter(
-					gogenfilter.Enabled(),
 					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC),
 					gogenfilter.WithIncludePatterns("models.go"),
 				)
@@ -220,7 +216,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		ginkgo.When("a file does not match any include pattern", func() {
 			ginkgo.It("filters it with include-pattern reason", func() {
 				filter := gogenfilter.NewFilter(
-					gogenfilter.Enabled(),
 					gogenfilter.WithIncludePatterns("pkg/*.go"),
 				)
 				filtered, err := filter.ShouldFilter("other/file.go")
@@ -238,7 +233,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		ginkgo.When("multiple files are checked", func() {
 			ginkgo.It("tracks counts per reason", func() {
 				filter := gogenfilter.NewFilter(
-					gogenfilter.Enabled(),
 					gogenfilter.WithFilterOptions(gogenfilter.FilterSQLC, gogenfilter.FilterTempl),
 				)
 				_, _ = filter.ShouldFilter("db/models.go")
@@ -252,7 +246,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 		ginkgo.When("filter is disabled", func() {
 			ginkgo.It("returns zero stats", func() {
-				filter := gogenfilter.NewFilter(gogenfilter.Disabled())
+				filter := gogenfilter.NewFilter()
 				stats := filter.GetStats()
 				gomega.Expect(stats.TotalFilesChecked).
 					To(gomega.Equal(gogenfilter.TotalFilesChecked(0)))

@@ -41,7 +41,6 @@ gogenfilter.WithFilterOptions(
 ```go
 // Panics: "gogenfilter: invalid FilterOption: unknown"
 gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterOption("unknown")),
 )
 ```

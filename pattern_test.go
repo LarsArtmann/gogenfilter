@@ -140,14 +140,22 @@ func TestMatchPatternCrossPlatform(t *testing.T) {
 	t.Parallel()
 
 	tests := []matchPatternTestCase{
-		{name: "forward slash path and pattern",
-			path: "vendor/file.go", pattern: "vendor/*", expected: true},
-		{name: "forward slash double star pattern",
-			path: "generated/sqlc/models.go", pattern: "generated/**/*.go", expected: true},
-		{name: "forward slash deep path",
-			path: "a/b/c.go", pattern: "a/**", expected: true},
-		{name: "backslash in pattern detected as separator",
-			path: "any", pattern: "vendor\\*", expected: false},
+		{
+			name: "forward slash path and pattern",
+			path: "vendor/file.go", pattern: "vendor/*", expected: true,
+		},
+		{
+			name: "forward slash double star pattern",
+			path: "generated/sqlc/models.go", pattern: "generated/**/*.go", expected: true,
+		},
+		{
+			name: "forward slash deep path",
+			path: "a/b/c.go", pattern: "a/**", expected: true,
+		},
+		{
+			name: "backslash in pattern detected as separator",
+			path: "any", pattern: "vendor\\*", expected: false,
+		},
 	}
 
 	for _, testCase := range tests {

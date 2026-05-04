@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking: `Enabled()` and `Disabled()` removed** — a filter is now enabled when it has filter options, include patterns, or exclude patterns; `NewFilter()` with no arguments is disabled. This eliminates silent misconfiguration where forgetting `Enabled()` caused the filter to silently pass everything through.
+- `IsEnabled()` now derives state from configuration — returns `true` when `len(f.options) > 0 || len(f.includePatterns) > 0 || len(f.excludePatterns) > 0`
+- `enabled bool` field removed from `Filter` struct — state is implicit, not stored
+
+### Removed
+
+- `Enabled()` option — no longer needed; pass options to enable
+- `Disabled()` option — no longer needed; call `NewFilter()` with no args
+
+### Fixed
+
+- **Silent misconfiguration** — previously, `NewFilter(WithFilterOptions(FilterAll))` (without `Enabled()`) compiled fine but silently did nothing; now passing options automatically enables the filter
+
 ### Added
 
 - `FilterStats.FilteredFiles(reason FilterReason) []string` — returns file paths filtered for a given reason (defensive copy, safe to mutate)

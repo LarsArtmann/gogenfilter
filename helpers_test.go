@@ -114,7 +114,7 @@ func assertFilterBehavior(
 	t.Helper()
 
 	tmpFile := createTempFile(t, name, content)
-	f := NewFilter(Enabled(), WithFilterOptions(opts...), WithFS(os.DirFS(filepath.Dir(tmpFile))))
+	f := NewFilter(WithFilterOptions(opts...), WithFS(os.DirFS(filepath.Dir(tmpFile))))
 
 	got, err := f.ShouldFilter(filepath.Base(tmpFile))
 	if err != nil {
@@ -138,7 +138,7 @@ func mustShouldFilter(t *testing.T, f *Filter, filePath string) bool {
 func assertShouldFilter(t *testing.T, mapFS fstest.MapFS, filePath string, expected bool) {
 	t.Helper()
 
-	filter := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+	filter := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
 	got := mustShouldFilter(t, filter, filePath)
 	if got != expected {

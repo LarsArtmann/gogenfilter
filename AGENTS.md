@@ -10,7 +10,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 - **Two-phase detection**: filename-based (zero I/O) then content-based (reads file)
 - **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields
-- **Functional options API**: `NewFilter(Enabled(), WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction
+- **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction, enabled when options/patterns are provided
 - **Phantom types** (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`) for type safety at API boundaries
 - **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder`/`Helper` interfaces, `CodeEqual[T]` generic
 - **`fs.FS` abstraction**: `WithFS()` option for testability; tests use `fstest.MapFS`
@@ -26,17 +26,17 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 ### Key Source Files
 
-| File           | Purpose                                                                                                                                                                                                           |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filter.go`    | `Filter` type with functional options (`Enabled`, `Disabled`, `WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `ShouldFilter` returns `(bool, error)`. `MustFilter` panics on error. |
-| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                                             |
-| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                                           |
-| `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                    |
-| `sqlc.go`      | SQLC config discovery and parsing (v2 format only; v1 parses but returns zero output dirs)                                                                                                                        |
-| `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                          |
-| `project.go`   | Project root discovery                                                                                                                                                                                            |
-| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                                        |
-| `phantom.go`   | Phantom type constructors                                                                                                                                                                                         |
+| File           | Purpose                                                                                                                                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `ShouldFilter` returns `(bool, error)`. `MustFilter` panics on error. Enabled when options/patterns are set. |
+| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers                                                                                                             |
+| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `AllFilterOptions()`, `AllFilterReasons()`                                                                                                           |
+| `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                                    |
+| `sqlc.go`      | SQLC config discovery and parsing (v2 format only; v1 parses but returns zero output dirs)                                                                                                                                        |
+| `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                                          |
+| `project.go`   | Project root discovery                                                                                                                                                                                                            |
+| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()` and `FilteredBy()` accessors                                                                                                                                        |
+| `phantom.go`   | Phantom type constructors                                                                                                                                                                                                         |
 
 ### Website
 
@@ -101,12 +101,14 @@ golangci-lint run
 Two separate GitHub Actions workflows, both triggered on push/PR to master with path filters:
 
 **Go CI** (`.github/workflows/ci.yml`):
+
 - Path filters: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`
 - Concurrency group cancels in-progress runs
 - `go vet` → tests with race detector and coverage (95% threshold) → benchmarks
 - golangci-lint (separate job, parallel)
 
 **Website** (`.github/workflows/website.yml`):
+
 - Path filters: `website/**`
 - Concurrency group cancels in-progress runs
 - `npm ci` → `astro check` (typecheck) → build → doc validation → HTML validation
@@ -117,7 +119,6 @@ Two separate GitHub Actions workflows, both triggered on push/PR to master with 
 ```go
 // Functional options configuration
 f := gogenfilter.NewFilter(
-    gogenfilter.Enabled(),
     gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 )
 

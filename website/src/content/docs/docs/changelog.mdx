@@ -5,6 +5,10 @@ description: All notable changes to gogenfilter.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking: `Enabled()` and `Disabled()` removed** — a filter is now enabled when it has filter options, include patterns, or exclude patterns; `NewFilter()` with no arguments is disabled. This eliminates silent misconfiguration where forgetting `Enabled()` caused the filter to silently pass everything through.
+
 ### Added
 
 - `DetectReasonReader` — detection from an `io.Reader`
@@ -27,7 +31,7 @@ description: All notable changes to gogenfilter.
 - Initial release
 - Two-phase detection: filename-based (zero I/O) then content-based
 - 11 generator detectors: sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic
-- Functional options API: `Enabled()`, `Disabled()`, `WithFilterOptions()`, `WithFS()`, `WithIncludePatterns()`, `WithExcludePatterns()`
+- Functional options API: `WithFilterOptions()`, `WithFS()`, `WithIncludePatterns()`, `WithExcludePatterns()`
 - `fs.FS` abstraction for testing
 - Thread-safe metrics
 - SQLC config discovery

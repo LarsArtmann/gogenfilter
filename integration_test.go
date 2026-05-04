@@ -84,7 +84,7 @@ func TestIntegrationFilterWithEmbedFS(t *testing.T) {
 		t.Run(fixture.path, func(t *testing.T) {
 			t.Parallel()
 
-			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(testdataFS))
+			f := NewFilter(WithFilterOptions(FilterAll), WithFS(testdataFS))
 
 			got := mustShouldFilterFromFS(t, f, fixture.path)
 
@@ -107,7 +107,7 @@ func TestIntegrationFilterWithMapFS(t *testing.T) {
 		t.Run(fixture.path, func(t *testing.T) {
 			t.Parallel()
 
-			f := NewFilter(Enabled(), WithFilterOptions(FilterAll), WithFS(mapFS))
+			f := NewFilter(WithFilterOptions(FilterAll), WithFS(mapFS))
 
 			got := mustShouldFilterFromFS(t, f, fixture.path)
 
@@ -147,7 +147,7 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 		t.Run(tc.path+"/"+string(tc.option), func(t *testing.T) {
 			t.Parallel()
 
-			f := NewFilter(Enabled(), WithFilterOptions(tc.option), WithFS(mapFS))
+			f := NewFilter(WithFilterOptions(tc.option), WithFS(mapFS))
 
 			got, err := f.ShouldFilter(tc.path)
 			if err != nil {

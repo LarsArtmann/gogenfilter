@@ -13,7 +13,6 @@
 // Create a filter with functional options:
 //
 //	f := gogenfilter.NewFilter(
-//	    gogenfilter.Enabled(),
 //	    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
 //	)
 //
