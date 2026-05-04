@@ -55,6 +55,8 @@ V1 configs use `packages[].path` as the output directory, which is automatically
 
 ## Find Configs
 
+`FindSQLCConfigs` searches the provided paths for `sqlc.yaml` / `sqlc.yml`. It also searches parent directories (up to 10 levels up) for configs that may live above the query directory.
+
 ```go
 configs, err := gogenfilter.FindSQLCConfigs([]string{"./..."})
 if err != nil {
@@ -66,7 +68,17 @@ for path, root := range configs {
 }
 ```
 
+### Filesystem Variant
+
+`FindSQLCConfigsFS` is the `fs.FS`-compatible version. It does **not** search parent directories — use this for testing or custom filesystems:
+
+```go
+configs, err := gogenfilter.FindSQLCConfigsFS(fsys, []string{"."})
+```
+
 ## Get Output Directories
+
+`GetSQLOutputDirs` reads config files and extracts output directories:
 
 ```go
 dirs, err := gogenfilter.GetSQLOutputDirs([]string{"."})
@@ -77,6 +89,12 @@ if err != nil {
 for _, dir := range dirs {
     fmt.Printf("Output: %s\n", dir)
 }
+```
+
+### Filesystem Variant
+
+```go
+dirs, err := gogenfilter.GetSQLOutputDirsFS(fsys, []string{"."})
 ```
 
 ## Use Case

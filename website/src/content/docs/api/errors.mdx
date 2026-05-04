@@ -40,7 +40,33 @@ type SQLCConfigError struct {
 
 **When it occurs:** `FindSQLCConfigs`, `GetSQLOutputDirs`, or internal sqlc parsing fails.
 
+### `FindProjectRoot`
+
+Locates the project root by searching upward for marker files.
+
+```go
+FindProjectRoot(startPath StartPath, markers []string) (string, *ProjectRootError)
+```
+
+Searches from `startPath` upward (up to 10 levels) for any of the `markers` files. If no marker is found, returns `ErrProjectRootNotFound`. If the start path is invalid, returns `ErrProjectRootInvalidPath`.
+
+```go
+root, err := gogenfilter.FindProjectRoot(
+    gogenfilter.StartPath("./internal/pkg"),
+    []string{"go.mod", "go.sum"},
+)
+if err != nil {
+    // handle error
+}
+```
+
 ## Error Codes
+
+`ErrorCode` is a string type for machine-readable error classification:
+
+```go
+type ErrorCode string
+```
 
 All error codes are defined as `ErrorCode` constants. Use `AllErrorCodes()` to retrieve them programmatically.
 
@@ -114,7 +140,10 @@ if errors.Is(err, gogenfilter.ErrProjectRootNotFound) {
 
 ### `errors.AsType` — Type Extraction (Go 1.26+)
 
+Extracts a branded error from a generic `error` variable:
+
 ```go
+var err error = maybeReturnProjectRootError()
 projErr, ok := errors.AsType[*gogenfilter.ProjectRootError](err)
 if ok {
     fmt.Println(projErr.ErrorCode())

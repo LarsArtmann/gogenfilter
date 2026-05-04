@@ -5,7 +5,7 @@ description: Track detection statistics with thread-safe metrics.
 
 ## Overview
 
-When a filter is enabled, it automatically collects thread-safe metrics about what was checked and filtered.
+When a filter is enabled (has filter options, include patterns, or exclude patterns), it automatically collects thread-safe metrics about what was checked and filtered.
 
 ## Basic Usage
 
@@ -23,15 +23,23 @@ fmt.Printf("Total checked: %d\n", stats.TotalFilesChecked)
 fmt.Printf("Total filtered: %d\n", stats.TotalFiltered())
 ```
 
-## Per-Reason Breakdown
+## Available Methods
 
-```go
-stats := f.GetStats()
+### `TotalFiltered() int`
 
-fmt.Printf("SQLC files: %d\n", stats.FilteredBy(gogenfilter.ReasonSQLC))
-fmt.Printf("Templ files: %d\n", stats.FilteredBy(gogenfilter.ReasonTempl))
-fmt.Printf("Protobuf files: %d\n", stats.FilteredBy(gogenfilter.ReasonProtobuf))
-```
+Returns the total number of files filtered.
+
+### `FilteredBy(reason FilterReason) int`
+
+Returns the number of files filtered for a specific reason.
+
+### `FilteredFiles(reason FilterReason) []string`
+
+Returns a defensive copy of all file paths filtered for a specific reason. Safe to mutate.
+
+### `String() string`
+
+Returns a human-readable summary of the stats.
 
 ## Available Reasons
 

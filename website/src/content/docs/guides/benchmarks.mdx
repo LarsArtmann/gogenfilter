@@ -9,7 +9,7 @@ gogenfilter is designed for linters and static analysis tools where detection ov
 
 ## Results
 
-Benchmarked on Go 1.24, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
+Benchmarked on Go 1.26, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
 
 ### Summary
 
@@ -36,19 +36,19 @@ ShouldFilter/disabled   1.2 ns/op    0 B/op    0 allocs/op
 
 A disabled filter is essentially a branch prediction — 1.2 nanoseconds. An enabled filter with a known-generated file completes in ~69ns with zero heap allocations.
 
-### Filename Detection (Phase 1)
+### Phase 1: Filename Detection
 
-Zero-I/O filename matching. No file reads, no content parsing.
+Phase 1: filename-based detection (zero I/O). This is the fast path — a single scan of the filename against the detector table. No file reads, no content parsing.
 
 ```
-DetectGenerated    14 ns/op    0 B/op    0 allocs/op
+Filename phase    14 ns/op    0 B/op    0 allocs/op
 ```
 
-This is the fast path — a single scan of the filename against the detector table.
+This benchmarks the internal filename-only check. Results are exact-matched against known generated-file patterns (e.g., `models.go`, `*.sql.go`, `_templ.go`, `.pb.go`, `wire_gen.go`, `_moq.go`, `_mock.go`, `mock_*.go`).
 
 ### Per-Generator Checks
 
-Individual `Is*Generated` functions combining filename and content checks:
+Individual `Is*Generated` functions. Four of them (`IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`) check both filename patterns and content markers. The remaining seven check content only.
 
 ```
 IsGenericGenerated    5.0 ns/op    0 B/op    0 allocs/op
@@ -133,5 +133,5 @@ The dashboard shows:
 - Commit-level granularity with tooltips showing commit messages
 - Automatic regression highlighting when performance degrades >150%
 
-Results above are a point-in-time snapshot (Go 1.24, AMD Ryzen AI MAX+ 395).
+Results above are a point-in-time snapshot (Go 1.26, AMD Ryzen AI MAX+ 395).
 The dashboard provides continuous, hardware-consistent tracking from CI.

@@ -48,7 +48,21 @@ Returns all 12 valid `FilterOption` values.
 
 Returns all 14 valid `FilterReason` values.
 
-Both are derived from the internal `detectors` table — adding a new detector automatically updates these lists.
+Both are derived from the internal `detectors` table plus additional entries — `AllFilterOptions()` also includes `FilterAll`, and `AllFilterReasons()` also includes `ReasonOutsideScope`, `ReasonExcludePattern`, and `ReasonNotFiltered`.
+
+## Phantom Types
+
+Phantom types enforce type safety at API boundaries. They are string types with no runtime cost.
+
+| Type       | Used by                                   |
+| ---------- | ----------------------------------------- |
+| `StartPath`   | `FindProjectRoot`, `ProjectRootError`      |
+| `ConfigPath`  | `SQLCConfigError`                         |
+| `Operation`   | `SQLCConfigError`                         |
+| `ErrorMessage`| `SQLCConfigError`                         |
+| `TotalFilesChecked`| `FilterStats`, `GetStats()` output    |
+
+All phantom types implement `fmt.Stringer` (`String() string`).
 
 ## Invariant
 
