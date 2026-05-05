@@ -16,19 +16,19 @@ The library is in **excellent technical shape** — tests pass (98.2% coverage),
 
 ### Go Library Core (Production-Ready)
 
-| Area | Status | Details |
-|------|--------|---------|
-| Build | ✅ | `go build ./...` — clean |
-| Tests | ✅ | `go test ./...` — all pass, 98.2% coverage |
-| Race detector | ✅ | `go test -race ./...` — clean |
-| Linter | ✅ | `golangci-lint run` — 0 issues |
-| Vet | ✅ | `go vet ./...` — clean |
-| Benchmarks | ✅ | 23 benchmarks, all passing (filter: 74ns, detect: 12ns, pattern: 42-70ns) |
-| Fuzz tests | ✅ | `FuzzDetectReason` — idempotency + validity |
-| Property tests | ✅ | Disabled filter, include/exclude patterns |
-| BDD tests | ✅ | 175 Ginkgo specs (bdd_test.go: 110, bdd_extended_test.go: 65) |
-| Concurrent tests | ✅ | Race detection on metrics |
-| Integration tests | ✅ | 11 generators + 2 negatives via go:embed |
+| Area              | Status | Details                                                                   |
+| ----------------- | ------ | ------------------------------------------------------------------------- |
+| Build             | ✅     | `go build ./...` — clean                                                  |
+| Tests             | ✅     | `go test ./...` — all pass, 98.2% coverage                                |
+| Race detector     | ✅     | `go test -race ./...` — clean                                             |
+| Linter            | ✅     | `golangci-lint run` — 0 issues                                            |
+| Vet               | ✅     | `go vet ./...` — clean                                                    |
+| Benchmarks        | ✅     | 23 benchmarks, all passing (filter: 74ns, detect: 12ns, pattern: 42-70ns) |
+| Fuzz tests        | ✅     | `FuzzDetectReason` — idempotency + validity                               |
+| Property tests    | ✅     | Disabled filter, include/exclude patterns                                 |
+| BDD tests         | ✅     | 175 Ginkgo specs (bdd_test.go: 110, bdd_extended_test.go: 65)             |
+| Concurrent tests  | ✅     | Race detection on metrics                                                 |
+| Integration tests | ✅     | 11 generators + 2 negatives via go:embed                                  |
 
 ### API Surface (59 exported symbols)
 
@@ -51,24 +51,24 @@ The library is in **excellent technical shape** — tests pass (98.2% coverage),
 
 ### Website
 
-| Area | Status | Details |
-|------|--------|---------|
-| Build | ✅ | 19 pages built in 9.19s |
-| Typecheck | ✅ | `astro check` — 0 errors, 0 warnings, 0 hints |
-| HTML validation | ✅ | `html-validate` — clean |
-| Search | ✅ | PageFind index built (19 HTML files, 42ms) |
-| Sitemap | ✅ | Generated |
-| Docs pages | ✅ | 15 content pages + landing page + changelog |
+| Area            | Status | Details                                       |
+| --------------- | ------ | --------------------------------------------- |
+| Build           | ✅     | 19 pages built in 9.19s                       |
+| Typecheck       | ✅     | `astro check` — 0 errors, 0 warnings, 0 hints |
+| HTML validation | ✅     | `html-validate` — clean                       |
+| Search          | ✅     | PageFind index built (19 HTML files, 42ms)    |
+| Sitemap         | ✅     | Generated                                     |
+| Docs pages      | ✅     | 15 content pages + landing page + changelog   |
 
 ### CI/CD
 
-| Workflow | Status | Path Filters | Triggers |
-|----------|--------|-------------|----------|
-| Go CI | ✅ Configured | `*.go`, `go.mod`, `go.sum`, `testdata`, `.golangci.*` | push/PR master |
-| Benchmark | ✅ Configured | `*.go`, `go.mod`, `go.sum` | push master + dispatch |
-| Website | ✅ Configured | `website/**` | push/PR master + dispatch |
-| Lighthouse | ✅ Configured | `website/**`, `lighthouserc.json` | push/PR master + dispatch |
-| Dependabot | ✅ 3 ecosystems | gomod, npm, github-actions | Weekly Monday |
+| Workflow   | Status          | Path Filters                                          | Triggers                  |
+| ---------- | --------------- | ----------------------------------------------------- | ------------------------- |
+| Go CI      | ✅ Configured   | `*.go`, `go.mod`, `go.sum`, `testdata`, `.golangci.*` | push/PR master            |
+| Benchmark  | ✅ Configured   | `*.go`, `go.mod`, `go.sum`                            | push master + dispatch    |
+| Website    | ✅ Configured   | `website/**`                                          | push/PR master + dispatch |
+| Lighthouse | ✅ Configured   | `website/**`, `lighthouserc.json`                     | push/PR master + dispatch |
+| Dependabot | ✅ 3 ecosystems | gomod, npm, github-actions                            | Weekly Monday             |
 
 ### Module Versioning
 
@@ -83,36 +83,36 @@ The library is in **excellent technical shape** — tests pass (98.2% coverage),
 
 **Current state:** 3 sections ([Unreleased], [v3.0.0], [Pre-release]) with significant issues.
 
-| Issue | Severity | Count |
-|-------|----------|-------|
-| Duplicate `### Fixed` blocks in v3.0.0 | High | 2 blocks (lines 60-80 and 99-103) |
-| Duplicate `### Removed` blocks in v3.0.0 | High | 2 blocks (lines 55-58 and 105-109) |
-| Exact semantic duplicates across sections | High | 11 items (see analysis below) |
-| Items mis-categorized as "Fixed" | High | 18 of 19 items in first Fixed block are not fixes |
-| Factual errors | Medium | `MustFilter` rename claim, `detectReason` name |
-| Missing v0.2.0 section | Critical | 154 commits with zero changelog |
-| Missing v2.1.0 section | Medium | 4 commits undocumented |
+| Issue                                     | Severity | Count                                             |
+| ----------------------------------------- | -------- | ------------------------------------------------- |
+| Duplicate `### Fixed` blocks in v3.0.0    | High     | 2 blocks (lines 60-80 and 99-103)                 |
+| Duplicate `### Removed` blocks in v3.0.0  | High     | 2 blocks (lines 55-58 and 105-109)                |
+| Exact semantic duplicates across sections | High     | 11 items (see analysis below)                     |
+| Items mis-categorized as "Fixed"          | High     | 18 of 19 items in first Fixed block are not fixes |
+| Factual errors                            | Medium   | `MustFilter` rename claim, `detectReason` name    |
+| Missing v0.2.0 section                    | Critical | 154 commits with zero changelog                   |
+| Missing v2.1.0 section                    | Medium   | 4 commits undocumented                            |
 
 **Detailed duplicate analysis (v3.0.0):**
 
-| Item | Appears In | Also In |
-|------|-----------|---------|
-| `FilterConfigError` type | Added (line 44) | Fixed (line 63) |
-| `ErrInvalidFilterOption` sentinel | Added (line 45) | Fixed (line 64) |
-| `CodeInvalidFilterOption` code | Added (line 46) | Fixed (line 65) |
-| `Enabled()`/`Disabled()` removal | Added breaking (line 51) | Removed (lines 57-58) |
-| `ShouldFilter` → `Filter` rename | Fixed (line 79) | Changed (line 84) |
-| `slog` removal | Changed (line 91) | Removed (line 108) |
-| `sqlcConfigError` bridge removal | Changed (line 96) | Removed (line 109) |
-| `os.ReadFile` fallback removal | Fixed (line 102) | Removed (line 107) |
+| Item                              | Appears In               | Also In               |
+| --------------------------------- | ------------------------ | --------------------- |
+| `FilterConfigError` type          | Added (line 44)          | Fixed (line 63)       |
+| `ErrInvalidFilterOption` sentinel | Added (line 45)          | Fixed (line 64)       |
+| `CodeInvalidFilterOption` code    | Added (line 46)          | Fixed (line 65)       |
+| `Enabled()`/`Disabled()` removal  | Added breaking (line 51) | Removed (lines 57-58) |
+| `ShouldFilter` → `Filter` rename  | Fixed (line 79)          | Changed (line 84)     |
+| `slog` removal                    | Changed (line 91)        | Removed (line 108)    |
+| `sqlcConfigError` bridge removal  | Changed (line 96)        | Removed (line 109)    |
+| `os.ReadFile` fallback removal    | Fixed (line 102)         | Removed (line 107)    |
 
 **Factual errors in v3.0.0:**
 
-| Line | Claim | Reality |
-|------|-------|---------|
-| 85 | `MustShouldFilter` renamed to `MustFilter` | `MustShouldFilter` existed in v0.1.0/v0.2.0/v2.1.0, was renamed to `MustFilter` (commit `e77a7c6`), then `MustFilter` was removed (commit `21c2eef`). Neither exists at HEAD. |
-| 79 | `MustFilter` removed | Correct that it's gone, but misleading — implies it was a method users should know about |
-| Pre-release | `detectReason` (internal, disk I/O) | Function is actually `detectReasonFS`. `detectReason` never existed. |
+| Line        | Claim                                      | Reality                                                                                                                                                                       |
+| ----------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 85          | `MustShouldFilter` renamed to `MustFilter` | `MustShouldFilter` existed in v0.1.0/v0.2.0/v2.1.0, was renamed to `MustFilter` (commit `e77a7c6`), then `MustFilter` was removed (commit `21c2eef`). Neither exists at HEAD. |
+| 79          | `MustFilter` removed                       | Correct that it's gone, but misleading — implies it was a method users should know about                                                                                      |
+| Pre-release | `detectReason` (internal, disk I/O)        | Function is actually `detectReasonFS`. `detectReason` never existed.                                                                                                          |
 
 **Mis-categorized items (first `### Fixed` block, lines 62-80):**
 
@@ -130,55 +130,55 @@ Of 19 items: 1 is genuinely Fixed, 12 should be Added, 3 should be Changed, 3 ar
 
 ### CI Known Issues
 
-| Issue | Status |
-|-------|--------|
-| Lighthouse accessibility failures | ⚠️ `color-contrast`, `label-content-name-mismatch` on root |
-| `LHCI_GITHUB_APP_TOKEN` not configured | ⚠️ GitHub status checks skipped |
-| `PRIVATE_REPO_TOKEN` optional | ℹ️ md-go-validator gracefully skipped |
+| Issue                                  | Status                                                     |
+| -------------------------------------- | ---------------------------------------------------------- |
+| Lighthouse accessibility failures      | ⚠️ `color-contrast`, `label-content-name-mismatch` on root |
+| `LHCI_GITHUB_APP_TOKEN` not configured | ⚠️ GitHub status checks skipped                            |
+| `PRIVATE_REPO_TOKEN` optional          | ℹ️ md-go-validator gracefully skipped                      |
 
 ---
 
 ## C) NOT STARTED ❌
 
-| Item | Priority | Effort |
-|------|----------|--------|
-| Fix CHANGELOG.md structural issues (merge dup blocks, reclassify items) | Critical | Low |
-| Remove CHANGELOG.md semantic duplicates | Critical | Low |
-| Fix CHANGELOG.md factual errors | High | Low |
-| Add v0.2.0 section to CHANGELOG.md | Critical | Medium |
-| Add v2.1.0 section to CHANGELOG.md | Medium | Low |
-| Redistribute Pre-release items to correct versions | High | Medium |
-| Add missing [Unreleased] items (post-v3.0.0 features) | High | Low |
-| Sync website changelog.mdx to CHANGELOG.md | High | Low |
-| Add `version.go` with Version constant | Medium | Low |
-| Set up GoReleaser | Medium | Medium |
-| Create GitHub Releases for existing tags | Medium | Low |
-| Fix Lighthouse accessibility issues | Medium | Medium |
-| Configure `LHCI_GITHUB_APP_TOKEN` secret | Low | Low |
+| Item                                                                    | Priority | Effort |
+| ----------------------------------------------------------------------- | -------- | ------ |
+| Fix CHANGELOG.md structural issues (merge dup blocks, reclassify items) | Critical | Low    |
+| Remove CHANGELOG.md semantic duplicates                                 | Critical | Low    |
+| Fix CHANGELOG.md factual errors                                         | High     | Low    |
+| Add v0.2.0 section to CHANGELOG.md                                      | Critical | Medium |
+| Add v2.1.0 section to CHANGELOG.md                                      | Medium   | Low    |
+| Redistribute Pre-release items to correct versions                      | High     | Medium |
+| Add missing [Unreleased] items (post-v3.0.0 features)                   | High     | Low    |
+| Sync website changelog.mdx to CHANGELOG.md                              | High     | Low    |
+| Add `version.go` with Version constant                                  | Medium   | Low    |
+| Set up GoReleaser                                                       | Medium   | Medium |
+| Create GitHub Releases for existing tags                                | Medium   | Low    |
+| Fix Lighthouse accessibility issues                                     | Medium   | Medium |
+| Configure `LHCI_GITHUB_APP_TOKEN` secret                                | Low      | Low    |
 
 ### Post-v3.0.0 Changes Missing from [Unreleased]
 
-| Change | Commit | Type |
-|--------|--------|------|
-| `FilterResult` type + `String()` | `4a726d4` | Added |
-| `FilterDetailed()` method | `4a726d4` | Added |
-| `FilterPathsDetailed()` method | `4a726d4` | Added |
-| `FilterDetailedContext()` method | `4a726d4` | Added |
-| `AllGeneratorOptions()` function | `4a726d4` | Added |
-| `WithMetricsCap()` option | `4a726d4` | Added |
+| Change                                                            | Commit    | Type    |
+| ----------------------------------------------------------------- | --------- | ------- |
+| `FilterResult` type + `String()`                                  | `4a726d4` | Added   |
+| `FilterDetailed()` method                                         | `4a726d4` | Added   |
+| `FilterPathsDetailed()` method                                    | `4a726d4` | Added   |
+| `FilterDetailedContext()` method                                  | `4a726d4` | Added   |
+| `AllGeneratorOptions()` function                                  | `4a726d4` | Added   |
+| `WithMetricsCap()` option                                         | `4a726d4` | Added   |
 | `FilterOption.Reason()` returns `(FilterReason, bool)` — no panic | `13fce10` | Changed |
-| `filterOptionToReason()` table-driven lookup | `13fce10` | Changed |
-| `/v3` module path suffix | `4a37f7c` | Changed |
-| `Masterminds/semver` v3.4.0 → v3.5.0 | `b4c9ec9` | Changed |
+| `filterOptionToReason()` table-driven lookup                      | `13fce10` | Changed |
+| `/v3` module path suffix                                          | `4a37f7c` | Changed |
+| `Masterminds/semver` v3.4.0 → v3.5.0                              | `b4c9ec9` | Changed |
 
 ### Git Tags Without Changelog Entries
 
-| Tag | Date | Commits | Changelog Coverage |
-|-----|------|---------|-------------------|
+| Tag      | Date       | Commits | Changelog Coverage               |
+| -------- | ---------- | ------- | -------------------------------- |
 | `v0.1.0` | 2026-04-08 | Initial | Partially in Pre-release section |
-| `v0.2.0` | 2026-04-30 | 154 | **Zero** |
-| `v2.1.0` | 2026-04-30 | 4 | **Zero** |
-| `v3.0.0` | 2026-05-04 | 209 | Present but broken |
+| `v0.2.0` | 2026-04-30 | 154     | **Zero**                         |
+| `v2.1.0` | 2026-04-30 | 4       | **Zero**                         |
+| `v3.0.0` | 2026-05-04 | 209     | Present but broken               |
 
 ---
 
@@ -250,33 +250,33 @@ The changelog has `[Pre-release]` (covers some of v0.2.0 work) and `[v3.0.0]` (b
 
 Sorted by impact/effort ratio (highest first):
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Fix CHANGELOG.md v3.0.0: merge duplicate blocks, remove duplicates | Critical | Low | Docs |
-| 2 | Fix CHANGELOG.md v3.0.0: reclassify mis-categorized items | Critical | Low | Docs |
-| 3 | Fix CHANGELOG.md v3.0.0: correct factual errors (MustFilter, detectReason) | High | Low | Docs |
-| 4 | Add missing [Unreleased] items (FilterDetailed, FilterResult, AllGeneratorOptions, WithMetricsCap, Reason() change, /v3 module path, semver bump) | High | Low | Docs |
-| 5 | Sync website changelog.mdx to match CHANGELOG.md | High | Low | Docs |
-| 6 | Add v0.2.0 section to CHANGELOG.md (154 commits: error system, phantom types, metrics, SQLC, doublestar) | Critical | Medium | Docs |
-| 7 | Add v2.1.0 section to CHANGELOG.md (4 commits: docs/config) | Medium | Low | Docs |
-| 8 | Redistribute Pre-release items to correct version sections | High | Medium | Docs |
-| 9 | Add `version.go` with `Version = "3.0.0"` constant + `-ldflags` support | Medium | Low | Code |
-| 10 | Set up GoReleaser (`.goreleaser.yml` + release workflow) | Medium | Medium | CI |
-| 11 | Create GitHub Releases for v0.1.0, v0.2.0, v2.1.0, v3.0.0 | Medium | Low | CI |
-| 12 | Write v2 → v3 migration guide | Medium | Medium | Docs |
-| 13 | Raise test coverage back to 98.9% (cover new FilterDetailed paths) | Medium | Low | Tests |
-| 14 | Add API stability test (verify all exported symbols exist) | Medium | Low | Tests |
-| 15 | Fix Lighthouse accessibility issues (color-contrast, label-content-name-mismatch) | Medium | Medium | Website |
-| 16 | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse status checks | Low | Low | CI |
-| 17 | Add SBOM generation (syft) to CI | Low | Low | CI |
-| 18 | Add conventional commit enforcement (commitlint or similar) | Low | Low | Process |
-| 19 | Extend `validatable` to `ErrorCode` and other types | Low | Low | Code |
-| 20 | Add structured fields to `FilterConfigError` (which options were invalid) | Low | Low | Code |
-| 21 | Consider `FilterResult` enrichment (FilePath, DetectionPhase, DetectorName) | Low | Medium | Code |
-| 22 | Add OpenAPI/schema for website API docs | Low | Medium | Website |
-| 23 | Add `QUICK_START.md` or `MIGRATION.md` at repo root | Low | Low | Docs |
-| 24 | Pin npm dependencies with lockfile validation in CI | Low | Low | CI |
-| 25 | Add `CODEOWNERS` file for review requirements | Low | Low | Process |
+| #   | Task                                                                                                                                              | Impact   | Effort | Category |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | -------- |
+| 1   | Fix CHANGELOG.md v3.0.0: merge duplicate blocks, remove duplicates                                                                                | Critical | Low    | Docs     |
+| 2   | Fix CHANGELOG.md v3.0.0: reclassify mis-categorized items                                                                                         | Critical | Low    | Docs     |
+| 3   | Fix CHANGELOG.md v3.0.0: correct factual errors (MustFilter, detectReason)                                                                        | High     | Low    | Docs     |
+| 4   | Add missing [Unreleased] items (FilterDetailed, FilterResult, AllGeneratorOptions, WithMetricsCap, Reason() change, /v3 module path, semver bump) | High     | Low    | Docs     |
+| 5   | Sync website changelog.mdx to match CHANGELOG.md                                                                                                  | High     | Low    | Docs     |
+| 6   | Add v0.2.0 section to CHANGELOG.md (154 commits: error system, phantom types, metrics, SQLC, doublestar)                                          | Critical | Medium | Docs     |
+| 7   | Add v2.1.0 section to CHANGELOG.md (4 commits: docs/config)                                                                                       | Medium   | Low    | Docs     |
+| 8   | Redistribute Pre-release items to correct version sections                                                                                        | High     | Medium | Docs     |
+| 9   | Add `version.go` with `Version = "3.0.0"` constant + `-ldflags` support                                                                           | Medium   | Low    | Code     |
+| 10  | Set up GoReleaser (`.goreleaser.yml` + release workflow)                                                                                          | Medium   | Medium | CI       |
+| 11  | Create GitHub Releases for v0.1.0, v0.2.0, v2.1.0, v3.0.0                                                                                         | Medium   | Low    | CI       |
+| 12  | Write v2 → v3 migration guide                                                                                                                     | Medium   | Medium | Docs     |
+| 13  | Raise test coverage back to 98.9% (cover new FilterDetailed paths)                                                                                | Medium   | Low    | Tests    |
+| 14  | Add API stability test (verify all exported symbols exist)                                                                                        | Medium   | Low    | Tests    |
+| 15  | Fix Lighthouse accessibility issues (color-contrast, label-content-name-mismatch)                                                                 | Medium   | Medium | Website  |
+| 16  | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse status checks                                                                             | Low      | Low    | CI       |
+| 17  | Add SBOM generation (syft) to CI                                                                                                                  | Low      | Low    | CI       |
+| 18  | Add conventional commit enforcement (commitlint or similar)                                                                                       | Low      | Low    | Process  |
+| 19  | Extend `validatable` to `ErrorCode` and other types                                                                                               | Low      | Low    | Code     |
+| 20  | Add structured fields to `FilterConfigError` (which options were invalid)                                                                         | Low      | Low    | Code     |
+| 21  | Consider `FilterResult` enrichment (FilePath, DetectionPhase, DetectorName)                                                                       | Low      | Medium | Code     |
+| 22  | Add OpenAPI/schema for website API docs                                                                                                           | Low      | Medium | Website  |
+| 23  | Add `QUICK_START.md` or `MIGRATION.md` at repo root                                                                                               | Low      | Low    | Docs     |
+| 24  | Pin npm dependencies with lockfile validation in CI                                                                                               | Low      | Low    | CI       |
+| 25  | Add `CODEOWNERS` file for review requirements                                                                                                     | Low      | Low    | Process  |
 
 ---
 
@@ -287,6 +287,7 @@ Sorted by impact/effort ratio (highest first):
 v0.2.0 spans 154 commits and contains the bulk of the library's evolution (entire error system, phantom types, metrics, SQLC rewrite, doublestar migration, all breaking API changes). But the current `[Pre-release] — Session 1-4` section in CHANGELOG.md partially covers this work with ~40 items.
 
 Options:
+
 - **(A)** Keep `[Pre-release]` as-is and add `[v0.2.0]` as a separate section noting "see Pre-release for details"
 - **(B)** Rename `[Pre-release]` to `[v0.2.0]` and add the date (2026-04-30)
 - **(C)** Reconstruct v0.2.0 from git history (154 commits), merging Pre-release items and adding missing ones
@@ -297,22 +298,22 @@ This matters because the changelog is the canonical history of what shipped when
 
 ## Metrics Summary
 
-| Metric | Value |
-|--------|-------|
-| Source files | 9 non-test Go files |
-| Source lines | ~2,121 |
-| Test files | 25 files |
-| Test lines | ~6,602 |
-| Test:Source ratio | 3.1:1 |
-| Coverage | 98.2% |
-| Benchmarks | 23 (all passing) |
-| Exported symbols | 59 |
-| Git tags | 4 (v0.1.0, v0.2.0, v2.1.0, v3.0.0) |
-| Commits since v3.0.0 | 62 (14 Go-related) |
-| Website pages | 19 |
-| CI workflows | 4 |
-| Linter issues | 0 |
-| Open TODOs | 0 in code |
+| Metric               | Value                              |
+| -------------------- | ---------------------------------- |
+| Source files         | 9 non-test Go files                |
+| Source lines         | ~2,121                             |
+| Test files           | 25 files                           |
+| Test lines           | ~6,602                             |
+| Test:Source ratio    | 3.1:1                              |
+| Coverage             | 98.2%                              |
+| Benchmarks           | 23 (all passing)                   |
+| Exported symbols     | 59                                 |
+| Git tags             | 4 (v0.1.0, v0.2.0, v2.1.0, v3.0.0) |
+| Commits since v3.0.0 | 62 (14 Go-related)                 |
+| Website pages        | 19                                 |
+| CI workflows         | 4                                  |
+| Linter issues        | 0                                  |
+| Open TODOs           | 0 in code                          |
 
 ---
 
