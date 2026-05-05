@@ -225,7 +225,7 @@ func (f *Filter) FilterDetailedContext(ctx context.Context, filePath string) (Fi
 	if err != nil {
 		return FilterResult{
 			Filtered: false, Reason: "", Path: filePath, Trace: "",
-		}, fmt.Errorf("context check: %w", err)
+		}, fmt.Errorf("context check for %q: %w", filePath, err)
 	}
 
 	result, err := f.FilterDetailed(filePath)
@@ -235,7 +235,7 @@ func (f *Filter) FilterDetailedContext(ctx context.Context, filePath string) (Fi
 
 	err = ctx.Err()
 	if err != nil {
-		return result, fmt.Errorf("context check after filter: %w", err)
+		return result, fmt.Errorf("context check after filter of %q: %w", filePath, err)
 	}
 
 	return result, nil
@@ -270,7 +270,7 @@ func (f *Filter) FilterPaths(paths []string) ([]bool, error) {
 func (f *Filter) FilterContext(ctx context.Context, filePath string) (bool, error) {
 	err := ctx.Err()
 	if err != nil {
-		return false, fmt.Errorf("context check: %w", err)
+		return false, fmt.Errorf("context check for %q: %w", filePath, err)
 	}
 
 	filtered, err := f.Filter(filePath)
@@ -280,7 +280,7 @@ func (f *Filter) FilterContext(ctx context.Context, filePath string) (bool, erro
 
 	err = ctx.Err()
 	if err != nil {
-		return filtered, fmt.Errorf("context check after filter: %w", err)
+		return filtered, fmt.Errorf("context check after filter of %q: %w", filePath, err)
 	}
 
 	return filtered, nil
