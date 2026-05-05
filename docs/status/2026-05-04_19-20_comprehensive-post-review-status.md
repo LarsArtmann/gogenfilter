@@ -8,47 +8,47 @@ _Generated after self-review, CI fixes, and improvements session._
 
 ### Core Library (Production)
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| `filter.go` | ✅ Complete | `Filter`, `FilterPaths`, `FilterContext`, `FilterPathsContext`, functional options API |
-| `detection.go` | ✅ Complete | 11 detectors, 2-phase detection, table-driven system |
-| `types.go` | ✅ Complete | `FilterOption` (12), `FilterReason` (14), derived enumerations |
-| `errors.go` | ✅ Complete | 3 branded error types, 8 error codes, sentinel errors, `CodeEqual[T]` generic |
-| `pattern.go` | ✅ Complete | `MatchPattern` with `**` glob via doublestar |
-| `sqlc.go` | ✅ Complete | v1/v2 config parsing, `FindSQLCConfigs`, `GetSQLOutputDirs`, FS variants |
-| `metrics.go` | ✅ Complete | Thread-safe metrics, `FilterStats` snapshot, defensive copies |
-| `phantom.go` | ✅ Complete | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked` |
-| `project.go` | ✅ Complete | `FindProjectRoot` with marker file search |
+| Component      | Status      | Details                                                                                |
+| -------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `filter.go`    | ✅ Complete | `Filter`, `FilterPaths`, `FilterContext`, `FilterPathsContext`, functional options API |
+| `detection.go` | ✅ Complete | 11 detectors, 2-phase detection, table-driven system                                   |
+| `types.go`     | ✅ Complete | `FilterOption` (12), `FilterReason` (14), derived enumerations                         |
+| `errors.go`    | ✅ Complete | 3 branded error types, 8 error codes, sentinel errors, `CodeEqual[T]` generic          |
+| `pattern.go`   | ✅ Complete | `MatchPattern` with `**` glob via doublestar                                           |
+| `sqlc.go`      | ✅ Complete | v1/v2 config parsing, `FindSQLCConfigs`, `GetSQLOutputDirs`, FS variants               |
+| `metrics.go`   | ✅ Complete | Thread-safe metrics, `FilterStats` snapshot, defensive copies                          |
+| `phantom.go`   | ✅ Complete | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`            |
+| `project.go`   | ✅ Complete | `FindProjectRoot` with marker file search                                              |
 
 ### Test Suite (98.9% coverage)
 
-| Category | Count | Status |
-|----------|-------|--------|
-| Unit tests | ~50+ test functions | ✅ All passing |
-| BDD tests (ginkgo) | 175 specs | ✅ All passing |
-| Property tests | 4 properties | ✅ All passing |
-| Fuzz tests | 2 fuzzers | ✅ All passing |
-| Integration tests | 4 tests | ✅ All passing |
-| Benchmarks | 14 benchmarks | ✅ All passing |
-| Examples | 18 examples | ✅ All verified |
+| Category           | Count               | Status          |
+| ------------------ | ------------------- | --------------- |
+| Unit tests         | ~50+ test functions | ✅ All passing  |
+| BDD tests (ginkgo) | 175 specs           | ✅ All passing  |
+| Property tests     | 4 properties        | ✅ All passing  |
+| Fuzz tests         | 2 fuzzers           | ✅ All passing  |
+| Integration tests  | 4 tests             | ✅ All passing  |
+| Benchmarks         | 14 benchmarks       | ✅ All passing  |
+| Examples           | 18 examples         | ✅ All verified |
 
 ### Website & Docs
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| 18 docs pages | ✅ Complete | API (4), Guides (6), Getting Started (2), Community (3), Reference (3) |
-| Landing page | ✅ Complete | Hero, features, code examples, dark/light theme |
-| Firebase hosting | ✅ Deploying | `gogenfilter.lars.software` + `gogenfilter.web.app` |
-| Code examples | ✅ Accurate | All examples match current error-returning API |
+| Component        | Status       | Details                                                                |
+| ---------------- | ------------ | ---------------------------------------------------------------------- |
+| 18 docs pages    | ✅ Complete  | API (4), Guides (6), Getting Started (2), Community (3), Reference (3) |
+| Landing page     | ✅ Complete  | Hero, features, code examples, dark/light theme                        |
+| Firebase hosting | ✅ Deploying | `gogenfilter.lars.software` + `gogenfilter.web.app`                    |
+| Code examples    | ✅ Accurate  | All examples match current error-returning API                         |
 
 ### CI/CD Pipeline
 
-| Workflow | Status | Details |
-|----------|--------|---------|
-| Go CI | ✅ Green | `go vet`, tests with race detector, 98% coverage threshold, golangci-lint |
-| Website CI | ✅ Green | Build + typecheck + HTML validation + dedup + Firebase deploy |
-| Benchmark | ✅ Green | Push-only (no PR), pushes to `gh-pages` |
-| Lighthouse CI | ❌ Failing | Pre-existing — see section D |
+| Workflow      | Status     | Details                                                                   |
+| ------------- | ---------- | ------------------------------------------------------------------------- |
+| Go CI         | ✅ Green   | `go vet`, tests with race detector, 98% coverage threshold, golangci-lint |
+| Website CI    | ✅ Green   | Build + typecheck + HTML validation + dedup + Firebase deploy             |
+| Benchmark     | ✅ Green   | Push-only (no PR), pushes to `gh-pages`                                   |
+| Lighthouse CI | ❌ Failing | Pre-existing — see section D                                              |
 
 ---
 
@@ -57,6 +57,7 @@ _Generated after self-review, CI fixes, and improvements session._
 ### Lighthouse CI — Known Failures
 
 Lighthouse fails on every run with:
+
 - `errors-in-console` — browser errors logged (score 0, expected ≥0.9)
 - `inspector-issues` — Chrome DevTools issues (score 0, expected ≥0.9)
 - `network-dependency-tree-insight` — critical request chains (score 0, expected ≥0.9)
@@ -158,33 +159,33 @@ These are assertion configuration issues, not site-breaking. The assertions are 
 
 Sorted by impact × effort (highest ROI first):
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Fix Lighthouse CI assertions (relax unrealistic thresholds) | High | Tiny | CI |
-| 2 | Configure `LHCI_GITHUB_APP_TOKEN` secret | High | Tiny | CI |
-| 3 | Configure `PRIVATE_REPO_TOKEN` secret | High | Tiny | CI |
-| 4 | Cut v1.0.0 release with git tag | High | Tiny | Release |
-| 5 | Fix `errors-in-console` on website (root cause) | Medium | Small | Website |
-| 6 | Split `bdd_test.go` into domain-specific files | Medium | Small | Testing |
-| 7 | Add `FilterOption.Reason()` panic test | Medium | Tiny | Testing |
-| 8 | Convert `TestFilterWithMetrics` to use `fstest.MapFS` | Low | Tiny | Testing |
-| 9 | Add `go doc` / pkg.go.dev link to website | Medium | Tiny | Docs |
-| 10 | Write API stability / compatibility guarantee | Medium | Tiny | Docs |
-| 11 | Refactor error types to reduce boilerplate (`BrandedError`) | Medium | Medium | Architecture |
-| 12 | Add custom detector/plugin API | High | Large | Feature |
-| 13 | Add `FilterFS(fs.FS, []string)` batch method | Medium | Small | Feature |
-| 14 | Cache `optionsMap` on Filter construction | Low | Tiny | Perf |
-| 15 | Split `sqlc.go` into `sqlc_config.go` + `sqlc_discovery.go` | Low | Tiny | Code org |
-| 16 | Add `errors.AsType` usage to contributing guide | Low | Tiny | Docs |
-| 17 | Add `WalkDir` integration for recursive filtering | Medium | Medium | Feature |
-| 18 | Add goreleaser for automated releases | Medium | Medium | CI |
-| 19 | Remove `golang.org/x/exp` indirect dependency | Low | Medium | Dependencies |
-| 20 | Evaluate replacing `go-faster/yaml` | Low | Medium | Dependencies |
-| 21 | Add performance regression dashboard (visual) | Low | Medium | CI |
-| 22 | Add structured logging hook | Medium | Large | Feature |
-| 23 | Evaluate `FilterOption int` vs `string` tradeoff | Low | Large | Architecture |
-| 24 | Consolidate `bdd_test.go` + `bdd_extended_test.go` duplicates | Low | Small | Testing |
-| 25 | Add `AllErrorTypes()` for validation tool integration | Low | Tiny | Feature |
+| #   | Task                                                          | Impact | Effort | Category     |
+| --- | ------------------------------------------------------------- | ------ | ------ | ------------ |
+| 1   | Fix Lighthouse CI assertions (relax unrealistic thresholds)   | High   | Tiny   | CI           |
+| 2   | Configure `LHCI_GITHUB_APP_TOKEN` secret                      | High   | Tiny   | CI           |
+| 3   | Configure `PRIVATE_REPO_TOKEN` secret                         | High   | Tiny   | CI           |
+| 4   | Cut v1.0.0 release with git tag                               | High   | Tiny   | Release      |
+| 5   | Fix `errors-in-console` on website (root cause)               | Medium | Small  | Website      |
+| 6   | Split `bdd_test.go` into domain-specific files                | Medium | Small  | Testing      |
+| 7   | Add `FilterOption.Reason()` panic test                        | Medium | Tiny   | Testing      |
+| 8   | Convert `TestFilterWithMetrics` to use `fstest.MapFS`         | Low    | Tiny   | Testing      |
+| 9   | Add `go doc` / pkg.go.dev link to website                     | Medium | Tiny   | Docs         |
+| 10  | Write API stability / compatibility guarantee                 | Medium | Tiny   | Docs         |
+| 11  | Refactor error types to reduce boilerplate (`BrandedError`)   | Medium | Medium | Architecture |
+| 12  | Add custom detector/plugin API                                | High   | Large  | Feature      |
+| 13  | Add `FilterFS(fs.FS, []string)` batch method                  | Medium | Small  | Feature      |
+| 14  | Cache `optionsMap` on Filter construction                     | Low    | Tiny   | Perf         |
+| 15  | Split `sqlc.go` into `sqlc_config.go` + `sqlc_discovery.go`   | Low    | Tiny   | Code org     |
+| 16  | Add `errors.AsType` usage to contributing guide               | Low    | Tiny   | Docs         |
+| 17  | Add `WalkDir` integration for recursive filtering             | Medium | Medium | Feature      |
+| 18  | Add goreleaser for automated releases                         | Medium | Medium | CI           |
+| 19  | Remove `golang.org/x/exp` indirect dependency                 | Low    | Medium | Dependencies |
+| 20  | Evaluate replacing `go-faster/yaml`                           | Low    | Medium | Dependencies |
+| 21  | Add performance regression dashboard (visual)                 | Low    | Medium | CI           |
+| 22  | Add structured logging hook                                   | Medium | Large  | Feature      |
+| 23  | Evaluate `FilterOption int` vs `string` tradeoff              | Low    | Large  | Architecture |
+| 24  | Consolidate `bdd_test.go` + `bdd_extended_test.go` duplicates | Low    | Small  | Testing      |
+| 25  | Add `AllErrorTypes()` for validation tool integration         | Low    | Tiny   | Feature      |
 
 ---
 
@@ -204,24 +205,24 @@ This is a **project governance decision** I cannot make. The workaround (`contin
 
 ## CI Status Snapshot
 
-| Workflow | Last Run | Status |
-|----------|----------|--------|
-| Go CI | `8f72a97` | ✅ success (1m9s) |
-| Website | `8f72a97` | ✅ success (2m11s) — build + deploy |
-| Benchmark | `8f72a97` | ✅ success (1m14s) |
-| Lighthouse | `8f72a97` | ❌ failure — assertions too strict |
+| Workflow   | Last Run  | Status                              |
+| ---------- | --------- | ----------------------------------- |
+| Go CI      | `8f72a97` | ✅ success (1m9s)                   |
+| Website    | `8f72a97` | ✅ success (2m11s) — build + deploy |
+| Benchmark  | `8f72a97` | ✅ success (1m14s)                  |
+| Lighthouse | `8f72a97` | ❌ failure — assertions too strict  |
 
 ## Quality Metrics
 
-| Metric | Value |
-|--------|-------|
-| Test coverage | 98.9% |
-| Go vet | Clean |
-| golangci-lint | 0 issues |
-| Test count | 175 BDD + ~50 unit + 4 property + 2 fuzz + 18 examples |
-| Source lines | ~2,000 (non-test) |
-| Test lines | ~7,000 |
-| Doc pages | 18 |
+| Metric        | Value                                                  |
+| ------------- | ------------------------------------------------------ |
+| Test coverage | 98.9%                                                  |
+| Go vet        | Clean                                                  |
+| golangci-lint | 0 issues                                               |
+| Test count    | 175 BDD + ~50 unit + 4 property + 2 fuzz + 18 examples |
+| Source lines  | ~2,000 (non-test)                                      |
+| Test lines    | ~7,000                                                 |
+| Doc pages     | 18                                                     |
 
 ---
 
