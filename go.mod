@@ -1,4 +1,4 @@
-module github.com/LarsArtmann/gogenfilter
+module github.com/LarsArtmann/gogenfilter/v3
 
 go 1.26.2
 

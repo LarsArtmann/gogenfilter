@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing/fstest"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 // mapFSWithFile creates a MapFS with a single file for testing.
