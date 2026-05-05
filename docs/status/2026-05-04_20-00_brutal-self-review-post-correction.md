@@ -8,20 +8,20 @@ _Brutal self-review and post-correction audit._
 
 **gogenfilter** — A Go library for detecting and filtering auto-generated code files from 11 generators (sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic).
 
-| Metric | Value |
-|--------|-------|
-| Go version | 1.26.2 |
-| Library source files | 9 |
-| Test files | 25 |
-| Library LOC | ~1,851 |
-| Test coverage | 98.9% |
-| BDD specs | 175 (ginkgo) |
-| Website pages | 19 (Astro + Starlight) |
-| Doc files (MDX) | 16 |
-| Direct dependencies | 4 |
-| Go lint issues | 0 |
-| Race detector | PASS |
-| CI workflows | 4 (Go CI, Website, Lighthouse, Benchmark) |
+| Metric               | Value                                     |
+| -------------------- | ----------------------------------------- |
+| Go version           | 1.26.2                                    |
+| Library source files | 9                                         |
+| Test files           | 25                                        |
+| Library LOC          | ~1,851                                    |
+| Test coverage        | 98.9%                                     |
+| BDD specs            | 175 (ginkgo)                              |
+| Website pages        | 19 (Astro + Starlight)                    |
+| Doc files (MDX)      | 16                                        |
+| Direct dependencies  | 4                                         |
+| Go lint issues       | 0                                         |
+| Race detector        | PASS                                      |
+| CI workflows         | 4 (Go CI, Website, Lighthouse, Benchmark) |
 
 ---
 
@@ -178,58 +178,58 @@ Sorted by impact × effort (highest first):
 
 ### Infrastructure (Owner Action Required)
 
-| # | Task | Impact | Effort | Owner |
-|---|------|--------|--------|-------|
-| 1 | Add `PRIVATE_REPO_TOKEN` secret to GitHub repo | HIGH | XS | @lars |
-| 2 | Add `LHCI_GITHUB_APP_TOKEN` secret to GitHub repo | HIGH | XS | @lars |
-| 3 | Resolve domain: pick `lars.software` or `web.app`, update all configs | MEDIUM | S | @lars |
+| #   | Task                                                                  | Impact | Effort | Owner |
+| --- | --------------------------------------------------------------------- | ------ | ------ | ----- |
+| 1   | Add `PRIVATE_REPO_TOKEN` secret to GitHub repo                        | HIGH   | XS     | @lars |
+| 2   | Add `LHCI_GITHUB_APP_TOKEN` secret to GitHub repo                     | HIGH   | XS     | @lars |
+| 3   | Resolve domain: pick `lars.software` or `web.app`, update all configs | MEDIUM | S      | @lars |
 
 ### CI Improvements
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 4 | Add link-checking step to website CI (e.g., `htmltest` or `linkchecker`) | HIGH | S |
-| 5 | Fix Lighthouse accessibility failures (color-contrast, labels) | MEDIUM | M |
-| 6 | Read `.node-version` dynamically in CI instead of hardcoding `"24"` | LOW | XS |
-| 7 | Add CI step that validates code examples reference actual Go exports | MEDIUM | M |
+| #   | Task                                                                     | Impact | Effort |
+| --- | ------------------------------------------------------------------------ | ------ | ------ |
+| 4   | Add link-checking step to website CI (e.g., `htmltest` or `linkchecker`) | HIGH   | S      |
+| 5   | Fix Lighthouse accessibility failures (color-contrast, labels)           | MEDIUM | M      |
+| 6   | Read `.node-version` dynamically in CI instead of hardcoding `"24"`      | LOW    | XS     |
+| 7   | Add CI step that validates code examples reference actual Go exports     | MEDIUM | M      |
 
 ### Website
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 8 | Custom 404 page with project branding and navigation | LOW | S |
-| 9 | Add favicon/apple-touch-icon for real (currently just Astro default) | LOW | XS |
-| 10 | Validate all OG images render correctly for each page | LOW | S |
-| 11 | Add "Edit this page on GitHub" links to docs | LOW | XS |
-| 12 | Add sitemap to robots.txt explicitly | LOW | XS |
+| #   | Task                                                                 | Impact | Effort |
+| --- | -------------------------------------------------------------------- | ------ | ------ |
+| 8   | Custom 404 page with project branding and navigation                 | LOW    | S      |
+| 9   | Add favicon/apple-touch-icon for real (currently just Astro default) | LOW    | XS     |
+| 10  | Validate all OG images render correctly for each page                | LOW    | S      |
+| 11  | Add "Edit this page on GitHub" links to docs                         | LOW    | XS     |
+| 12  | Add sitemap to robots.txt explicitly                                 | LOW    | XS     |
 
 ### Go Library
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 13 | Consider `iter.Seq` streaming API for Go 1.26 | MEDIUM | M |
-| 14 | Add `FilterIter(paths iter.Seq[string]) iter.Seq2[FilterResult, error]` | MEDIUM | M |
-| 15 | Consider `FilterResult` struct instead of bare `bool` (reason + path) | MEDIUM | M |
-| 16 | Add `WalkDir(ctx context.Context, root string) iter.Seq2[WalkResult, error]` | HIGH | L |
-| 17 | Benchmark `detectReasonFS` with real filesystem (not just MapFS) | LOW | S |
-| 18 | Add fuzz targets for `MatchPattern` edge cases | LOW | M |
+| #   | Task                                                                         | Impact | Effort |
+| --- | ---------------------------------------------------------------------------- | ------ | ------ |
+| 13  | Consider `iter.Seq` streaming API for Go 1.26                                | MEDIUM | M      |
+| 14  | Add `FilterIter(paths iter.Seq[string]) iter.Seq2[FilterResult, error]`      | MEDIUM | M      |
+| 15  | Consider `FilterResult` struct instead of bare `bool` (reason + path)        | MEDIUM | M      |
+| 16  | Add `WalkDir(ctx context.Context, root string) iter.Seq2[WalkResult, error]` | HIGH   | L      |
+| 17  | Benchmark `detectReasonFS` with real filesystem (not just MapFS)             | LOW    | S      |
+| 18  | Add fuzz targets for `MatchPattern` edge cases                               | LOW    | M      |
 
 ### Release
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 19 | Tag v1.0.0 and create GitHub Release with release notes | HIGH | S |
-| 20 | Update changelog `[Unreleased]` → `[1.0.0]` with date | MEDIUM | XS |
-| 21 | Add pkg.go.dev badge to README | LOW | XS |
-| 22 | Write migration guide from pre-error-return API (if anyone used it) | LOW | M |
+| #   | Task                                                                | Impact | Effort |
+| --- | ------------------------------------------------------------------- | ------ | ------ |
+| 19  | Tag v1.0.0 and create GitHub Release with release notes             | HIGH   | S      |
+| 20  | Update changelog `[Unreleased]` → `[1.0.0]` with date               | MEDIUM | XS     |
+| 21  | Add pkg.go.dev badge to README                                      | LOW    | XS     |
+| 22  | Write migration guide from pre-error-return API (if anyone used it) | LOW    | M      |
 
 ### Cleanup
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 23 | Gitignore `.astro/` build cache (contains stale data-store) | LOW | XS |
-| 24 | Delete `docs/status/` report entirely — it's session-local noise | LOW | XS |
-| 25 | Remove `report/` directory (jscpd output, not useful in git) | LOW | XS |
+| #   | Task                                                             | Impact | Effort |
+| --- | ---------------------------------------------------------------- | ------ | ------ |
+| 23  | Gitignore `.astro/` build cache (contains stale data-store)      | LOW    | XS     |
+| 24  | Delete `docs/status/` report entirely — it's session-local noise | LOW    | XS     |
+| 25  | Remove `report/` directory (jscpd output, not useful in git)     | LOW    | XS     |
 
 ---
 
@@ -240,6 +240,7 @@ Sorted by impact × effort (highest first):
 The Website CI workflow succeeded for commit `5e62d67` (our latest push), which includes the build step and artifact upload. The deploy job runs on master push and should have triggered. However, the latest "pages build and deployment" run was for commit `f49c4e4` (which is from BEFORE our push). The `5e62d67` push changed files under `website/**`, so the Website workflow path filter should have matched.
 
 I cannot determine whether:
+
 1. The deploy job is queued but hasn't started yet (timing)
 2. The Firebase deploy requires a manual step (e.g., `firebase deploy` CLI)
 3. The `FIREBASE_SERVICE_ACCOUNT` secret is missing or expired
@@ -251,13 +252,13 @@ This requires checking the actual GitHub Actions deploy job logs for the `5e62d6
 
 ## CI Status Summary (2026-05-04 20:00 CEST)
 
-| Workflow | Latest Run SHA | Status | Notes |
-|----------|---------------|--------|-------|
-| Go CI | `8f72a97` | ✅ success | Tests + lint + benchmarks pass |
-| Website | `5e62d67` | ✅ success | Build + HTML validation + dedup pass |
-| Lighthouse | `5e62d67` | ❌ failure | Always fails — a11y + missing LHCI token |
-| Benchmark | `8f72a97` | ✅ success | Pushes to gh-pages |
-| Pages Deploy | `f49c4e4` | ✅ success | But this is from BEFORE our 6 new commits |
+| Workflow     | Latest Run SHA | Status     | Notes                                     |
+| ------------ | -------------- | ---------- | ----------------------------------------- |
+| Go CI        | `8f72a97`      | ✅ success | Tests + lint + benchmarks pass            |
+| Website      | `5e62d67`      | ✅ success | Build + HTML validation + dedup pass      |
+| Lighthouse   | `5e62d67`      | ❌ failure | Always fails — a11y + missing LHCI token  |
+| Benchmark    | `8f72a97`      | ✅ success | Pushes to gh-pages                        |
+| Pages Deploy | `f49c4e4`      | ✅ success | But this is from BEFORE our 6 new commits |
 
 ## Commits This Session (6)
 

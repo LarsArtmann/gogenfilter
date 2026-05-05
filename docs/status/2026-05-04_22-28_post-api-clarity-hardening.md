@@ -8,19 +8,19 @@ _Post API clarity & production hardening session._
 
 **gogenfilter** — A Go library for detecting and filtering auto-generated code files from 11 generators.
 
-| Metric | Value |
-|--------|-------|
-| Go version | 1.26.2 |
-| Library source files | 9 |
-| Test files | 25 |
-| Library LOC | ~1,950 (+100 from FilterResult/FilterDetailed) |
-| Test coverage | 98.2% |
-| BDD specs | 175 (ginkgo) |
-| Runnable examples | 24 |
-| Direct dependencies | 4 |
-| Go lint issues | 0 |
-| Race detector | PASS |
-| CI workflows | 4 |
+| Metric               | Value                                          |
+| -------------------- | ---------------------------------------------- |
+| Go version           | 1.26.2                                         |
+| Library source files | 9                                              |
+| Test files           | 25                                             |
+| Library LOC          | ~1,950 (+100 from FilterResult/FilterDetailed) |
+| Test coverage        | 98.2%                                          |
+| BDD specs            | 175 (ginkgo)                                   |
+| Runnable examples    | 24                                             |
+| Direct dependencies  | 4                                              |
+| Go lint issues       | 0                                              |
+| Race detector        | PASS                                           |
+| CI workflows         | 4                                              |
 
 ---
 
@@ -28,18 +28,18 @@ _Post API clarity & production hardening session._
 
 ### This Session's Deliverables (commit `4a726d4`)
 
-| # | Feature | Description |
-|---|---------|-------------|
-| 1 | **`FilterResult` struct** | `Filtered bool`, `Reason FilterReason`, `Path string`, `Trace string` — structured result type in `types.go` |
-| 2 | **`FilterDetailed()`** | `(FilterResult, error)` with trace info — additive API alongside existing `Filter()` |
-| 3 | **`FilterPathsDetailed()`** | Batch `([]FilterResult, error)` with trace info |
-| 4 | **`FilterDetailedContext()`** | Context-aware `FilterDetailed` with cancellation |
-| 5 | **`AllGeneratorOptions()`** | Returns 11 detector options, excludes `FilterAll` — clear enumeration API |
-| 6 | **`FilterOption.Reason() (FilterReason, bool)`** | No more panics — returns `("", false)` for meta-options. Breaking change, all callers updated. |
-| 7 | **`WithMetricsCap(n)`** | Limits stored file paths per reason; `0` = unlimited (default). Prevents unbounded memory growth. |
-| 8 | **Trace-aware detection** | `getFilenameBasedReasonWithTrace`, `getContentBasedReasonWithTrace`, `detectReasonFSWithTrace` in `detection.go` |
-| 9 | **Comprehensive tests** | 15+ new test functions, updated BDD specs, 4 new runnable examples |
-| 10 | **Documentation** | CHANGELOG, AGENTS.md, FEATURES.md all updated |
+| #   | Feature                                          | Description                                                                                                      |
+| --- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| 1   | **`FilterResult` struct**                        | `Filtered bool`, `Reason FilterReason`, `Path string`, `Trace string` — structured result type in `types.go`     |
+| 2   | **`FilterDetailed()`**                           | `(FilterResult, error)` with trace info — additive API alongside existing `Filter()`                             |
+| 3   | **`FilterPathsDetailed()`**                      | Batch `([]FilterResult, error)` with trace info                                                                  |
+| 4   | **`FilterDetailedContext()`**                    | Context-aware `FilterDetailed` with cancellation                                                                 |
+| 5   | **`AllGeneratorOptions()`**                      | Returns 11 detector options, excludes `FilterAll` — clear enumeration API                                        |
+| 6   | **`FilterOption.Reason() (FilterReason, bool)`** | No more panics — returns `("", false)` for meta-options. Breaking change, all callers updated.                   |
+| 7   | **`WithMetricsCap(n)`**                          | Limits stored file paths per reason; `0` = unlimited (default). Prevents unbounded memory growth.                |
+| 8   | **Trace-aware detection**                        | `getFilenameBasedReasonWithTrace`, `getContentBasedReasonWithTrace`, `detectReasonFSWithTrace` in `detection.go` |
+| 9   | **Comprehensive tests**                          | 15+ new test functions, updated BDD specs, 4 new runnable examples                                               |
+| 10  | **Documentation**                                | CHANGELOG, AGENTS.md, FEATURES.md all updated                                                                    |
 
 ### Pre-existing (from prior sessions)
 
@@ -119,6 +119,7 @@ All code compiles, all tests pass (including race detector), 0 lint issues. The 
 ### Priority 1: Close the Coverage Gap (30min)
 
 New `FilterDetailed` code paths need targeted tests:
+
 - `shouldFilterDetailedByDetection` error return path
 - `FilterDetailedContext` error paths (context cancelled before and after)
 - `FilterResult.String()` edge cases
@@ -149,33 +150,33 @@ New `FilterDetailed` code paths need targeted tests:
 
 ## f) Top 25 Things We Should Get Done Next
 
-| # | Task | Impact | Effort | Category |
-|---|------|--------|--------|----------|
-| 1 | Add coverage tests for FilterDetailed paths | HIGH | S | Testing |
-| 2 | Update website `filter.mdx` for new API | HIGH | M | Docs |
-| 3 | Update website `types.mdx` for new API | HIGH | M | Docs |
-| 4 | Create website `filter-result.mdx` page | MEDIUM | S | Docs |
-| 5 | Tag v1.0.0 and create GitHub Release | HIGH | XS | Release |
-| 6 | Update CHANGELOG for v1.0.0 | MEDIUM | XS | Release |
-| 7 | Add pkg.go.dev badge to README | LOW | XS | Release |
-| 8 | Fix Lighthouse CI accessibility failures | MEDIUM | M | CI |
-| 9 | Add `PRIVATE_REPO_TOKEN` secret | HIGH | XS | CI (Owner) |
-| 10 | Add `LHCI_GITHUB_APP_TOKEN` secret | HIGH | XS | CI (Owner) |
-| 11 | Resolve domain inconsistency | MEDIUM | S | CI (Owner) |
-| 12 | Add CI link checker for website | MEDIUM | S | CI |
-| 13 | Implement pluggable detector system | MEDIUM | L | Extensibility |
-| 14 | SQLC config → Filter auto-integration | MEDIUM | M | Extensibility |
-| 15 | `iter.Seq` streaming API | MEDIUM | M | Extensibility |
-| 16 | Context in `detectReasonFS` core | MEDIUM | M | Production |
-| 17 | Batch-optimize `FilterPaths` | MEDIUM | M | Performance |
-| 18 | Automate API-doc sync validation | MEDIUM | M | CI |
-| 19 | Custom 404 page | LOW | S | Website |
-| 20 | "Edit this page on GitHub" links | LOW | XS | Website |
-| 21 | Read `.node-version` dynamically in CI | LOW | XS | CI |
-| 22 | Gitignore `.astro/` build cache | LOW | XS | Cleanup |
-| 23 | Add `FilterResult.Reason` documentation clarity | LOW | XS | Docs |
-| 24 | Consider options struct for `NewMetrics` | LOW | XS | Refactor |
-| 25 | Benchmark `FilterDetailed` vs `Filter` overhead | LOW | S | Perf |
+| #   | Task                                            | Impact | Effort | Category      |
+| --- | ----------------------------------------------- | ------ | ------ | ------------- |
+| 1   | Add coverage tests for FilterDetailed paths     | HIGH   | S      | Testing       |
+| 2   | Update website `filter.mdx` for new API         | HIGH   | M      | Docs          |
+| 3   | Update website `types.mdx` for new API          | HIGH   | M      | Docs          |
+| 4   | Create website `filter-result.mdx` page         | MEDIUM | S      | Docs          |
+| 5   | Tag v1.0.0 and create GitHub Release            | HIGH   | XS     | Release       |
+| 6   | Update CHANGELOG for v1.0.0                     | MEDIUM | XS     | Release       |
+| 7   | Add pkg.go.dev badge to README                  | LOW    | XS     | Release       |
+| 8   | Fix Lighthouse CI accessibility failures        | MEDIUM | M      | CI            |
+| 9   | Add `PRIVATE_REPO_TOKEN` secret                 | HIGH   | XS     | CI (Owner)    |
+| 10  | Add `LHCI_GITHUB_APP_TOKEN` secret              | HIGH   | XS     | CI (Owner)    |
+| 11  | Resolve domain inconsistency                    | MEDIUM | S      | CI (Owner)    |
+| 12  | Add CI link checker for website                 | MEDIUM | S      | CI            |
+| 13  | Implement pluggable detector system             | MEDIUM | L      | Extensibility |
+| 14  | SQLC config → Filter auto-integration           | MEDIUM | M      | Extensibility |
+| 15  | `iter.Seq` streaming API                        | MEDIUM | M      | Extensibility |
+| 16  | Context in `detectReasonFS` core                | MEDIUM | M      | Production    |
+| 17  | Batch-optimize `FilterPaths`                    | MEDIUM | M      | Performance   |
+| 18  | Automate API-doc sync validation                | MEDIUM | M      | CI            |
+| 19  | Custom 404 page                                 | LOW    | S      | Website       |
+| 20  | "Edit this page on GitHub" links                | LOW    | XS     | Website       |
+| 21  | Read `.node-version` dynamically in CI          | LOW    | XS     | CI            |
+| 22  | Gitignore `.astro/` build cache                 | LOW    | XS     | Cleanup       |
+| 23  | Add `FilterResult.Reason` documentation clarity | LOW    | XS     | Docs          |
+| 24  | Consider options struct for `NewMetrics`        | LOW    | XS     | Refactor      |
+| 25  | Benchmark `FilterDetailed` vs `Filter` overhead | LOW    | S      | Perf          |
 
 ---
 
@@ -186,6 +187,7 @@ New `FilterDetailed` code paths need targeted tests:
 The code is production-ready (0 lint, race-free, 98.2% coverage, comprehensive tests). But the website docs at `gogenfilter.web.app` don't yet document `FilterResult`, `FilterDetailed`, `AllGeneratorOptions`, `WithMetricsCap`, or the `Reason()` breaking change. If someone discovers the library via the website, they'll see outdated API docs.
 
 Options:
+
 1. **Ship v1.0.0 now** — Code is ready, docs can follow. pkg.go.dev will auto-generate from godoc.
 2. **Update website docs first** — Then ship v1.0.0 in one clean release.
 
@@ -195,12 +197,12 @@ My recommendation: **Update website docs first.** A v1.0.0 release should have c
 
 ## CI Status Summary (2026-05-04 22:28 UTC)
 
-| Workflow | Status | Notes |
-|----------|--------|-------|
-| Go CI | ✅ success | Tests + lint + benchmarks pass |
-| Website | ✅ success | Build + HTML validation + dedup pass |
-| Lighthouse | ❌ failure | a11y failures + missing LHCI token |
-| Benchmark | ✅ success | Pushes to gh-pages |
+| Workflow   | Status     | Notes                                |
+| ---------- | ---------- | ------------------------------------ |
+| Go CI      | ✅ success | Tests + lint + benchmarks pass       |
+| Website    | ✅ success | Build + HTML validation + dedup pass |
+| Lighthouse | ❌ failure | a11y failures + missing LHCI token   |
+| Benchmark  | ✅ success | Pushes to gh-pages                   |
 
 ## Session Commits (2)
 
