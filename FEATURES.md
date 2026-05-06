@@ -79,27 +79,27 @@
 
 ## Error System
 
-| Feature              | Status           | Details                                         |
-| -------------------- | ---------------- | ----------------------------------------------- |
-| Branded errors       | FULLY_FUNCTIONAL | `[gogenfilter:<code>]` prefix on all errors     |
+| Feature              | Status           | Details                                                |
+| -------------------- | ---------------- | ------------------------------------------------------ |
+| Branded errors       | FULLY_FUNCTIONAL | `[gogenfilter:<code>]` prefix on all errors            |
 | 8 error codes        | FULLY_FUNCTIONAL | Project root (2) + Filter config (1) + SQLC config (5) |
-| 8 sentinel errors    | FULLY_FUNCTIONAL | `Err*` vars for `errors.Is` matching            |
-| ErrorCoder interface | FULLY_FUNCTIONAL | `ErrorCode() ErrorCode` for programmatic access |
-| Helper interface     | FULLY_FUNCTIONAL | `Help() string` returns user-friendly guidance  |
-| Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.AsType`     |
-| CodeEqual generic    | FULLY_FUNCTIONAL | `CodeEqual[T]` for type-safe code comparison    |
-| AllErrorCodes()      | FULLY_FUNCTIONAL | All codes from `errorCodeDefs` table            |
-| CodeHelp()           | FULLY_FUNCTIONAL | Help text from `errorCodeDefs` table            |
+| 8 sentinel errors    | FULLY_FUNCTIONAL | `Err*` vars for `errors.Is` matching                   |
+| ErrorCoder interface | FULLY_FUNCTIONAL | `ErrorCode() ErrorCode` for programmatic access        |
+| Helper interface     | FULLY_FUNCTIONAL | `Help() string` returns user-friendly guidance         |
+| Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.AsType`            |
+| CodeEqual generic    | FULLY_FUNCTIONAL | `CodeEqual[T]` for type-safe code comparison           |
+| AllErrorCodes()      | FULLY_FUNCTIONAL | All codes from `errorCodeDefs` table                   |
+| CodeHelp()           | FULLY_FUNCTIONAL | Help text from `errorCodeDefs` table                   |
 
 ## Type Safety
 
-| Feature                  | Status           | Details                                                          |
-| ------------------------ | ---------------- | ---------------------------------------------------------------- |
-| Phantom types (4)        | FULLY_FUNCTIONAL | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`           |
-| FilterOption string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`, `Reason()`                         |
-| FilterReason string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`                                     |
-| ErrorCode string type    | FULLY_FUNCTIONAL | With `String()`                                                  |
-| validatable interface    | FULLY_FUNCTIONAL | Internal generic constraint                                      |
+| Feature                  | Status           | Details                                                |
+| ------------------------ | ---------------- | ------------------------------------------------------ |
+| Phantom types (4)        | FULLY_FUNCTIONAL | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage` |
+| FilterOption string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`, `Reason()`               |
+| FilterReason string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`                           |
+| ErrorCode string type    | FULLY_FUNCTIONAL | With `String()`                                        |
+| validatable interface    | FULLY_FUNCTIONAL | Internal generic constraint                            |
 
 ## Testing
 
@@ -118,14 +118,14 @@
 
 ## CI/CD
 
-| Feature            | Status           | Details                                     |
-| ------------------ | ---------------- | ------------------------------------------- |
-| GitHub Actions CI  | FULLY_FUNCTIONAL | Test, build, vet, lint on push/PR to master |
-| Race detector      | FULLY_FUNCTIONAL | `go test -race` in CI                       |
-| Coverage threshold | FULLY_FUNCTIONAL | 98% threshold in CI                         |
-| golangci-lint v2   | FULLY_FUNCTIONAL | Comprehensive config in `.golangci.yaml`    |
-| Website deployment | FULLY_FUNCTIONAL | Firebase Hosting via `website.yml`          |
-| Benchmark tracking | FULLY_FUNCTIONAL | `benchmark.yml` pushes to `gh-pages`        |
+| Feature            | Status           | Details                                                              |
+| ------------------ | ---------------- | -------------------------------------------------------------------- |
+| GitHub Actions CI  | FULLY_FUNCTIONAL | Test, build, vet, lint on push/PR to master                          |
+| Race detector      | FULLY_FUNCTIONAL | `go test -race` in CI                                                |
+| Coverage threshold | FULLY_FUNCTIONAL | 98% threshold in CI                                                  |
+| golangci-lint v2   | FULLY_FUNCTIONAL | Comprehensive config in `.golangci.yaml`                             |
+| Website deployment | FULLY_FUNCTIONAL | Firebase Hosting via `website.yml`                                   |
+| Benchmark tracking | FULLY_FUNCTIONAL | `benchmark.yml` pushes to `gh-pages`                                 |
 | Lighthouse CI      | PARTIALLY_SETUP  | `lighthouserc.json` configured, needs `LHCI_GITHUB_APP_TOKEN` secret |
 
 ## Project Root Discovery
