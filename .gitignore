@@ -77,3 +77,5 @@ Thumbs.db
 
 # Build artifacts
 /v3
+# Copy/paste detection report
+/report/jscpd-report.json
