@@ -123,8 +123,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				_, err := gogenfilter.WithFilterOptions(gogenfilter.FilterOption("nonexistent"))
 				gomega.Expect(err).To(gomega.HaveOccurred())
 
-				var cfgErr *gogenfilter.FilterConfigError
-				gomega.Expect(errors.As(err, &cfgErr)).To(gomega.BeTrue())
+				cfgErr, ok := errors.AsType[*gogenfilter.FilterConfigError](err)
+				gomega.Expect(ok).To(gomega.BeTrue())
 				gomega.Expect(cfgErr.Option).
 					To(gomega.Equal(gogenfilter.FilterOption("nonexistent")))
 			})

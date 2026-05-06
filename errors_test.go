@@ -267,7 +267,7 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 			Code:      CodeProjectRootInvalidPath,
 			StartPath: "/some/path",
 			Markers:   []string{"go.mod"},
-			Cause:     fmt.Errorf("inner error: %w", os.ErrInvalid),
+			Err:       fmt.Errorf("inner error: %w", os.ErrInvalid),
 		}
 
 		msg := err.Error()
@@ -282,7 +282,7 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 			Code:      CodeProjectRootNotFound,
 			StartPath: "/some/path",
 			Markers:   []string{"go.mod", "go.sum"},
-			Cause:     nil,
+			Err:       nil,
 		}
 
 		msg := err.Error()

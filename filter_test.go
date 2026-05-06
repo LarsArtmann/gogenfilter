@@ -192,9 +192,13 @@ func TestWithFilterOptionsReturnsError(t *testing.T) {
 			t.Fatal("expected error from WithFilterOptions for invalid FilterOption")
 		}
 
-		var cfgErr *FilterConfigError
-		if !errors.As(err, &cfgErr) {
+		cfgErr, ok := errors.AsType[*FilterConfigError](err)
+		if !ok {
 			t.Fatalf("expected FilterConfigError, got %T", err)
+		}
+
+		if cfgErr.Code != CodeInvalidFilterOption {
+			t.Errorf("expected CodeInvalidFilterOption, got %q", cfgErr.Code)
 		}
 	})
 }

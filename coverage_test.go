@@ -324,7 +324,7 @@ func TestProjectRootError_Unwrap(t *testing.T) {
 		Code:      CodeProjectRootInvalidPath,
 		StartPath: "/bad/path",
 		Markers:   []string{"go.mod"},
-		Cause:     innerErr,
+		Err:       innerErr,
 	}
 
 	assertUnwrapSentinel(t, err)
@@ -336,7 +336,7 @@ func TestFilterConfigError_Unwrap(t *testing.T) {
 	err := &FilterConfigError{
 		Code:   CodeInvalidFilterOption,
 		Option: FilterSQLC,
-		Cause:  os.ErrPermission,
+		Err:    os.ErrPermission,
 	}
 
 	assertUnwrapSentinel(t, err)
@@ -350,7 +350,7 @@ func TestSQLCConfigError_Unwrap(t *testing.T) {
 		ConfigPath: ConfigPath("sqlc.yaml"),
 		Operation:  Operation("parse"),
 		Message:    ErrorMessage("bad yaml"),
-		Cause:      os.ErrPermission,
+		Err:        os.ErrPermission,
 	}
 
 	assertUnwrapSentinel(t, err)

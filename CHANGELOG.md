@@ -13,26 +13,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`FilterPathsDetailed(paths) ([]FilterResult, error)`** — batch variant of `FilterDetailed`.
 - **`FilterDetailedContext(ctx, filePath) (FilterResult, error)`** — context-aware variant of `FilterDetailed`.
 - **`AllGeneratorOptions()`** — returns all detector `FilterOption` values (excluding meta-option `FilterAll`). Use for enumerating generators; `AllFilterOptions()` still includes `FilterAll` for validation.
-- **`WithMetricsCap(n int) FilterConfig`** — limits the number of file paths stored per reason in metrics. `0` means unlimited (default). Counts in `FilteredBy()` are always accurate; only `FilteredFiles()` path storage is capped.
 - **`FilterResult.String()`** — human-readable representation of filter results.
+- **`filePath` in context cancellation errors** — `FilterContext` and `FilterDetailedContext` now include the file path in context check error messages.
 
 ### Changed
 
 - **Breaking: `FilterOption.Reason()` now returns `(FilterReason, bool)`** — previously returned `FilterReason` and panicked on `FilterAll`. Now returns `("", false)` for meta-options and unregistered options. This is the correct Go pattern — no panics in library code.
+- **Breaking: `Cause` field renamed to `Err` on all error types** — `ProjectRootError.Err`, `FilterConfigError.Err`, `SQLCConfigError.Err`. Follows Go stdlib convention (`os.PathError.Err`, `net.OpError.Err`, `url.Error.Err`). `Unwrap()` behavior unchanged.
+- **`errors.AsType[T]` migration** — source code uses Go 1.26 `errors.AsType[T]` exclusively. Test migration nearly complete (2 remaining `errors.As` calls → `errors.AsType`).
+- **Module path** — added `/v3` suffix for Go module convention compliance.
+
+### Removed
+
+- **Breaking: metrics system removed** — `Metrics`, `MetricsMixin`, `FilterStats`, `NewMetrics`, `GetStats`, `FilteredBy`, `FilteredFiles`, `TotalFiltered`, `WithMetricsCap`, `RecordChecked`, `RecordFiltered`. Stats aggregation is the caller's responsibility. `FilterDetailed()` and `FilterPaths()` return per-call results with all the data callers need.
+- **Breaking: `TotalFilesChecked` phantom type removed** — no longer needed without metrics.
+- **`Enabled()` and `Disabled()` options** — a filter is now enabled when it has filter options, include patterns, or exclude patterns; `NewFilter()` with no arguments is disabled.
 
 ### Fixed
 
+- **Context cancellation errors include `filePath`** — `FilterContext` and `FilterDetailedContext` now wrap context errors with `"context check for %q"` and `"context check after filter of %q"` for debugging batch operations.
 - **Website CI: checkout `path` parameter placement** — `path:` was outside `with:` block for `md-go-validator` and `go-output` checkouts, causing `actions/checkout` to ignore it and overwrite the workspace root
 - **Website CI: private repo access** — added `token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}` fallback for cross-repo checkouts (requires PAT secret for private repos)
 - **Benchmark CI: missing `gh-pages` branch** — created orphan `gh-pages` branch for `benchmark-action/github-action-benchmark` data storage
 - **Lighthouse CI: budgets+assertions conflict** — removed `budgetPath` input from workflow; LHCI v12 rejects using both simultaneously. Assertions in `lighthouserc.json` cover all checks.
 - **Node.js 20 deprecation** — updated `actions/setup-go@v5` → `@v6` across all workflows (forced upgrade June 2, 2026)
-
-### Changed
-
-- **`workflow_dispatch` added** to website.yml and benchmark.yml for manual triggering
-- **`budget.json` removed** from path filters in lighthouse.yml and website.yml
-- **`budget.json` deleted** from repository — no longer referenced by any workflow
+- **Plausible analytics removed** — tightened Content Security Policy accordingly
 
 ## [v3.0.0] — 2026-05-04
 

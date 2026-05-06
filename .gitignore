@@ -63,9 +63,17 @@ Thumbs.db
 
 # Sensitive files
 *.db
-Copy/paste detection report
-/report/jscpd-report.json
-Add pattern for Templ generated files
+
+# Copy/paste detection
+/report/
+/reports/
+
+# Dedup tool artifacts
+.auto-deduplicate/
+.auto-deduplicate.lock
+
+# Templ generated files
 *_templ.go
+
 # Build artifacts
 /v3
