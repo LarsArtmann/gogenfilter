@@ -18,8 +18,8 @@ export const features: Feature[] = [
   },
   {
     icon: "chart",
-    title: "Thread-Safe Metrics",
-    desc: "Track what was filtered and why, concurrently.",
+    title: "Detailed Results",
+    desc: "FilterResult with reason, trace, and path for every file.",
   },
   {
     icon: "folder",

@@ -71,7 +71,7 @@ func newSQLCConfigError(
 		ConfigPath: configPath,
 		Operation:  operation,
 		Message:    message,
-		Cause:      err,
+		Err:        err,
 	}
 }
 

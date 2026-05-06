@@ -32,7 +32,7 @@ func newBenchmarkProjectRootError() *ProjectRootError {
 		Code:      CodeProjectRootNotFound,
 		StartPath: "/some/path/to/project",
 		Markers:   []string{"go.mod"},
-		Cause:     os.ErrNotExist,
+		Err:       os.ErrNotExist,
 	}
 }
 

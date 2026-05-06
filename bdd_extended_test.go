@@ -215,7 +215,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 			err := &gogenfilter.FilterConfigError{
 				Code:   gogenfilter.CodeInvalidFilterOption,
 				Option: gogenfilter.FilterSQLC,
-				Cause:  os.ErrInvalid,
+				Err:    os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("invalid argument"))
 		})
@@ -248,7 +248,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				ConfigPath: gogenfilter.ConfigPath("sqlc.yaml"),
 				Operation:  gogenfilter.Operation("parse"),
 				Message:    gogenfilter.ErrorMessage("invalid YAML"),
-				Cause:      os.ErrInvalid,
+				Err:        os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc.yaml"))
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("invalid YAML"))
@@ -269,7 +269,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				Code:      gogenfilter.CodeSQLCConfigParse,
 				Operation: gogenfilter.Operation("parse"),
 				Message:   gogenfilter.ErrorMessage("bad yaml"),
-				Cause:     os.ErrInvalid,
+				Err:       os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("bad yaml"))
 		})

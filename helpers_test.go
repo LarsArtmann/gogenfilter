@@ -520,7 +520,7 @@ func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 		Code:      CodeProjectRootNotFound,
 		StartPath: StartPath("/path"),
 		Markers:   []string{"go.mod"},
-		Cause:     nil,
+		Err:       nil,
 	}
 }
 
@@ -538,6 +538,6 @@ func testProjectRootErrorWithCause(
 		Code:      code,
 		StartPath: StartPath(path),
 		Markers:   []string{"go.mod"},
-		Cause:     innerErr,
+		Err:       innerErr,
 	}
 }

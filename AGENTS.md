@@ -12,7 +12,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction, enabled when options/patterns are provided
 - **Phantom types** (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`) for type safety at API boundaries
-- **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder`/`Helper` interfaces, `CodeEqual[T]` generic
+- **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder`/`Helper` interfaces, `CodeEqual[T]` generic, `Err` field for wrapped errors (stdlib convention)
 - **`fs.FS` abstraction**: `WithFS()` option for testability; tests use `fstest.MapFS`
 - **Derived lists**: `AllFilterOptions()`, `AllFilterReasons()`, and `allSpecificOptions()` are all derived from the `detectors` table — adding a new detector automatically updates everything
 
@@ -75,7 +75,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **SQLC v1 config supported** — `sqlcV1Config` struct maps v1 `packages[].path` to output dirs. Version dispatch in `unmarshalSQLCConfig` routes v1 to `parseV1AsV2` which converts to v2 format. Unsupported versions return a parse error.
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 - **art-dupl known false positive** — `unmarshalSQLCConfig` and `parseV1AsV2` in `sqlc.go` share identical signatures `([]byte, string) → (*sqlcConfig, *SQLCConfigError)` but are fundamentally different functions (version dispatch vs v1→v2 conversion). Art-dupl's structural matching flags them; fixed via `--exclude-pattern 'sqlc.go'` in the dedup command.
-- **`errors.AsType` migration complete (Go 1.26)** — All code and tests use `errors.AsType[T]` exclusively. No `errors.As` calls remain in the codebase. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
+- **`errors.AsType` migration (Go 1.26)** — Source code uses `errors.AsType[T]` exclusively. 2 test files still use `errors.As` (`bdd_test.go`, `filter_test.go`) — should be migrated. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
 - **`FilterResult` is additive, not replacing** — `Filter()` returns `(bool, error)` unchanged. `FilterDetailed()` returns `(FilterResult, error)` with trace info. No breaking changes to existing API.
 - **`FilterOption.Reason()` returns `(FilterReason, bool)`** — Previously panicked on `FilterAll`. Now returns `("", false)` for meta-options. This is the correct Go pattern — no panics in library code.
 - **`AllGeneratorOptions()` vs `AllFilterOptions()`** — `AllFilterOptions()` includes `FilterAll` (for validation). `AllGeneratorOptions()` excludes `FilterAll` (for enumeration). Both are derived from the detectors table.
@@ -86,10 +86,10 @@ This project provides detection and filtering capabilities for auto-generated Go
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
 - Generic helper functions in `helpers_test.go`: `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`. Error extraction helper `assertErrorType[T]()` is in `errors_test.go` (uses `errors.AsType` from Go 1.26).
-- **BDD tests**: 175 ginkgo specs in `bdd_test.go` (110) + `bdd_extended_test.go` (65). Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
+- **BDD tests**: 164 ginkgo specs in `bdd_test.go` + `bdd_extended_test.go`. Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
 - **Coverage tests**: Targeted tests in `coverage_test.go` for hard-to-reach error paths (cross-type `errors.Is`, multi-error aggregation, SQLC parse errors, malformed patterns).
 - Run tests with: `go test ./...`
-- **Coverage**: 98.9% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
+- **Coverage**: 97.9% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
 
 ### Linting
 

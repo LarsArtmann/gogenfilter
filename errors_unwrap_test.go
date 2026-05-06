@@ -39,7 +39,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 			Code:      CodeProjectRootInvalidPath,
 			StartPath: "/path",
 			Markers:   []string{"go.mod"},
-			Cause:     os.ErrPermission,
+			Err:       os.ErrPermission,
 		}
 
 		wrapped := fmt.Errorf("layer2: %w", fmt.Errorf("layer1: %w", inner))
@@ -60,7 +60,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 			Code:      CodeProjectRootNotFound,
 			StartPath: "/path",
 			Markers:   []string{"go.mod"},
-			Cause:     nil,
+			Err:       nil,
 		}
 
 		wrapped := fmt.Errorf("outer: %w", inner)

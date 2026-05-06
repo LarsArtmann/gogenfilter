@@ -121,16 +121,16 @@ type ProjectRootError struct {
 	Code      ErrorCode
 	StartPath StartPath
 	Markers   []string
-	Cause     error
+	Err       error
 }
 
 func (e *ProjectRootError) Error() string {
-	if e.Cause != nil {
+	if e.Err != nil {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] project root not found from %q: %v",
 			e.Code,
 			e.StartPath,
-			e.Cause,
+			e.Err,
 		)
 	}
 
@@ -138,7 +138,7 @@ func (e *ProjectRootError) Error() string {
 		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
 }
 
-func (e *ProjectRootError) Unwrap() error { return e.Cause }
+func (e *ProjectRootError) Unwrap() error { return e.Err }
 
 // CodeEqual compares two error codes for equality.
 func CodeEqual[T interface{ ErrorCode() ErrorCode }](e, target T) bool {
@@ -165,23 +165,23 @@ func (e *ProjectRootError) Help() string { return CodeHelp(e.Code) }
 type FilterConfigError struct {
 	Code   ErrorCode
 	Option FilterOption
-	Cause  error
+	Err    error
 }
 
 func (e *FilterConfigError) Error() string {
-	if e.Cause != nil {
+	if e.Err != nil {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] invalid filter option %q: %v",
 			e.Code,
 			e.Option,
-			e.Cause,
+			e.Err,
 		)
 	}
 
 	return fmt.Sprintf("[gogenfilter:%s] invalid filter option %q", e.Code, e.Option)
 }
 
-func (e *FilterConfigError) Unwrap() error { return e.Cause }
+func (e *FilterConfigError) Unwrap() error { return e.Err }
 
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *FilterConfigError) Is(target error) bool {
@@ -205,19 +205,19 @@ type SQLCConfigError struct {
 	ConfigPath ConfigPath
 	Operation  Operation
 	Message    ErrorMessage
-	Cause      error
+	Err        error
 }
 
 func (e *SQLCConfigError) Error() string {
 	if e.ConfigPath != "" {
-		if e.Cause != nil {
+		if e.Err != nil {
 			return fmt.Sprintf(
 				"[gogenfilter:%s] sqlc config %s %q: %s: %v",
 				e.Code,
 				e.Operation,
 				e.ConfigPath,
 				e.Message,
-				e.Cause,
+				e.Err,
 			)
 		}
 
@@ -230,20 +230,20 @@ func (e *SQLCConfigError) Error() string {
 		)
 	}
 
-	if e.Cause != nil {
+	if e.Err != nil {
 		return fmt.Sprintf(
 			"[gogenfilter:%s] sqlc config %s: %s: %v",
 			e.Code,
 			e.Operation,
 			e.Message,
-			e.Cause,
+			e.Err,
 		)
 	}
 
 	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, e.Operation, e.Message)
 }
 
-func (e *SQLCConfigError) Unwrap() error { return e.Cause }
+func (e *SQLCConfigError) Unwrap() error { return e.Err }
 
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *SQLCConfigError) Is(target error) bool {

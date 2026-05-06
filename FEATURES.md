@@ -1,6 +1,6 @@
 # Features
 
-**Generated:** 2026-05-03
+**Updated:** 2026-05-06
 **Source:** Code audit of all source files
 
 ## Core Detection
@@ -36,9 +36,10 @@
 | FilterDetailed()              | FULLY_FUNCTIONAL | `(FilterResult, error)` with trace info — additive API alongside `Filter()`        |
 | FilterPathsDetailed()         | FULLY_FUNCTIONAL | Batch `([]FilterResult, error)` with trace info                                    |
 | FilterDetailedContext()       | FULLY_FUNCTIONAL | Context-aware `FilterDetailed` with cancellation                                   |
+| FilterContext()               | FULLY_FUNCTIONAL | Context-aware `Filter` with cancellation                                           |
+| FilterPathsContext()          | FULLY_FUNCTIONAL | Context-aware `FilterPaths` with cancellation                                      |
 | AllGeneratorOptions()         | FULLY_FUNCTIONAL | Enumerate detector options (excludes `FilterAll`)                                  |
 | FilterOption.Reason()         | FULLY_FUNCTIONAL | Returns `(FilterReason, bool)` — no panics                                         |
-| WithMetricsCap()              | FULLY_FUNCTIONAL | Limits stored file paths per reason; `0` = unlimited                               |
 | FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                                            |
 | IsEnabled()                   | FULLY_FUNCTIONAL | Reports filter state                                                               |
 | String() debugging            | FULLY_FUNCTIONAL | Human-readable filter state                                                        |
@@ -81,8 +82,8 @@
 | Feature              | Status           | Details                                         |
 | -------------------- | ---------------- | ----------------------------------------------- |
 | Branded errors       | FULLY_FUNCTIONAL | `[gogenfilter:<code>]` prefix on all errors     |
-| 7 error codes        | FULLY_FUNCTIONAL | Project root (2) + SQLC config (5)              |
-| Sentinel errors      | FULLY_FUNCTIONAL | 7 `Err*` vars for `errors.Is` matching          |
+| 8 error codes        | FULLY_FUNCTIONAL | Project root (2) + Filter config (1) + SQLC config (5) |
+| 8 sentinel errors    | FULLY_FUNCTIONAL | `Err*` vars for `errors.Is` matching            |
 | ErrorCoder interface | FULLY_FUNCTIONAL | `ErrorCode() ErrorCode` for programmatic access |
 | Helper interface     | FULLY_FUNCTIONAL | `Help() string` returns user-friendly guidance  |
 | Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.AsType`     |
@@ -90,27 +91,15 @@
 | AllErrorCodes()      | FULLY_FUNCTIONAL | All codes from `errorCodeDefs` table            |
 | CodeHelp()           | FULLY_FUNCTIONAL | Help text from `errorCodeDefs` table            |
 
-## Metrics
-
-| Feature             | Status           | Details                                     |
-| ------------------- | ---------------- | ------------------------------------------- |
-| Thread-safe metrics | FULLY_FUNCTIONAL | `sync.RWMutex` protected                    |
-| TotalFilesChecked   | FULLY_FUNCTIONAL | Phantom type counter                        |
-| FilteredBy(reason)  | FULLY_FUNCTIONAL | Per-reason counts                           |
-| TotalFiltered()     | FULLY_FUNCTIONAL | Sum across all reasons                      |
-| GetStats() snapshot | FULLY_FUNCTIONAL | Returns immutable snapshot via `maps.Clone` |
-| Nil-safe metrics    | FULLY_FUNCTIONAL | All methods handle nil receiver             |
-| String() on stats   | FULLY_FUNCTIONAL | Human-readable metrics                      |
-
 ## Type Safety
 
-| Feature                  | Status           | Details                                                                     |
-| ------------------------ | ---------------- | --------------------------------------------------------------------------- |
-| Phantom types (5)        | FULLY_FUNCTIONAL | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked` |
-| FilterOption string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`, `Reason()`                                    |
-| FilterReason string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`                                                |
-| ErrorCode string type    | FULLY_FUNCTIONAL | With `String()`                                                             |
-| validatable interface    | FULLY_FUNCTIONAL | Internal generic constraint                                                 |
+| Feature                  | Status           | Details                                                          |
+| ------------------------ | ---------------- | ---------------------------------------------------------------- |
+| Phantom types (4)        | FULLY_FUNCTIONAL | `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`           |
+| FilterOption string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`, `Reason()`                         |
+| FilterReason string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`                                     |
+| ErrorCode string type    | FULLY_FUNCTIONAL | With `String()`                                                  |
+| validatable interface    | FULLY_FUNCTIONAL | Internal generic constraint                                      |
 
 ## Testing
 
@@ -124,7 +113,7 @@
 | Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                      |
 | Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                                    |
 | Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
-| Runnable examples    | FULLY_FUNCTIONAL | 12 `Example*` functions in `example_test.go`                   |
+| Runnable examples    | FULLY_FUNCTIONAL | `Example*` functions in `example_test.go`                      |
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
 
 ## CI/CD
@@ -133,9 +122,11 @@
 | ------------------ | ---------------- | ------------------------------------------- |
 | GitHub Actions CI  | FULLY_FUNCTIONAL | Test, build, vet, lint on push/PR to master |
 | Race detector      | FULLY_FUNCTIONAL | `go test -race` in CI                       |
-| Coverage threshold | FULLY_FUNCTIONAL | 95% threshold in CI                         |
+| Coverage threshold | FULLY_FUNCTIONAL | 98% threshold in CI                         |
 | golangci-lint v2   | FULLY_FUNCTIONAL | Comprehensive config in `.golangci.yaml`    |
-| Website deployment | FULLY_FUNCTIONAL | Firebase Hosting via `deploy-website.yml`   |
+| Website deployment | FULLY_FUNCTIONAL | Firebase Hosting via `website.yml`          |
+| Benchmark tracking | FULLY_FUNCTIONAL | `benchmark.yml` pushes to `gh-pages`        |
+| Lighthouse CI      | PARTIALLY_SETUP  | `lighthouserc.json` configured, needs `LHCI_GITHUB_APP_TOKEN` secret |
 
 ## Project Root Discovery
 
@@ -148,10 +139,9 @@
 
 ## Website
 
-| Feature              | Status               | Details                                        |
-| -------------------- | -------------------- | ---------------------------------------------- |
-| Astro v6 + Starlight | FULLY_FUNCTIONAL     | Marketing/docs site in `website/`              |
-| Landing page         | FULLY_FUNCTIONAL     | Hero, features, code examples                  |
-| Starlight docs       | FULLY_FUNCTIONAL     | PageFind search at `/docs/`                    |
-| Firebase Hosting     | FULLY_FUNCTIONAL     | Configured via `firebase.json`                 |
-| Nix flake            | PARTIALLY_FUNCTIONAL | `flake.nix` exists but has uncommitted changes |
+| Feature              | Status           | Details                           |
+| -------------------- | ---------------- | --------------------------------- |
+| Astro v6 + Starlight | FULLY_FUNCTIONAL | Marketing/docs site in `website/` |
+| Landing page         | FULLY_FUNCTIONAL | Hero, features, code examples     |
+| Starlight docs       | FULLY_FUNCTIONAL | PageFind search                   |
+| Firebase Hosting     | FULLY_FUNCTIONAL | Configured via `firebase.json`    |
