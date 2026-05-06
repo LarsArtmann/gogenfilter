@@ -524,7 +524,7 @@ func testProjectRootErrorNotFound(t *testing.T) *ProjectRootError {
 	}
 }
 
-func testProjectRootErrorWithCause(
+func testProjectRootErrorWithErr(
 	t *testing.T,
 	code ErrorCode,
 	path string,

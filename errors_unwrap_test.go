@@ -13,7 +13,7 @@ func TestProjectRootErrorUnwrap(t *testing.T) {
 	t.Run("returns cause", func(t *testing.T) {
 		t.Parallel()
 
-		err := testProjectRootErrorWithCause(t, CodeProjectRootInvalidPath, "/path", os.ErrInvalid)
+		err := testProjectRootErrorWithErr(t, CodeProjectRootInvalidPath, "/path", os.ErrInvalid)
 
 		assertErrorsIs(t, err, os.ErrInvalid)
 	})
