@@ -13,7 +13,7 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 	t.Run("extracts domain fields", func(t *testing.T) {
 		t.Parallel()
 
-		realErr := testProjectRootErrorWithCause(
+		realErr := testProjectRootErrorWithErr(
 			t,
 			CodeProjectRootInvalidPath,
 			"/deep/path",
