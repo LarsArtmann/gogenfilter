@@ -40,9 +40,6 @@ func testMapFSDetectsSQLC(t *testing.T) {
 	if !mustFilter(t, fltr, "db/models.go") {
 		t.Error("expected sqlc-generated file to be filtered")
 	}
-
-	stats := fltr.GetStats()
-	assertEqual(t, "SQLC filtered", stats.FilteredBy(ReasonSQLC), 1)
 }
 
 func testMapFSNonGenerated(t *testing.T) {
@@ -118,12 +115,6 @@ func testMapFSMultipleGenerators(t *testing.T) {
 	_, _ = fltr.Filter("db/models.go")
 	_, _ = fltr.Filter("components/header_templ.go")
 	_, _ = fltr.Filter("main.go")
-
-	stats := fltr.GetStats()
-	assertEqual(t, "TotalFilesChecked", stats.TotalFilesChecked, 3)
-	assertEqual(t, "SQLC filtered", stats.FilteredBy(ReasonSQLC), 1)
-	assertEqual(t, "Templ filtered", stats.FilteredBy(ReasonTempl), 1)
-	assertEqual(t, "TotalFiltered", stats.TotalFiltered(), 2)
 }
 
 func TestFindSQLCConfigsFSWithMapFS(t *testing.T) {
@@ -297,8 +288,4 @@ func TestFilterExcludePattern(t *testing.T) {
 	if !mustFilter(t, filter, filepath.Join("db", "models.go")) {
 		t.Error("expected exclude pattern match to be filtered")
 	}
-
-	stats := filter.GetStats()
-
-	assertFilterStats(t, stats, ReasonExcludePattern, 1, "exclude-pattern")
 }

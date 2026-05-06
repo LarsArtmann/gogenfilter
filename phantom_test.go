@@ -49,15 +49,3 @@ func TestErrorMessage_String(t *testing.T) {
 		{ErrorMessage("not found"), "not found"},
 	})
 }
-
-func TestTotalFilesChecked_String(t *testing.T) {
-	t.Parallel()
-	testStringer(t, "TotalFilesChecked", []struct {
-		value    TotalFilesChecked
-		expected string
-	}{
-		{TotalFilesChecked(0), "0"},
-		{TotalFilesChecked(42), "42"},
-		{TotalFilesChecked(1000), "1000"},
-	})
-}

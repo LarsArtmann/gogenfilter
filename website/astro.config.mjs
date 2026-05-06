@@ -59,7 +59,6 @@ export default defineConfig({
           items: [
             { label: "Filter Options", slug: "guides/filter-options" },
             { label: "Pattern Matching", slug: "guides/pattern-matching" },
-            { label: "Metrics", slug: "guides/metrics" },
             { label: "SQLC Config Discovery", slug: "guides/sqlc-config" },
             { label: "Custom Filesystems", slug: "guides/custom-filesystem" },
             { label: "Benchmarks", slug: "guides/benchmarks" },

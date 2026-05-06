@@ -72,14 +72,6 @@ func assertMapLen[K, V comparable](t *testing.T, name string, got map[K]V, want 
 	assertLen(t, name, len(got), want)
 }
 
-func assertStringContainsAll(t *testing.T, got string, substrs ...string) {
-	t.Helper()
-
-	for _, substr := range substrs {
-		assertContains(t, got, substr)
-	}
-}
-
 func writeFile(t *testing.T, path, content string) {
 	t.Helper()
 

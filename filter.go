@@ -76,25 +76,12 @@ func WithExcludePatterns(patterns ...string) FilterConfig {
 	}
 }
 
-// WithMetricsCap limits the number of file paths stored per reason in metrics.
-// A value of 0 means unlimited (default). When the cap is reached, new file paths
-// are counted in FilteredBy() but not stored in FilteredFiles().
-func WithMetricsCap(maxFilteredFiles int) FilterConfig {
-	return func(filter *Filter) error {
-		filter.metricsCap = maxFilteredFiles
-
-		return nil
-	}
-}
-
 // Filter provides smart filtering of auto-generated Go code.
 // A Filter is immutable after construction — all configuration is applied via NewFilter.
 type Filter struct {
 	options         map[FilterOption]struct{}
 	includePatterns []string
 	excludePatterns []string
-	metrics         *Metrics
-	metricsCap      int
 	fsys            fs.FS
 }
 
@@ -115,8 +102,6 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 		options:         make(map[FilterOption]struct{}),
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
-		metrics:         nil,
-		metricsCap:      0,
 		fsys:            os.DirFS("."),
 	}
 
@@ -135,10 +120,6 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 
 	if len(errs) > 0 {
 		return nil, errors.Join(errs...)
-	}
-
-	if filter.IsEnabled() {
-		filter.metrics = NewMetrics(filter.metricsCap)
 	}
 
 	return filter, nil
@@ -308,27 +289,6 @@ func (f *Filter) FilterPathsContext(ctx context.Context, paths []string) ([]bool
 	return results, nil
 }
 
-// GetStats returns a snapshot of filter statistics.
-func (f *Filter) GetStats() FilterStats {
-	if f.metrics == nil {
-		return zeroFilterStats()
-	}
-
-	return f.metrics.GetStats()
-}
-
-func (f *Filter) recordChecked(filePath string) {
-	if f.metrics != nil {
-		f.metrics.RecordChecked(filePath)
-	}
-}
-
-func (f *Filter) recordFiltered(filePath string, reason FilterReason) {
-	if f.metrics != nil {
-		f.metrics.RecordFiltered(filePath, reason)
-	}
-}
-
 func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
 	return anyMatch(filePath, patterns, MatchPattern)
 }
@@ -352,11 +312,9 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) (bool, error) {
 func (f *Filter) shouldFilterByPattern(
 	filePath string,
 	patternMatched bool,
-	reason FilterReason,
+	_ FilterReason,
 ) (bool, error) {
 	if patternMatched {
-		f.recordFiltered(filePath, reason)
-
 		return true, nil
 	}
 
@@ -365,13 +323,7 @@ func (f *Filter) shouldFilterByPattern(
 		return false, err
 	}
 
-	if filtered {
-		return true, nil
-	}
-
-	f.recordChecked(filePath)
-
-	return false, nil
+	return filtered, nil
 }
 
 func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
@@ -380,13 +332,7 @@ func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
 		return false, err
 	}
 
-	if reason != ReasonNotFiltered {
-		f.recordFiltered(filePath, reason)
-
-		return true, nil
-	}
-
-	return false, nil
+	return reason != ReasonNotFiltered, nil
 }
 
 func (f *Filter) shouldFilterDetailedWithIncludes(filePath string) (FilterResult, error) {
@@ -414,8 +360,6 @@ func (f *Filter) shouldFilterDetailedByPattern(
 	trace string,
 ) (FilterResult, error) {
 	if patternMatched {
-		f.recordFiltered(filePath, reason)
-
 		return FilterResult{
 			Filtered: true,
 			Reason:   reason,
@@ -424,31 +368,11 @@ func (f *Filter) shouldFilterDetailedByPattern(
 		}, nil
 	}
 
-	result, err := f.shouldFilterDetailedByDetection(filePath)
-	if err != nil {
-		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
-	}
-
-	if result.Filtered {
-		return result, nil
-	}
-
-	f.recordChecked(filePath)
-
-	return result, nil
+	return f.shouldFilterDetailedByDetection(filePath)
 }
 
 func (f *Filter) shouldFilterDetailedByDetection(filePath string) (FilterResult, error) {
-	result, err := detectReasonFSWithTrace(f.fsys, filePath, f.options)
-	if err != nil {
-		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
-	}
-
-	if result.Filtered {
-		f.recordFiltered(filePath, result.Reason)
-	}
-
-	return result, nil
+	return detectReasonFSWithTrace(f.fsys, filePath, f.options)
 }
 
 func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {
@@ -479,11 +403,6 @@ func (f *Filter) String() string {
 
 	parts = f.appendPatternPart(parts, "includes", f.includePatterns)
 	parts = f.appendPatternPart(parts, "excludes", f.excludePatterns)
-
-	if f.metrics != nil {
-		stats := f.metrics.GetStats()
-		parts = append(parts, "stats="+stats.String())
-	}
 
 	return fmt.Sprintf("Filter(%s)", strings.Join(parts, ", "))
 }
