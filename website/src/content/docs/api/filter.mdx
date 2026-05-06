@@ -44,6 +44,17 @@ Files matching any pattern are always filtered.
 
 Determines if a file should be filtered. Returns `true` if the file is generated. I/O errors propagate.
 
+### `FilterDetailed(filePath string) (FilterResult, error)`
+
+Like `Filter` but returns a `FilterResult` with detailed reason and trace information.
+
+```go
+result, err := f.FilterDetailed("db/models.go")
+if result.Filtered {
+    fmt.Println(result.Reason, result.Trace)
+}
+```
+
 ### `FilterPaths(paths []string) ([]bool, error)`
 
 Batch filters multiple file paths, returning a slice of booleans. Returns partial results and the error if any path fails.
@@ -53,29 +64,9 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 // results: [true, false, true] — a.go and c.go are generated
 ```
 
-### `FilterContext(ctx context.Context, filePath string) (bool, error)`
-
-Like `Filter` but respects context cancellation. Returns the context error if cancelled.
-
-```go
-filtered, err := f.FilterContext(ctx, "db/models.go")
-```
-
-### `FilterPathsContext(ctx context.Context, paths []string) ([]bool, error)`
-
-Like `FilterPaths` but respects context cancellation. Stops processing when the context is cancelled, returning partial results.
-
-```go
-results, err := f.FilterPathsContext(ctx, []string{"a.go", "b.go", "c.go"})
-```
-
 ### `IsEnabled() bool`
 
 Returns whether the filter is active.
-
-### `GetStats() FilterStats`
-
-Returns a snapshot of detection statistics.
 
 ### `FilterReasons() []FilterReason`
 

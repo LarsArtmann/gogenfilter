@@ -1,7 +1,5 @@
 package gogenfilter
 
-import "fmt"
-
 // Phantom types for type safety
 // These types wrap primitive types to provide compile-time guarantees
 // about the semantic meaning of values.
@@ -33,11 +31,3 @@ func (o Operation) String() string { return string(o) }
 type ErrorMessage string
 
 func (m ErrorMessage) String() string { return string(m) }
-
-// Count-related types
-
-// TotalFilesChecked represents a count of files that have been checked.
-// It provides type safety for metrics counting.
-type TotalFilesChecked int
-
-func (c TotalFilesChecked) String() string { return fmt.Sprintf("%d", c) }

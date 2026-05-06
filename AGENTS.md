@@ -11,7 +11,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Two-phase detection**: filename-based (zero I/O) then content-based (reads file)
 - **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction, enabled when options/patterns are provided
-- **Phantom types** (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`, `TotalFilesChecked`) for type safety at API boundaries
+- **Phantom types** (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`) for type safety at API boundaries
 - **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder`/`Helper` interfaces, `CodeEqual[T]` generic
 - **`fs.FS` abstraction**: `WithFS()` option for testability; tests use `fstest.MapFS`
 - **Derived lists**: `AllFilterOptions()`, `AllFilterReasons()`, and `allSpecificOptions()` are all derived from the `detectors` table — adding a new detector automatically updates everything
@@ -29,15 +29,14 @@ This project provides detection and filtering capabilities for auto-generated Go
 
 | File           | Purpose                                                                                                                                                                                                                                                           |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`, `WithMetricsCap`). `Filter` returns `(bool, error)`, `FilterDetailed` returns `(FilterResult, error)`. Enabled when options/patterns are set. |
+| `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `Filter` returns `(bool, error)`, `FilterDetailed` returns `(FilterResult, error)`, `FilterPaths` for batch. Enabled when options/patterns are set. |
 | `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers, trace-aware detection functions                                                                                                            |
 | `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `FilterResult` struct, `AllFilterOptions()`, `AllGeneratorOptions()`, `AllFilterReasons()`                                                                                           |
 | `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                                                                    |
 | `sqlc.go`      | SQLC config discovery and parsing (v1 and v2 formats, Go/JSON/Codegen output dirs)                                                                                                                                                                                |
 | `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                                                                          |
 | `project.go`   | Project root discovery                                                                                                                                                                                                                                            |
-| `metrics.go`   | Thread-safe detection metrics tracking with `FilteredFiles()`, `FilteredBy()` accessors, configurable `maxFilteredFiles` cap                                                                                                                                      |
-| `phantom.go`   | Phantom type constructors                                                                                                                                                                                                                                         |
+| `phantom.go`   | Phantom type constructors (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`) |
 
 ### Website
 
@@ -80,7 +79,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **`FilterResult` is additive, not replacing** — `Filter()` returns `(bool, error)` unchanged. `FilterDetailed()` returns `(FilterResult, error)` with trace info. No breaking changes to existing API.
 - **`FilterOption.Reason()` returns `(FilterReason, bool)`** — Previously panicked on `FilterAll`. Now returns `("", false)` for meta-options. This is the correct Go pattern — no panics in library code.
 - **`AllGeneratorOptions()` vs `AllFilterOptions()`** — `AllFilterOptions()` includes `FilterAll` (for validation). `AllGeneratorOptions()` excludes `FilterAll` (for enumeration). Both are derived from the detectors table.
-- **`WithMetricsCap(0)` means unlimited** — Backward-compatible default. Non-zero cap limits `FilteredFiles()` path storage but not `FilteredBy()` counts.
+- **Metrics removed** — Stats aggregation is the caller's responsibility. `FilterDetailed()` and `FilterPaths()` return per-call results with all the data callers need.
 
 ### Testing
 
@@ -193,14 +192,8 @@ reason := gogenfilter.DetectReason("file.go", content,
 result, err := f.FilterDetailed("file.go")
 fmt.Printf("filtered=%v reason=%s trace=%s\n", result.Filtered, result.Reason, result.Trace)
 
-// Reason returns (FilterReason, bool) — no panics
-reason, ok := gogenfilter.FilterSQLC.Reason()
-
-// Enumerate generator options (excludes FilterAll)
-for _, opt := range gogenfilter.AllGeneratorOptions() { ... }
-
-// Limit stored file paths in metrics
-filter, _ := gogenfilter.NewFilter(opts, gogenfilter.WithMetricsCap(1000))
+// Batch filtering
+results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 ```
 
 ## Dependencies

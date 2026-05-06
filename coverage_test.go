@@ -85,25 +85,6 @@ func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 	}
 }
 
-func TestNewFilter_EnabledMetricsInit(t *testing.T) {
-	t.Parallel()
-
-	cfg, err := WithFilterOptions(FilterSQLC)
-	if err != nil {
-		t.Fatalf("WithFilterOptions error: %v", err)
-	}
-
-	filter, newErr := NewFilter(cfg)
-	if newErr != nil {
-		t.Fatalf("NewFilter error: %v", newErr)
-	}
-
-	stats := filter.GetStats()
-	if int(stats.TotalFilesChecked) != 0 {
-		t.Error("new filter should have zero checked files")
-	}
-}
-
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && (s == substr || len(substr) == 0 ||
 		(len(s) > 0 && len(substr) > 0 && findSubstring(s, substr)))

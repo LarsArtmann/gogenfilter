@@ -56,9 +56,9 @@ if err != nil {
 }
 ```
 
-## With Metrics
+## Detailed Results
 
-Track what gets filtered and why:
+Get detailed information about why a file was filtered:
 
 ```go
 opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
@@ -70,13 +70,10 @@ if err != nil {
 	panic(err)
 }
 
-f.Filter("db/models.go")
-f.Filter("page_templ.go")
-f.Filter("main.go")
-
-stats := f.GetStats()
-fmt.Printf("Checked: %d, Filtered: %d\n",
-	stats.TotalFilesChecked, stats.TotalFiltered())
+result, err := f.FilterDetailed("db/models.go")
+if result.Filtered {
+	fmt.Printf("Reason: %s, Trace: %s\n", result.Reason, result.Trace)
+}
 ```
 
 ## Disabled Filter

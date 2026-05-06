@@ -59,8 +59,4 @@ func TestFilterConcurrent(t *testing.T) {
 	}
 
 	waitGroup.Wait()
-
-	stats := filter.GetStats()
-
-	assertEqual(t, "total checked", int(stats.TotalFilesChecked), goroutines)
 }

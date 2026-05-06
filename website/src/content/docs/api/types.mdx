@@ -60,62 +60,6 @@ type FilterConfig func(*Filter) error
 
 Created by `WithFilterOptions`, `WithFS`, `WithIncludePatterns`, and `WithExcludePatterns`. Passed to `NewFilter(configs ...FilterConfig)`.
 
-## FilterStats
-
-Returned by `Filter.GetStats()`. Contains a snapshot of detection statistics.
-
-### Fields
-
-- `TotalFilesChecked TotalFilesChecked` — total files checked (embedded from `MetricsMixin`)
-
-### Methods
-
-- `TotalFiltered() int` — total files filtered
-- `FilteredBy(reason FilterReason) int` — files filtered by reason
-- `FilteredFiles(reason FilterReason) []string` — file paths filtered by reason (defensive copy)
-- `String() string` — human-readable summary
-
-## Metrics
-
-Thread-safe detection statistics tracker. Created automatically by `NewFilter` when the filter is enabled.
-
-```go
-metrics := gogenfilter.NewMetrics()
-metrics.RecordChecked("main.go")
-metrics.RecordFiltered("db/models.go", gogenfilter.ReasonSQLC)
-stats := metrics.GetStats() // returns FilterStats snapshot
-```
-
-### `NewMetrics() *Metrics`
-
-Creates a new metrics tracker with zero values.
-
-### Methods
-
-- `RecordChecked(filePath string)` — records a file that was checked but not filtered
-- `RecordFiltered(filePath string, reason FilterReason)` — records a file that was filtered
-- `GetStats() FilterStats` — returns a defensive snapshot of current statistics
-
-> **Note:** Most users interact with metrics via `Filter.GetStats()`, which delegates to the internal `Metrics`. Direct use of `Metrics` is for advanced integrations or testing.
-
-## MetricsMixin
-
-Embedded in both `Metrics` and `FilterStats`. Provides the `TotalFilesChecked` field and read accessor methods. Exported for struct composition, but callers should use `FilterStats` or `Filter.GetStats()` rather than accessing `MetricsMixin` directly.
-
-## Phantom Types
-
-Phantom types enforce type safety at API boundaries. They are string types with no runtime cost.
-
-| Type                | Used by                               |
-| ------------------- | ------------------------------------- |
-| `StartPath`         | `FindProjectRoot`, `ProjectRootError` |
-| `ConfigPath`        | `SQLCConfigError`                     |
-| `Operation`         | `SQLCConfigError`                     |
-| `ErrorMessage`      | `SQLCConfigError`                     |
-| `TotalFilesChecked` | `FilterStats`, `GetStats()` output    |
-
-All phantom types implement `fmt.Stringer` (`String() string`).
-
 ## Invariant
 
 Each `FilterOption` and its matching `FilterReason` share the same underlying string value (e.g., `FilterSQLC == "sqlc" == ReasonSQLC`).
