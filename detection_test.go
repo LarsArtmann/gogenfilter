@@ -419,8 +419,8 @@ func TestSQLCDetection(t *testing.T) {
 
 	codePatternTests, contentTests := sqlcPatternAndContentTests()
 
-	runSQLCSubTest(t, "HasSQLCCodePatterns", codePatternTests, HasSQLCCodePatterns)
-	runSQLCSubTest(t, "HasSQLCContent", contentTests, HasSQLCContent)
+	runSQLCSubTest(t, "hasSQLCCodePatterns", codePatternTests, hasSQLCCodePatterns)
+	runSQLCSubTest(t, "hasSQLCContent", contentTests, hasSQLCContent)
 }
 
 func TestOapiDetection(t *testing.T) {
