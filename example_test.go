@@ -242,24 +242,10 @@ func ExampleFindProjectRoot_errorHandling() {
 	if err != nil {
 		fmt.Println(errors.Is(err, gogenfilter.ErrProjectRootNotFound))
 		fmt.Println(err.ErrorCode())
-		fmt.Println(err.Help() != "")
 	}
 	// Output:
 	// true
 	// project_root_not_found
-	// true
-}
-
-func ExampleCodeHelp() {
-	help := gogenfilter.CodeHelp(gogenfilter.CodeSQLCConfigParse)
-	fmt.Println(help != "")
-	// Output: true
-}
-
-func ExampleAllErrorCodes() {
-	codes := gogenfilter.AllErrorCodes()
-	fmt.Println(len(codes))
-	// Output: 8
 }
 
 func ExampleFilter_FilterDetailed() {

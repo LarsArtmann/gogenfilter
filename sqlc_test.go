@@ -324,11 +324,6 @@ func TestParseSQLCConfig_NonExistent_ErrorCode(t *testing.T) {
 
 	assertErrorsIs(t, err, ErrSQLCConfigRead)
 
-	help := err.Help()
-	if help == "" {
-		t.Error("Help() should return non-empty guidance")
-	}
-
 	assertErrorHasBrandedPrefix(t, err)
 }
 
@@ -348,10 +343,7 @@ func TestParseSQLCConfig_InvalidYAML_ErrorCode(t *testing.T) {
 
 	assertErrorsIs(t, err, ErrSQLCConfigParse)
 
-	help := err.Help()
-	if help == "" {
-		t.Error("Help() should return non-empty guidance")
-	}
+	assertErrorHasBrandedPrefix(t, err)
 }
 
 func TestFindSQLCConfigs_NonExistentPath_ErrorCode(t *testing.T) {
@@ -366,10 +358,7 @@ func TestFindSQLCConfigs_NonExistentPath_ErrorCode(t *testing.T) {
 
 	assertErrorsIs(t, err, ErrSQLCConfigFind)
 
-	help := err.Help()
-	if help == "" {
-		t.Error("Help() should return non-empty guidance")
-	}
+	assertErrorHasBrandedPrefix(t, err)
 }
 
 func TestParseSQLCConfigFS_NonExistent_ErrorCode(t *testing.T) {

@@ -526,24 +526,13 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			})
 		})
 
-		ginkgo.When("all error codes are enumerated", func() {
-			ginkgo.It("has non-empty help text for each", func() {
-				for _, code := range gogenfilter.AllErrorCodes() {
-					help := gogenfilter.CodeHelp(code)
-					gomega.Expect(help).
-						NotTo(gomega.BeEmpty(), "CodeHelp(%q) should not be empty", code)
-				}
-			})
-		})
-
 		ginkgo.When("FilterConfigError occurs", func() {
-			ginkgo.It("provides ErrorCode and Help methods", func() {
+			ginkgo.It("provides ErrorCode method", func() {
 				err := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
 					Code:   gogenfilter.CodeInvalidFilterOption,
 					Option: gogenfilter.FilterOption("bad"),
 				}
 				gomega.Expect(err.ErrorCode()).To(gomega.Equal(gogenfilter.CodeInvalidFilterOption))
-				gomega.Expect(err.Help()).NotTo(gomega.BeEmpty())
 			})
 		})
 
@@ -557,7 +546,6 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				}
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc.yaml"))
 				gomega.Expect(err.ErrorCode()).To(gomega.Equal(gogenfilter.CodeSQLCConfigParse))
-				gomega.Expect(err.Help()).NotTo(gomega.BeEmpty())
 			})
 		})
 	})

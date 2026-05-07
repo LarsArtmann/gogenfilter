@@ -190,14 +190,6 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("project root not found"))
 			})
 
-			ginkgo.It("provides Help() text via Helper interface", func() {
-				_, err := gogenfilter.FindProjectRoot(
-					"/nonexistent/path",
-					[]string{"marker.txt"},
-				)
-				gomega.Expect(err).To(gomega.HaveOccurred())
-				gomega.Expect(err.Help()).NotTo(gomega.BeEmpty())
-			})
 		})
 	})
 
@@ -272,28 +264,6 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				Err:       os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("bad yaml"))
-		})
-	})
-
-	ginkgo.Describe("CodeEqual", func() {
-		ginkgo.It("returns true for matching error codes", func() {
-			errSame1 := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
-				Code: gogenfilter.CodeInvalidFilterOption,
-			}
-			errSame2 := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
-				Code: gogenfilter.CodeInvalidFilterOption,
-			}
-			gomega.Expect(gogenfilter.CodeEqual(errSame1, errSame2)).To(gomega.BeTrue())
-		})
-
-		ginkgo.It("returns false for different error codes", func() {
-			errDiff1 := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
-				Code: gogenfilter.CodeInvalidFilterOption,
-			}
-			errDiff2 := &gogenfilter.FilterConfigError{ //nolint:exhaustruct
-				Code: gogenfilter.CodeSQLCConfigRead,
-			}
-			gomega.Expect(gogenfilter.CodeEqual(errDiff1, errDiff2)).To(gomega.BeFalse())
 		})
 	})
 

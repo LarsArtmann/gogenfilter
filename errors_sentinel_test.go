@@ -34,15 +34,6 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 		assertEqual(t, "ErrorCode", realErr.ErrorCode(), CodeProjectRootNotFound)
 	})
 
-	t.Run("extracts Helper interface", func(t *testing.T) {
-		t.Parallel()
-
-		realErr := testProjectRootErrorNotFound(t)
-
-		if realErr.Help() == "" {
-			t.Error("Help() returned empty string")
-		}
-	})
 }
 
 func TestProjectRootErrorSentinelMatching(t *testing.T) {
@@ -82,22 +73,7 @@ func TestProjectRootErrorAccessors(t *testing.T) {
 		testErrorCodeReturnsCode(t, err, CodeProjectRootNotFound)
 	})
 
-	t.Run("Help returns guidance", func(t *testing.T) {
-		t.Parallel()
 
-		err := &ProjectRootError{ //nolint:exhaustruct // testing specific field, others irrelevant
-			Code: CodeProjectRootNotFound,
-		}
-		help := err.Help()
-
-		if help == "" {
-			t.Error("Help() returned empty string")
-		}
-
-		if help != CodeHelp(CodeProjectRootNotFound) {
-			t.Errorf("Help() = %q, want %q", help, CodeHelp(CodeProjectRootNotFound))
-		}
-	})
 }
 
 func TestSQLCConfigErrorErrorsAs(t *testing.T) {
@@ -180,18 +156,6 @@ func TestSQLCConfigErrorAccessors(t *testing.T) {
 		testErrorCodeReturnsCode(t, err, CodeSQLCConfigParse)
 	})
 
-	t.Run("Help returns guidance", func(t *testing.T) {
-		t.Parallel()
-
-		err := &SQLCConfigError{ //nolint:exhaustruct // testing specific field, others irrelevant
-			Code: CodeSQLCConfigParse,
-		}
-		help := err.Help()
-
-		if help == "" {
-			t.Error("Help() returned empty string")
-		}
-	})
 }
 
 func TestSentinelErrors(t *testing.T) {
