@@ -23,82 +23,9 @@ const (
 	CodeSQLCConfigFind         ErrorCode = "sqlc_config_find"          // finding sqlc config files failed
 )
 
-// errorCodeDef pairs an error code with its user-facing help text.
-// All error codes are defined here — AllErrorCodes() and CodeHelp() derive from this table.
-type errorCodeDef struct {
-	Code ErrorCode
-	Help string
-}
-
-// errorCodeDefs is the single source of truth for all error codes.
-// Adding a new entry here automatically updates AllErrorCodes() and CodeHelp().
-//
-//nolint:gochecknoglobals // immutable lookup table, never mutated
-var errorCodeDefs = []errorCodeDef{
-	{
-		CodeProjectRootNotFound,
-		"Ensure the directory is within a Go project containing a go.mod file or other project marker file.",
-	},
-	{CodeProjectRootInvalidPath, "Verify the start path exists and is a valid directory."},
-	{
-		CodeInvalidFilterOption,
-		"Ensure the FilterOption is valid. Use FilterOption constants (FilterSQLC, FilterTempl, etc.) or FilterAll.",
-	},
-	{
-		CodeSQLCConfigRead,
-		"Check that the sqlc config file exists and has appropriate read permissions.",
-	},
-	{
-		CodeSQLCConfigParse,
-		"Verify the sqlc.yaml file has valid YAML syntax. Refer to https://docs.sqlc.dev for the expected format.",
-	},
-	{
-		CodeSQLCConfigWalk,
-		"Ensure the search path exists and is accessible for directory traversal.",
-	},
-	{CodeSQLCConfigCollect, "Verify that all sqlc config files are valid and accessible."},
-	{
-		CodeSQLCConfigFind,
-		"Ensure the search path contains a sqlc.yaml or sqlc.yml configuration file.",
-	},
-}
-
-// AllErrorCodes returns all defined error codes.
-// Derived from errorCodeDefs — adding a new def automatically updates this list.
-func AllErrorCodes() []ErrorCode {
-	codes := make([]ErrorCode, len(errorCodeDefs))
-	for i, def := range errorCodeDefs {
-		codes[i] = def.Code
-	}
-
-	return codes
-}
-
-// helpText builds the help lookup map from errorCodeDefs.
-//
-//nolint:gochecknoglobals // immutable lookup table, derived from errorCodeDefs
-var helpText = func() map[ErrorCode]string {
-	m := make(map[ErrorCode]string, len(errorCodeDefs))
-	for _, def := range errorCodeDefs {
-		m[def.Code] = def.Help
-	}
-
-	return m
-}()
-
-// CodeHelp returns the user-friendly help text for the given error code.
-func CodeHelp(code ErrorCode) string {
-	return helpText[code]
-}
-
 // ErrorCoder is implemented by all gogenfilter errors for programmatic code access.
 type ErrorCoder interface {
 	ErrorCode() ErrorCode
-}
-
-// Helper is implemented by errors that provide user-friendly guidance.
-type Helper interface {
-	Help() string
 }
 
 // Sentinel errors for use with errors.Is.
@@ -140,11 +67,6 @@ func (e *ProjectRootError) Error() string {
 
 func (e *ProjectRootError) Unwrap() error { return e.Err }
 
-// CodeEqual compares two error codes for equality.
-func CodeEqual[T interface{ ErrorCode() ErrorCode }](e, target T) bool {
-	return e.ErrorCode() == target.ErrorCode()
-}
-
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *ProjectRootError) Is(target error) bool {
 	t, ok := target.(*ProjectRootError)
@@ -152,14 +74,11 @@ func (e *ProjectRootError) Is(target error) bool {
 		return false
 	}
 
-	return CodeEqual(e, t)
+	return e.Code == t.Code
 }
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *ProjectRootError) ErrorCode() ErrorCode { return e.Code }
-
-// Help returns user-friendly guidance for resolving the error.
-func (e *ProjectRootError) Help() string { return CodeHelp(e.Code) }
 
 // FilterConfigError is returned when a filter configuration is invalid.
 type FilterConfigError struct {
@@ -190,14 +109,11 @@ func (e *FilterConfigError) Is(target error) bool {
 		return false
 	}
 
-	return CodeEqual(e, t)
+	return e.Code == t.Code
 }
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
-
-// Help returns user-friendly guidance for resolving the error.
-func (e *FilterConfigError) Help() string { return CodeHelp(e.Code) }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
@@ -252,11 +168,8 @@ func (e *SQLCConfigError) Is(target error) bool {
 		return false
 	}
 
-	return CodeEqual(e, t)
+	return e.Code == t.Code
 }
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *SQLCConfigError) ErrorCode() ErrorCode { return e.Code }
-
-// Help returns user-friendly guidance for resolving the error.
-func (e *SQLCConfigError) Help() string { return CodeHelp(e.Code) }

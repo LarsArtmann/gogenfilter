@@ -63,9 +63,3 @@ func BenchmarkSQLCConfigErrorIs(b *testing.B) {
 		_ = errors.Is(err, ErrSQLCConfigParse)
 	}
 }
-
-func BenchmarkCodeHelp(b *testing.B) {
-	for b.Loop() {
-		_ = CodeHelp(CodeSQLCConfigParse)
-	}
-}

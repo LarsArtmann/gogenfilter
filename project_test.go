@@ -91,10 +91,5 @@ func TestFindProjectRootErrorCode(t *testing.T) {
 		assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
 
 		assertErrorsIs(t, err, ErrProjectRootNotFound)
-
-		help := err.Help()
-		if help == "" {
-			t.Error("Help() should return non-empty guidance")
-		}
 	})
 }
