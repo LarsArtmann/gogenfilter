@@ -60,39 +60,39 @@ func testErrorCodeReturnsCode[T ErrorCoder](t *testing.T, err T, expectedCode Er
 func sqlcConfigUnwrapTestSetup() (*SQLCConfigError, *SQLCConfigError) {
 	innerErr := newSQLCConfigError(
 		CodeSQLCConfigParse,
-		ConfigPath("sqlc.yaml"),
-		Operation("parse"),
-		ErrorMessage("invalid YAML"),
+		"sqlc.yaml",
+		"parse",
+		"invalid YAML",
 		os.ErrInvalid,
 	)
 
 	collectErr := newSQLCConfigError(
 		CodeSQLCConfigCollect,
-		ConfigPath(""),
-		Operation("collect"),
-		ErrorMessage("collecting output dirs"),
+		"",
+		"collect",
+		"collecting output dirs",
 		innerErr,
 	)
 
 	return innerErr, collectErr
 }
 
-func newSQLCConfigErrorParse(configPath ConfigPath, msg string) *SQLCConfigError {
+func newSQLCConfigErrorParse(configPath string, msg string) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigParse,
 		configPath,
-		Operation("parse"),
-		ErrorMessage(msg),
+		"parse",
+		msg,
 		os.ErrInvalid,
 	)
 }
 
-func newSQLCConfigErrorRead(configPath ConfigPath, msg string) *SQLCConfigError {
+func newSQLCConfigErrorRead(configPath string, msg string) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigRead,
 		configPath,
-		Operation("read"),
-		ErrorMessage(msg),
+		"read",
+		msg,
 		os.ErrPermission,
 	)
 }
@@ -301,7 +301,7 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 	t.Run("branded error message with config path", func(t *testing.T) {
 		t.Parallel()
 
-		err := newSQLCConfigErrorRead(ConfigPath("/path/to/sqlc.yaml"), "reading sqlc config")
+		err := newSQLCConfigErrorRead("/path/to/sqlc.yaml", "reading sqlc config")
 
 		msg := err.Error()
 
@@ -319,9 +319,9 @@ func TestSQLCConfigErrorMessaging(t *testing.T) {
 
 		err := newSQLCConfigError(
 			CodeSQLCConfigFind,
-			ConfigPath(""),
-			Operation("find"),
-			ErrorMessage("finding sqlc configs"),
+			"",
+			"find",
+			"finding sqlc configs",
 			os.ErrNotExist,
 		)
 

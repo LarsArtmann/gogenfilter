@@ -61,9 +61,9 @@ type sqlcCodegen struct {
 // newSQLCConfigError creates a new SQLCConfigError with consistent formatting.
 func newSQLCConfigError(
 	code ErrorCode,
-	configPath ConfigPath,
-	operation Operation,
-	message ErrorMessage,
+	configPath string,
+	operation string,
+	message string,
 	err error,
 ) *SQLCConfigError {
 	return &SQLCConfigError{
@@ -78,9 +78,9 @@ func newSQLCConfigError(
 func sqlcFindError(path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigFind,
-		ConfigPath(path),
-		Operation("find"),
-		ErrorMessage(fmt.Sprintf("finding sqlc configs in %q", path)),
+		path,
+		"find",
+		fmt.Sprintf("finding sqlc configs in %q", path),
 		err,
 	)
 }
@@ -88,9 +88,9 @@ func sqlcFindError(path string, err error) *SQLCConfigError {
 func sqlcWalkError(path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigWalk,
-		ConfigPath(path),
-		Operation("walk"),
-		ErrorMessage(fmt.Sprintf("walking %q for sqlc configs", path)),
+		path,
+		"walk",
+		fmt.Sprintf("walking %q for sqlc configs", path),
 		err,
 	)
 }
@@ -98,9 +98,9 @@ func sqlcWalkError(path string, err error) *SQLCConfigError {
 func sqlcReadError(configPath string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigRead,
-		ConfigPath(configPath),
-		Operation("read"),
-		ErrorMessage("reading sqlc config"),
+		configPath,
+		"read",
+		"reading sqlc config",
 		err,
 	)
 }
@@ -108,9 +108,9 @@ func sqlcReadError(configPath string, err error) *SQLCConfigError {
 func sqlcCollectError(configPath string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigCollect,
-		ConfigPath(configPath),
-		Operation("collect-output-dirs"),
-		ErrorMessage("processing sqlc config"),
+		configPath,
+		"collect-output-dirs",
+		"processing sqlc config",
 		err,
 	)
 }
@@ -194,7 +194,7 @@ func recordSQLCConfig(filePath string, configs map[string]string) {
 
 // findSQLCConfigsInParent searches parent directories for sqlc config.
 func findSQLCConfigsInParent(path string, configs map[string]string) {
-	parentPath, err := FindProjectRoot(StartPath(path), []string{"sqlc.yaml", "sqlc.yml"})
+	parentPath, err := FindProjectRoot(path, []string{"sqlc.yaml", "sqlc.yml"})
 	if err != nil || parentPath == "" {
 		return
 	}
@@ -224,11 +224,11 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 func unmarshalSQLCYAML(data []byte, target any, configPath, errMsg string) *SQLCConfigError {
 	err := yaml.Unmarshal(data, target)
 	if err != nil {
-		return newSQLCConfigError(
+	return newSQLCConfigError(
 			CodeSQLCConfigParse,
-			ConfigPath(configPath),
-			Operation("parse"),
-			ErrorMessage(errMsg),
+			configPath,
+			"parse",
+			errMsg,
 			err,
 		)
 	}
@@ -261,9 +261,9 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 	default:
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigParse,
-			ConfigPath(configPath),
-			Operation("parse"),
-			ErrorMessage(fmt.Sprintf("unsupported sqlc config version %q", version.Version)),
+			configPath,
+			"parse",
+			fmt.Sprintf("unsupported sqlc config version %q", version.Version),
 			nil,
 		)
 	}

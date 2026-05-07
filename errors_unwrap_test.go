@@ -50,7 +50,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 		}
 
 		assertEqual(t, "ErrorCode", extracted.ErrorCode(), CodeProjectRootInvalidPath)
-		assertEqual(t, "StartPath", extracted.StartPath, StartPath("/path"))
+		assertEqual(t, "StartPath", extracted.StartPath, "/path")
 	})
 
 	t.Run("errors.Is reaches sentinel through multiple wraps", func(t *testing.T) {
@@ -72,7 +72,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 func TestSQLCConfigErrorUnwrap(t *testing.T) {
 	t.Parallel()
 
-	err := newSQLCConfigErrorRead(ConfigPath(""), "reading sqlc config")
+	err := newSQLCConfigErrorRead("", "reading sqlc config")
 
 	assertErrorsIs(t, err, os.ErrPermission)
 }
@@ -99,7 +99,7 @@ func testSQLCUnwrapCollectToInner(t *testing.T) {
 	}
 
 	assertEqual(t, "inner ErrorCode", inner.ErrorCode(), CodeSQLCConfigParse)
-	assertEqual(t, "inner ConfigPath", inner.ConfigPath, ConfigPath("sqlc.yaml"))
+	assertEqual(t, "inner ConfigPath", inner.ConfigPath, "sqlc.yaml")
 }
 
 func testSQLCUnwrapCollectSentinel(t *testing.T) {

@@ -306,7 +306,7 @@ func TestFindProjectRoot_BreakCondition(t *testing.T) {
 	t.Parallel()
 
 	_, err := FindProjectRoot(
-		StartPath("/"),
+		"/",
 		[]string{"this_marker_definitely_does_not_exist.anywhere"},
 	)
 	if err == nil {
@@ -347,9 +347,9 @@ func TestSQLCConfigError_Unwrap(t *testing.T) {
 
 	err := &SQLCConfigError{
 		Code:       CodeSQLCConfigParse,
-		ConfigPath: ConfigPath("sqlc.yaml"),
-		Operation:  Operation("parse"),
-		Message:    ErrorMessage("bad yaml"),
+		ConfigPath: "sqlc.yaml",
+		Operation:  "parse",
+		Message:    "bad yaml",
 		Err:        os.ErrPermission,
 	}
 

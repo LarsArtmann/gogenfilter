@@ -15,7 +15,7 @@ func BenchmarkNewProjectRootError(b *testing.B) {
 
 func BenchmarkNewSQLCConfigError(b *testing.B) {
 	for b.Loop() {
-		_ = newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML syntax")
+		_ = newSQLCConfigErrorParse("/path/to/sqlc.yaml", "invalid YAML syntax")
 	}
 }
 
@@ -37,7 +37,7 @@ func newBenchmarkProjectRootError() *ProjectRootError {
 }
 
 func BenchmarkSQLCConfigErrorError(b *testing.B) {
-	err := newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML syntax")
+	err := newSQLCConfigErrorParse("/path/to/sqlc.yaml", "invalid YAML syntax")
 
 	for b.Loop() {
 		_ = err.Error()
@@ -57,7 +57,7 @@ func BenchmarkProjectRootErrorIs(b *testing.B) {
 }
 
 func BenchmarkSQLCConfigErrorIs(b *testing.B) {
-	err := newSQLCConfigErrorParse(ConfigPath("/path/to/sqlc.yaml"), "invalid YAML")
+	err := newSQLCConfigErrorParse("/path/to/sqlc.yaml", "invalid YAML")
 
 	for b.Loop() {
 		_ = errors.Is(err, ErrSQLCConfigParse)

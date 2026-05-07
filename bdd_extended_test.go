@@ -159,7 +159,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.When("called from within a project", func() {
 			ginkgo.It("finds the root by walking up", func() {
 				root, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("."),
+					".",
 					[]string{"go.mod"},
 				)
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
@@ -170,7 +170,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.When("called from a nonexistent path", func() {
 			ginkgo.It("returns ProjectRootError with not-found code", func() {
 				_, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("/this/does/not/exist"),
+					"/this/does/not/exist",
 					[]string{"nonexistent_marker_file.txt"},
 				)
 				gomega.Expect(err).To(gomega.HaveOccurred())
@@ -182,7 +182,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.When("ProjectRootError is created", func() {
 			ginkgo.It("has branded prefix in Error()", func() {
 				_, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("/nonexistent/path"),
+					"/nonexistent/path",
 					[]string{"marker.txt"},
 				)
 				gomega.Expect(err).To(gomega.HaveOccurred())
@@ -192,7 +192,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 
 			ginkgo.It("provides Help() text via Helper interface", func() {
 				_, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("/nonexistent/path"),
+					"/nonexistent/path",
 					[]string{"marker.txt"},
 				)
 				gomega.Expect(err).To(gomega.HaveOccurred())
@@ -245,9 +245,9 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.It("formats with config path and cause", func() {
 			err := &gogenfilter.SQLCConfigError{
 				Code:       gogenfilter.CodeSQLCConfigParse,
-				ConfigPath: gogenfilter.ConfigPath("sqlc.yaml"),
-				Operation:  gogenfilter.Operation("parse"),
-				Message:    gogenfilter.ErrorMessage("invalid YAML"),
+				ConfigPath: "sqlc.yaml",
+				Operation:  "parse",
+				Message:    "invalid YAML",
 				Err:        os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc.yaml"))
@@ -257,8 +257,8 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.It("formats with operation and message only (no path)", func() {
 			err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 				Code:      gogenfilter.CodeSQLCConfigRead,
-				Operation: gogenfilter.Operation("read"),
-				Message:   gogenfilter.ErrorMessage("file missing"),
+				Operation: "read",
+				Message:   "file missing",
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc_config_read"))
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("file missing"))
@@ -267,8 +267,8 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.It("formats with cause (no path)", func() {
 			err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 				Code:      gogenfilter.CodeSQLCConfigParse,
-				Operation: gogenfilter.Operation("parse"),
-				Message:   gogenfilter.ErrorMessage("bad yaml"),
+				Operation: "parse",
+				Message:   "bad yaml",
 				Err:       os.ErrInvalid,
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("bad yaml"))

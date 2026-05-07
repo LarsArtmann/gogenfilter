@@ -119,7 +119,7 @@ var (
 // ProjectRootError is returned when the project root cannot be found.
 type ProjectRootError struct {
 	Code      ErrorCode
-	StartPath StartPath
+	StartPath string
 	Markers   []string
 	Err       error
 }
@@ -202,9 +202,9 @@ func (e *FilterConfigError) Help() string { return CodeHelp(e.Code) }
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
 	Code       ErrorCode
-	ConfigPath ConfigPath
-	Operation  Operation
-	Message    ErrorMessage
+	ConfigPath string
+	Operation  string
+	Message    string
 	Err        error
 }
 
