@@ -508,7 +508,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 		ginkgo.When("project root is not found", func() {
 			ginkgo.It("returns a ProjectRootError with branded prefix", func() {
 				_, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("/nonexistent/path/12345"),
+					"/nonexistent/path/12345",
 					[]string{"go.mod"},
 				)
 				gomega.Expect(err).To(gomega.HaveOccurred())
@@ -518,7 +518,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 
 			ginkgo.It("supports errors.Is matching", func() {
 				_, err := gogenfilter.FindProjectRoot(
-					gogenfilter.StartPath("/nonexistent/path/12345"),
+					"/nonexistent/path/12345",
 					[]string{"go.mod"},
 				)
 				gomega.Expect(errors.Is(err, gogenfilter.ErrProjectRootNotFound)).
@@ -551,9 +551,9 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			ginkgo.It("includes config path in error message", func() {
 				err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 					Code:       gogenfilter.CodeSQLCConfigParse,
-					ConfigPath: gogenfilter.ConfigPath("sqlc.yaml"),
-					Operation:  gogenfilter.Operation("parse"),
-					Message:    gogenfilter.ErrorMessage("invalid YAML"),
+					ConfigPath: "sqlc.yaml",
+					Operation:  "parse",
+					Message:    "invalid YAML",
 				}
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc.yaml"))
 				gomega.Expect(err.ErrorCode()).To(gomega.Equal(gogenfilter.CodeSQLCConfigParse))

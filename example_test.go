@@ -236,7 +236,7 @@ func ExampleDetectReasonReader() {
 
 func ExampleFindProjectRoot_errorHandling() {
 	_, err := gogenfilter.FindProjectRoot(
-		gogenfilter.StartPath("/nonexistent/path"),
+		"/nonexistent/path",
 		[]string{"go.mod"},
 	)
 	if err != nil {
