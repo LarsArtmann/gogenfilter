@@ -1,6 +1,6 @@
 # Features
 
-**Updated:** 2026-05-06
+**Updated:** 2026-05-08
 **Source:** Code audit of all source files
 
 ## Core Detection
@@ -35,9 +35,6 @@
 | FilterResult struct           | FULLY_FUNCTIONAL | `Filtered`, `Reason`, `Path`, `Trace` fields for structured results                |
 | FilterDetailed()              | FULLY_FUNCTIONAL | `(FilterResult, error)` with trace info — additive API alongside `Filter()`        |
 | FilterPathsDetailed()         | FULLY_FUNCTIONAL | Batch `([]FilterResult, error)` with trace info                                    |
-| FilterDetailedContext()       | FULLY_FUNCTIONAL | Context-aware `FilterDetailed` with cancellation                                   |
-| FilterContext()               | FULLY_FUNCTIONAL | Context-aware `Filter` with cancellation                                           |
-| FilterPathsContext()          | FULLY_FUNCTIONAL | Context-aware `FilterPaths` with cancellation                                      |
 | AllGeneratorOptions()         | FULLY_FUNCTIONAL | Enumerate detector options (excludes `FilterAll`)                                  |
 | FilterOption.Reason()         | FULLY_FUNCTIONAL | Returns `(FilterReason, bool)` — no panics                                         |
 | FilterReasons()               | FULLY_FUNCTIONAL | Returns enabled reasons                                                            |
@@ -61,9 +58,6 @@
 | DetectReason (no I/O)     | FULLY_FUNCTIONAL | Filename + content, caller provides content |
 | DetectReasonReader        | FULLY_FUNCTIONAL | From `io.Reader`, reads content internally  |
 | Individual Is\* functions | FULLY_FUNCTIONAL | 11 exported `Is*Generated` functions        |
-| MatchesSQLCFilename       | FULLY_FUNCTIONAL | Filename-only check                         |
-| HasSQLCContent            | FULLY_FUNCTIONAL | Content-only check                          |
-| HasSQLCCodePatterns       | FULLY_FUNCTIONAL | SQLC-specific code pattern check            |
 
 ## SQLC Config Discovery
 
@@ -85,11 +79,7 @@
 | 8 error codes        | FULLY_FUNCTIONAL | Project root (2) + Filter config (1) + SQLC config (5) |
 | 8 sentinel errors    | FULLY_FUNCTIONAL | `Err*` vars for `errors.Is` matching                   |
 | ErrorCoder interface | FULLY_FUNCTIONAL | `ErrorCode() ErrorCode` for programmatic access        |
-| Helper interface     | FULLY_FUNCTIONAL | `Help() string` returns user-friendly guidance         |
 | Unwrap chains        | FULLY_FUNCTIONAL | Inner errors accessible via `errors.AsType`            |
-| CodeEqual generic    | FULLY_FUNCTIONAL | `CodeEqual[T]` for type-safe code comparison           |
-| AllErrorCodes()      | FULLY_FUNCTIONAL | All codes from `errorCodeDefs` table                   |
-| CodeHelp()           | FULLY_FUNCTIONAL | Help text from `errorCodeDefs` table                   |
 
 ## Type Safety
 

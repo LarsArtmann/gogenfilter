@@ -30,13 +30,12 @@ This project provides detection and filtering capabilities for auto-generated Go
 | File           | Purpose                                                                                                                                                                                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `filter.go`    | `Filter` type with functional options (`WithFilterOptions`, `WithFS`, `WithIncludePatterns`, `WithExcludePatterns`). `Filter` returns `(bool, error)`, `FilterDetailed` returns `(FilterResult, error)`, `FilterPaths` for batch. Enabled when options/patterns are set. |
-| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers, trace-aware detection functions                                                                                                                   |
-| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `FilterResult` struct, `AllFilterOptions()`, `AllGeneratorOptions()`, `AllFilterReasons()`                                                                                                  |
+| `detection.go` | Core detection logic, `detectors` table (11 entries), `DetectReason`, `DetectReasonReader`, filename/content matchers, trace-aware detection functions, `AllFilterOptions()`, `AllGeneratorOptions()`, `AllFilterReasons()` |
+| `types.go`     | `FilterOption` and `FilterReason` types, constants (12 options, 14 reasons), `FilterResult` struct                                                                                                                                                                        |
 | `pattern.go`   | `**` glob pattern matching via `doublestar/v4`                                                                                                                                                                                                                           |
 | `sqlc.go`      | SQLC config discovery and parsing (v1 and v2 formats, Go/JSON/Codegen output dirs)                                                                                                                                                                                       |
-| `errors.go`    | Branded error types with sentinel errors                                                                                                                                                                                                                                 |
+| `errors.go`    | Branded error types with sentinel errors, `ErrorCode` type, `ErrorCoder` interface                                                                                                                                                                                       |
 | `project.go`   | Project root discovery                                                                                                                                                                                                                                                   |
-| `phantom.go`   | Phantom type constructors (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`)                                                                                                                                                                                       |
 
 ### Website
 
@@ -75,11 +74,17 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **SQLC v1 config supported** — `sqlcV1Config` struct maps v1 `packages[].path` to output dirs. Version dispatch in `unmarshalSQLCConfig` routes v1 to `parseV1AsV2` which converts to v2 format. Unsupported versions return a parse error.
 - **`Error()` uses `fmt.Sprintf`** — 228ns on cold path (error formatting). `strings.Builder` optimization is not worth the complexity.
 - **art-dupl known false positive** — `unmarshalSQLCConfig` and `parseV1AsV2` in `sqlc.go` share identical signatures `([]byte, string) → (*sqlcConfig, *SQLCConfigError)` but are fundamentally different functions (version dispatch vs v1→v2 conversion). Art-dupl's structural matching flags them; fixed via `--exclude-pattern 'sqlc.go'` in the dedup command.
-- **`errors.AsType` migration (Go 1.26)** — Source code uses `errors.AsType[T]` exclusively. 2 test files still use `errors.As` (`bdd_test.go`, `filter_test.go`) — should be migrated. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
+- **`errors.AsType` migration (Go 1.26)** — All code and tests use `errors.AsType[T]` exclusively. The `assertErrorType[T error]` helper in `errors_test.go` wraps `errors.AsType` for test ergonomics.
 - **`FilterResult` is additive, not replacing** — `Filter()` returns `(bool, error)` unchanged. `FilterDetailed()` returns `(FilterResult, error)` with trace info. No breaking changes to existing API.
 - **`FilterOption.Reason()` returns `(FilterReason, bool)`** — Previously panicked on `FilterAll`. Now returns `("", false)` for meta-options. This is the correct Go pattern — no panics in library code.
 - **`AllGeneratorOptions()` vs `AllFilterOptions()`** — `AllFilterOptions()` includes `FilterAll` (for validation). `AllGeneratorOptions()` excludes `FilterAll` (for enumeration). Both are derived from the detectors table.
 - **Metrics removed** — Stats aggregation is the caller's responsibility. `FilterDetailed()` and `FilterPaths()` return per-call results with all the data callers need.
+- **Phantom types removed** — `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage` provided zero compile-time safety. Error struct fields are now plain `string`.
+- **Context methods removed** — `FilterContext`, `FilterDetailedContext`, `FilterPathsContext` promised cancellation over synchronous I/O. They were lies.
+- **Error system simplified** — Removed `errorCodeDefs` table, `AllErrorCodes()`, `CodeHelp()`, `Helper` interface, `CodeEqual[T]`. Kept `ErrorCode` type, `ErrorCoder` interface, sentinel errors, branded prefix. Is() methods use direct `.Code == .Code` comparison.
+- **Detection helpers unexported** — `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns` are internal helpers. Users should use `DetectReason()` or `Filter`.
+- **`codeGeneratedPrefix` moved to `detection.go`** — Only used there, not in `types.go`.
+- **`detectorOptions(bool)` merged** — Replaces `allSpecificOptions()` + `allDetectorOptions()` with one function.
 
 ### Testing
 
@@ -179,9 +184,6 @@ filtered, err := f.Filter("file.go")
 
 // FilterPaths returns ([]bool, error) — batch filtering
 results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
-
-// FilterContext respects context cancellation
-filtered, err := f.FilterContext(ctx, "file.go")
 
 // Variadic DetectReason (no I/O)
 reason := gogenfilter.DetectReason("file.go", content,
