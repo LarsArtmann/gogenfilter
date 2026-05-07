@@ -1,7 +1,6 @@
 package gogenfilter
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -200,28 +199,6 @@ func (f *Filter) FilterPathsDetailed(paths []string) ([]FilterResult, error) {
 	return results, nil
 }
 
-// FilterDetailedContext is like FilterDetailed but respects context cancellation.
-func (f *Filter) FilterDetailedContext(ctx context.Context, filePath string) (FilterResult, error) {
-	err := ctx.Err()
-	if err != nil {
-		return FilterResult{
-			Filtered: false, Reason: "", Path: filePath, Trace: "",
-		}, fmt.Errorf("context check for %q: %w", filePath, err)
-	}
-
-	result, err := f.FilterDetailed(filePath)
-	if err != nil {
-		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, err
-	}
-
-	err = ctx.Err()
-	if err != nil {
-		return result, fmt.Errorf("context check after filter of %q: %w", filePath, err)
-	}
-
-	return result, nil
-}
-
 // FilterPaths filters multiple file paths in batch, returning a slice of booleans
 // indicating whether each file should be filtered.
 // If an error occurs on any path, partial results collected so far and the error are returned.
@@ -235,49 +212,6 @@ func (f *Filter) FilterPaths(paths []string) ([]bool, error) {
 	results := make([]bool, 0, len(paths))
 
 	for _, path := range paths {
-		filtered, err := f.Filter(path)
-		if err != nil {
-			return results, err
-		}
-
-		results = append(results, filtered)
-	}
-
-	return results, nil
-}
-
-// FilterContext is like Filter but respects context cancellation.
-// Returns the context error if the context is cancelled before filtering completes.
-func (f *Filter) FilterContext(ctx context.Context, filePath string) (bool, error) {
-	err := ctx.Err()
-	if err != nil {
-		return false, fmt.Errorf("context check for %q: %w", filePath, err)
-	}
-
-	filtered, err := f.Filter(filePath)
-	if err != nil {
-		return false, err
-	}
-
-	err = ctx.Err()
-	if err != nil {
-		return filtered, fmt.Errorf("context check after filter of %q: %w", filePath, err)
-	}
-
-	return filtered, nil
-}
-
-// FilterPathsContext is like FilterPaths but respects context cancellation.
-// Stops processing when the context is cancelled, returning partial results.
-func (f *Filter) FilterPathsContext(ctx context.Context, paths []string) ([]bool, error) {
-	results := make([]bool, 0, len(paths))
-
-	for _, path := range paths {
-		ctxErr := ctx.Err()
-		if ctxErr != nil {
-			return results, fmt.Errorf("context cancelled: %w", ctxErr)
-		}
-
 		filtered, err := f.Filter(path)
 		if err != nil {
 			return results, err
