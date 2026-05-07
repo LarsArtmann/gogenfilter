@@ -69,7 +69,7 @@ func TestNewFilter(t *testing.T) {
 			t.Error("Expected enabled filter")
 		}
 
-		for _, opt := range allSpecificOptions() {
+		for _, opt := range detectorOptions(false) {
 			if _, ok := filter.options[opt]; !ok {
 				t.Errorf("Expected %s option enabled for FilterAll", opt)
 			}
@@ -158,7 +158,7 @@ func TestFilterReasons(t *testing.T) {
 
 		reasons := filter.FilterReasons()
 
-		expected := len(allSpecificOptions()) + 1 // +1 for FilterGeneric
+		expected := len(detectorOptions(false)) + 1 // +1 for FilterGeneric
 		if len(reasons) != expected {
 			t.Errorf("expected %d reasons for FilterAll, got %d", expected, len(reasons))
 		}
