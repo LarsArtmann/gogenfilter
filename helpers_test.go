@@ -336,9 +336,9 @@ func runSQLCFilenameTests(t *testing.T, tests []sqlcFilenameTestCase) {
 		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := MatchesSQLCFilename(testCase.path)
+			got := matchesSQLCFilename(testCase.path)
 
-			assertCallResult(t, "MatchesSQLCFilename", testCase.path, got, testCase.expected)
+			assertCallResult(t, "matchesSQLCFilename", testCase.path, got, testCase.expected)
 		})
 	}
 }
