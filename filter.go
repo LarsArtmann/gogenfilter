@@ -231,7 +231,6 @@ func (f *Filter) shouldFilterWithIncludes(filePath string) (bool, error) {
 	return f.shouldFilterByPattern(
 		filePath,
 		!f.matchesAnyPattern(filePath, f.includePatterns),
-		ReasonOutsideScope,
 	)
 }
 
@@ -239,25 +238,18 @@ func (f *Filter) shouldFilterWithExcludes(filePath string) (bool, error) {
 	return f.shouldFilterByPattern(
 		filePath,
 		f.matchesAnyPattern(filePath, f.excludePatterns),
-		ReasonExcludePattern,
 	)
 }
 
 func (f *Filter) shouldFilterByPattern(
 	filePath string,
 	patternMatched bool,
-	_ FilterReason,
 ) (bool, error) {
 	if patternMatched {
 		return true, nil
 	}
 
-	filtered, err := f.shouldFilterByDetection(filePath)
-	if err != nil {
-		return false, err
-	}
-
-	return filtered, nil
+	return f.shouldFilterByDetection(filePath)
 }
 
 func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
