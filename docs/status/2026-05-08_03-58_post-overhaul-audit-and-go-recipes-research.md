@@ -2,15 +2,16 @@
 
 **Date:** 2026-05-08 03:58
 **Branch:** `master` (clean, up to date with origin)
-**Last commit:** `caf6556` — chore: apply automated formatting fixes across codebase
+**Last commit:** `307ce14` — docs: fix CHANGELOG.md — add removed entries for overhaul deletions
+**Status:** All doc rot fixed. All checks green. Ready for v3 tag.
 
 ---
 
 ## Executive Summary
 
-gogenfilter v3 is in **strong post-overhaul health**. The API simplification sweep (phantom types, context methods, metrics, error system over-engineering, over-exported helpers) is **fully complete and landed**. All tests pass, linter is green, coverage is 98.8%, benchmarks are solid, website builds clean. The library is clean, focused, and nearly ready for a v3 tag.
+gogenfilter v3 is in **strong post-overhaul health**. The API simplification sweep (phantom types, context methods, metrics, error system over-engineering, over-exported helpers) is **fully complete and landed**. All tests pass, linter is green, coverage is 98.8%, benchmarks are solid, website builds clean. The library is clean, focused, and ready for a v3 tag.
 
-**One critical doc rot issue found:** README.md still references deleted `GetStats()`, `Metrics`, and `TotalFilesChecked` API — this was removed in commit `18dbb69` but README was never updated. FEATURES.md is clean.
+**Doc rot has been fully fixed** (2026-05-08 04:25): README.md, website errors.mdx, detection.mdx, types.mdx, filter.mdx, FEATURES.md, AGENTS.md, and CHANGELOG.md all updated to match the current API. No stale references remain.
 
 ---
 
