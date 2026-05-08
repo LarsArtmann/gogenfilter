@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -76,29 +77,16 @@ func TestNewFilter_MultiErrorAggregation(t *testing.T) {
 
 	errMsg := err.Error()
 
-	if !contains(errMsg, "config error 1") {
+	if !strings.Contains(errMsg, "config error 1") {
 		t.Errorf("multi-error should mention first error, got: %s", errMsg)
 	}
 
-	if !contains(errMsg, "config error 2") {
+	if !strings.Contains(errMsg, "config error 2") {
 		t.Errorf("multi-error should mention second error, got: %s", errMsg)
 	}
 }
 
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(substr) == 0 ||
-		(len(s) > 0 && len(substr) > 0 && findSubstring(s, substr)))
-}
 
-func findSubstring(s, substr string) bool {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return true
-		}
-	}
-
-	return false
-}
 
 func TestMatchPattern_MalformedPattern(t *testing.T) {
 	t.Parallel()
@@ -158,7 +146,7 @@ func TestUnmarshalSQLCConfig_UnsupportedVersion(t *testing.T) {
 
 	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
 
-	if !contains(err.Error(), "unsupported") {
+	if !strings.Contains(err.Error(), "unsupported") {
 		t.Errorf("error should mention unsupported version, got: %s", err.Error())
 	}
 }
