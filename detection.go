@@ -306,20 +306,9 @@ func detectReasonFS(
 	filePath string,
 	options map[FilterOption]struct{},
 ) (FilterReason, error) {
-	if reason := getFilenameBasedReason(filePath, options); reason != ReasonNotFiltered {
-		return reason, nil
-	}
+	result, err := detectReasonFSWithTrace(fsys, filePath, options)
 
-	if !needsContentCheck(options) {
-		return ReasonNotFiltered, nil
-	}
-
-	content, err := fs.ReadFile(fsys, filePath)
-	if err != nil {
-		return ReasonNotFiltered, fmt.Errorf("read file %q: %w", filePath, err)
-	}
-
-	return getContentBasedReason(filePath, string(content), options), nil
+	return result.Reason, err
 }
 
 // needsContentCheck returns true if any enabled detector requires reading file content.
@@ -343,36 +332,20 @@ func getContentBasedReason(
 	fileContent string,
 	opts map[FilterOption]struct{},
 ) FilterReason {
-	for i := range detectors {
-		d := &detectors[i]
-		if _, enabled := opts[d.option]; enabled {
-			if d.checkContent != nil && d.checkContent(path, fileContent) {
-				return d.reason
-			}
-		}
-	}
+	reason, _ := getContentBasedReasonWithTrace(path, fileContent, opts)
 
-	return ReasonNotFiltered
+	return reason
 }
 
 // getFilenameBasedReason determines the filter reason based on filename only.
 func getFilenameBasedReason(filePath string, options map[FilterOption]struct{}) FilterReason {
-	filename := filepath.Base(filePath)
+	reason, _ := getFilenameBasedReasonWithTrace(filePath, options)
 
-	for i := range detectors {
-		d := &detectors[i]
-		if _, enabled := options[d.option]; enabled {
-			if d.matchFilename != nil && d.matchFilename(filename) {
-				return d.reason
-			}
-		}
-	}
-
-	return ReasonNotFiltered
+	return reason
 }
 
-// getFilenameBasedReasonWithTrace is like getFilenameBasedReason but also
-// returns a trace string.
+// getFilenameBasedReasonWithTrace returns the filter reason and a trace string
+// based on filename only.
 func getFilenameBasedReasonWithTrace(
 	filePath string,
 	options map[FilterOption]struct{},
@@ -383,9 +356,7 @@ func getFilenameBasedReasonWithTrace(
 		d := &detectors[i]
 		if _, enabled := options[d.option]; enabled {
 			if d.matchFilename != nil && d.matchFilename(filename) {
-				trace := fmt.Sprintf("detected as %s via filename pattern", d.option)
-
-				return d.reason, trace
+				return d.reason, fmt.Sprintf("detected as %s via filename pattern", d.option)
 			}
 		}
 	}
@@ -433,7 +404,7 @@ func detectReasonFSWithTrace(
 	content, err := fs.ReadFile(fsys, filePath)
 	if err != nil {
 		return FilterResult{
-			Filtered: false, Reason: "", Path: filePath, Trace: "",
+			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
 		}, fmt.Errorf("read file %q: %w", filePath, err)
 	}
 
