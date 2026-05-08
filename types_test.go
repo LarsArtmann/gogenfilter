@@ -2,6 +2,10 @@ package gogenfilter
 
 import "testing"
 
+type validatable interface {
+	IsValid() bool
+}
+
 func filterOptionStringCases() []struct {
 	value    FilterOption
 	expected string
