@@ -303,7 +303,7 @@ func (f *Filter) shouldFilterDetailedByDetection(filePath string) (FilterResult,
 
 func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {
 	if len(patterns) > 0 {
-		return append(parts, fmt.Sprintf("%s=%v", label, patterns))
+		return append(parts, fmt.Sprintf("%s=[%s]", label, strings.Join(patterns, ",")))
 	}
 
 	return parts
