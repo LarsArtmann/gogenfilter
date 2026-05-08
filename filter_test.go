@@ -2,6 +2,7 @@ package gogenfilter
 
 import (
 	"errors"
+	"strings"
 	"testing"
 	"testing/fstest"
 )
@@ -679,4 +680,26 @@ func TestFilterPathsDetailed(t *testing.T) {
 		assertEqual(t, "drop.go filtered", results[1].Filtered, true)
 		assertEqual(t, "drop.go reason", results[1].Reason, ReasonOutsideScope)
 	})
+}
+
+func TestNewFilter_MultiErrorAggregation(t *testing.T) {
+	t.Parallel()
+
+	cfg1 := failingFilterConfig("config error 1")
+	cfg2 := failingFilterConfig("config error 2")
+
+	_, err := NewFilter(cfg1, cfg2)
+	if err == nil {
+		t.Fatal("NewFilter should return error when multiple configs fail")
+	}
+
+	errMsg := err.Error()
+
+	if !strings.Contains(errMsg, "config error 1") {
+		t.Errorf("multi-error should mention first error, got: %s", errMsg)
+	}
+
+	if !strings.Contains(errMsg, "config error 2") {
+		t.Errorf("multi-error should mention second error, got: %s", errMsg)
+	}
 }

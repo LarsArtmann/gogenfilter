@@ -175,3 +175,36 @@ func mustNotMatchPattern(t *testing.T, path, pattern, msg string) {
 		t.Errorf("expected %s to return false", msg)
 	}
 }
+
+func TestMatchPattern_MalformedPattern(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		path    string
+		pattern string
+	}{
+		{"no slash", "src/file.go", "["},
+		{"with slash", "src/file.go", "src/["},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			result := MatchPattern(tt.path, tt.pattern)
+			if result {
+				t.Error("malformed pattern should not match")
+			}
+		})
+	}
+}
+
+func TestMatchPattern_AbsolutePathWithStarSlash(t *testing.T) {
+	t.Parallel()
+
+	result := MatchPattern("/home/user/project/file.go", "*.go")
+	if !result {
+		t.Error("absolute path with *.go pattern should match via base name fallback")
+	}
+}
