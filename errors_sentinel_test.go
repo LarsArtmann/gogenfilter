@@ -33,7 +33,6 @@ func TestProjectRootErrorErrorsAs(t *testing.T) {
 
 		assertEqual(t, "ErrorCode", realErr.ErrorCode(), CodeProjectRootNotFound)
 	})
-
 }
 
 func TestProjectRootErrorSentinelMatching(t *testing.T) {
@@ -72,8 +71,6 @@ func TestProjectRootErrorAccessors(t *testing.T) {
 		}
 		testErrorCodeReturnsCode(t, err, CodeProjectRootNotFound)
 	})
-
-
 }
 
 func TestSQLCConfigErrorErrorsAs(t *testing.T) {
@@ -155,7 +152,6 @@ func TestSQLCConfigErrorAccessors(t *testing.T) {
 		}
 		testErrorCodeReturnsCode(t, err, CodeSQLCConfigParse)
 	})
-
 }
 
 func TestSentinelErrors(t *testing.T) {

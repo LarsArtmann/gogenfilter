@@ -680,5 +680,3 @@ func TestFilterPathsDetailed(t *testing.T) {
 		assertEqual(t, "drop.go reason", results[1].Reason, ReasonOutsideScope)
 	})
 }
-
-
