@@ -39,6 +39,7 @@ import "slices"
 // FilterOption represents a type of generated code to filter.
 type FilterOption string
 
+// String returns the filter option as a string.
 func (o FilterOption) String() string { return string(o) }
 
 // Reason returns the FilterReason corresponding to this FilterOption.
@@ -98,6 +99,7 @@ const (
 // FilterReason represents the reason a file was filtered.
 type FilterReason string
 
+// String returns the filter reason as a string.
 func (r FilterReason) String() string { return string(r) }
 
 // IsValid reports whether the FilterReason is a recognized value.
