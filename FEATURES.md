@@ -88,7 +88,6 @@
 | FilterOption string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`, `Reason() (FilterReason, bool)` |
 | FilterReason string type | FULLY_FUNCTIONAL | With `IsValid()`, `String()`                           |
 | ErrorCode string type    | FULLY_FUNCTIONAL | With `String()`                                        |
-| validatable interface    | FULLY_FUNCTIONAL | Internal generic constraint                            |
 
 ## Testing
 
