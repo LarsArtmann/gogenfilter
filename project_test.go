@@ -93,3 +93,17 @@ func TestFindProjectRootErrorCode(t *testing.T) {
 		assertErrorsIs(t, err, ErrProjectRootNotFound)
 	})
 }
+
+func TestFindProjectRoot_BreakCondition(t *testing.T) {
+	t.Parallel()
+
+	_, err := FindProjectRoot(
+		"/",
+		[]string{"this_marker_definitely_does_not_exist.anywhere"},
+	)
+	if err == nil {
+		t.Fatal("FindProjectRoot should fail when reaching filesystem root")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeProjectRootNotFound)
+}

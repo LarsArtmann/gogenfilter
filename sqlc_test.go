@@ -3,7 +3,9 @@ package gogenfilter
 import (
 	"errors"
 	"path/filepath"
+	"strings"
 	"testing"
+	"testing/fstest"
 )
 
 func TestShouldSkipDirectory(t *testing.T) {
@@ -518,4 +520,173 @@ sql:
 	}
 
 	assertCodegenLen(t, config, 1)
+}
+
+func TestUnmarshalSQLCConfig_V2ParseError(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("version: \"2\"\nsql: not_a_list\n")
+
+	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
+	if err == nil {
+		t.Fatal("unmarshalSQLCConfig should return error for invalid v2 config")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
+}
+
+func TestUnmarshalSQLCConfig_UnsupportedVersion(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("version: \"3\"\n")
+
+	_, err := unmarshalSQLCConfig(data, "sqlc.yaml")
+	if err == nil {
+		t.Fatal("unmarshalSQLCConfig should return error for unsupported version")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
+
+	if !strings.Contains(err.Error(), "unsupported") {
+		t.Errorf("error should mention unsupported version, got: %s", err.Error())
+	}
+}
+
+func TestParseV1AsV2_ParseError(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("version: \"1\"\npackages: [invalid\n")
+
+	_, err := parseV1AsV2(data, "sqlc.yaml")
+	if err == nil {
+		t.Fatal("parseV1AsV2 should return error for invalid v1 YAML")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigParse)
+}
+
+func TestParseV1AsV2_EmptyPackagePath(t *testing.T) {
+	t.Parallel()
+
+	data := []byte(`version: "1"
+packages:
+  - name: "db"
+    path: ""
+    engine: "postgresql"
+  - name: "models"
+    path: "gen/models"
+    engine: "mysql"
+`)
+
+	config, err := parseV1AsV2(data, "sqlc.yaml")
+	if err != nil {
+		t.Fatalf("parseV1AsV2 error: %v", err)
+	}
+
+	assertLen(t, "SQL entries", len(config.SQL), 1)
+	assertSQLGoOut(t, config, "gen/models")
+}
+
+func TestGetSQLOutputDirs_FindError(t *testing.T) {
+	t.Parallel()
+
+	_, err := GetSQLOutputDirs([]string{"/nonexistent/path/that/does/not/exist"})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirs should return error for nonexistent path")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigFind)
+}
+
+func TestGetSQLOutputDirs_ParseError(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	configPath := filepath.Join(tmpDir, "sqlc.yaml")
+
+	writeFile(t, configPath, "version: \"3\"\n")
+
+	_, err := GetSQLOutputDirs([]string{tmpDir})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirs should return error for unsupported version")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigCollect)
+}
+
+func TestFindSQLCConfigsFS_WalkError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	_, err := FindSQLCConfigsFS(fsys, []string{"nonexistent_dir"})
+	if err == nil {
+		t.Fatal("FindSQLCConfigsFS should return error for nonexistent dir")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigWalk)
+}
+
+func TestGetSQLOutputDirsFS_ParseError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{
+		"sqlc.yaml": {
+			Data: []byte("version: \"3\"\n"),
+		},
+	}
+
+	_, err := GetSQLOutputDirsFS(fsys, []string{"."})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirsFS should return error for unsupported version")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigCollect)
+}
+
+func TestGetSQLOutputDirsFS_FindError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	_, err := GetSQLOutputDirsFS(fsys, []string{"nonexistent_dir"})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirsFS should return error for nonexistent dir")
+	}
+
+	assertEqual(t, "ErrorCode", err.ErrorCode(), CodeSQLCConfigWalk)
+}
+
+func TestGetSQLOutputDirsFS_Success(t *testing.T) {
+	t.Parallel()
+
+	fsys := createFSWithFile(t, "sqlc.yaml", `version: "2"
+sql:
+  - schema: "schema/"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "gen/db"
+`)
+
+	dirs, err := GetSQLOutputDirsFS(fsys, []string{"."})
+	if err != nil {
+		t.Fatalf("GetSQLOutputDirsFS error: %v", err)
+	}
+
+	assertLen(t, "output dirs", len(dirs), 1)
+}
+
+func TestGetSQLOutputDirsFS_ConfigReadError(t *testing.T) {
+	t.Parallel()
+
+	fsys := createFSWithPath(t, "project/sqlc.yaml", "version: \"2\"\nsql:\n  - [invalid\n")
+
+	_, err := GetSQLOutputDirsFS(fsys, []string{"project"})
+	if err == nil {
+		t.Fatal("GetSQLOutputDirsFS should return error for invalid YAML")
+	}
+
+	assertErrorsIs(t, err, ErrSQLCConfigCollect)
 }

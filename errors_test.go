@@ -255,3 +255,97 @@ func TestTryAddSQLCConfig(t *testing.T) {
 		assertEqual(t, "len(configs)", len(configs), 0)
 	})
 }
+
+func TestFilterConfigErrorIs_CrossType(t *testing.T) {
+	t.Parallel()
+
+	err := &FilterConfigError{ //nolint:exhaustruct // cross-type Is() test, only Code matters
+		Code: CodeInvalidFilterOption,
+	}
+
+	target := &ProjectRootError{ //nolint:exhaustruct // cross-type Is() test, only Code matters
+		Code: CodeProjectRootNotFound,
+	}
+
+	if errors.Is(err, target) {
+		t.Error(
+			"errors.Is should not match across different error types (FilterConfigError vs ProjectRootError)",
+		)
+	}
+}
+
+func TestFilterConfigErrorIs_NilTarget(t *testing.T) {
+	t.Parallel()
+
+	err := &FilterConfigError{ //nolint:exhaustruct // nil target test
+		Code: CodeInvalidFilterOption,
+	}
+
+	if errors.Is(err, nil) {
+		t.Error("errors.Is should not match nil target")
+	}
+}
+
+func TestFilterConfigErrorIs_Sentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &FilterConfigError{ //nolint:exhaustruct // sentinel matching test
+		Code: CodeInvalidFilterOption,
+	}
+
+	if !errors.Is(err, ErrInvalidFilterOption) {
+		t.Error("errors.Is should match sentinel with same code")
+	}
+}
+
+func TestFilterConfigErrorIs_WrongSentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &FilterConfigError{ //nolint:exhaustruct // wrong sentinel test
+		Code: CodeInvalidFilterOption,
+	}
+
+	if errors.Is(err, ErrSQLCConfigRead) {
+		t.Error("errors.Is should not match sentinel with different type")
+	}
+}
+
+func TestProjectRootError_Unwrap(t *testing.T) {
+	t.Parallel()
+
+	innerErr := fmt.Errorf("inner: %w", os.ErrPermission)
+	err := &ProjectRootError{
+		Code:      CodeProjectRootInvalidPath,
+		StartPath: "/bad/path",
+		Markers:   []string{"go.mod"},
+		Err:       innerErr,
+	}
+
+	assertUnwrapSentinel(t, err)
+}
+
+func TestFilterConfigError_Unwrap(t *testing.T) {
+	t.Parallel()
+
+	err := &FilterConfigError{
+		Code:   CodeInvalidFilterOption,
+		Option: FilterSQLC,
+		Err:    os.ErrPermission,
+	}
+
+	assertUnwrapSentinel(t, err)
+}
+
+func TestSQLCConfigError_Unwrap(t *testing.T) {
+	t.Parallel()
+
+	err := &SQLCConfigError{
+		Code:       CodeSQLCConfigParse,
+		ConfigPath: "sqlc.yaml",
+		Operation:  "parse",
+		Message:    "bad yaml",
+		Err:        os.ErrPermission,
+	}
+
+	assertUnwrapSentinel(t, err)
+}
