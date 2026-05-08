@@ -9,6 +9,7 @@ import (
 // Codes use snake_case naming and can be used for programmatic error handling.
 type ErrorCode string
 
+// String returns the error code as a string.
 func (c ErrorCode) String() string { return string(c) }
 
 // Error codes identify specific error conditions for programmatic handling.

@@ -309,6 +309,7 @@ func (f *Filter) appendPatternPart(parts []string, label string, patterns []stri
 	return parts
 }
 
+// String returns a human-readable representation of the filter configuration.
 func (f *Filter) String() string {
 	if !f.IsEnabled() {
 		return "Filter(disabled)"

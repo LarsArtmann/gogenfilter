@@ -284,7 +284,10 @@ func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError)
 	for _, pkg := range v1Config.Packages {
 		if pkg.Path != "" {
 			config.SQL = append(config.SQL, sqlcEngine{
-				Gen: sqlcGenConfig{Go: &sqlcGoConfig{Out: pkg.Path}},
+				Schema:  "",
+				Engine:  "",
+				Gen:     sqlcGenConfig{Go: &sqlcGoConfig{Package: "", Out: pkg.Path}, JSON: nil},
+				Codegen: nil,
 			})
 		}
 	}
