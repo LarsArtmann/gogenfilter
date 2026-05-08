@@ -135,8 +135,8 @@ func hasSQLCContent(content string) bool {
 	return hasSQLCCodePatterns(content)
 }
 
-// matchAnyContentPattern checks if any of the candidate patterns exist in the content.
-func matchAnyContentPattern(content string, candidates []string) bool {
+// matchesAnyContentPattern checks if any of the candidate patterns exist in the content.
+func matchesAnyContentPattern(content string, candidates []string) bool {
 	return slices.ContainsFunc(candidates, func(pattern string) bool {
 		return strings.Contains(content, pattern)
 	})
@@ -144,7 +144,7 @@ func matchAnyContentPattern(content string, candidates []string) bool {
 
 // hasSQLCCodePatterns checks for sqlc-specific code patterns in content.
 func hasSQLCCodePatterns(content string) bool {
-	return matchAnyContentPattern(content, []string{
+	return matchesAnyContentPattern(content, []string{
 		"sqlc.Arg",
 		"sqlc.NamedArg",
 		"sqlc.Literal",
