@@ -84,16 +84,18 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Detection helpers unexported** — `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns` are internal helpers. Users should use `DetectReason()` or `Filter`.
 - **`codeGeneratedPrefix` moved to `detection.go`** — Only used there, not in `types.go`.
 - **`detectorOptions(bool)` merged** — Replaces `allSpecificOptions()` + `allDetectorOptions()` with one function.
+- **Trace/non-trace unified** — `*WithTrace` variants are canonical implementations; non-trace versions (`getFilenameBasedReason`, `getContentBasedReason`, `detectReasonFS`) are thin wrappers that discard the trace string. Eliminates the biggest source of code duplication.
+- **`coverage_test.go` dissolved** — Tests moved to their natural test files (`errors_test.go`, `filter_test.go`, `pattern_test.go`, `sqlc_test.go`, `project_test.go`). No more catch-all coverage file.
 
 ### Testing
 
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
 - Generic helper functions in `helpers_test.go`: `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`. Error extraction helper `assertErrorType[T]()` is in `errors_test.go` (uses `errors.AsType` from Go 1.26).
-- **BDD tests**: 164 ginkgo specs in `bdd_test.go` + `bdd_extended_test.go`. Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
-- **Coverage tests**: Targeted tests in `coverage_test.go` for hard-to-reach error paths (cross-type `errors.Is`, multi-error aggregation, SQLC parse errors, malformed patterns).
+- **BDD tests**: ~120 ginkgo specs in `bdd_test.go`. Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
+- **Error path tests**: Previously in `coverage_test.go`, now distributed to dedicated test files (`errors_test.go`, `filter_test.go`, `sqlc_test.go`, `pattern_test.go`, `project_test.go`).
 - Run tests with: `go test ./...`
-- **Coverage**: 97.9% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
+- **Coverage**: 99.8% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
 
 ### Linting
 
