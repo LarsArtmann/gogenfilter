@@ -64,6 +64,10 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 // results: [true, false, true] — a.go and c.go are generated
 ```
 
+### `FilterPathsDetailed(paths []string) ([]FilterResult, error)`
+
+Batch variant of `FilterDetailed` — returns `FilterResult` values with trace information for each path.
+
 ### `IsEnabled() bool`
 
 Returns whether the filter is active.
