@@ -11,10 +11,9 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Two-phase detection**: filename-based (zero I/O) then content-based (reads file)
 - **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction, enabled when options/patterns are provided
-- **Phantom types** (`StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`) for type safety at API boundaries
-- **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder`/`Helper` interfaces, `CodeEqual[T]` generic, `Err` field for wrapped errors (stdlib convention)
+- **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder` interface, `Err` field for wrapped errors (stdlib convention)
 - **`fs.FS` abstraction**: `WithFS()` option for testability; tests use `fstest.MapFS`
-- **Derived lists**: `AllFilterOptions()`, `AllFilterReasons()`, and `allSpecificOptions()` are all derived from the `detectors` table — adding a new detector automatically updates everything
+- **Derived lists**: `AllFilterOptions()`, `AllGeneratorOptions()`, `AllFilterReasons()` are all derived from the `detectors` table — adding a new detector automatically updates everything
 
 ## Project Structure
 
