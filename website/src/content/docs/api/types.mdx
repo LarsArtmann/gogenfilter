@@ -14,7 +14,7 @@ type FilterOption string
 ### Methods
 
 - `String() string` — returns the underlying string value
-- `Reason() FilterReason` — returns the corresponding `FilterReason`
+- `Reason() (FilterReason, bool)` — returns the corresponding `FilterReason`. Returns `("", false)` for meta-options like `FilterAll` or unregistered options.
 - `IsValid() bool` — reports whether the value is recognized
 
 ### Constants
@@ -42,13 +42,17 @@ type FilterReason string
 
 ### `AllFilterOptions() []FilterOption`
 
-Returns all 12 valid `FilterOption` values.
+Returns all 12 valid `FilterOption` values (11 detector options + `FilterAll`).
+
+### `AllGeneratorOptions() []FilterOption`
+
+Returns all 11 detector `FilterOption` values (excludes `FilterAll`). Use when enumerating available generators rather than validating options.
 
 ### `AllFilterReasons() []FilterReason`
 
 Returns all 14 valid `FilterReason` values.
 
-Both are derived from the internal `detectors` table plus additional entries — `AllFilterOptions()` also includes `FilterAll`, and `AllFilterReasons()` also includes `ReasonOutsideScope`, `ReasonExcludePattern`, and `ReasonNotFiltered`.
+All three are derived from the internal `detectors` table — `AllFilterOptions()` also includes `FilterAll`, and `AllFilterReasons()` also includes `ReasonOutsideScope`, `ReasonExcludePattern`, and `ReasonNotFiltered`.
 
 ## FilterConfig
 
