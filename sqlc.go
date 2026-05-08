@@ -224,7 +224,7 @@ func parseSQLCConfig(configPath string) (*sqlcConfig, *SQLCConfigError) {
 func unmarshalSQLCYAML(data []byte, target any, configPath, errMsg string) *SQLCConfigError {
 	err := yaml.Unmarshal(data, target)
 	if err != nil {
-	return newSQLCConfigError(
+		return newSQLCConfigError(
 			CodeSQLCConfigParse,
 			configPath,
 			"parse",

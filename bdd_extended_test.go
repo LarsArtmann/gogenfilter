@@ -189,7 +189,6 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("[gogenfilter:"))
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("project root not found"))
 			})
-
 		})
 	})
 

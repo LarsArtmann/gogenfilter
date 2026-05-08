@@ -49,6 +49,7 @@
 ### 5. Did you lie?
 
 Previous status reports claimed:
+
 - "Filter() went from 77ns to 243ns" — **LIE**. Benchmark shows 18.62ns. The 243ns was from ginkgo incompatibility with `-count=5`.
 - "2 `errors.As` calls remain" — **LIE**. All uses are already `errors.AsType`.
 
@@ -94,64 +95,64 @@ Sorted by impact × effort (Pareto order). Each task ≤ 12 min.
 
 ### Phase 1: Quick Wins (51% impact, 4% effort)
 
-| #  | Task                                                                 | Impact | Effort | File(s)                                |
-| -- | -------------------------------------------------------------------- | ------ | ------ | -------------------------------------- |
-| 1  | Delete `FilterContext`, `FilterDetailedContext`, `FilterPathsContext` | High   | 8min   | filter.go                              |
-| 2  | Delete context method tests                                          | Medium | 5min   | filter_test.go                         |
-| 3  | Delete context method BDD entries                                    | Medium | 5min   | bdd_test.go                            |
-| 4  | Delete context method examples                                       | Low    | 3min   | example_test.go                        |
-| 5  | Delete `phantom.go` + `phantom_test.go` entirely                    | High   | 5min   | phantom.go, phantom_test.go            |
-| 6  | Replace phantom types with `string` in error structs                 | High   | 8min   | errors.go, project.go, sqlc.go         |
-| 7  | Update error struct tests (remove phantom type refs)                 | Medium | 5min   | errors_test.go, coverage_test.go       |
-| 8  | Update BDD tests (remove phantom type refs)                          | Medium | 5min   | bdd_test.go, bdd_extended_test.go      |
-| 9  | Unexport `MatchesSQLCFilename` → `matchesSQLCFilename`              | Medium | 3min   | detection.go, sqlc_test.go             |
-| 10 | Unexport `HasSQLCContent` → `hasSQLCContent`                        | Medium | 3min   | detection.go                           |
-| 11 | Unexport `HasSQLCCodePatterns` → `hasSQLCCodePatterns`              | Medium | 3min   | detection.go                           |
+| #   | Task                                                                  | Impact | Effort | File(s)                           |
+| --- | --------------------------------------------------------------------- | ------ | ------ | --------------------------------- |
+| 1   | Delete `FilterContext`, `FilterDetailedContext`, `FilterPathsContext` | High   | 8min   | filter.go                         |
+| 2   | Delete context method tests                                           | Medium | 5min   | filter_test.go                    |
+| 3   | Delete context method BDD entries                                     | Medium | 5min   | bdd_test.go                       |
+| 4   | Delete context method examples                                        | Low    | 3min   | example_test.go                   |
+| 5   | Delete `phantom.go` + `phantom_test.go` entirely                      | High   | 5min   | phantom.go, phantom_test.go       |
+| 6   | Replace phantom types with `string` in error structs                  | High   | 8min   | errors.go, project.go, sqlc.go    |
+| 7   | Update error struct tests (remove phantom type refs)                  | Medium | 5min   | errors_test.go, coverage_test.go  |
+| 8   | Update BDD tests (remove phantom type refs)                           | Medium | 5min   | bdd_test.go, bdd_extended_test.go |
+| 9   | Unexport `MatchesSQLCFilename` → `matchesSQLCFilename`                | Medium | 3min   | detection.go, sqlc_test.go        |
+| 10  | Unexport `HasSQLCContent` → `hasSQLCContent`                          | Medium | 3min   | detection.go                      |
+| 11  | Unexport `HasSQLCCodePatterns` → `hasSQLCCodePatterns`                | Medium | 3min   | detection.go                      |
 
 ### Phase 2: Error System Simplification (20% impact, 10% effort)
 
-| #  | Task                                                       | Impact | Effort | File(s)                        |
-| -- | ---------------------------------------------------------- | ------ | ------ | ------------------------------ |
-| 12 | Remove `errorCodeDefs`, `AllErrorCodes()`, `CodeHelp()`   | High   | 8min   | errors.go                      |
-| 13 | Remove `Helper` interface                                  | Medium | 3min   | errors.go                      |
-| 14 | Remove `CodeEqual[T]` generic                              | Medium | 3min   | errors.go                      |
-| 15 | Replace `CodeEqual` calls with direct `==` on `.Code`     | Medium | 5min   | errors.go                      |
-| 16 | Remove `AllErrorCodes` tests and `CodeHelp` tests         | Medium | 5min   | errors_test.go, example_test.go|
-| 17 | Move help text into `Error()` strings directly             | Medium | 5min   | errors.go                      |
+| #   | Task                                                    | Impact | Effort | File(s)                         |
+| --- | ------------------------------------------------------- | ------ | ------ | ------------------------------- |
+| 12  | Remove `errorCodeDefs`, `AllErrorCodes()`, `CodeHelp()` | High   | 8min   | errors.go                       |
+| 13  | Remove `Helper` interface                               | Medium | 3min   | errors.go                       |
+| 14  | Remove `CodeEqual[T]` generic                           | Medium | 3min   | errors.go                       |
+| 15  | Replace `CodeEqual` calls with direct `==` on `.Code`   | Medium | 5min   | errors.go                       |
+| 16  | Remove `AllErrorCodes` tests and `CodeHelp` tests       | Medium | 5min   | errors_test.go, example_test.go |
+| 17  | Move help text into `Error()` strings directly          | Medium | 5min   | errors.go                       |
 
 ### Phase 3: Code Organization (10% impact, 5% effort)
 
-| #  | Task                                                     | Impact | Effort | File(s)               |
-| -- | -------------------------------------------------------- | ------ | ------ | --------------------- |
-| 18 | Move `codeGeneratedPrefix` to `detection.go`            | Low    | 3min   | types.go, detection.go|
-| 19 | Merge `allSpecificOptions` + `allDetectorOptions`       | Low    | 5min   | detection.go, types.go|
+| #   | Task                                              | Impact | Effort | File(s)                |
+| --- | ------------------------------------------------- | ------ | ------ | ---------------------- |
+| 18  | Move `codeGeneratedPrefix` to `detection.go`      | Low    | 3min   | types.go, detection.go |
+| 19  | Merge `allSpecificOptions` + `allDetectorOptions` | Low    | 5min   | detection.go, types.go |
 
 ### Phase 4: Test Cleanup (15% impact, 15% effort)
 
-| #  | Task                                                        | Impact | Effort | File(s)                    |
-| -- | ----------------------------------------------------------- | ------ | ------ | -------------------------- |
-| 20 | Delete `coverage_test.go` entirely                          | High   | 3min   | coverage_test.go           |
-| 21 | Move SQLC parse tests to `sqlc_test.go` from coverage       | Medium | 5min   | sqlc_test.go               |
-| 22 | Remove tests of unexported detection internals              | Medium | 8min   | detection_test.go          |
-| 23 | Merge `bdd_extended_test.go` into `bdd_test.go`            | Medium | 10min  | bdd_test.go                |
-| 24 | Update `example_test.go` — remove context method examples  | Low    | 3min   | example_test.go            |
-| 25 | Remove phantom type and CodeHelp/AllErrorCodes examples    | Low    | 3min   | example_test.go            |
+| #   | Task                                                      | Impact | Effort | File(s)           |
+| --- | --------------------------------------------------------- | ------ | ------ | ----------------- |
+| 20  | Delete `coverage_test.go` entirely                        | High   | 3min   | coverage_test.go  |
+| 21  | Move SQLC parse tests to `sqlc_test.go` from coverage     | Medium | 5min   | sqlc_test.go      |
+| 22  | Remove tests of unexported detection internals            | Medium | 8min   | detection_test.go |
+| 23  | Merge `bdd_extended_test.go` into `bdd_test.go`           | Medium | 10min  | bdd_test.go       |
+| 24  | Update `example_test.go` — remove context method examples | Low    | 3min   | example_test.go   |
+| 25  | Remove phantom type and CodeHelp/AllErrorCodes examples   | Low    | 3min   | example_test.go   |
 
 ### Phase 5: Documentation Sync (5% impact, 10% effort)
 
-| #  | Task                                                      | Impact | Effort | File(s)          |
-| -- | --------------------------------------------------------- | ------ | ------ | ---------------- |
-| 26 | Update `FEATURES.md` — remove deleted features            | High   | 5min   | FEATURES.md      |
-| 27 | Update `AGENTS.md` — reflect simplified API               | Medium | 8min   | AGENTS.md        |
-| 28 | Remove stale `reports/` and `report/` directories         | Low    | 2min   | reports/, report/|
+| #   | Task                                              | Impact | Effort | File(s)           |
+| --- | ------------------------------------------------- | ------ | ------ | ----------------- |
+| 26  | Update `FEATURES.md` — remove deleted features    | High   | 5min   | FEATURES.md       |
+| 27  | Update `AGENTS.md` — reflect simplified API       | Medium | 8min   | AGENTS.md         |
+| 28  | Remove stale `reports/` and `report/` directories | Low    | 2min   | reports/, report/ |
 
 ### Phase 6: Verification (essential)
 
-| #  | Task                                    | Impact | Effort | File(s) |
-| -- | --------------------------------------- | ------ | ------ | ------- |
-| 29 | Run full test suite + linter + vet      | High   | 3min   | —       |
-| 30 | Run benchmarks — verify no regression   | Medium | 3min   | —       |
-| 31 | Verify `go doc` shows clean API surface | Medium | 2min   | —       |
+| #   | Task                                    | Impact | Effort | File(s) |
+| --- | --------------------------------------- | ------ | ------ | ------- |
+| 29  | Run full test suite + linter + vet      | High   | 3min   | —       |
+| 30  | Run benchmarks — verify no regression   | Medium | 3min   | —       |
+| 31  | Verify `go doc` shows clean API surface | Medium | 2min   | —       |
 
 ---
 
@@ -271,13 +272,13 @@ phase5 -> phase6: "Docs synced"
 
 ## Metrics
 
-| Metric          | Before (now) | Target  |
-| --------------- | ------------ | ------- |
-| Source lines    | 1,855        | ~1,650  |
-| Test lines      | 7,109        | ~5,500  |
-| Test:Source     | 3.8:1        | 3.3:1   |
-| Exports         | 88           | ~55     |
-| Coverage        | 97.9%        | ~95%    |
-| Filter() ns/op  | 18.62        | ≤ 19    |
-| Files (source)  | 8            | 7       |
-| Files (test)    | 24           | 21      |
+| Metric         | Before (now) | Target |
+| -------------- | ------------ | ------ |
+| Source lines   | 1,855        | ~1,650 |
+| Test lines     | 7,109        | ~5,500 |
+| Test:Source    | 3.8:1        | 3.3:1  |
+| Exports        | 88           | ~55    |
+| Coverage       | 97.9%        | ~95%   |
+| Filter() ns/op | 18.62        | ≤ 19   |
+| Files (source) | 8            | 7      |
+| Files (test)   | 24           | 21     |
