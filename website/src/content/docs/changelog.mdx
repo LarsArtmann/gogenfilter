@@ -12,17 +12,14 @@ description: All notable changes to gogenfilter.
 - `FilterResult` struct with `Filtered`, `Reason`, `Path`, `Trace` fields
 - `FilterDetailed(filePath string) (FilterResult, error)` — detailed result with trace info
 - `FilterPathsDetailed(paths []string) ([]FilterResult, error)` — batch detailed results
-- `FilterDetailedContext(ctx, filePath string) (FilterResult, error)` — context-aware detailed filtering
 - `AllGeneratorOptions()` — enumerate detector options (excludes `FilterAll`)
 - `FilterResult.String()` — human-readable representation
-- `filePath` in context cancellation errors for debugging batch operations
+- `Filter.FilterReasons()` — returns the `FilterReason` values this filter will detect
+- `Filter.String()` — human-readable debug representation of filter state
 - SQLC config v1 format test coverage
 - Cross-platform path matching tests
-- `errorCodeDefs` single-source-of-truth table
 - `map[FilterOption]struct{}` replaces `map[FilterOption]bool`
-- `fmt.Stringer` on all phantom types
 - Runnable examples for `Filter`, `WithFS`, `WithIncludePatterns`, `DetectReasonReader`
-- Error handling examples (`errors.Is`, `ErrorCode()`, `Help()`, `CodeHelp`, `AllErrorCodes`, `FindProjectRoot`)
 - CI benchmark step (`go test -bench=. -benchmem`)
 - Module path `/v3` suffix for Go module convention compliance
 
@@ -35,30 +32,31 @@ description: All notable changes to gogenfilter.
 - **Breaking: `WithFilterOptions` returns `(FilterConfig, error)`** — returns `*FilterConfigError` for invalid options instead of panicking.
 - **Breaking: `NewFilter` returns `(*Filter, error)`** — uses `errors.Join()` to aggregate config errors.
 - `IsValid()` methods derived from tables
-- Error codes derived from `errorCodeDefs` table
-- Phantom types no longer use format strings
 - SQLC patterns consolidated
 - `WithFilterOptions` reuses `optionsMap`
 - `slog` dependency removed
-- Phantom types used directly — eliminated 8+ explicit `string()` casts
-- `sqlcConfigError` bridge removed — internal callers use `newSQLCConfigError` with typed phantom values
 - `Validatable` interface unexported to `validatable`
 - `IsEnabled()` derives state from configuration
+- `errors.AsType[T]` migration complete — source code and tests use Go 1.26 `errors.AsType[T]` exclusively
 
 ### Fixed
 
 - **Silent misconfiguration** — `NewFilter(WithFilterOptions(FilterAll))` now works without `Enabled()`
 - **Leaky `fs.FS` abstraction** — `detectReasonFS` no longer falls back to `os.ReadFile` for custom filesystems
-- **Context cancellation errors include `filePath`** — `FilterContext` and `FilterDetailedContext` wrap errors with file path
+- Website CI checkout path parameter placement
+- Lighthouse CI budgets+assertions conflict
 
 ### Removed
 
 - **Metrics system** — `Metrics`, `MetricsMixin`, `FilterStats`, `GetStats`, `FilteredBy`, `FilteredFiles`, `TotalFiltered`, `WithMetricsCap`. Stats aggregation is the caller's responsibility.
+- **Phantom types** — `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage`. All error struct fields are now plain `string`.
+- **Context methods** — `FilterContext`, `FilterDetailedContext`, `FilterPathsContext`. They promised cancellation over synchronous I/O.
+- **Error system over-engineering** — `errorCodeDefs` table, `AllErrorCodes()`, `CodeHelp()`, `Helper` interface, `CodeEqual[T]` generic, `Causable` interface.
+- **Detection helpers unexported** — `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns`.
 - `TotalFilesChecked` phantom type
 - `os.ReadFile` fallback in `detectReasonFS`
 - `warnMultipleSQLCConfigs` function and all `slog` usage
 - `sqlcConfigError()` bridge function
-- `Causable` interface (was unused)
 - `MustFilter` / `MustShouldFilter` panic-on-error variant
 - Plausible analytics
 
@@ -74,4 +72,3 @@ description: All notable changes to gogenfilter.
 - SQLC config discovery
 - Glob pattern matching with `**` support
 - Branded error types with sentinel errors
-- Phantom types for type-safe API boundaries
