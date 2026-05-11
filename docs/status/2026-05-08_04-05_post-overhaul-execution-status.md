@@ -108,6 +108,7 @@ The API overhaul is complete. 8 commits this session deleted ~530 net lines of o
 ### 1. Previous Status Reports Were Full of Lies
 
 Multiple status reports between 2026-05-05 and 2026-05-06 claimed:
+
 - "Filter() went from 77ns to 243ns" — **LIE**. Benchmarks consistently show 17-19ns. The 243ns was from ginkgo's incompatibility with `-count=5`, never a real regression.
 - "2 `errors.As` calls remain" — **LIE**. All 7 uses were already `errors.AsType`.
 - These false claims wasted investigation time and caused unnecessary alarm.
@@ -154,33 +155,33 @@ The filename is a confession. It exists to test unexported functions and inflate
 
 Sorted by impact × effort (Pareto order):
 
-| #  | Task                                                                                     | Impact | Effort  | Category     |
-| -- | ---------------------------------------------------------------------------------------- | ------ | ------- | ------------ |
-| 1  | Update `README.md` — remove GetStats, Metrics, TotalFilesChecked references              | 🔴 P0  | 10min   | Docs         |
-| 2  | Update `website/src/content/docs/api/filter.mdx` — match current API                     | 🔴 P0  | 30min   | Website      |
-| 3  | Update `website/src/content/docs/api/errors.mdx` — match current error types             | 🔴 P0  | 20min   | Website      |
-| 4  | Update `website/src/content/docs/api/detection.mdx` — remove unexported helpers          | 🔴 P0  | 15min   | Website      |
-| 5  | Update `website/src/content/docs/api/types.mdx` — remove phantom types, CodeHelp         | 🔴 P0  | 15min   | Website      |
-| 6  | Update `website/src/content/docs/quick-start.mdx` — verify examples work                 | High   | 10min   | Website      |
-| 7  | Update `website/src/content/docs/changelog.mdx` — document API changes                  | Medium | 15min   | Website      |
-| 8  | Delete `coverage_test.go` — move SQLC parse tests to `sqlc_test.go`                     | High   | 20min   | Test Quality |
-| 9  | Merge `bdd_extended_test.go` into `bdd_test.go`                                          | Medium | 30min   | Test Quality |
-| 10 | Remove tests of unexported detection internals from `detection_test.go`                   | Medium | 20min   | Test Quality |
-| 11 | Deduplicate test scenarios (same test 2-3x across BDD + regular + coverage tests)        | High   | 45min   | Test Quality |
-| 12 | Update `example_test.go` — remove trivial examples, show 80% case                        | Medium | 15min   | DX           |
-| 13 | Update `website/src/data/features.ts` — remove "Thread-Safe Metrics" if still present    | Medium | 5min    | Website      |
-| 14 | Verify website builds clean after API doc updates                                        | Medium | 5min    | Website      |
-| 15 | Run `golangci-lint run` after all changes                                                | Medium | 3min    | Verification |
-| 16 | Run benchmarks — verify no regression                                                    | Medium | 3min    | Verification |
-| 17 | Verify `go doc` output shows clean ~55-export surface                                    | Low    | 5min    | DX           |
-| 18 | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI                               | Low    | 10min   | CI           |
-| 19 | Fix website accessibility (`color-contrast`, `label-content-name-mismatch`)              | Medium | 30min   | Website      |
-| 20 | Submit go-recipes PR with 3 drafted recipes                                              | Medium | 30min   | Marketing    |
-| 21 | Add API stability policy to README/AGENTS.md for v3                                      | Low    | 15min   | Governance   |
-| 22 | Run `art-dupl` to verify no new code duplication                                         | Low    | 5min    | Quality      |
-| 23 | Delete stale `docs/status/` reports older than 2026-05-06 (10 files, historical only)    | Low    | 3min    | Cleanup      |
-| 24 | Check `website/src/content/docs/guides/` for stale pages                                 | Low    | 10min   | Website      |
-| 25 | Push unpushed commit (76e0509) to origin                                                 | Low    | 1min    | Git          |
+| #   | Task                                                                                  | Impact | Effort | Category     |
+| --- | ------------------------------------------------------------------------------------- | ------ | ------ | ------------ |
+| 1   | Update `README.md` — remove GetStats, Metrics, TotalFilesChecked references           | 🔴 P0  | 10min  | Docs         |
+| 2   | Update `website/src/content/docs/api/filter.mdx` — match current API                  | 🔴 P0  | 30min  | Website      |
+| 3   | Update `website/src/content/docs/api/errors.mdx` — match current error types          | 🔴 P0  | 20min  | Website      |
+| 4   | Update `website/src/content/docs/api/detection.mdx` — remove unexported helpers       | 🔴 P0  | 15min  | Website      |
+| 5   | Update `website/src/content/docs/api/types.mdx` — remove phantom types, CodeHelp      | 🔴 P0  | 15min  | Website      |
+| 6   | Update `website/src/content/docs/quick-start.mdx` — verify examples work              | High   | 10min  | Website      |
+| 7   | Update `website/src/content/docs/changelog.mdx` — document API changes                | Medium | 15min  | Website      |
+| 8   | Delete `coverage_test.go` — move SQLC parse tests to `sqlc_test.go`                   | High   | 20min  | Test Quality |
+| 9   | Merge `bdd_extended_test.go` into `bdd_test.go`                                       | Medium | 30min  | Test Quality |
+| 10  | Remove tests of unexported detection internals from `detection_test.go`               | Medium | 20min  | Test Quality |
+| 11  | Deduplicate test scenarios (same test 2-3x across BDD + regular + coverage tests)     | High   | 45min  | Test Quality |
+| 12  | Update `example_test.go` — remove trivial examples, show 80% case                     | Medium | 15min  | DX           |
+| 13  | Update `website/src/data/features.ts` — remove "Thread-Safe Metrics" if still present | Medium | 5min   | Website      |
+| 14  | Verify website builds clean after API doc updates                                     | Medium | 5min   | Website      |
+| 15  | Run `golangci-lint run` after all changes                                             | Medium | 3min   | Verification |
+| 16  | Run benchmarks — verify no regression                                                 | Medium | 3min   | Verification |
+| 17  | Verify `go doc` output shows clean ~55-export surface                                 | Low    | 5min   | DX           |
+| 18  | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI                            | Low    | 10min  | CI           |
+| 19  | Fix website accessibility (`color-contrast`, `label-content-name-mismatch`)           | Medium | 30min  | Website      |
+| 20  | Submit go-recipes PR with 3 drafted recipes                                           | Medium | 30min  | Marketing    |
+| 21  | Add API stability policy to README/AGENTS.md for v3                                   | Low    | 15min  | Governance   |
+| 22  | Run `art-dupl` to verify no new code duplication                                      | Low    | 5min   | Quality      |
+| 23  | Delete stale `docs/status/` reports older than 2026-05-06 (10 files, historical only) | Low    | 3min   | Cleanup      |
+| 24  | Check `website/src/content/docs/guides/` for stale pages                              | Low    | 10min  | Website      |
+| 25  | Push unpushed commit (76e0509) to origin                                              | Low    | 1min   | Git          |
 
 ---
 
@@ -198,21 +199,21 @@ The question is: is a stale website a release blocker, or can we tag v3.0.0 now 
 
 ## Metrics Dashboard
 
-| Metric                 | Before Session (2026-05-06) | After Session (2026-05-08) | Delta                                      |
-| ---------------------- | --------------------------- | -------------------------- | ------------------------------------------ |
-| Source files           | 8                           | 7                          | -1 (phantom.go deleted)                    |
-| Test files             | 24                          | 24                         | —                                          |
-| Source lines           | 1,855                       | 1,656                      | **-199**                                   |
-| Test lines             | 7,109                       | 6,710                      | **-399**                                   |
-| Total lines            | 8,964                       | 8,366                      | **-598**                                   |
-| Test:Source ratio      | 3.8:1                       | 4.0:1                      | Source shrank more                         |
-| Coverage               | 97.9%                       | 98.8%                      | +0.9% (different coverage profile)        |
-| Linter issues          | 0                           | 0                          | —                                          |
-| Race detector          | Pass                        | Pass                       | —                                          |
-| Exports                | 88                          | 67                         | **-21**                                    |
-| Dependencies (runtime) | 2                           | 2                          | —                                          |
-| `Filter()` ns/op       | 18.62                       | 19.47                      | ±1ns noise                                 |
-| `Filter()` allocs      | 0                           | 0                          | —                                          |
+| Metric                 | Before Session (2026-05-06) | After Session (2026-05-08) | Delta                              |
+| ---------------------- | --------------------------- | -------------------------- | ---------------------------------- |
+| Source files           | 8                           | 7                          | -1 (phantom.go deleted)            |
+| Test files             | 24                          | 24                         | —                                  |
+| Source lines           | 1,855                       | 1,656                      | **-199**                           |
+| Test lines             | 7,109                       | 6,710                      | **-399**                           |
+| Total lines            | 8,964                       | 8,366                      | **-598**                           |
+| Test:Source ratio      | 3.8:1                       | 4.0:1                      | Source shrank more                 |
+| Coverage               | 97.9%                       | 98.8%                      | +0.9% (different coverage profile) |
+| Linter issues          | 0                           | 0                          | —                                  |
+| Race detector          | Pass                        | Pass                       | —                                  |
+| Exports                | 88                          | 67                         | **-21**                            |
+| Dependencies (runtime) | 2                           | 2                          | —                                  |
+| `Filter()` ns/op       | 18.62                       | 19.47                      | ±1ns noise                         |
+| `Filter()` allocs      | 0                           | 0                          | —                                  |
 
 ### Source File Map
 
@@ -229,48 +230,48 @@ The question is: is a stale website a release blocker, or can we tag v3.0.0 now 
 
 ### Test File Map
 
-| File                        | Lines | Purpose            | Status                                    |
-| --------------------------- | ----- | ------------------ | ----------------------------------------- |
-| `bdd_test.go`               | 723   | BDD specs          | 🟡 Should merge with extended             |
-| `bdd_extended_test.go`      | 533   | BDD specs          | 🟡 Should merge with main                 |
-| `detection_test.go`         | 518   | Detection tests    | 🟡 Tests unexported internals             |
-| `helpers_test.go`           | 543   | Test helpers       | ✅ Cleaned                                |
-| `filter_test.go`            | 684   | Core filter tests  | ✅ Context tests removed                  |
-| `sqlc_test.go`              | 521   | SQLC tests         | ✅ Good                                   |
-| `errors_test.go`            | 257   | Error tests        | ✅ Simplified                             |
-| `example_test.go`           | 303   | Godoc examples     | 🟡 Has trivial examples                   |
-| `coverage_test.go`          | 357   | Coverage inflation | 💥 Delete entirely                        |
-| `errors_sentinel_test.go`   | 212   | Sentinel tests     | ✅ Help tests removed                     |
-| `filter_mapfs_test.go`      | 291   | MapFS tests        | ✅ Cleaned                                |
-| `types_test.go`             | 272   | Types tests        | ✅ Good                                   |
-| `testdata_test.go`          | 266   | Testdata fixtures  | ✅ Good                                   |
-| `integration_test.go`       | 197   | Integration tests  | ✅ Good                                   |
-| `bench_test.go`             | 189   | Benchmarks         | ✅ Good                                   |
-| `pattern_test.go`           | 177   | Pattern tests      | ✅ Good                                   |
-| `property_test.go`          | 129   | Property tests     | ✅ Good                                   |
-| `errors_unwrap_test.go`     | 120   | Unwrap tests       | ✅ Good                                   |
-| `filter_edge_test.go`       | 117   | Edge case tests    | ✅ Good                                   |
-| `project_test.go`           | 95    | Project root tests | ✅ Good                                   |
-| `fuzz_test.go`              | 74    | Fuzz tests         | ✅ Good                                   |
-| `errors_bench_test.go`      | 65    | Error benchmarks   | ✅ CodeHelp bench removed                 |
-| `filter_concurrent_test.go` | 62    | Concurrency tests  | ✅ Cleaned                                |
-| **Total**                   | 6,703 |                    |                                           |
+| File                        | Lines | Purpose            | Status                        |
+| --------------------------- | ----- | ------------------ | ----------------------------- |
+| `bdd_test.go`               | 723   | BDD specs          | 🟡 Should merge with extended |
+| `bdd_extended_test.go`      | 533   | BDD specs          | 🟡 Should merge with main     |
+| `detection_test.go`         | 518   | Detection tests    | 🟡 Tests unexported internals |
+| `helpers_test.go`           | 543   | Test helpers       | ✅ Cleaned                    |
+| `filter_test.go`            | 684   | Core filter tests  | ✅ Context tests removed      |
+| `sqlc_test.go`              | 521   | SQLC tests         | ✅ Good                       |
+| `errors_test.go`            | 257   | Error tests        | ✅ Simplified                 |
+| `example_test.go`           | 303   | Godoc examples     | 🟡 Has trivial examples       |
+| `coverage_test.go`          | 357   | Coverage inflation | 💥 Delete entirely            |
+| `errors_sentinel_test.go`   | 212   | Sentinel tests     | ✅ Help tests removed         |
+| `filter_mapfs_test.go`      | 291   | MapFS tests        | ✅ Cleaned                    |
+| `types_test.go`             | 272   | Types tests        | ✅ Good                       |
+| `testdata_test.go`          | 266   | Testdata fixtures  | ✅ Good                       |
+| `integration_test.go`       | 197   | Integration tests  | ✅ Good                       |
+| `bench_test.go`             | 189   | Benchmarks         | ✅ Good                       |
+| `pattern_test.go`           | 177   | Pattern tests      | ✅ Good                       |
+| `property_test.go`          | 129   | Property tests     | ✅ Good                       |
+| `errors_unwrap_test.go`     | 120   | Unwrap tests       | ✅ Good                       |
+| `filter_edge_test.go`       | 117   | Edge case tests    | ✅ Good                       |
+| `project_test.go`           | 95    | Project root tests | ✅ Good                       |
+| `fuzz_test.go`              | 74    | Fuzz tests         | ✅ Good                       |
+| `errors_bench_test.go`      | 65    | Error benchmarks   | ✅ CodeHelp bench removed     |
+| `filter_concurrent_test.go` | 62    | Concurrency tests  | ✅ Cleaned                    |
+| **Total**                   | 6,703 |                    |                               |
 
 ---
 
 ## Session Work Log (2026-05-08)
 
-| Time  | What                                                                                                  |
-| ----- | ----------------------------------------------------------------------------------------------------- |
-| 01:15 | Read codebase, ran benchmarks, created comprehensive execution plan                                   |
-| 01:30 | Deleted `FilterContext`, `FilterDetailedContext`, `FilterPathsContext` + tests (commit `12488a4`)     |
-| 01:45 | Deleted phantom types, replaced with plain string in error structs + all tests (commit `d3095a4`)     |
-| 02:00 | Unexported `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns` (commit `0aaa9ec`)         |
+| Time  | What                                                                                                           |
+| ----- | -------------------------------------------------------------------------------------------------------------- |
+| 01:15 | Read codebase, ran benchmarks, created comprehensive execution plan                                            |
+| 01:30 | Deleted `FilterContext`, `FilterDetailedContext`, `FilterPathsContext` + tests (commit `12488a4`)              |
+| 01:45 | Deleted phantom types, replaced with plain string in error structs + all tests (commit `d3095a4`)              |
+| 02:00 | Unexported `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns` (commit `0aaa9ec`)                   |
 | 02:30 | Simplified error system — removed errorCodeDefs, AllErrorCodes, CodeHelp, Helper, CodeEqual (commit `5ba41ee`) |
-| 03:00 | Moved codeGeneratedPrefix + derived functions to detection.go, merged allSpecificOptions (commit `ee7daef`) |
-| 03:30 | Updated FEATURES.md, AGENTS.md, removed stale report dirs (commit `3d4f7c4`)                         |
-| 03:58 | Pushed all commits to origin                                                                          |
-| 04:05 | This comprehensive status report                                                                     |
+| 03:00 | Moved codeGeneratedPrefix + derived functions to detection.go, merged allSpecificOptions (commit `ee7daef`)    |
+| 03:30 | Updated FEATURES.md, AGENTS.md, removed stale report dirs (commit `3d4f7c4`)                                   |
+| 03:58 | Pushed all commits to origin                                                                                   |
+| 04:05 | This comprehensive status report                                                                               |
 
 **Commits this session:** 6 (code) + 2 (docs from prior session)
 **Lines removed:** ~598 net
