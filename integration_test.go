@@ -17,10 +17,10 @@ type integrationFixture struct {
 
 func integrationFixtures() []integrationFixture {
 	return []integrationFixture{
-		{"testdata/sqlc/models.go", ReasonSQLC},
+		{testdataSQLCModelsGo, ReasonSQLC},
 		{"testdata/sqlc/query.sql.go", ReasonSQLC},
-		{"testdata/templ/page_templ.go", ReasonTempl},
-		{"testdata/protobuf/user.pb.go", ReasonProtobuf},
+		{testdataTemplPageTemplGo, ReasonTempl},
+		{testdataProtobufUserPbGo, ReasonProtobuf},
 		{"testdata/protobuf/user_grpc.pb.go", ReasonProtobuf},
 		{"testdata/go-enum/status_enum.go", ReasonGoEnum},
 		{"testdata/wire/wire_gen.go", ReasonWire},
@@ -140,15 +140,15 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 		option FilterOption
 		want   bool
 	}{
-		{"testdata/sqlc/models.go", FilterSQLC, true},
-		{"testdata/sqlc/models.go", FilterTempl, false},
-		{"testdata/templ/page_templ.go", FilterTempl, true},
-		{"testdata/templ/page_templ.go", FilterSQLC, false},
-		{"testdata/protobuf/user.pb.go", FilterProtobuf, true},
-		{"testdata/protobuf/user.pb.go", FilterSQLC, false},
+		{testdataSQLCModelsGo, FilterSQLC, true},
+		{testdataSQLCModelsGo, FilterTempl, false},
+		{testdataTemplPageTemplGo, FilterTempl, true},
+		{testdataTemplPageTemplGo, FilterSQLC, false},
+		{testdataProtobufUserPbGo, FilterProtobuf, true},
+		{testdataProtobufUserPbGo, FilterSQLC, false},
 		{"testdata/handwritten/main.go", FilterGeneric, false},
-		{"testdata/go-enum/status_enum.go", FilterGoEnum, true},
-		{"testdata/go-enum/status_enum.go", FilterGeneric, true},
+		{testdataGoEnumStatusEnumGo, FilterGoEnum, true},
+		{testdataGoEnumStatusEnumGo, FilterGeneric, true},
 	}
 
 	mapFS := fstest.MapFS{}

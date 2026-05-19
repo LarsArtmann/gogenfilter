@@ -150,3 +150,9 @@ func (r FilterResult) String() string {
 // maxProjectRootDepth is the maximum number of parent directories to search
 // when looking for project root markers.
 const maxProjectRootDepth = 10
+
+// Directory names that should be skipped when searching for project roots.
+const (
+	nodeModulesDir = "node_modules"
+	vendorDir      = "vendor"
+)
