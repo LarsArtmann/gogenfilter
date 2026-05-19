@@ -164,8 +164,8 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 
 		err := &ProjectRootError{
 			Code:      CodeProjectRootInvalidPath,
-			StartPath: "/some/path",
-			Markers:   []string{"go.mod"},
+			StartPath: testSomePath,
+			Markers:   []string{testMarkerGoMod},
 			Err:       fmt.Errorf("inner error: %w", os.ErrInvalid),
 		}
 
@@ -179,8 +179,8 @@ func TestProjectRootErrorMessaging(t *testing.T) {
 
 		err := &ProjectRootError{
 			Code:      CodeProjectRootNotFound,
-			StartPath: "/some/path",
-			Markers:   []string{"go.mod", "go.sum"},
+			StartPath: testSomePath,
+			Markers:   []string{testMarkerGoMod, "go.sum"},
 			Err:       nil,
 		}
 
@@ -317,7 +317,7 @@ func TestProjectRootError_Unwrap(t *testing.T) {
 	err := &ProjectRootError{
 		Code:      CodeProjectRootInvalidPath,
 		StartPath: "/bad/path",
-		Markers:   []string{"go.mod"},
+		Markers:   []string{testMarkerGoMod},
 		Err:       innerErr,
 	}
 

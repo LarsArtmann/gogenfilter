@@ -13,9 +13,9 @@ func TestFindProjectRoot(t *testing.T) {
 
 		tmpDir := t.TempDir()
 
-		writeFile(t, filepath.Join(tmpDir, "go.mod"), "module test\n")
+		writeFile(t, filepath.Join(tmpDir, testMarkerGoMod), "module test\n")
 
-		root, err := FindProjectRoot(tmpDir, []string{"go.mod"})
+		root, err := FindProjectRoot(tmpDir, []string{testMarkerGoMod})
 		if err != nil {
 			t.Fatalf("FindProjectRoot() error: %v", err)
 		}
@@ -33,7 +33,7 @@ func TestFindProjectRoot(t *testing.T) {
 		childDir := filepath.Join(tmpDir, "subdir", "deep")
 		mkdirAll(t, childDir)
 
-		writeFile(t, filepath.Join(tmpDir, "go.mod"), "module test\n")
+		writeFile(t, filepath.Join(tmpDir, testMarkerGoMod), "module test\n")
 
 		root, err := FindProjectRoot(childDir, []string{"go.mod"})
 		if err != nil {
@@ -69,7 +69,7 @@ func TestFindProjectRootDepthExhausted(t *testing.T) {
 
 	mkdirAll(t, deepDir)
 
-	_, err := FindProjectRoot(deepDir, []string{"go.mod"})
+	_, err := FindProjectRoot(deepDir, []string{testMarkerGoMod})
 	if err == nil {
 		t.Error("Expected error when depth exhausted")
 	}
