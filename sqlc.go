@@ -10,6 +10,11 @@ import (
 	"github.com/go-faster/yaml"
 )
 
+const (
+	sqlcConfigFile    = "sqlc.yaml"
+	sqlcConfigFileAlt = "sqlc.yml"
+)
+
 // sqlcV1Config represents a sqlc.yaml v1 configuration file structure.
 type sqlcV1Config struct {
 	Version  string          `yaml:"version"`
@@ -187,20 +192,20 @@ func shouldSkipDirectory(name string) bool {
 // recordSQLCConfig records a sqlc config file if it matches.
 func recordSQLCConfig(filePath string, configs map[string]string) {
 	filename := filepath.Base(filePath)
-	if filename == "sqlc.yaml" || filename == "sqlc.yml" {
+	if filename == sqlcConfigFile || filename == sqlcConfigFileAlt {
 		configs[filePath] = filepath.Dir(filePath)
 	}
 }
 
 // findSQLCConfigsInParent searches parent directories for sqlc config.
 func findSQLCConfigsInParent(path string, configs map[string]string) {
-	parentPath, err := FindProjectRoot(path, []string{"sqlc.yaml", "sqlc.yml"})
+	parentPath, err := FindProjectRoot(path, []string{sqlcConfigFile, sqlcConfigFileAlt})
 	if err != nil || parentPath == "" {
 		return
 	}
 
-	tryAddSQLCConfig(parentPath, "sqlc.yaml", configs)
-	tryAddSQLCConfig(parentPath, "sqlc.yml", configs)
+	tryAddSQLCConfig(parentPath, sqlcConfigFile, configs)
+	tryAddSQLCConfig(parentPath, sqlcConfigFileAlt, configs)
 }
 
 // tryAddSQLCConfig adds a config to the map if the file exists.
