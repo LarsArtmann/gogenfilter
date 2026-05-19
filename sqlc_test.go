@@ -17,8 +17,8 @@ func TestShouldSkipDirectory(t *testing.T) {
 		{name: "regular directory", input: "src", expected: false},
 		{name: "hidden directory", input: ".git", expected: true},
 		{name: "hidden directory with dot", input: ".cache", expected: true},
-		{name: "node_modules", input: "node_modules", expected: true},
-		{name: "vendor", input: "vendor", expected: true},
+		{name: "node_modules", input: nodeModulesDir, expected: true},
+		{name: "vendor", input: vendorDir, expected: true},
 	}
 
 	runBoolTableTest(t, tests, shouldSkipDirectory, "shouldSkipDirectory")
@@ -165,7 +165,7 @@ func TestFindSQLCConfigs_SkipsDirectories(t *testing.T) {
 		dir  string
 	}{
 		{"Git", ".git"},
-		{"Vendor", "vendor"},
+		{"Vendor", vendorDir},
 	}
 
 	for _, tt := range tests {
@@ -631,7 +631,7 @@ func TestGetSQLOutputDirsFS_ParseError(t *testing.T) {
 	t.Parallel()
 
 	fsys := fstest.MapFS{
-		"sqlc.yaml": {
+		testFileSQLCConfig: {
 			Data: []byte("version: \"3\"\n"),
 		},
 	}

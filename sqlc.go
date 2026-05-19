@@ -181,7 +181,7 @@ func shouldSkipDirectory(name string) bool {
 		return false
 	}
 
-	return strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor"
+	return strings.HasPrefix(name, ".") || name == nodeModulesDir || name == vendorDir
 }
 
 // recordSQLCConfig records a sqlc config file if it matches.
