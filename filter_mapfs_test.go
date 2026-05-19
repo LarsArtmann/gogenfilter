@@ -227,7 +227,7 @@ func testParseValidConfig(t *testing.T) {
 	t.Parallel()
 
 	mapFS := fstest.MapFS{
-		"sqlc.yaml": newMapFile(
+		testFileSQLCConfig: newMapFile(
 			"version: \"2\"\n" +
 				"sql:\n" +
 				"  - engine: \"postgresql\"\n" +

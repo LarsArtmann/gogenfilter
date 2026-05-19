@@ -479,7 +479,7 @@ func TestFilterPaths(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		results, err := filter.FilterPaths([]string{"main.go", "nonexistent.go"})
+		results, err := filter.FilterPaths([]string{mainGo, "nonexistent.go"})
 		if err == nil {
 			t.Fatal("expected error for nonexistent file")
 		}
@@ -572,7 +572,7 @@ func TestFilterDetailed(t *testing.T) {
 		t.Parallel()
 
 		mapFS := fstest.MapFS{
-			"main.go": newMapFile("package main\nfunc main() {}"),
+			mainGo: newMapFile("package main\nfunc main() {}"),
 		}
 
 		opts, err := WithFilterOptions(FilterSQLC)

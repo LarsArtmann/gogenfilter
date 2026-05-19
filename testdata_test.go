@@ -210,7 +210,7 @@ func detectGeneratedTestCases() []filenameTestCase {
 	return []filenameTestCase{
 		{
 			"detects sqlc by filename",
-			"db/models.go",
+			dbModelsGo,
 			map[FilterOption]struct{}{FilterSQLC: {}},
 			ReasonSQLC,
 		},
@@ -258,7 +258,7 @@ func detectGeneratedTestCases() []filenameTestCase {
 		},
 		{
 			"returns not filtered for regular file",
-			"main.go",
+			mainGo,
 			map[FilterOption]struct{}{FilterSQLC: {}},
 			ReasonNotFiltered,
 		},

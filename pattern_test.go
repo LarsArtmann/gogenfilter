@@ -10,9 +10,9 @@ func TestMatchPattern(t *testing.T) {
 
 func matchPatternTestCases() []matchPatternTestCase {
 	return []matchPatternTestCase{
-		{name: "exact match", path: "file.go", pattern: "file.go", expected: true},
-		{name: "wildcard match", path: "test.go", pattern: "*.go", expected: true},
-		{name: "wildcard no match", path: "test.txt", pattern: "*.go", expected: false},
+		{name: "exact match", path: fileGo, pattern: fileGo, expected: true},
+		{name: "wildcard match", path: "test.go", pattern: wildcardGo, expected: true},
+		{name: "wildcard no match", path: "test.txt", pattern: wildcardGo, expected: false},
 		{name: "directory pattern", path: "vendor/file.go", pattern: "vendor/*", expected: true},
 		{
 			name:     "complex pattern",
@@ -50,7 +50,7 @@ func matchPatternTestCases() []matchPatternTestCase {
 			pattern:  "vendor/*.go",
 			expected: false,
 		},
-		{name: "question mark single char match", path: "a.go", pattern: "?.go", expected: true},
+		{name: "question mark single char match", path: aGo, pattern: questionGo, expected: true},
 		{
 			name:     "question mark no match multi char",
 			path:     "ab.go",
@@ -62,7 +62,7 @@ func matchPatternTestCases() []matchPatternTestCase {
 		{name: "empty pattern", path: "file.go", pattern: "", expected: false},
 		{name: "empty path", path: "", pattern: "*.go", expected: false},
 		{name: "empty both", path: "", pattern: "", expected: false},
-		{name: "double star alone", path: "a/b/c.go", pattern: "**", expected: true},
+		{name: "double star alone", path: testDataAbcGo, pattern: "**", expected: true},
 		{
 			name:     "double star middle",
 			path:     "src/pkg/util/helper.go",
