@@ -86,6 +86,14 @@
           };
         });
 
+      checks = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in {
+          format = pkgs.runCommand "format-check" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
+            nixfmt --check ${./flake.nix} && touch $out
+          '';
+        });
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
     };
 }
