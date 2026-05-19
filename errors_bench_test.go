@@ -31,7 +31,7 @@ func newBenchmarkProjectRootError() *ProjectRootError {
 	return &ProjectRootError{
 		Code:      CodeProjectRootNotFound,
 		StartPath: "/some/path/to/project",
-		Markers:   []string{"go.mod"},
+		Markers:   []string{testMarkerGoMod},
 		Err:       os.ErrNotExist,
 	}
 }
@@ -48,7 +48,7 @@ func BenchmarkProjectRootErrorIs(b *testing.B) {
 	err := &ProjectRootError{ //nolint:exhaustruct // benchmark only needs Code for Is() comparison
 		Code:      CodeProjectRootNotFound,
 		StartPath: "/some/path",
-		Markers:   []string{"go.mod"},
+		Markers:   []string{testMarkerGoMod},
 	}
 
 	for b.Loop() {

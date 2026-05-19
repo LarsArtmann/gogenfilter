@@ -38,7 +38,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 		inner := &ProjectRootError{
 			Code:      CodeProjectRootInvalidPath,
 			StartPath: "/path",
-			Markers:   []string{"go.mod"},
+			Markers:   []string{testMarkerGoMod},
 			Err:       os.ErrPermission,
 		}
 
@@ -59,7 +59,7 @@ func TestProjectRootErrorUnwrapChainIntegration(t *testing.T) {
 		inner := &ProjectRootError{
 			Code:      CodeProjectRootNotFound,
 			StartPath: "/path",
-			Markers:   []string{"go.mod"},
+			Markers:   []string{testMarkerGoMod},
 			Err:       nil,
 		}
 
