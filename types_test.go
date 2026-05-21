@@ -144,11 +144,11 @@ func TestFilterReasonIsValid(t *testing.T) {
 	assertAllInvalid(t, "invalidReasons", invalidReasons)
 }
 
-func assertAllValid[T any](t *testing.T, name string, items []T, isValid func(T) bool) {
+func assertAllValid[T validatable](t *testing.T, name string, items []T) {
 	t.Helper()
 
 	for _, item := range items {
-		if !isValid(item) {
+		if !item.IsValid() {
 			t.Errorf("%s contains invalid item %v", name, item)
 		}
 	}
@@ -171,12 +171,7 @@ func TestAllFilterOptions(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterOptions())", len(opts), 12)
 
-	assertAllValid(
-		t,
-		"AllFilterOptions()",
-		opts,
-		func(o FilterOption) bool { return o.IsValid() },
-	)
+	assertAllValid[FilterOption](t, "AllFilterOptions()", opts)
 }
 
 func TestAllFilterReasons(t *testing.T) {
@@ -186,12 +181,7 @@ func TestAllFilterReasons(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterReasons())", len(reasons), 14)
 
-	assertAllValid(
-		t,
-		"AllFilterReasons()",
-		reasons,
-		func(r FilterReason) bool { return r.IsValid() },
-	)
+	assertAllValid[FilterReason](t, "AllFilterReasons()", reasons)
 }
 
 func TestAllGeneratorOptions(t *testing.T) {
@@ -207,12 +197,7 @@ func TestAllGeneratorOptions(t *testing.T) {
 		}
 	}
 
-	assertAllValid(
-		t,
-		"AllGeneratorOptions()",
-		opts,
-		func(o FilterOption) bool { return o.IsValid() },
-	)
+	assertAllValid[FilterOption](t, "AllGeneratorOptions()", opts)
 }
 
 func TestFilterOptionReasonFilterAllReturnsFalse(t *testing.T) {

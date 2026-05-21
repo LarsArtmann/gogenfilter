@@ -384,6 +384,16 @@ func getContentBasedReasonWithTrace(
 	return ReasonNotFiltered, ""
 }
 
+// filteredResult returns a FilterResult indicating the file was detected as generated.
+func filteredResult(filePath string, reason FilterReason, trace string) FilterResult {
+	return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}
+}
+
+// notFilteredResult returns a FilterResult indicating the file was not filtered.
+func notFilteredResult(filePath string) FilterResult {
+	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: ""}
+}
+
 // detectReasonFSWithTrace is like detectReasonFS but returns a FilterResult with trace info.
 func detectReasonFSWithTrace(
 	fsys fs.FS,
@@ -392,28 +402,24 @@ func detectReasonFSWithTrace(
 ) (FilterResult, error) {
 	reason, trace := getFilenameBasedReasonWithTrace(filePath, options)
 	if reason != ReasonNotFiltered {
-		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+		return filteredResult(filePath, reason, trace), nil
 	}
 
 	if !needsContentCheck(options) {
-		return FilterResult{
-			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
-		}, nil
+		return notFilteredResult(filePath), nil
 	}
 
 	content, err := fs.ReadFile(fsys, filePath)
 	if err != nil {
-		return FilterResult{
-			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
-		}, fmt.Errorf("read file %q: %w", filePath, err)
+		return notFilteredResult(filePath), fmt.Errorf("read file %q: %w", filePath, err)
 	}
 
 	reason, trace = getContentBasedReasonWithTrace(filePath, string(content), options)
 	if reason != ReasonNotFiltered {
-		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+		return filteredResult(filePath, reason, trace), nil
 	}
 
-	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: ""}, nil
+	return notFilteredResult(filePath), nil
 }
 
 // AllFilterOptions returns all valid FilterOption values including the meta-option
