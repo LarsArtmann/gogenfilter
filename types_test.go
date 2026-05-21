@@ -171,7 +171,7 @@ func TestAllFilterOptions(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterOptions())", len(opts), 12)
 
-	assertAllValid[FilterOption](t, "AllFilterOptions()", opts)
+	assertAllValid(t, "AllFilterOptions()", opts)
 }
 
 func TestAllFilterReasons(t *testing.T) {
@@ -181,7 +181,7 @@ func TestAllFilterReasons(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterReasons())", len(reasons), 14)
 
-	assertAllValid[FilterReason](t, "AllFilterReasons()", reasons)
+	assertAllValid(t, "AllFilterReasons()", reasons)
 }
 
 func TestAllGeneratorOptions(t *testing.T) {
@@ -197,7 +197,7 @@ func TestAllGeneratorOptions(t *testing.T) {
 		}
 	}
 
-	assertAllValid[FilterOption](t, "AllGeneratorOptions()", opts)
+	assertAllValid(t, "AllGeneratorOptions()", opts)
 }
 
 func TestFilterOptionReasonFilterAllReturnsFalse(t *testing.T) {
