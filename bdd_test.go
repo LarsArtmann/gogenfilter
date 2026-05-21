@@ -26,7 +26,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 	// configurations so I can control which generated code gets detected.
 	// ═══════════════════════════════════════════════════════════════════════
 	ginkgo.Describe("Filter creation", func() {
-		ginkgo.DescribeTable("enabled state depends on configuration",
+		ginkgo.DescribeTable(
+			"enabled state depends on configuration",
 			func(configs []gogenfilter.FilterConfig, expectedEnabled bool) {
 				filter, err := gogenfilter.NewFilter(configs...)
 				gomega.Expect(err).NotTo(gomega.HaveOccurred())
@@ -143,7 +144,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 	// auto-generated files so I can skip them during analysis.
 	// ═══════════════════════════════════════════════════════════════════════
 	ginkgo.Describe("Detecting generated code", func() {
-		ginkgo.DescribeTable("detects each generator by content",
+		ginkgo.DescribeTable(
+			"detects each generator by content",
 			func(path, content string, expectedReason gogenfilter.FilterReason) {
 				reason := gogenfilter.DetectReason(path, content, gogenfilter.FilterAll)
 				gomega.Expect(reason).To(gomega.Equal(expectedReason))
@@ -451,7 +453,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 	// TYPE VALIDATION — As a library user, I want type safety for options.
 	// ═══════════════════════════════════════════════════════════════════════
 	ginkgo.Describe("Type validation", func() {
-		ginkgo.DescribeTable("FilterOption validity",
+		ginkgo.DescribeTable(
+			"FilterOption validity",
 			func(opt gogenfilter.FilterOption, valid bool) {
 				gomega.Expect(opt.IsValid()).To(gomega.Equal(valid))
 			},
@@ -462,7 +465,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 			ginkgo.Entry("unknown is invalid", gogenfilter.FilterOption("unknown"), false),
 		)
 
-		ginkgo.DescribeTable("FilterReason validity",
+		ginkgo.DescribeTable(
+			"FilterReason validity",
 			func(reason gogenfilter.FilterReason, valid bool) {
 				gomega.Expect(reason.IsValid()).To(gomega.Equal(valid))
 			},

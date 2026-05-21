@@ -78,7 +78,8 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 	})
 
 	ginkgo.Describe("Individual detector behavior", func() {
-		ginkgo.DescribeTable("templ requires both filename AND content",
+		ginkgo.DescribeTable(
+			"templ requires both filename AND content",
 			func(path, content string, expected gogenfilter.FilterReason) {
 				reason := gogenfilter.DetectReason(path, content, gogenfilter.FilterAll)
 				gomega.Expect(reason).To(gomega.Equal(expected))
@@ -268,7 +269,8 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 	})
 
 	ginkgo.Describe("Pattern matching edge cases", func() {
-		ginkgo.DescribeTable("absolute paths with relative patterns",
+		ginkgo.DescribeTable(
+			"absolute paths with relative patterns",
 			func(path, pattern string, expected bool) {
 				gomega.Expect(gogenfilter.MatchPattern(path, pattern)).To(gomega.Equal(expected))
 			},
@@ -468,7 +470,8 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 	})
 
 	ginkgo.Describe("SQLC content detection", func() {
-		ginkgo.DescribeTable("detects sqlc by various content markers",
+		ginkgo.DescribeTable(
+			"detects sqlc by various content markers",
 			func(path, content string, expected gogenfilter.FilterReason) {
 				reason := gogenfilter.DetectReason(path, content, gogenfilter.FilterSQLC)
 				gomega.Expect(reason).To(gomega.Equal(expected))
