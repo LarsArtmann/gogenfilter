@@ -241,7 +241,7 @@ func TestFilterResultString(t *testing.T) {
 			name:     "filtered without trace",
 			result:   FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "", Trace: ""},
 			exact:    "",
-			contains: []string{"filtered=true", "sqlc"},
+			contains: []string{"filtered=true", string(ReasonSQLC)},
 		},
 		{
 			name: "filtered with trace",
@@ -252,7 +252,7 @@ func TestFilterResultString(t *testing.T) {
 				Trace:    "detected as sqlc via filename pattern",
 			},
 			exact:    "",
-			contains: []string{"trace=", "sqlc"},
+			contains: []string{"trace=", string(ReasonSQLC)},
 		},
 	}
 
