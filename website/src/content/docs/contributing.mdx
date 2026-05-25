@@ -37,6 +37,15 @@ Uses golangci-lint v2:
 golangci-lint run
 ```
 
+## CI
+
+All pull requests must pass:
+
+- `go build ./...` — compiles cleanly
+- `go test -race -cover ./...` — tests pass with race detection
+- `go vet ./...` — no vet warnings
+- `golangci-lint run` — no new lint issues
+
 ## Code Style
 
 - Table-driven tests where possible
@@ -57,6 +66,5 @@ golangci-lint run
 
 - Ensure all tests pass: `go test -race ./...`
 - Ensure linting passes: `golangci-lint run`
-- Validate documentation code blocks: `npm run validate:docs` (in `website/`)
 - Add tests for new functionality
 - Keep changes focused and atomic
