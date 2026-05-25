@@ -12,7 +12,7 @@
 
   --color-text-primary: #e7e5e4;
   --color-text-secondary: #a8a29e;
-  --color-text-muted: #78716c;
+  --color-text-muted: #9ca3af;
 
   --color-accent: #22d3ee;
   --color-accent-hover: #67e8f9;
@@ -23,7 +23,7 @@
 
   --color-code-inline-bg: #1c1917;
   --color-code-dot: #44403c;
-  --color-code-comment: #57534e;
+  --color-code-comment: #8590a0;
   --color-success: #4ade80;
 
   --font-sans: var(--font-space-grotesk), -apple-system, BlinkMacSystemFont, sans-serif;
@@ -48,16 +48,16 @@
 
   --color-text-primary: #1c1917;
   --color-text-secondary: #57534e;
-  --color-text-muted: #a8a29e;
+  --color-text-muted: #6b7280;
 
-  --color-accent: #0891b2;
+  --color-accent: #0e7490;
   --color-accent-hover: #06b6d4;
   --color-accent-dim: rgba(8, 145, 178, 0.1);
   --color-accent-light: #67e8f9;
 
   --color-code-inline-bg: #e7e5e4;
   --color-code-dot: #a8a29e;
-  --color-code-comment: #78716c;
+  --color-code-comment: #57534e;
   --color-success: #22c55e;
 }
 
