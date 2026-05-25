@@ -134,7 +134,8 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - Path filters: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`
 - Concurrency group cancels in-progress runs
 - `go vet` → tests with race detector and coverage (98% threshold) → benchmarks
-- golangci-lint (separate job, parallel)
+- govulncheck job (parallel with lint)
+- golangci-lint (separate job, parallel, uses `gomodguard_v2`)
 - Uses `actions/setup-go@v6` (Node.js 24)
 
 **Benchmark** (`.github/workflows/benchmark.yml`):
@@ -152,6 +153,9 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - `workflow_dispatch` enabled
 - Concurrency group cancels in-progress runs
 - `npm ci` → `astro check` (typecheck) → build → doc validation (md-go-validator, optional) → HTML validation (enforced, not suppressed) → code dedup check
+- Import path validation: ensures all `gogenfilter` imports include `/v3`
+- Stale reference detection: checks curated docs for references to deleted files
+- CHANGELOG sync check: verifies version sections match between root and website
 - Cross-repo checkout for `LarsArtmann/md-go-validator` uses `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback; `continue-on-error: true` so build/deploy proceeds even without access. `LarsArtmann/go-output` checkout removed (was unused).
 - Deploy to Firebase Hosting (master push only, least-privilege permissions)
 - Node version pinned via `website/.node-version` (currently Node 24)
@@ -205,6 +209,15 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 - `github.com/go-faster/yaml` - YAML parsing for SQLC config
 - `github.com/onsi/ginkgo/v2` - BDD testing framework (test-only)
 - `github.com/onsi/gomega` - BDD matchers (test-only)
+
+## Gotchas
+
+- **`/v3` import path** — Module is `github.com/LarsArtmann/gogenfilter/v3`. All docs, website source, and README must reference `/v3`. CI validates this.
+- **BuildFlow `todo-check`** — Detects `note:` as a `NOTE:` comment marker. Use `hint` instead of `note` for TypeScript property names to avoid false positives.
+- **`.buildflow.yml`** — Configures BuildFlow with project-specific excludes (testdata, website/dist, website/node_modules).
+- **Dependabot alerts** — All 4 alerts are npm ecosystem (website transitive deps), not Go production deps. The `yaml` alert is npm `yaml`, not `go-faster/yaml`.
+- **`gomodguard` deprecated** — Replaced by `gomodguard_v2` in `.golangci.yaml`.
+- **`docs/status/archive/`** — Historical status reports (pre-May-25) are archived here. Active reports remain in `docs/status/`.
 
 ## License
 
