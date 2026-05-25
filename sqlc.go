@@ -129,7 +129,7 @@ func FindSQLCConfigs(paths []string) (map[string]string, *SQLCConfigError) {
 	for _, path := range paths {
 		err := findSQLCConfigsInPath(path, configs)
 		if err != nil {
-			return nil, sqlcFindError(path, err)
+			return nil, err
 		}
 	}
 
