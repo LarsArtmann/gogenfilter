@@ -41,9 +41,9 @@ export interface PhaseCard {
   phaseColor: "accent" | "amber";
   title: string;
   patterns: string[];
-  note: string;
-  noteColor: "accent" | "amber";
-  noteIcon: UseCaseIcon;
+  hint: string;
+  hintColor: "accent" | "amber";
+  hintIcon: UseCaseIcon;
 }
 
 export type ComparisonVariant = "DIY" | "gogenfilter" | "Heavy";
