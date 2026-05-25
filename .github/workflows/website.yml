@@ -89,6 +89,62 @@ jobs:
         run: npm run dedup
         working-directory: website
 
+      - name: Validate import paths contain /v3
+        run: |
+          ERRORS=""
+          # Check that all import paths in docs and website source reference /v3
+          for file in $(grep -rl 'github.com/LarsArtmann/gogenfilter' --include='*.md' --include='*.mdx' --include='*.ts' --include='*.astro' README.md website/src/ website/src/content/); do
+            # Skip go.mod and go.sum
+            if grep -q 'github.com/LarsArtmann/gogenfilter/v3' "$file"; then
+              continue
+            fi
+            # Flag files that reference the module without /v3
+            BAD=$(grep -n 'github.com/LarsArtmann/gogenfilter"[^/]' "$file" 2>/dev/null || true)
+            if [ -n "$BAD" ]; then
+              ERRORS="$ERRORS\n$file:\n$BAD\n"
+            fi
+          done
+          if [ -n "$ERRORS" ]; then
+            echo "::error::Import paths missing /v3 found:$ERRORS"
+            exit 1
+          fi
+          echo "All import paths correctly reference /v3"
+
+      - name: Check for stale references to deleted files
+        run: |
+          DELETED_FILES="metrics.go phantom.go errorCodeDefs"
+          ERRORS=""
+          for deleted in $DELETED_FILES; do
+            REFS=$(grep -rl "$deleted" --include='*.md' --include='*.mdx' --include='*.go' \
+              README.md CONTRIBUTING.md FEATURES.md DOMAIN_LANGUAGE.md \
+              website/src/content/docs/getting-started/ \
+              website/src/content/docs/guides/ \
+              website/src/content/docs/contributing.mdx \
+              2>/dev/null || true)
+            if [ -n "$REFS" ]; then
+              ERRORS="$ERRORS\nReferences to deleted file '$deleted' found in:\n$REFS\n"
+            fi
+          done
+          if [ -n "$ERRORS" ]; then
+            echo "::error::Stale references to deleted files:$ERRORS"
+            exit 1
+          fi
+          echo "No stale references to deleted files"
+
+      - name: Verify CHANGELOG sync
+        run: |
+          # Extract version headers from root CHANGELOG.md
+          ROOT_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' CHANGELOG.md | sort)
+          # Extract version headers from website changelog.mdx
+          WEB_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' website/src/content/docs/changelog.mdx | sort)
+          if [ "$ROOT_VERSIONS" != "$WEB_VERSIONS" ]; then
+            echo "::error::CHANGELOG.md and changelog.mdx version sections are out of sync"
+            echo "Root versions: $ROOT_VERSIONS"
+            echo "Web versions: $WEB_VERSIONS"
+            exit 1
+          fi
+          echo "CHANGELOG versions are in sync"
+
       - uses: actions/upload-artifact@v7
         with:
           name: website-dist
