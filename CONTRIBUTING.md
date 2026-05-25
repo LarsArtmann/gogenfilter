@@ -53,7 +53,7 @@ All pull requests must pass:
 - Follow standard Go conventions ([Effective Go](https://go.dev/doc/effective_go))
 - Table-driven tests using `t.Parallel()` within `t.Run()`
 - Functional options pattern for configuration (see `filter.go`)
-- Derive lists from single-source tables (see `detectors`, `errorCodeDefs`)
+- Derive lists from single-source tables (see `detectors` in `detection.go`)
 - Use `fstest.MapFS` in tests — never real filesystem I/O
 
 ## Adding a New Generator Detector
@@ -79,14 +79,12 @@ The derivation system automatically updates `AllFilterOptions()`, `AllFilterReas
 
 ```
 ├── detection.go       # Core detection logic and detector table
-├── filter.go          # Filter type with builder pattern
+├── filter.go          # Filter type with functional options
 ├── types.go           # FilterOption, FilterReason constants and methods
 ├── errors.go          # Branded error types
-├── metrics.go         # Thread-safe metrics tracking
-├── pattern.go         # Custom ** glob pattern matching
+├── pattern.go         # Glob pattern matching via doublestar/v4
 ├── sqlc.go            # SQLC config discovery and parsing
 ├── project.go         # Project root discovery
-├── phantom.go         # Phantom types for API safety
 ├── bench_test.go      # Benchmarks
 ├── integration_test.go # Tests against real tool output
 ├── testdata/          # Fixture files from real generators
