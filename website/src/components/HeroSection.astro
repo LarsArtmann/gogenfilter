@@ -22,7 +22,7 @@ async function getGitHubStars(): Promise<number | null> {
 const stars = await getGitHubStars();
 const starsText = stars !== null ? `${stars} Stars` : 'Star on GitHub';
 
-const importPath = siteConfig.github.replace('https://github.com/', 'github.com/');
+const importPath = siteConfig.github.replace('https://github.com/', 'github.com/') + '/v3';
 
 const highlightedCode = `<span class="text-text-muted">package</span> <span class="text-text-secondary">main</span>
 
@@ -66,7 +66,7 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
       <a href="/getting-started/installation/" data-astro-prefetch class="px-6 py-3 bg-accent text-bg-primary font-semibold rounded-lg text-sm hover:bg-accent-hover transition-colors duration-150 inline-flex items-center gap-2 border-none cursor-pointer">Get Started &rarr;</a>
-      <div class="flex items-center gap-2 py-2.5 px-4 rounded-lg bg-bg-card-solid border border-border font-mono text-sm text-text-primary select-all">$ go get {siteConfig.github.replace('https://github.com', 'github.com')}</div>
+      <div class="flex items-center gap-2 py-2.5 px-4 rounded-lg bg-bg-card-solid border border-border font-mono text-sm text-text-primary select-all">$ go get {siteConfig.github.replace('https://github.com', 'github.com')}/v3</div>
     </div>
 
     <div class="relative max-w-xl mx-auto">
