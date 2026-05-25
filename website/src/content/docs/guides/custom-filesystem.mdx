@@ -14,7 +14,7 @@ By default, the filter uses `os.DirFS(".")` (the current working directory):
 ```go
 package main
 
-import "github.com/LarsArtmann/gogenfilter"
+import "github.com/LarsArtmann/gogenfilter/v3"
 
 func main() {
 	opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
@@ -40,7 +40,7 @@ package main
 import (
 	"testing/fstest"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 func main() {
@@ -79,7 +79,7 @@ package main
 import (
 	"embed"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 //go:embed testdata/*

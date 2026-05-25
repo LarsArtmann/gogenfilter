@@ -39,7 +39,7 @@ gogenfilter.WithFilterOptions(
 `FilterOption` values are validated at construction time. Passing an invalid option returns a `*FilterConfigError`:
 
 ```go
-// Returns error: "gogenfilter: invalid filter option: unknown"
+// Returns error: "[gogenfilter:invalid_filter_option] invalid filter option \"unknown\""
 cfg, err := gogenfilter.WithFilterOptions(gogenfilter.FilterOption("unknown"))
 if err != nil {
     // handle error

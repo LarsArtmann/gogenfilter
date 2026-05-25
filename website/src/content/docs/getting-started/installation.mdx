@@ -13,7 +13,7 @@ description: Install gogenfilter in your Go project.
 Run this in your project directory:
 
 ```bash
-go get github.com/LarsArtmann/gogenfilter@latest
+go get github.com/LarsArtmann/gogenfilter/v3@latest
 ```
 
 ## Quick Usage
@@ -24,7 +24,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/LarsArtmann/gogenfilter"
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
 func main() {
@@ -50,7 +50,7 @@ func main() {
 ## Import Options
 
 ```go
-import "github.com/LarsArtmann/gogenfilter"
+import "github.com/LarsArtmann/gogenfilter/v3"
 ```
 
 `gogenfilter` re-exports `MatchPattern` for convenience, so you don't need a separate `doublestar` import.
@@ -58,7 +58,7 @@ import "github.com/LarsArtmann/gogenfilter"
 ## Verify Installation
 
 ```bash
-go list -m github.com/LarsArtmann/gogenfilter
+go list -m github.com/LarsArtmann/gogenfilter/v3
 ```
 
 ## Next Steps
