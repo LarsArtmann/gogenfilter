@@ -7,6 +7,7 @@
 ## a) FULLY DONE ✓
 
 ### Library Core (v3, stable)
+
 - **11 generator detectors** in table-driven system (sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic)
 - **Two-phase detection**: filename-based (zero I/O) → content-based (reads file)
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — immutable after construction
@@ -15,9 +16,10 @@
 - **`FilterResult` with trace**: `FilterDetailed()` returns trace info for debugging
 - **Batch filtering**: `FilterPaths()` for multi-file processing
 - **SQLC config discovery**: v1 and v2 config formats, Go/JSON/Codegen output dirs
-- **`**` glob patterns**: include/exclude via `doublestar/v4`
+- **`**`glob patterns**: include/exclude via`doublestar/v4`
 
 ### Test Suite (148 tests, 0 failures, 99.8% coverage)
+
 - Table-driven tests across all packages
 - ~120 BDD specs (ginkgo/gomega) in `bdd_test.go` + `bdd_extended_test.go`
 - Fuzz tests, property tests, integration tests, concurrent tests
@@ -25,23 +27,27 @@
 - Error type assertions use `errors.AsType[T]` (Go 1.26)
 
 ### Deduplication (this session)
+
 - **Merged** `assertAllValid`/`assertAllInvalid` → `assertAllValidity[T](t, name, items, wantValid bool)` — eliminated test helper duplication
 - **Refactored** `TestFilterResultString` from 3 sub-tests → table-driven test with `exact`/`contains` fields
 - **Eliminated** `getFilenameBasedReason` and `getContentBasedReason` wrappers — inlined `*WithTrace` calls into `detectReasonFromMap`, fixing 2 error-handling violations (discarded trace strings flagged by `hierarchical-errors` step)
 
 ### CI/CD (4 workflows)
+
 - **Go CI** (`ci.yml`): vet → test (race, coverage 98% threshold) → benchmarks → golangci-lint
 - **Benchmark** (`benchmark.yml`): push-to-master only, `gh-pages` tracking
 - **Website** (`website.yml`): Astro typecheck → build → doc validation → HTML validation → Firebase deploy
 - **Lighthouse** (`lighthouse.yml`): LHCI v12, 3 URLs × 3 runs
 
 ### Website
+
 - Astro v6 + Starlight docs, landing page at `/`
 - Firebase Hosting with CI/CD
 - Dark mode default, light mode toggle
 - SEO: JSON-LD, OG tags, canonical URLs
 
 ### Architecture & Documentation
+
 - `AGENTS.md`: comprehensive project knowledge (architecture, commands, CI, patterns, decisions)
 - `DOMAIN_LANGUAGE.md`: domain terminology
 - Architecture diagrams in `docs/architecture-understanding/`
@@ -51,11 +57,13 @@
 ## b) PARTIALLY DONE ⚠️
 
 ### Code Duplication (art-dupl)
+
 - **Down to 2 clone groups** from 3 (fixed 1 this session):
   - `sqlc.go:244/279` — **known false positive** (version dispatch vs v1→v2 conversion share identical signatures but are fundamentally different functions; excluded via `--exclude-pattern 'sqlc.go'`)
   - `types_test.go:240-245/246-256` — structural similarity between test data entries in table-driven `TestFilterResultString` (same `FilterResult` fields, different values)
 
 ### Linter
+
 - **1 pre-existing issue**: `goconst` flags `"sqlc"` string literal (4 occurrences) — this is a test data string matching the constant name `FilterSQLC`, not actual duplication worth fixing
 
 ---
@@ -75,6 +83,7 @@
 ## d) TOTALLY FUCKED UP 💥
 
 **Nothing.** The codebase is in excellent shape:
+
 - 148/148 tests pass
 - 99.8% coverage
 - `go vet` clean
@@ -85,7 +94,7 @@
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Remaining `_` discard in `detectReasonFromMap`** — lines 269 and 276 still discard trace strings with `_, _`. The tool flagged the *wrapper pattern* (now eliminated), but the discard itself remains. Consider whether `detectReasonFromMap` should also return a trace, or if a `//nolint:errcheck` comment is warranted for clarity.
+1. **Remaining `_` discard in `detectReasonFromMap`** — lines 269 and 276 still discard trace strings with `_, _`. The tool flagged the _wrapper pattern_ (now eliminated), but the discard itself remains. Consider whether `detectReasonFromMap` should also return a trace, or if a `//nolint:errcheck` comment is warranted for clarity.
 2. **`gomodguard` deprecation** — upgrade to `gomodguard_v2` in `.golangci.yaml` to silence the warning and stay current.
 3. **Website accessibility** — Lighthouse CI reports `color-contrast` and `label-content-name-mismatch` failures on the root page. These should be fixed before the next release.
 4. **Lighthouse CI not fully operational** — `LHCI_GITHUB_APP_TOKEN` needs to be configured as a GitHub secret for status checks to work.
@@ -98,6 +107,7 @@
 ## f) Top #25 Things We Should Get Done Next
 
 ### High Impact (do first)
+
 1. Fix website accessibility issues (`color-contrast`, `label-content-name-mismatch`) for Lighthouse CI
 2. Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret to enable Lighthouse status checks
 3. Upgrade `gomodguard` → `gomodguard_v2` in `.golangci.yaml`
@@ -105,6 +115,7 @@
 5. Fix pre-existing `goconst` warning (`"sqlc"` string in test data)
 
 ### Code Quality
+
 6. Address remaining art-dupl clone: `types_test.go` test data structural similarity
 7. Add `TODO_LIST.md` — comprehensive tracking of all open work
 8. Review `flake.nix` — ensure `justfile` migration is complete, remove deprecated `justfile` if present
@@ -112,6 +123,7 @@
 10. Add integration test for `FilterDetailed` trace propagation through the full path
 
 ### Website & Docs
+
 11. Write a "Getting Started" guide for the website
 12. Add API reference page to website (generated from Go doc comments)
 13. Update `FEATURES.md` in website with current feature set
@@ -119,6 +131,7 @@
 15. Add changelog/release notes page to website
 
 ### DevEx & CI
+
 16. Add `nix flake check` to CI pipeline (if not already present)
 17. Set up benchmark alerting/dashboard (data exists on `gh-pages` but no visibility)
 18. Add `art-dupl` to CI pipeline as a quality gate
@@ -126,6 +139,7 @@
 20. Review `depguard` rules — ensure all dependencies are still needed and allowed
 
 ### Future Features (lower priority)
+
 21. Add support for detecting `go:embed` generated files
 22. Add support for detecting `stringer` v2 generated files
 23. Consider adding a `FilterDetailedContext` method (with `context.Context`) for future async I/O
@@ -148,14 +162,14 @@ This is a design decision that depends on whether the no-trace API is considered
 
 ## Metrics Summary
 
-| Metric | Value |
-|---|---|
-| Total Go lines | 8,362 |
-| Tests passing | 148/148 |
-| Tests failing | 0 |
-| Coverage | 99.8% |
-| Linter issues | 1 (pre-existing `goconst`) |
+| Metric                  | Value                                   |
+| ----------------------- | --------------------------------------- |
+| Total Go lines          | 8,362                                   |
+| Tests passing           | 148/148                                 |
+| Tests failing           | 0                                       |
+| Coverage                | 99.8%                                   |
+| Linter issues           | 1 (pre-existing `goconst`)              |
 | Clone groups (art-dupl) | 2 (1 known false positive, 1 test data) |
-| CI workflows | 4 |
-| Generator detectors | 11 |
-| Public API functions | ~20 |
+| CI workflows            | 4                                       |
+| Generator detectors     | 11                                      |
+| Public API functions    | ~20                                     |

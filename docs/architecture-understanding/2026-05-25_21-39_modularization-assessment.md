@@ -12,10 +12,10 @@ This project is **not a candidate** for multi-module splitting. The assessment b
 
 ### 1.1 Module Landscape
 
-| Module | Path | Go Version | External Deps | State |
-|--------|------|------------|---------------|-------|
-| `github.com/LarsArtmann/gogenfilter/v3` | `./` | 1.26.2 | doublestar, go-faster/yaml, ginkgo, gomega | Clean, single module |
-| `github.com/LarsArtmann/gogenfilter/v3/testhelpers` | `./testhelpers/` | (shared) | None | Clean, no go.mod |
+| Module                                              | Path             | Go Version | External Deps                              | State                |
+| --------------------------------------------------- | ---------------- | ---------- | ------------------------------------------ | -------------------- |
+| `github.com/LarsArtmann/gogenfilter/v3`             | `./`             | 1.26.2     | doublestar, go-faster/yaml, ginkgo, gomega | Clean, single module |
+| `github.com/LarsArtmann/gogenfilter/v3/testhelpers` | `./testhelpers/` | (shared)   | None                                       | Clean, no go.mod     |
 
 **Status:** Monolith (single go.mod, all packages in one tree). No go.work present.
 
@@ -37,15 +37,15 @@ No circular dependencies. No replace directives. No god-packages.
 
 ## When NOT to Modularize — Scoring
 
-| Signal | Weight | Assessment |
-|--------|--------|------------|
-| **Small project** (7 files, 1632 source lines) | High | YES — focused library |
-| **Single domain** (generated code detection) | High | YES — one concept |
-| **All code changes together** | High | YES — detectors table couples everything |
-| **Library with external consumers** | Medium | YES — published to GOPROXY as v3 |
-| **Single developer** | Medium | Likely |
-| **Prototype** | High | NO — production-ready v3 |
-| **Independent versioning need** | High | NO — one library, one version |
+| Signal                                         | Weight | Assessment                               |
+| ---------------------------------------------- | ------ | ---------------------------------------- |
+| **Small project** (7 files, 1632 source lines) | High   | YES — focused library                    |
+| **Single domain** (generated code detection)   | High   | YES — one concept                        |
+| **All code changes together**                  | High   | YES — detectors table couples everything |
+| **Library with external consumers**            | Medium | YES — published to GOPROXY as v3         |
+| **Single developer**                           | Medium | Likely                                   |
+| **Prototype**                                  | High   | NO — production-ready v3                 |
+| **Independent versioning need**                | High   | NO — one library, one version            |
 
 **Score: 3+ High signals** → **Stop. Do not modularize.**
 
@@ -60,6 +60,7 @@ gogenfilter is a single-purpose library. It does one thing (detect generated cod
 ### 2. API Fragmentation
 
 Today, consumers write:
+
 ```go
 import "github.com/LarsArtmann/gogenfilter/v3"
 
@@ -67,6 +68,7 @@ f, _ := gogenfilter.NewFilter(gogenfilter.WithFilterOptions(gogenfilter.FilterAl
 ```
 
 After splitting, they'd need:
+
 ```go
 import (
     gogenfilter "github.com/LarsArtmann/gogenfilter/v3"
@@ -88,6 +90,7 @@ All 7 source files form a single package. There are no `internal/` packages to p
 ### 5. Overhead Without Value
 
 Multi-module adds:
+
 - Multiple `go.mod` files to maintain
 - `go.work` or `replace` directives to manage
 - CI complexity (build/test per module)
