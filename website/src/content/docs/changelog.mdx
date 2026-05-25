@@ -3,7 +3,35 @@ title: Changelog
 description: All notable changes to gogenfilter.
 ---
 
-## [Unreleased]
+## [v3.0.2] — 2026-05-25
+
+### Changed
+
+- **Trace/non-trace detection unified** — `*WithTrace` variants are now canonical implementations; non-trace versions are thin wrappers. Eliminates the biggest source of code duplication.
+- **`coverage_test.go` dissolved** — Tests moved to their natural test files (`errors_test.go`, `filter_test.go`, `pattern_test.go`, `sqlc_test.go`, `project_test.go`).
+- **Test string literals centralized** — Repeated test constants extracted to `testhelpers/constants.go` and named constants in `testdata_test.go`.
+- **`FilterResult` construction DRYed up** — `filteredResult()` and `notFilteredResult()` helpers eliminate repetitive struct literal construction.
+- **Error system simplified** — Removed `errorCodeDefs` table, `AllErrorCodes()`, `CodeHelp()`, `Helper` interface, `CodeEqual[T]` generic. Kept `ErrorCode`, `ErrorCoder`, sentinel errors, branded prefix.
+- **Phantom types removed** — `StartPath`, `ConfigPath`, `Operation`, `ErrorMessage` replaced with plain `string` fields.
+- **Detection helpers unexported** — `MatchesSQLCFilename`, `HasSQLCContent`, `HasSQLCCodePatterns` → unexported. Use `DetectReason()` or `Filter`.
+- **`codeGeneratedPrefix` moved to `detection.go`** — Only used there, not in `types.go`.
+- **`matchAnyContentPattern` renamed** → `matchesAnyContentPattern` for consistency.
+- **`Filter.String()` improved** — Better debug output showing options, include, and exclude patterns.
+- **`parseV1AsV2` cleaned up** — Removed zero-value noise from struct construction.
+- **`validatable` interface removed** — Dead code in production.
+- **Plausible analytics removed** from website — Tightened Content Security Policy.
+- **Flake configuration improved** — Better nix build setup.
+- **Release workflow added** — Tag-based GitHub release with automated tests, lint, and release notes.
+
+### Fixed
+
+- Website CI: checkout `path` parameter placement
+- Website CI: private repo access fallback
+- Benchmark CI: missing `gh-pages` branch
+- Lighthouse CI: budgets+assertions conflict
+- Node.js 20 deprecation — updated `actions/setup-go@v5` → `@v6`
+
+## [v3.0.1] — 2026-05-04
 
 ### Added
 
@@ -16,11 +44,6 @@ description: All notable changes to gogenfilter.
 - `FilterResult.String()` — human-readable representation
 - `Filter.FilterReasons()` — returns the `FilterReason` values this filter will detect
 - `Filter.String()` — human-readable debug representation of filter state
-- SQLC config v1 format test coverage
-- Cross-platform path matching tests
-- `map[FilterOption]struct{}` replaces `map[FilterOption]bool`
-- Runnable examples for `Filter`, `WithFS`, `WithIncludePatterns`, `DetectReasonReader`
-- CI benchmark step (`go test -bench=. -benchmem`)
 - Module path `/v3` suffix for Go module convention compliance
 
 ### Changed
@@ -35,9 +58,8 @@ description: All notable changes to gogenfilter.
 - SQLC patterns consolidated
 - `WithFilterOptions` reuses `optionsMap`
 - `slog` dependency removed
-- `Validatable` interface unexported to `validatable`
 - `IsEnabled()` derives state from configuration
-- `errors.AsType[T]` migration complete — source code and tests use Go 1.26 `errors.AsType[T]` exclusively
+- `errors.AsType[T]` migration complete — Go 1.26 exclusively
 
 ### Fixed
 
@@ -59,6 +81,26 @@ description: All notable changes to gogenfilter.
 - `sqlcConfigError()` bridge function
 - `MustFilter` / `MustShouldFilter` panic-on-error variant
 - Plausible analytics
+
+## [v3.0.0] — 2026-05-04
+
+### Added
+
+- `FilterPaths(paths []string) ([]bool, error)` — batch filtering; returns partial results on error
+- `FilterConfigError` type — returned when invalid filter options are provided; implements `ErrorCoder` and `Unwrap`
+- `ErrInvalidFilterOption` sentinel error — for `errors.Is()` matching
+- `CodeInvalidFilterOption` error code — for programmatic error handling
+
+### Changed
+
+- **Breaking: `WithFilterOptions` returns `(FilterConfig, error)`** — previously panicked on invalid options
+- **Breaking: `NewFilter` returns `(*Filter, error)`** — previously returned `*Filter` only
+- **Breaking: `FilterConfig` returns `error`** — config functions now return error to support validation
+- **Breaking: `Enabled()` and `Disabled()` removed** — filter is enabled when options are provided
+
+### Fixed
+
+- **Silent misconfiguration** — `NewFilter(WithFilterOptions(FilterAll))` without `Enabled()` silently did nothing; now passing options automatically enables the filter
 
 ## [0.1.0] — 2026-04-04
 

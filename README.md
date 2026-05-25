@@ -42,7 +42,7 @@ Your linter shouldn't waste time on files it didn't write. Generated code from s
 ## Install
 
 ```bash
-go get github.com/LarsArtmann/gogenfilter
+go get github.com/LarsArtmann/gogenfilter/v3
 ```
 
 ## Quick Start
@@ -54,7 +54,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/LarsArtmann/gogenfilter"
+    "github.com/LarsArtmann/gogenfilter/v3"
 )
 
 func main() {
