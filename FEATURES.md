@@ -1,6 +1,6 @@
 # Features
 
-**Updated:** 2026-05-08
+**Updated:** 2026-05-25
 **Source:** Code audit of all source files
 
 ## Core Detection
