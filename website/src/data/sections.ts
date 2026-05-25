@@ -28,7 +28,7 @@ export const comparisons: ComparisonItem[] = [
     price: "DIY",
     accent: false,
     pros: [],
-    cons: ["No filename detection", "Manual pattern maintenance", "No metrics"],
+    cons: ["No filename detection", "Manual pattern maintenance", "No structued results"],
   },
   {
     variant: "gogenfilter",
@@ -37,7 +37,7 @@ export const comparisons: ComparisonItem[] = [
     pros: [
       `${generatorCount} generators, table-driven`,
       "Two-phase (zero I/O first)",
-      "Thread-safe metrics",
+      "FilterResult with trace info",
       "fs.FS testable",
       "Pattern scoping",
     ],
