@@ -60,7 +60,7 @@ export const useCases: UseCase[] = [
   },
   {
     title: "Code Quality",
-    desc: "Exclude generated code from metrics",
+    desc: "Exclude generated code from reports",
     icon: "chart",
   },
   {
