@@ -1,0 +1,162 @@
+shape: sequence_diagram
+direction: down
+
+gogenfilter: {
+  style.fill: "#F0F7FF"
+  style.stroke: "#1976D2"
+
+  Consumer Layer: {
+    style.fill: "#E3F2FD"
+    style.stroke: "#64B5F6"
+
+    "NewFilter()": {
+      shape: rectangle
+      style.fill: "#BBDEFB"
+      style.stroke: "#64B5F6"
+    }
+    "Filter(path) → (bool, error)": {
+      shape: rectangle
+      style.fill: "#BBDEFB"
+      style.stroke: "#64B5F6"
+    }
+    "FilterDetailed(path) → (FilterResult, error)": {
+      shape: rectangle
+      style.fill: "#BBDEFB"
+      style.stroke: "#64B5F6"
+    }
+    "DetectReason(path, content) → FilterReason": {
+      shape: rectangle
+      style.fill: "#BBDEFB"
+      style.stroke: "#64B5F6"
+    }
+    "RegisterDetector(entry)": {
+      shape: rectangle
+      style.fill: "#81D4FA"
+      style.stroke: "#0288D1"
+      style.multiple: true
+    }
+  }
+
+  "filter.go": {
+    style.fill: "#E8F5E9"
+    style.stroke: "#66BB6A"
+
+    "Filter struct": {
+      shape: rectangle
+      style.fill: "#C8E6C9"
+      style.stroke: "#66BB6A"
+    }
+    "shouldFilterByPattern()": {
+      shape: rectangle
+      style.fill: "#C8E6C9"
+      style.stroke: "#66BB6A"
+    }
+    "shouldFilterByDetection()": {
+      shape: rectangle
+      style.fill: "#C8E6C9"
+      style.stroke: "#66BB6A"
+    }
+  }
+
+  "detection.go": {
+    style.fill: "#FFF3E0"
+    style.stroke: "#FFA726"
+
+    "detectors[] table (11 built-in + N custom)": {
+      shape: cylinder
+      style.fill: "#FFE0B2"
+      style.stroke: "#FFA726"
+    }
+    "Phase 1: filename match": {
+      shape: rectangle
+      style.fill: "#FFE0B2"
+      style.stroke: "#FFA726"
+    }
+    "Phase 2: content check": {
+      shape: rectangle
+      style.fill: "#FFE0B2"
+      style.stroke: "#FFA726"
+    }
+  }
+
+  "types.go": {
+    style.fill: "#F3E5F5"
+    style.stroke: "#AB47BC"
+
+    "FilterOption (12 + custom)": {
+      shape: rectangle
+      style.fill: "#E1BEE7"
+      style.stroke: "#AB47BC"
+    }
+    "FilterReason (14 + custom)": {
+      shape: rectangle
+      style.fill: "#E1BEE7"
+      style.stroke: "#AB47BC"
+    }
+    "FilterResult": {
+      shape: rectangle
+      style.fill: "#E1BEE7"
+      style.stroke: "#AB47BC"
+    }
+  }
+
+  Infrastructure: {
+    style.fill: "#FFEBEE"
+    style.stroke: "#EF5350"
+
+    "pattern.go: MatchPattern()": {
+      shape: rectangle
+      style.fill: "#FFCDD2"
+      style.stroke: "#EF5350"
+    }
+    "errors.go: 3 error types": {
+      shape: diamond
+      style.fill: "#FFCDD2"
+      style.stroke: "#EF5350"
+    }
+    "project.go: FindProjectRoot()": {
+      shape: rectangle
+      style.fill: "#FFCDD2"
+      style.stroke: "#EF5350"
+    }
+    "sqlc.go: Config discovery + parsing": {
+      shape: rectangle
+      style.fill: "#FFCDD2"
+      style.stroke: "#EF5350"
+    }
+  }
+}
+
+"Future Extension": {
+  shape: person
+  style.fill: "#B2DFDB"
+  style.stroke: "#00897B"
+  style.multiple: true
+}
+
+Caller: {
+  shape: person
+  style.fill: "#B2DFDB"
+  style.stroke: "#00897B"
+}
+
+Caller -> "Consumer Layer"."NewFilter()": functional options
+Caller -> "Consumer Layer"."Filter(path) → (bool, error)": file path
+Caller -> "Consumer Layer"."DetectReason(path, content) → FilterReason": path + content
+
+"Future Extension" -> "Consumer Layer"."RegisterDetector(entry)": "custom DetectorEntry"
+
+"Consumer Layer"."RegisterDetector(entry)" -> "detection.go"."detectors[] table (11 built-in + N custom)": append entry
+"Consumer Layer"."NewFilter()" -> "filter.go"."Filter struct": configure
+"Consumer Layer"."Filter(path) → (bool, error)" -> "filter.go"."shouldFilterByPattern()": check patterns
+"Consumer Layer"."Filter(path) → (bool, error)" -> "filter.go"."shouldFilterByDetection()": no pattern match
+"Consumer Layer"."DetectReason(path, content) → FilterReason" -> "detection.go"."Phase 1: filename match": content available
+
+"filter.go"."shouldFilterByPattern()" -> Infrastructure."pattern.go: MatchPattern()": match include/exclude
+"filter.go"."shouldFilterByDetection()" -> "detection.go"."Phase 1: filename match": check filename
+"detection.go"."Phase 1: filename match" -> "detection.go"."Phase 2: content check": phase 1 miss
+"detection.go"."Phase 2: content check" -> "detection.go"."detectors[] table (11 built-in + N custom)": query built-in + custom
+"detection.go"."Phase 1: filename match" -> "detection.go"."detectors[] table (11 built-in + N custom)": query built-in + custom
+
+Infrastructure."sqlc.go: Config discovery + parsing" -> Infrastructure."project.go: FindProjectRoot()": parent search
+Infrastructure."sqlc.go: Config discovery + parsing" -> Infrastructure."errors.go: 3 error types": SQLCConfigError
