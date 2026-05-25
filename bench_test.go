@@ -69,7 +69,7 @@ func BenchmarkDetectGenerated(b *testing.B) {
 	opts := optionsMap(FilterAll)
 
 	for b.Loop() {
-		_ = getFilenameBasedReason(dbModelsGo, opts)
+		_, _ = getFilenameBasedReasonWithTrace(dbModelsGo, opts)
 	}
 }
 

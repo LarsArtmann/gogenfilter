@@ -111,7 +111,7 @@ func TestFilterOptionIsValid(t *testing.T) {
 		FilterOption("not-a-real-option"),
 	}
 
-	assertAllInvalid(t, "invalidOptions", invalidOptions)
+	assertAllValidity(t, "invalidOptions", invalidOptions, false)
 }
 
 func TestFilterReasonString(t *testing.T) {
@@ -141,25 +141,21 @@ func TestFilterReasonIsValid(t *testing.T) {
 		FilterReason("not-a-real-reason"),
 	}
 
-	assertAllInvalid(t, "invalidReasons", invalidReasons)
+	assertAllValidity(t, "invalidReasons", invalidReasons, false)
 }
 
-func assertAllValid[T validatable](t *testing.T, name string, items []T) {
+func assertAllValidity[T validatable](t *testing.T, name string, items []T, wantValid bool) {
 	t.Helper()
 
 	for _, item := range items {
-		if !item.IsValid() {
-			t.Errorf("%s contains invalid item %v", name, item)
-		}
-	}
-}
+		if item.IsValid() != wantValid {
+			validity := "invalid"
 
-func assertAllInvalid[T validatable](t *testing.T, name string, items []T) {
-	t.Helper()
+			if wantValid {
+				validity = "valid"
+			}
 
-	for _, item := range items {
-		if item.IsValid() {
-			t.Errorf("%s contains valid item %v", name, item)
+			t.Errorf("%s contains %s item %v", name, validity, item)
 		}
 	}
 }
@@ -171,7 +167,7 @@ func TestAllFilterOptions(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterOptions())", len(opts), 12)
 
-	assertAllValid(t, "AllFilterOptions()", opts)
+	assertAllValidity(t, "AllFilterOptions()", opts, true)
 }
 
 func TestAllFilterReasons(t *testing.T) {
@@ -181,7 +177,7 @@ func TestAllFilterReasons(t *testing.T) {
 
 	assertEqual(t, "len(AllFilterReasons())", len(reasons), 14)
 
-	assertAllValid(t, "AllFilterReasons()", reasons)
+	assertAllValidity(t, "AllFilterReasons()", reasons, true)
 }
 
 func TestAllGeneratorOptions(t *testing.T) {
@@ -197,7 +193,7 @@ func TestAllGeneratorOptions(t *testing.T) {
 		}
 	}
 
-	assertAllValid(t, "AllGeneratorOptions()", opts)
+	assertAllValidity(t, "AllGeneratorOptions()", opts, true)
 }
 
 func TestFilterOptionReasonFilterAllReturnsFalse(t *testing.T) {
@@ -229,33 +225,50 @@ func TestFilterOptionReasonUnregisteredReturnsFalse(t *testing.T) {
 func TestFilterResultString(t *testing.T) {
 	t.Parallel()
 
-	t.Run("not filtered", func(t *testing.T) {
-		t.Parallel()
+	tests := []struct {
+		name     string
+		result   FilterResult
+		exact    string
+		contains []string
+	}{
+		{
+			name:     "not filtered",
+			result:   FilterResult{Filtered: false, Reason: "", Path: "", Trace: ""},
+			exact:    "FilterResult(filtered=false)",
+			contains: nil,
+		},
+		{
+			name:     "filtered without trace",
+			result:   FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "", Trace: ""},
+			exact:    "",
+			contains: []string{"filtered=true", "sqlc"},
+		},
+		{
+			name: "filtered with trace",
+			result: FilterResult{
+				Filtered: true,
+				Reason:   ReasonSQLC,
+				Path:     "",
+				Trace:    "detected as sqlc via filename pattern",
+			},
+			exact:    "",
+			contains: []string{"trace=", "sqlc"},
+		},
+	}
 
-		r := FilterResult{Filtered: false, Reason: "", Path: "", Trace: ""}
-		if r.String() != "FilterResult(filtered=false)" {
-			t.Errorf("unexpected String(): %q", r.String())
-		}
-	})
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
 
-	t.Run("filtered without trace", func(t *testing.T) {
-		t.Parallel()
+			got := testCase.result.String()
 
-		r := FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "", Trace: ""}
-		assertContains(t, r.String(), "filtered=true")
-		assertContains(t, r.String(), "sqlc")
-	})
+			if testCase.exact != "" && got != testCase.exact {
+				t.Errorf("unexpected String(): %q", got)
+			}
 
-	t.Run("filtered with trace", func(t *testing.T) {
-		t.Parallel()
-
-		result := FilterResult{
-			Filtered: true,
-			Reason:   ReasonSQLC,
-			Path:     "",
-			Trace:    "detected as sqlc via filename pattern",
-		}
-		assertContains(t, result.String(), "trace=")
-		assertContains(t, result.String(), "sqlc")
-	})
+			for _, s := range testCase.contains {
+				assertContains(t, got, s)
+			}
+		})
+	}
 }

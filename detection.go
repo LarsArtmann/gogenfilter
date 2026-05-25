@@ -266,14 +266,16 @@ func DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (Fil
 // detectReasonFromMap is the shared core for both DetectReason and detectReasonFS.
 func detectReasonFromMap(filePath, content string, options map[FilterOption]struct{}) FilterReason {
 	// Phase 1: Check filename-based detectors (zero I/O)
-	filenameReason := getFilenameBasedReason(filePath, options)
-	if filenameReason != ReasonNotFiltered {
-		return filenameReason
+	reason, _ := getFilenameBasedReasonWithTrace(filePath, options)
+	if reason != ReasonNotFiltered {
+		return reason
 	}
 
 	// Phase 2: Content-based detection only if needed
 	if needsContentCheck(options) {
-		return getContentBasedReason(filePath, content, options)
+		reason, _ = getContentBasedReasonWithTrace(filePath, content, options)
+
+		return reason
 	}
 
 	return ReasonNotFiltered
@@ -325,27 +327,7 @@ func needsContentCheck(options map[FilterOption]struct{}) bool {
 	return false
 }
 
-// getContentBasedReason checks content for generator-specific markers.
-// Uses a table-driven approach: specific generators are checked first, FilterGeneric is the fallback.
-func getContentBasedReason(
-	path string,
-	fileContent string,
-	opts map[FilterOption]struct{},
-) FilterReason {
-	reason, _ := getContentBasedReasonWithTrace(path, fileContent, opts)
-
-	return reason
-}
-
-// getFilenameBasedReason determines the filter reason based on filename only.
-func getFilenameBasedReason(filePath string, options map[FilterOption]struct{}) FilterReason {
-	reason, _ := getFilenameBasedReasonWithTrace(filePath, options)
-
-	return reason
-}
-
-// getFilenameBasedReasonWithTrace returns the filter reason and a trace string
-// based on filename only.
+// getContentBasedReasonWithTrace is like getContentBasedReason but also returns a trace string.
 func getFilenameBasedReasonWithTrace(
 	filePath string,
 	options map[FilterOption]struct{},
@@ -364,9 +346,9 @@ func getFilenameBasedReasonWithTrace(
 	return ReasonNotFiltered, ""
 }
 
-// getContentBasedReasonWithTrace is like getContentBasedReason but also returns a trace string.
-func getContentBasedReasonWithTrace(
-	path string,
+// getContentBasedReasonWithTrace checks content for generator-specific markers
+// and returns both a reason and a trace string.
+func getContentBasedReasonWithTrace(path string,
 	fileContent string,
 	opts map[FilterOption]struct{},
 ) (FilterReason, string) {
