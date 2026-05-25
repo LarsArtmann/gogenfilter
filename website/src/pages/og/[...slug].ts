@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { OGImageRoute } from "astro-og-canvas";
+import { generatorCount } from "../../data/generators";
 
 const docs = await getCollection("docs");
 const docPages = Object.fromEntries(docs.map(({ data, id }) => [id, { data }]));
@@ -10,7 +11,7 @@ const pages = {
     data: {
       title: "gogenfilter",
       description:
-        "Detect and filter auto-generated Go code files from 11 generators. Built for linters and static analysis.",
+        `Detect and filter auto-generated Go code files from ${generatorCount} generators. Built for linters and static analysis.`,
     },
   },
 };
