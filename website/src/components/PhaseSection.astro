@@ -22,9 +22,9 @@ import SectionHeader from './SectionHeader.astro';
           </>
         ))}
       </p>
-      <span class={`inline-flex items-center gap-1.5 text-xs ${phase.noteColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
-        <Icon name={phase.noteIcon} size={14} />
-        {phase.note}
+      <span class={`inline-flex items-center gap-1.5 text-xs ${phase.hintColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
+        <Icon name={phase.hintIcon} size={14} />
+        {phase.hint}
       </span>
     </div>
   ))}
