@@ -64,7 +64,7 @@ func TestDetectGenerated(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
 
-			reason := getFilenameBasedReason(testCase.filename, testCase.options)
+			reason, _ := getFilenameBasedReasonWithTrace(testCase.filename, testCase.options)
 
 			if reason != testCase.expected {
 				t.Errorf("Expected %v, got %v", testCase.expected, reason)
