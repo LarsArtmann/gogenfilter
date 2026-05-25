@@ -11,5 +11,5 @@ export const siteConfig = {
     name: "LarsArtmann",
     url: "https://larsartmann.com/",
   },
-  pkgGoDev: "https://pkg.go.dev/github.com/LarsArtmann/gogenfilter",
+  pkgGoDev: "https://pkg.go.dev/github.com/LarsArtmann/gogenfilter/v3",
 } as const;
