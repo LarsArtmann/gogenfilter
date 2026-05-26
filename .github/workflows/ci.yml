@@ -97,7 +97,7 @@ jobs:
         with:
           go-version: "1.26"
 
-      - run: go install github.com/goreleaser/art-dupl@latest
+      - run: go install github.com/LarsArtmann/art-dupl/cmd/art-dupl@latest
 
       - name: Check for code duplication
         run: |
