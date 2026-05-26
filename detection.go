@@ -407,12 +407,26 @@ func detectReasonFSWithTrace(
 	}
 
 	if !needsContentCheck(options) {
-		return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath}, nil
+		return FilterResult{
+			Filtered: false,
+			Reason:   ReasonNotFiltered,
+			Path:     filePath,
+			Trace:    "",
+		}, nil
 	}
 
 	content, err := fs.ReadFile(fsys, filePath)
 	if err != nil {
-		return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath}, fmt.Errorf("read file %q: %w", filePath, err)
+		return FilterResult{
+				Filtered: false,
+				Reason:   ReasonNotFiltered,
+				Path:     filePath,
+				Trace:    "",
+			}, fmt.Errorf(
+				"read file %q: %w",
+				filePath,
+				err,
+			)
 	}
 
 	reason, trace = getContentBasedReasonWithTrace(filePath, string(content), options)
@@ -420,7 +434,12 @@ func detectReasonFSWithTrace(
 		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
 	}
 
-	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath}, nil
+	return FilterResult{
+		Filtered: false,
+		Reason:   ReasonNotFiltered,
+		Path:     filePath,
+		Trace:    "",
+	}, nil
 }
 
 // AllFilterOptions returns all valid FilterOption values including the meta-option

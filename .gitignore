@@ -79,3 +79,5 @@ Thumbs.db
 /v3
 # Copy/paste detection report
 /report/jscpd-report.json
+# Nix build output
+/result
