@@ -59,6 +59,7 @@
               pkgs.gofumpt
               pkgs.golines
               pkgs.gotools
+              pkgs.govulncheck
               pkgs.trash-cli
             ];
 
@@ -106,6 +107,11 @@
               set -euo pipefail
               ${goPkg}/bin/go test ./... -coverprofile=coverage.out -covermode=atomic "$@"
               ${goPkg}/bin/go tool cover -func=coverage.out
+            '';
+
+            vulncheck = mkApp "vulncheck" ''
+              set -euo pipefail
+              ${pkgs.govulncheck}/bin/govulncheck ./...
             '';
 
             clean = mkApp "clean" ''
