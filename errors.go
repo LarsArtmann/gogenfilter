@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+// errorPrefixFmt is the branded prefix format for all gogenfilter errors.
+const errorPrefixFmt = "[gogenfilter:%s] "
+
 // ErrorCode identifies a specific error condition in the gogenfilter library.
 // Codes use snake_case naming and can be used for programmatic error handling.
 type ErrorCode string
@@ -55,14 +58,14 @@ type ProjectRootError struct {
 func (e *ProjectRootError) Error() string {
 	if e.Err != nil {
 		return fmt.Sprintf(
-			"[gogenfilter:%s] project root not found from %q: %v",
+			errorPrefixFmt+"project root not found from %q: %v",
 			e.Code,
 			e.StartPath,
 			e.Err,
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] project root not found from %q (searched for: %s)",
+	return fmt.Sprintf(errorPrefixFmt+"project root not found from %q (searched for: %s)",
 		e.Code, e.StartPath, strings.Join(e.Markers, ", "))
 }
 
@@ -91,14 +94,14 @@ type FilterConfigError struct {
 func (e *FilterConfigError) Error() string {
 	if e.Err != nil {
 		return fmt.Sprintf(
-			"[gogenfilter:%s] invalid filter option %q: %v",
+			errorPrefixFmt+"invalid filter option %q: %v",
 			e.Code,
 			e.Option,
 			e.Err,
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] invalid filter option %q", e.Code, e.Option)
+	return fmt.Sprintf(errorPrefixFmt+"invalid filter option %q", e.Code, e.Option)
 }
 
 func (e *FilterConfigError) Unwrap() error { return e.Err }
@@ -129,7 +132,7 @@ func (e *SQLCConfigError) Error() string {
 	if e.ConfigPath != "" {
 		if e.Err != nil {
 			return fmt.Sprintf(
-				"[gogenfilter:%s] sqlc config %s %q: %s: %v",
+				errorPrefixFmt+"sqlc config %s %q: %s: %v",
 				e.Code,
 				e.Operation,
 				e.ConfigPath,
@@ -139,7 +142,7 @@ func (e *SQLCConfigError) Error() string {
 		}
 
 		return fmt.Sprintf(
-			"[gogenfilter:%s] sqlc config %s %q: %s",
+			errorPrefixFmt+"sqlc config %s %q: %s",
 			e.Code,
 			e.Operation,
 			e.ConfigPath,
@@ -149,7 +152,7 @@ func (e *SQLCConfigError) Error() string {
 
 	if e.Err != nil {
 		return fmt.Sprintf(
-			"[gogenfilter:%s] sqlc config %s: %s: %v",
+			errorPrefixFmt+"sqlc config %s: %s: %v",
 			e.Code,
 			e.Operation,
 			e.Message,
@@ -157,7 +160,7 @@ func (e *SQLCConfigError) Error() string {
 		)
 	}
 
-	return fmt.Sprintf("[gogenfilter:%s] sqlc config %s: %s", e.Code, e.Operation, e.Message)
+	return fmt.Sprintf(errorPrefixFmt+"sqlc config %s: %s", e.Code, e.Operation, e.Message)
 }
 
 func (e *SQLCConfigError) Unwrap() error { return e.Err }
