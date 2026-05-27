@@ -9,8 +9,8 @@ parallel: true
 max_concurrency: 4
 
 # File settings
-max_file_size: 500  # lines — detection.go ~471 (detector table + constants)
-dupl_threshold: 30  # tokens
+max_file_size: 500 # lines — detection.go ~471 (detector table + constants)
+dupl_threshold: 30 # tokens
 
 # TODO comment severity: debug, info, warn, error
 todo_severity: error

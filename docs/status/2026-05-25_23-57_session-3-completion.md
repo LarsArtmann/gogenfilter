@@ -14,21 +14,21 @@
 
 ### Lighthouse Accessibility Fixes (session 3)
 
-| Fix | File | Before | After | Ratio |
-|---|---|---|---|---|
-| Dark text-muted | global.css | `#78716c` | `#9ca3af` | ~7.3:1 |
-| Dark code-comment | global.css | `#57534e` | `#8590a0` | ~5.5:1 |
-| Light text-muted | global.css | `#a8a29e` | `#6b7280` | ~5.6:1 |
-| Light accent | global.css | `#0891b2` | `#0e7490` | ~4.6:1 |
-| Light code-comment | global.css | `#78716c` | `#57534e` | ~5.5:1 |
-| Aria-label mismatch | HeroSection.astro | Static `aria-label` | Removed | Fixed |
+| Fix                 | File              | Before              | After     | Ratio  |
+| ------------------- | ----------------- | ------------------- | --------- | ------ |
+| Dark text-muted     | global.css        | `#78716c`           | `#9ca3af` | ~7.3:1 |
+| Dark code-comment   | global.css        | `#57534e`           | `#8590a0` | ~5.5:1 |
+| Light text-muted    | global.css        | `#a8a29e`           | `#6b7280` | ~5.6:1 |
+| Light accent        | global.css        | `#0891b2`           | `#0e7490` | ~4.6:1 |
+| Light code-comment  | global.css        | `#78716c`           | `#57534e` | ~5.5:1 |
+| Aria-label mismatch | HeroSection.astro | Static `aria-label` | Removed   | Fixed  |
 
 ### Bug Fix: Double-Wrapped sqlcFindError
 
-| What | Before | After |
-|---|---|---|
-| `sqlc.go:132` | `sqlcFindError(path, err)` (2nd wrap) | `return nil, err` (already wrapped) |
-| Impact | Nested `CodeSQLCConfigFind` errors, confusing output | Single error, clean output |
+| What          | Before                                               | After                               |
+| ------------- | ---------------------------------------------------- | ----------------------------------- |
+| `sqlc.go:132` | `sqlcFindError(path, err)` (2nd wrap)                | `return nil, err` (already wrapped) |
+| Impact        | Nested `CodeSQLCConfigFind` errors, confusing output | Single error, clean output          |
 
 ### Magic Strings → Named Constants
 
@@ -106,33 +106,33 @@ Still showing `getFilenameBasedReason` as undefined in `bench_test.go` and `dete
 
 ## f) TOP #25 NEXT STEPS
 
-| # | Priority | Task | Effort |
-|---|---|---|---|
-| 1 | P0 | Configure LHCI_GITHUB_APP_TOKEN secret | 10 min |
-| 2 | P0 | Fix devalue lockfile (npm update devalue) | 5 min |
-| 3 | P1 | Add npm audit to Website CI | 15 min |
-| 4 | P1 | Add Node.js to Nix devShell | 30 min |
-| 5 | P1 | Verify Lighthouse CI passes after accessibility fixes | 10 min |
-| 6 | P1 | Add broken link checker to Website CI | 30 min |
-| 7 | P2 | Automate CHANGELOG derivation | 1 hr |
-| 8 | P2 | Add art-dupl to Go CI | 30 min |
-| 9 | P2 | Add fuzz testing to CI | 30 min |
-| 10 | P2 | Create migration guide v2 → v3 | 30 min |
-| 11 | P3 | Add Go API reference page | 1 hr |
-| 12 | P3 | Replace filteredResult/notFilteredResult helpers | 15 min |
-| 13 | P3 | Extract error prefix constant (with test updates) | 30 min |
-| 14 | P3 | Explore RegisterDetector public API | 2 hr |
-| 15 | P3 | Add goreleaser for semantic versioning | 2 hr |
-| 16 | P3 | Create example integrations | 2 hr |
-| 17 | P3 | Add OpenSSF Scorecard | 30 min |
-| 18 | P4 | Explore cmp.Or adoption | 15 min |
-| 19 | P4 | Add website performance budget monitoring | 30 min |
-| 20 | P4 | Clean up testhelpers/constants.go duplication | 15 min |
-| 21 | P4 | Add CODEOWNERS | 5 min |
-| 22 | P4 | Document release checklist | 15 min |
-| 23 | P4 | Investigate Go workspace | 30 min |
-| 24 | P4 | Add benchmark comparison charts | 1 hr |
-| 25 | P4 | Add git hook for govulncheck | 15 min |
+| #   | Priority | Task                                                  | Effort |
+| --- | -------- | ----------------------------------------------------- | ------ |
+| 1   | P0       | Configure LHCI_GITHUB_APP_TOKEN secret                | 10 min |
+| 2   | P0       | Fix devalue lockfile (npm update devalue)             | 5 min  |
+| 3   | P1       | Add npm audit to Website CI                           | 15 min |
+| 4   | P1       | Add Node.js to Nix devShell                           | 30 min |
+| 5   | P1       | Verify Lighthouse CI passes after accessibility fixes | 10 min |
+| 6   | P1       | Add broken link checker to Website CI                 | 30 min |
+| 7   | P2       | Automate CHANGELOG derivation                         | 1 hr   |
+| 8   | P2       | Add art-dupl to Go CI                                 | 30 min |
+| 9   | P2       | Add fuzz testing to CI                                | 30 min |
+| 10  | P2       | Create migration guide v2 → v3                        | 30 min |
+| 11  | P3       | Add Go API reference page                             | 1 hr   |
+| 12  | P3       | Replace filteredResult/notFilteredResult helpers      | 15 min |
+| 13  | P3       | Extract error prefix constant (with test updates)     | 30 min |
+| 14  | P3       | Explore RegisterDetector public API                   | 2 hr   |
+| 15  | P3       | Add goreleaser for semantic versioning                | 2 hr   |
+| 16  | P3       | Create example integrations                           | 2 hr   |
+| 17  | P3       | Add OpenSSF Scorecard                                 | 30 min |
+| 18  | P4       | Explore cmp.Or adoption                               | 15 min |
+| 19  | P4       | Add website performance budget monitoring             | 30 min |
+| 20  | P4       | Clean up testhelpers/constants.go duplication         | 15 min |
+| 21  | P4       | Add CODEOWNERS                                        | 5 min  |
+| 22  | P4       | Document release checklist                            | 15 min |
+| 23  | P4       | Investigate Go workspace                              | 30 min |
+| 24  | P4       | Add benchmark comparison charts                       | 1 hr   |
+| 25  | P4       | Add git hook for govulncheck                          | 15 min |
 
 ---
 
@@ -152,16 +152,16 @@ I cannot verify this without running Lighthouse locally or seeing the CI artifac
 
 ## Session Summary
 
-| Metric | Value |
-|---|---|
-| Session 3 commits | 6 |
-| Total commits today (4 sessions) | 34 |
-| Lines changed (session 3) | +55, -32 |
-| Test/lint status | PASS / 0 issues |
-| Lighthouse accessibility | Fixed (CSS + aria-label) |
-| Double-wrapped error | Fixed (sqlc.go) |
-| Magic strings | 13 extracted to constants |
-| devalue CVE | Partial (override added, lockfile pending) |
-| Open PRs | 0 |
-| Open issues | 0 |
-| Unpushed commits | 0 |
+| Metric                           | Value                                      |
+| -------------------------------- | ------------------------------------------ |
+| Session 3 commits                | 6                                          |
+| Total commits today (4 sessions) | 34                                         |
+| Lines changed (session 3)        | +55, -32                                   |
+| Test/lint status                 | PASS / 0 issues                            |
+| Lighthouse accessibility         | Fixed (CSS + aria-label)                   |
+| Double-wrapped error             | Fixed (sqlc.go)                            |
+| Magic strings                    | 13 extracted to constants                  |
+| devalue CVE                      | Partial (override added, lockfile pending) |
+| Open PRs                         | 0                                          |
+| Open issues                      | 0                                          |
+| Unpushed commits                 | 0                                          |

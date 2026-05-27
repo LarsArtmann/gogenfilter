@@ -40,7 +40,7 @@ gogenfilter v3.0.2 is released, healthy, and production-ready. The session cover
   1. Optional Detector Registration API — **Worth Exploring** (future, when requested)
   2. SQLC Config Extraction to `internal/sqlc/` — **Speculative** (only if it grows)
   3. Error Type Structure — **Accept as-is** (repetition is cost of correct errors.Is)
-  4. Is*Generated Signature Inconsistency — **Accept as-is** (uniform signature enables table-driven)
+  4. Is\*Generated Signature Inconsistency — **Accept as-is** (uniform signature enables table-driven)
   5. Multi-Module Split — **Do NOT do** (3+ High signals against)
 
 ### Go Modularize Assessment
@@ -64,17 +64,17 @@ gogenfilter v3.0.2 is released, healthy, and production-ready. The session cover
 
 **6 docs fixed, 1 changelog rewritten:**
 
-| File | Issue | Fix |
-|------|-------|-----|
-| `installation.mdx` | Missing `/v3` on 4 import paths | Added `/v3` |
-| `quick-start.mdx` | Missing `/v3` on import path | Added `/v3` |
-| `custom-filesystem.mdx` | Missing `/v3` on 3 import paths | Added `/v3` |
-| `filter-options.mdx` | Wrong error message format | Fixed to `[gogenfilter:invalid_filter_option]` |
-| `changelog.mdx` | Completely stale (Unreleased+0.1.0 only) | Rewritten with v3.0.2+v3.0.1+v3.0.0+0.1.0 |
-| `README.md` | Missing `/v3` on go get + import | Added `/v3` |
-| `CONTRIBUTING.md` | Referenced deleted files (metrics.go, phantom.go) | Updated project structure |
-| `contributing.mdx` | Missing CI section | Synced with root |
-| `FEATURES.md` | Date stale (2026-05-08) | Updated to 2026-05-25 |
+| File                    | Issue                                             | Fix                                            |
+| ----------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `installation.mdx`      | Missing `/v3` on 4 import paths                   | Added `/v3`                                    |
+| `quick-start.mdx`       | Missing `/v3` on import path                      | Added `/v3`                                    |
+| `custom-filesystem.mdx` | Missing `/v3` on 3 import paths                   | Added `/v3`                                    |
+| `filter-options.mdx`    | Wrong error message format                        | Fixed to `[gogenfilter:invalid_filter_option]` |
+| `changelog.mdx`         | Completely stale (Unreleased+0.1.0 only)          | Rewritten with v3.0.2+v3.0.1+v3.0.0+0.1.0      |
+| `README.md`             | Missing `/v3` on go get + import                  | Added `/v3`                                    |
+| `CONTRIBUTING.md`       | Referenced deleted files (metrics.go, phantom.go) | Updated project structure                      |
+| `contributing.mdx`      | Missing CI section                                | Synced with root                               |
+| `FEATURES.md`           | Date stale (2026-05-08)                           | Updated to 2026-05-25                          |
 
 ### Type Model & Library Review
 
@@ -156,53 +156,53 @@ Nothing. Clean session. No breakage, no reverted commits, no failed attempts.
 
 ### Tier 1: High Impact, Low Effort (Do Now)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 1 | Audit dependabot vulnerability alerts — check if they affect production deps | High | Low | Security |
-| 2 | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml` | Medium | Low | Maintenance |
-| 3 | Add CI step to detect references to deleted files in docs | High | Low | CI |
-| 4 | Add CI step to verify import paths contain `/v3` | High | Low | CI |
-| 5 | Remove stale status reports from `docs/status/` (18 files, most are historical) | Low | Low | Cleanup |
+| #   | Task                                                                            | Impact | Effort | Type        |
+| --- | ------------------------------------------------------------------------------- | ------ | ------ | ----------- |
+| 1   | Audit dependabot vulnerability alerts — check if they affect production deps    | High   | Low    | Security    |
+| 2   | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml`                       | Medium | Low    | Maintenance |
+| 3   | Add CI step to detect references to deleted files in docs                       | High   | Low    | CI          |
+| 4   | Add CI step to verify import paths contain `/v3`                                | High   | Low    | CI          |
+| 5   | Remove stale status reports from `docs/status/` (18 files, most are historical) | Low    | Low    | Cleanup     |
 
 ### Tier 2: High Impact, Medium Effort (Plan)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 6 | Fix Lighthouse CI accessibility failures (color-contrast, label-content-name-mismatch) | Medium | Medium | Website |
-| 7 | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI | Medium | Low | CI |
-| 8 | Single-source CHANGELOG — derive website changelog from root CHANGELOG.md | High | Medium | Docs |
-| 9 | Validate website code blocks with `npm run validate:docs` (needs Node.js) | Medium | Low | Docs |
-| 10 | Audit `go.sum` transitive deps for CVEs with `govulncheck` | High | Medium | Security |
+| #   | Task                                                                                   | Impact | Effort | Type     |
+| --- | -------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| 6   | Fix Lighthouse CI accessibility failures (color-contrast, label-content-name-mismatch) | Medium | Medium | Website  |
+| 7   | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI                             | Medium | Low    | CI       |
+| 8   | Single-source CHANGELOG — derive website changelog from root CHANGELOG.md              | High   | Medium | Docs     |
+| 9   | Validate website code blocks with `npm run validate:docs` (needs Node.js)              | Medium | Low    | Docs     |
+| 10  | Audit `go.sum` transitive deps for CVEs with `govulncheck`                             | High   | Medium | Security |
 
 ### Tier 3: Medium Impact, Low Effort (Quick Wins)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 11 | Remove old architecture diagrams from May 3-4 (superseded by May 25 versions) | Low | Low | Cleanup |
-| 12 | Update `AGENTS.md` with session learnings (architecture grade, no-modularize verdict) | Medium | Low | Docs |
-| 13 | Add `//go:generate stringer` for FilterOption/FilterReason? — assess value | Low | Low | Exploration |
-| 14 | Run `govulncheck ./...` against current codebase | Medium | Low | Security |
-| 15 | Check if `testhelpers` package needs its own tests (currently has no test files) | Low | Low | Testing |
+| #   | Task                                                                                  | Impact | Effort | Type        |
+| --- | ------------------------------------------------------------------------------------- | ------ | ------ | ----------- |
+| 11  | Remove old architecture diagrams from May 3-4 (superseded by May 25 versions)         | Low    | Low    | Cleanup     |
+| 12  | Update `AGENTS.md` with session learnings (architecture grade, no-modularize verdict) | Medium | Low    | Docs        |
+| 13  | Add `//go:generate stringer` for FilterOption/FilterReason? — assess value            | Low    | Low    | Exploration |
+| 14  | Run `govulncheck ./...` against current codebase                                      | Medium | Low    | Security    |
+| 15  | Check if `testhelpers` package needs its own tests (currently has no test files)      | Low    | Low    | Testing     |
 
 ### Tier 4: Medium Impact, Medium Effort (Someday)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 16 | Add `RegisterDetector` API for custom generator extensibility | Medium | Medium | Feature |
-| 17 | Extract SQLC parsing to `internal/sqlc/` sub-package | Low | Medium | Refactoring |
-| 18 | Add integration test with real `golangci-lint` output | Medium | Medium | Testing |
-| 19 | Generate API docs from Go source (godoc → website) | Medium | Medium | Docs |
-| 20 | Add Go doc examples for all exported functions | Low | Medium | Docs |
+| #   | Task                                                          | Impact | Effort | Type        |
+| --- | ------------------------------------------------------------- | ------ | ------ | ----------- |
+| 16  | Add `RegisterDetector` API for custom generator extensibility | Medium | Medium | Feature     |
+| 17  | Extract SQLC parsing to `internal/sqlc/` sub-package          | Low    | Medium | Refactoring |
+| 18  | Add integration test with real `golangci-lint` output         | Medium | Medium | Testing     |
+| 19  | Generate API docs from Go source (godoc → website)            | Medium | Medium | Docs        |
+| 20  | Add Go doc examples for all exported functions                | Low    | Medium | Docs        |
 
 ### Tier 5: Low Impact or High Effort (Backlog)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 21 | Consider `cmp.Or` usage in error formatting | Low | Low | Cleanup |
-| 22 | Investigate `doublestar/v5` if released | Low | Medium | Deps |
-| 23 | Add `Filter.Walk(dir string)` for directory traversal | Low | Medium | Feature |
-| 24 | Performance regression test in CI (compare benchmark against baseline) | Medium | High | CI |
-| 25 | Create contribution guidelines video/tutorial | Low | High | Docs |
+| #   | Task                                                                   | Impact | Effort | Type    |
+| --- | ---------------------------------------------------------------------- | ------ | ------ | ------- |
+| 21  | Consider `cmp.Or` usage in error formatting                            | Low    | Low    | Cleanup |
+| 22  | Investigate `doublestar/v5` if released                                | Low    | Medium | Deps    |
+| 23  | Add `Filter.Walk(dir string)` for directory traversal                  | Low    | Medium | Feature |
+| 24  | Performance regression test in CI (compare benchmark against baseline) | Medium | High   | CI      |
+| 25  | Create contribution guidelines video/tutorial                          | Low    | High   | Docs    |
 
 ---
 
@@ -210,9 +210,10 @@ Nothing. Clean session. No breakage, no reverted commits, no failed attempts.
 
 **Are the 2 Dependabot vulnerability alerts in production dependencies or test-only dependencies?**
 
-The GitHub push output says: *"GitHub found 2 vulnerability on LarsArtmann/gogenfilter's default branch (2 high)."*
+The GitHub push output says: _"GitHub found 2 vulnerability on LarsArtmann/gogenfilter's default branch (2 high)."_
 
 I cannot see the actual alerts without GitHub UI or `gh` CLI access with appropriate permissions. This matters because:
+
 - If they're in **test-only deps** (ginkgo/gomega), the risk is lower
 - If they're in **production deps** (doublestar, go-faster/yaml), it's urgent
 - `go.sum` has 18 indirect dependencies — any could be the source
@@ -223,16 +224,16 @@ I cannot see the actual alerts without GitHub UI or `gh` CLI access with appropr
 
 ## Health Metrics
 
-| Metric | Value | Status |
-|--------|-------|--------|
-| Test coverage | 99.8% | ✅ Excellent |
-| Tests passing | All | ✅ |
-| Linter issues | 0 (1 deprecation warning) | ✅ |
-| Source lines | 8,362 (including tests) | ✅ Stable |
-| Detectors | 11 | ✅ Complete |
-| Go version | 1.26.2 | ✅ Current |
-| Release | v3.0.2 | ✅ Latest |
-| Working tree | Clean | ✅ |
-| Architecture grade | A- | ✅ Near-optimal |
-| Modularization needed | No | ✅ Single-package correct |
-| Docs accuracy | Fixed this session | ✅ Was stale, now accurate |
+| Metric                | Value                     | Status                     |
+| --------------------- | ------------------------- | -------------------------- |
+| Test coverage         | 99.8%                     | ✅ Excellent               |
+| Tests passing         | All                       | ✅                         |
+| Linter issues         | 0 (1 deprecation warning) | ✅                         |
+| Source lines          | 8,362 (including tests)   | ✅ Stable                  |
+| Detectors             | 11                        | ✅ Complete                |
+| Go version            | 1.26.2                    | ✅ Current                 |
+| Release               | v3.0.2                    | ✅ Latest                  |
+| Working tree          | Clean                     | ✅                         |
+| Architecture grade    | A-                        | ✅ Near-optimal            |
+| Modularization needed | No                        | ✅ Single-package correct  |
+| Docs accuracy         | Fixed this session        | ✅ Was stale, now accurate |

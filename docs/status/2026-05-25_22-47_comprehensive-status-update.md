@@ -17,45 +17,45 @@ _Generated from interrupted session continuation. Full audit of project state._
 
 The library itself is graded **A-** architecture quality. No production code changes were warranted:
 
-| Dimension | Grade | Notes |
-|---|---|---|
-| API Design | A | Functional options, immutable Filter, clean error types |
-| Table-driven detection | A | 11 detectors, two-phase (filename → content), zero-coupled leaves |
-| Error system | A | Branded errors, sentinel errors, `errors.Is`/`errors.AsType` |
-| Test coverage | A | 99.8%, table-driven + BDD (120 ginkgo specs) |
-| Dependencies | A | 2 runtime deps (doublestar/v4, go-faster/yaml), 2 test-only |
-| Modularity verdict | A- | Correctly NOT modularized — single domain, small surface |
+| Dimension              | Grade | Notes                                                             |
+| ---------------------- | ----- | ----------------------------------------------------------------- |
+| API Design             | A     | Functional options, immutable Filter, clean error types           |
+| Table-driven detection | A     | 11 detectors, two-phase (filename → content), zero-coupled leaves |
+| Error system           | A     | Branded errors, sentinel errors, `errors.Is`/`errors.AsType`      |
+| Test coverage          | A     | 99.8%, table-driven + BDD (120 ginkgo specs)                      |
+| Dependencies           | A     | 2 runtime deps (doublestar/v4, go-faster/yaml), 2 test-only       |
+| Modularity verdict     | A-    | Correctly NOT modularized — single domain, small surface          |
 
 ### Documentation Fixes (14 locations, 12 commits)
 
-| What | Files | Status |
-|---|---|---|
-| `/v3` import path in website docs | `installation.mdx`, `quick-start.mdx`, `custom-filesystem.mdx` | Done |
-| `/v3` import path in website source | `hero-code.ts`, `HeroSection.astro`, `config.ts` | Done |
-| `/v3` import path in README | `README.md` | Done |
-| CHANGELOG sync | `CHANGELOG.md`, `changelog.mdx` | Done |
-| Error message format | `filter-options.mdx` | Done |
-| Stale references removed | `CONTRIBUTING.md`, `contributing.mdx` | Done |
-| Hardcoded generator count | `og/[...slug].ts` | Done |
-| Metrics references removed | `sections.ts` | Done |
-| FEATURES.md date updated | `FEATURES.md` | Done |
-| DOMAIN_LANGUAGE.md rewritten | `DOMAIN_LANGUAGE.md` | Done |
+| What                                | Files                                                          | Status |
+| ----------------------------------- | -------------------------------------------------------------- | ------ |
+| `/v3` import path in website docs   | `installation.mdx`, `quick-start.mdx`, `custom-filesystem.mdx` | Done   |
+| `/v3` import path in website source | `hero-code.ts`, `HeroSection.astro`, `config.ts`               | Done   |
+| `/v3` import path in README         | `README.md`                                                    | Done   |
+| CHANGELOG sync                      | `CHANGELOG.md`, `changelog.mdx`                                | Done   |
+| Error message format                | `filter-options.mdx`                                           | Done   |
+| Stale references removed            | `CONTRIBUTING.md`, `contributing.mdx`                          | Done   |
+| Hardcoded generator count           | `og/[...slug].ts`                                              | Done   |
+| Metrics references removed          | `sections.ts`                                                  | Done   |
+| FEATURES.md date updated            | `FEATURES.md`                                                  | Done   |
+| DOMAIN_LANGUAGE.md rewritten        | `DOMAIN_LANGUAGE.md`                                           | Done   |
 
 ### Architecture Artifacts
 
-| Artifact | Status |
-|---|---|
-| Full architecture review | `docs/architecture-understanding/2026-05-25_21-39_architecture-review.md` |
-| Modularization assessment | `docs/architecture-understanding/2026-05-25_21-39_modularization-assessment.md` |
-| Current architecture D2 + SVG | `2026-05-25_21-39_current-architecture.*` |
-| Improved architecture D2 + SVG | `2026-05-25_21-39_improved-architecture.*` |
+| Artifact                       | Status                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| Full architecture review       | `docs/architecture-understanding/2026-05-25_21-39_architecture-review.md`       |
+| Modularization assessment      | `docs/architecture-understanding/2026-05-25_21-39_modularization-assessment.md` |
+| Current architecture D2 + SVG  | `2026-05-25_21-39_current-architecture.*`                                       |
+| Improved architecture D2 + SVG | `2026-05-25_21-39_improved-architecture.*`                                      |
 
 ### Uncommitted Work
 
-| File | Status |
-|---|---|
-| `website/src/data/sections.ts` | Unstaged: "metrics" → "reports" wording fix |
-| `docs/status/2026-05-25_22-44_full-session-architecture-review-and-docs-audit.md` | Untracked: previous session status report |
+| File                                                                              | Status                                      |
+| --------------------------------------------------------------------------------- | ------------------------------------------- |
+| `website/src/data/sections.ts`                                                    | Unstaged: "metrics" → "reports" wording fix |
+| `docs/status/2026-05-25_22-44_full-session-architecture-review-and-docs-audit.md` | Untracked: previous session status report   |
 
 ---
 
@@ -100,6 +100,7 @@ The library itself is graded **A-** architecture quality. No production code cha
 ### Pre-commit Hook False Positives
 
 The BuildFlow pre-commit hook blocks commits on false-positive TODO detection:
+
 - `website/src/data/sections.ts` — the word `note:` in TypeScript property names triggers TODO detection
 - `website/src/data/types.ts` — same issue
 - **Workaround used:** `git -c core.hooksPath=/dev/null commit` — this bypasses ALL hooks, not ideal
@@ -108,6 +109,7 @@ The BuildFlow pre-commit hook blocks commits on false-positive TODO detection:
 ### `/v3` Drift Was Widespread
 
 14 locations across website docs, website source, and README had missing `/v3` import paths. This survived since the `/v3` suffix was added to `go.mod`. Indicates:
+
 - No CI validation of import paths
 - Manual sync between go.mod and documentation
 - Easy to regress without automated checks
@@ -141,33 +143,33 @@ The BuildFlow pre-commit hook blocks commits on false-positive TODO detection:
 
 ## f) TOP #25 THINGS TO DO NEXT
 
-| # | Priority | Task | Effort |
-|---|---|---|---|
-| 1 | P0 | Commit pending changes (`sections.ts` + status report) | 5 min |
-| 2 | P0 | Audit Dependabot alerts at GitHub Security tab | 15 min |
-| 3 | P0 | Run `govulncheck ./...` (install if needed) | 10 min |
-| 4 | P1 | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml` | 2 min |
-| 5 | P1 | Add CI step: validate `/v3` in import paths across website + README | 30 min |
-| 6 | P1 | Add CI step: detect references to deleted files in docs | 30 min |
-| 7 | P1 | Fix pre-commit hook TODO false positives for TypeScript | 30 min |
-| 8 | P1 | Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret | 10 min |
-| 9 | P2 | Single-source CHANGELOG (build-time derivation or CI sync check) | 1-2 hr |
-| 10 | P2 | Add `govulncheck` to CI workflow | 15 min |
-| 11 | P2 | Clean up `docs/status/` — archive pre-May-25 reports | 10 min |
-| 12 | P2 | Remove superseded May 3-4 architecture diagrams | 5 min |
-| 13 | P2 | Update AGENTS.md with website review patterns and CI gaps | 20 min |
-| 14 | P2 | Fix Lighthouse accessibility failures (color-contrast) | 1 hr |
-| 15 | P3 | Add Node.js to Nix devShell for local website preview | 30 min |
-| 16 | P3 | Add website smoke test in CI (build + check for broken links) | 1 hr |
-| 17 | P3 | Add `art-dupl` to CI for automated code duplication detection | 30 min |
-| 18 | P3 | Consider `RegisterDetector` API for extensibility (only if requested by consumer) | 2 hr |
-| 19 | P3 | Add Go reference doc page to website (generated from godoc) | 1 hr |
-| 20 | P3 | Add migration guide for v2 → v3 on website | 30 min |
-| 21 | P4 | Benchmark comparison against manual file checking | 1 hr |
-| 22 | P4 | Add fuzz testing for pattern matching edge cases | 2 hr |
-| 23 | P4 | Create example integrations (golangci-lint plugin, pre-commit hook) | 2 hr |
-| 24 | P4 | Explore `cmp.Or` adoption for Go 1.26 idioms | 30 min |
-| 25 | P4 | Add contributing guide for new generator detectors | 1 hr |
+| #   | Priority | Task                                                                              | Effort |
+| --- | -------- | --------------------------------------------------------------------------------- | ------ |
+| 1   | P0       | Commit pending changes (`sections.ts` + status report)                            | 5 min  |
+| 2   | P0       | Audit Dependabot alerts at GitHub Security tab                                    | 15 min |
+| 3   | P0       | Run `govulncheck ./...` (install if needed)                                       | 10 min |
+| 4   | P1       | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml`                         | 2 min  |
+| 5   | P1       | Add CI step: validate `/v3` in import paths across website + README               | 30 min |
+| 6   | P1       | Add CI step: detect references to deleted files in docs                           | 30 min |
+| 7   | P1       | Fix pre-commit hook TODO false positives for TypeScript                           | 30 min |
+| 8   | P1       | Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret                                   | 10 min |
+| 9   | P2       | Single-source CHANGELOG (build-time derivation or CI sync check)                  | 1-2 hr |
+| 10  | P2       | Add `govulncheck` to CI workflow                                                  | 15 min |
+| 11  | P2       | Clean up `docs/status/` — archive pre-May-25 reports                              | 10 min |
+| 12  | P2       | Remove superseded May 3-4 architecture diagrams                                   | 5 min  |
+| 13  | P2       | Update AGENTS.md with website review patterns and CI gaps                         | 20 min |
+| 14  | P2       | Fix Lighthouse accessibility failures (color-contrast)                            | 1 hr   |
+| 15  | P3       | Add Node.js to Nix devShell for local website preview                             | 30 min |
+| 16  | P3       | Add website smoke test in CI (build + check for broken links)                     | 1 hr   |
+| 17  | P3       | Add `art-dupl` to CI for automated code duplication detection                     | 30 min |
+| 18  | P3       | Consider `RegisterDetector` API for extensibility (only if requested by consumer) | 2 hr   |
+| 19  | P3       | Add Go reference doc page to website (generated from godoc)                       | 1 hr   |
+| 20  | P3       | Add migration guide for v2 → v3 on website                                        | 30 min |
+| 21  | P4       | Benchmark comparison against manual file checking                                 | 1 hr   |
+| 22  | P4       | Add fuzz testing for pattern matching edge cases                                  | 2 hr   |
+| 23  | P4       | Create example integrations (golangci-lint plugin, pre-commit hook)               | 2 hr   |
+| 24  | P4       | Explore `cmp.Or` adoption for Go 1.26 idioms                                      | 30 min |
+| 25  | P4       | Add contributing guide for new generator detectors                                | 1 hr   |
 
 ---
 
@@ -187,15 +189,15 @@ I cannot access `https://github.com/LarsArtmann/gogenfilter/security/dependabot`
 
 ## Session Summary
 
-| Metric | Value |
-|---|---|
-| Production code changes | 0 |
-| Documentation fixes | 14 locations |
-| Architecture reviews | 5 artifacts |
-| Commits made | 12 |
-| Uncommitted files | 2 (staged for commit) |
-| Tests | PASS, 99.8% coverage |
-| Lint | 0 issues |
-| Library grade | A- |
+| Metric                  | Value                 |
+| ----------------------- | --------------------- |
+| Production code changes | 0                     |
+| Documentation fixes     | 14 locations          |
+| Architecture reviews    | 5 artifacts           |
+| Commits made            | 12                    |
+| Uncommitted files       | 2 (staged for commit) |
+| Tests                   | PASS, 99.8% coverage  |
+| Lint                    | 0 issues              |
+| Library grade           | A-                    |
 
 The library is in excellent shape. The remaining work is **CI hardening** (import path validation, govulncheck, Dependabot audit) and **cleanup** (old diagrams, stale status reports). No architectural or code quality issues remain.

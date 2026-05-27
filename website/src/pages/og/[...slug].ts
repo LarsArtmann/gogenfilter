@@ -10,8 +10,7 @@ const pages = {
   home: {
     data: {
       title: "gogenfilter",
-      description:
-        `Detect and filter auto-generated Go code files from ${generatorCount} generators. Built for linters and static analysis.`,
+      description: `Detect and filter auto-generated Go code files from ${generatorCount} generators. Built for linters and static analysis.`,
     },
   },
 };

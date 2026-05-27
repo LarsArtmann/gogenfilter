@@ -5,7 +5,7 @@ description: Compose gogenfilter with gitignore libraries for advanced filtering
 
 ## Why Not Built-In?
 
-gogenfilter's scope is detecting and filtering *auto-generated* Go code. `.gitignore` addresses a different concern: "files git shouldn't track." While there's overlap (e.g., `vendor/`, build artifacts), these concepts diverge:
+gogenfilter's scope is detecting and filtering _auto-generated_ Go code. `.gitignore` addresses a different concern: "files git shouldn't track." While there's overlap (e.g., `vendor/`, build artifacts), these concepts diverge:
 
 - `.gitignore` may exclude handwritten files (IDE configs, secrets, temporary outputs)
 - Many generated files are committed to git and should be filtered by gogenfilter
@@ -86,17 +86,17 @@ This requires zero external dependencies and avoids gitignore parsing overhead.
 
 ## When to Use Which
 
-| Approach | Best For | Tradeoff |
-|----------|----------|----------|
-| `WithExcludePatterns` | Common vendor/testdata dirs, simple exclusions | Limited to glob patterns; no gitignore semantics |
-| Pre-filter with gitignore | Existing `.gitignore` already defined, complex rules | Extra dependency, two-pass filtering |
-| Both | Maximum coverage: gitignore for broad exclusion, gogenfilter for generated code detection | Most complex; usually unnecessary |
+| Approach                  | Best For                                                                                  | Tradeoff                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `WithExcludePatterns`     | Common vendor/testdata dirs, simple exclusions                                            | Limited to glob patterns; no gitignore semantics |
+| Pre-filter with gitignore | Existing `.gitignore` already defined, complex rules                                      | Extra dependency, two-pass filtering             |
+| Both                      | Maximum coverage: gitignore for broad exclusion, gogenfilter for generated code detection | Most complex; usually unnecessary                |
 
 ## Recommended Libraries
 
-| Library | Status | Notes |
-|---------|--------|-------|
-| [sabhiram/go-gitignore](https://github.com/sabhiram/go-gitignore) | Popular, unmaintained (~2021) | Zero transitive deps, simple API |
-| [go-git/plumbing/format/gitignore](https://pkg.go.dev/github.com/go-git/go-git/v6/plumbing/format/gitignore) | Part of `go-git/v6` (alpha) | Full git spec compliance, but alpha release and many transitive deps |
+| Library                                                                                                      | Status                        | Notes                                                                |
+| ------------------------------------------------------------------------------------------------------------ | ----------------------------- | -------------------------------------------------------------------- |
+| [sabhiram/go-gitignore](https://github.com/sabhiram/go-gitignore)                                            | Popular, unmaintained (~2021) | Zero transitive deps, simple API                                     |
+| [go-git/plumbing/format/gitignore](https://pkg.go.dev/github.com/go-git/go-git/v6/plumbing/format/gitignore) | Part of `go-git/v6` (alpha)   | Full git spec compliance, but alpha release and many transitive deps |
 
 For most projects, `WithExcludePatterns` covers all real needs. Only reach for gitignore composition when your `.gitignore` already contains complex rules you'd otherwise need to duplicate.

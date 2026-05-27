@@ -41,34 +41,34 @@ The session started with architecture review skills and evolved into a full-stac
 
 ### Root Docs Fixes (3 files)
 
-| File | Issue | Fix |
-|------|-------|-----|
+| File              | Issue                                                          | Fix                                        |
+| ----------------- | -------------------------------------------------------------- | ------------------------------------------ |
 | `CONTRIBUTING.md` | Referenced deleted `metrics.go`, `phantom.go`, `errorCodeDefs` | Removed stale files from project structure |
-| `README.md` | `go get` and import path missing `/v3` | Added `/v3` |
-| `FEATURES.md` | Date stale (2026-05-08) | Updated to 2026-05-25 |
+| `README.md`       | `go get` and import path missing `/v3`                         | Added `/v3`                                |
+| `FEATURES.md`     | Date stale (2026-05-08)                                        | Updated to 2026-05-25                      |
 
 ### Website Docs Content Fixes (6 files)
 
-| File | Issue | Fix |
-|------|-------|-----|
-| `installation.mdx` | 4× import path missing `/v3` (go get, import, go list) | Added `/v3` |
-| `quick-start.mdx` | Import path missing `/v3` | Added `/v3` |
-| `custom-filesystem.mdx` | 3× import path missing `/v3` | Added `/v3` |
-| `filter-options.mdx` | Error message format wrong | Fixed to `[gogenfilter:invalid_filter_option]` |
-| `changelog.mdx` | Completely stale (Unreleased + 0.1.0 only) | Rewritten with v3.0.2/v3.0.1/v3.0.0/0.1.0 |
-| `contributing.mdx` | Missing CI section | Synced with root |
+| File                    | Issue                                                  | Fix                                            |
+| ----------------------- | ------------------------------------------------------ | ---------------------------------------------- |
+| `installation.mdx`      | 4× import path missing `/v3` (go get, import, go list) | Added `/v3`                                    |
+| `quick-start.mdx`       | Import path missing `/v3`                              | Added `/v3`                                    |
+| `custom-filesystem.mdx` | 3× import path missing `/v3`                           | Added `/v3`                                    |
+| `filter-options.mdx`    | Error message format wrong                             | Fixed to `[gogenfilter:invalid_filter_option]` |
+| `changelog.mdx`         | Completely stale (Unreleased + 0.1.0 only)             | Rewritten with v3.0.2/v3.0.1/v3.0.0/0.1.0      |
+| `contributing.mdx`      | Missing CI section                                     | Synced with root                               |
 
 ### Website Source Code Fixes (5 files)
 
-| File | Issue | Fix |
-|------|-------|-----|
-| `hero-code.ts` | Import path missing `/v3` (used by copy button) | Added `/v3` |
-| `HeroSection.astro` | Import path + `go get` command missing `/v3` | Added `/v3` |
-| `sections.ts` | Claimed "Thread-safe metrics" (removed in v3.0.1) | Replaced with "FilterResult with trace info" |
-| `sections.ts` | DIY con: "No metrics" | Changed to "No structured results" |
-| `sections.ts` | Use case: "Exclude from metrics" | Changed to "Exclude from reports" |
-| `og/[...slug].ts` | Hardcoded "11 generators" | Uses `generatorCount` from data |
-| `config.ts` | pkg.go.dev URL missing `/v3` | Added `/v3` |
+| File                | Issue                                             | Fix                                          |
+| ------------------- | ------------------------------------------------- | -------------------------------------------- |
+| `hero-code.ts`      | Import path missing `/v3` (used by copy button)   | Added `/v3`                                  |
+| `HeroSection.astro` | Import path + `go get` command missing `/v3`      | Added `/v3`                                  |
+| `sections.ts`       | Claimed "Thread-safe metrics" (removed in v3.0.1) | Replaced with "FilterResult with trace info" |
+| `sections.ts`       | DIY con: "No metrics"                             | Changed to "No structured results"           |
+| `sections.ts`       | Use case: "Exclude from metrics"                  | Changed to "Exclude from reports"            |
+| `og/[...slug].ts`   | Hardcoded "11 generators"                         | Uses `generatorCount` from data              |
+| `config.ts`         | pkg.go.dev URL missing `/v3`                      | Added `/v3`                                  |
 
 ### Type Model & Library Review
 
@@ -135,53 +135,53 @@ Nothing. Clean session. 10 commits, all pushed, no reverts, no breakage.
 
 ### Tier 1: High Impact, Low Effort (Do Now)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 1 | Audit dependabot vulnerability alerts — are they in prod or test deps? | High | Low |
-| 2 | Run `govulncheck ./...` to check for known CVEs | High | Low |
-| 3 | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml` | Medium | Low |
-| 4 | Remove old May 3-4 architecture diagrams (superseded) | Low | Low |
-| 5 | Update `AGENTS.md` with website review patterns learned this session | Medium | Low |
+| #   | Task                                                                   | Impact | Effort |
+| --- | ---------------------------------------------------------------------- | ------ | ------ |
+| 1   | Audit dependabot vulnerability alerts — are they in prod or test deps? | High   | Low    |
+| 2   | Run `govulncheck ./...` to check for known CVEs                        | High   | Low    |
+| 3   | Update `gomodguard` → `gomodguard_v2` in `.golangci.yaml`              | Medium | Low    |
+| 4   | Remove old May 3-4 architecture diagrams (superseded)                  | Low    | Low    |
+| 5   | Update `AGENTS.md` with website review patterns learned this session   | Medium | Low    |
 
 ### Tier 2: High Impact, Medium Effort (Plan)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 6 | Add CI step to verify import paths contain `/v3` in website + README | High | Medium |
-| 7 | Add CI step to detect references to deleted files in all docs | High | Medium |
-| 8 | Single-source CHANGELOG — derive website changelog from root | High | Medium |
-| 9 | Fix Lighthouse CI accessibility failures (color-contrast, label-content-name-mismatch) | Medium | Medium |
-| 10 | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI | Medium | Low |
+| #   | Task                                                                                   | Impact | Effort |
+| --- | -------------------------------------------------------------------------------------- | ------ | ------ |
+| 6   | Add CI step to verify import paths contain `/v3` in website + README                   | High   | Medium |
+| 7   | Add CI step to detect references to deleted files in all docs                          | High   | Medium |
+| 8   | Single-source CHANGELOG — derive website changelog from root                           | High   | Medium |
+| 9   | Fix Lighthouse CI accessibility failures (color-contrast, label-content-name-mismatch) | Medium | Medium |
+| 10  | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI                             | Medium | Low    |
 
 ### Tier 3: Medium Impact, Low Effort (Quick Wins)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 11 | Clean up `docs/status/` — 18 historical status reports, most stale | Low | Low |
-| 12 | Clean up `docs/planning/` — 3 historical planning docs | Low | Low |
-| 13 | Verify `website/.node-version` matches CI and is current | Low | Low |
-| 14 | Check if `testhelpers` package needs tests (currently no test files) | Low | Low |
-| 15 | Run `npm run validate:docs` on website code blocks (needs Node.js) | Medium | Low |
+| #   | Task                                                                 | Impact | Effort |
+| --- | -------------------------------------------------------------------- | ------ | ------ |
+| 11  | Clean up `docs/status/` — 18 historical status reports, most stale   | Low    | Low    |
+| 12  | Clean up `docs/planning/` — 3 historical planning docs               | Low    | Low    |
+| 13  | Verify `website/.node-version` matches CI and is current             | Low    | Low    |
+| 14  | Check if `testhelpers` package needs tests (currently no test files) | Low    | Low    |
+| 15  | Run `npm run validate:docs` on website code blocks (needs Node.js)   | Medium | Low    |
 
 ### Tier 4: Medium Impact, Medium Effort (Someday)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 16 | Add `RegisterDetector` API for custom generator extensibility | Medium | Medium |
-| 17 | Extract SQLC parsing to `internal/sqlc/` if it grows past ~600 lines | Low | Medium |
-| 18 | Generate API docs from Go source → website (godoc pipeline) | Medium | Medium |
-| 19 | Add Go doc examples for all exported functions | Low | Medium |
-| 20 | Add integration test with real `golangci-lint` output | Medium | Medium |
+| #   | Task                                                                 | Impact | Effort |
+| --- | -------------------------------------------------------------------- | ------ | ------ |
+| 16  | Add `RegisterDetector` API for custom generator extensibility        | Medium | Medium |
+| 17  | Extract SQLC parsing to `internal/sqlc/` if it grows past ~600 lines | Low    | Medium |
+| 18  | Generate API docs from Go source → website (godoc pipeline)          | Medium | Medium |
+| 19  | Add Go doc examples for all exported functions                       | Low    | Medium |
+| 20  | Add integration test with real `golangci-lint` output                | Medium | Medium |
 
 ### Tier 5: Low Impact or High Effort (Backlog)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 21 | Performance regression test in CI (compare benchmarks against baseline) | Medium | High |
-| 22 | Investigate `doublestar/v5` if released | Low | Medium |
-| 23 | Add `Filter.Walk(dir string)` for directory traversal | Low | Medium |
-| 24 | Create contribution guidelines video/tutorial | Low | High |
-| 25 | Consider `//go:generate stringer` for FilterOption/FilterReason | Low | Low |
+| #   | Task                                                                    | Impact | Effort |
+| --- | ----------------------------------------------------------------------- | ------ | ------ |
+| 21  | Performance regression test in CI (compare benchmarks against baseline) | Medium | High   |
+| 22  | Investigate `doublestar/v5` if released                                 | Low    | Medium |
+| 23  | Add `Filter.Walk(dir string)` for directory traversal                   | Low    | Medium |
+| 24  | Create contribution guidelines video/tutorial                           | Low    | High   |
+| 25  | Consider `//go:generate stringer` for FilterOption/FilterReason         | Low    | Low    |
 
 ---
 
@@ -189,9 +189,10 @@ Nothing. Clean session. 10 commits, all pushed, no reverts, no breakage.
 
 **Are the 2 Dependabot vulnerability alerts in production dependencies or test-only dependencies?**
 
-GitHub reports: *"GitHub found 2 vulnerability on LarsArtmann/gogenfilter's default branch (2 high)."*
+GitHub reports: _"GitHub found 2 vulnerability on LarsArtmann/gogenfilter's default branch (2 high)."_
 
 I cannot see the actual alerts without GitHub UI access. This determines urgency:
+
 - **Production deps** (doublestar, go-faster/yaml) → urgent, patch immediately
 - **Test-only deps** (ginkgo, gomega) → lower risk, patch when convenient
 - **Indirect transitive deps** → assess individually
@@ -202,13 +203,13 @@ I cannot see the actual alerts without GitHub UI access. This determines urgency
 
 ## Session Summary
 
-| Category | Files Changed | Commits |
-|----------|---------------|---------|
-| Architecture docs | 4 new (review, assessment, 2 D2+SVG) | 1 |
-| Domain language | 1 | 1 |
-| Root docs (README, CONTRIBUTING, FEATURES, CHANGELOG) | 4 | 3 |
-| Website docs content (.mdx) | 6 | 2 |
-| Website source code (.astro, .ts) | 5 | 4 |
-| **Total** | **20 files** | **12 commits** |
+| Category                                              | Files Changed                        | Commits        |
+| ----------------------------------------------------- | ------------------------------------ | -------------- |
+| Architecture docs                                     | 4 new (review, assessment, 2 D2+SVG) | 1              |
+| Domain language                                       | 1                                    | 1              |
+| Root docs (README, CONTRIBUTING, FEATURES, CHANGELOG) | 4                                    | 3              |
+| Website docs content (.mdx)                           | 6                                    | 2              |
+| Website source code (.astro, .ts)                     | 5                                    | 4              |
+| **Total**                                             | **20 files**                         | **12 commits** |
 
 All pushed. Working tree clean. Tests green. Lint clean.
