@@ -213,6 +213,7 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 ## Gotchas
 
 - **`/v3` import path** — Module is `github.com/LarsArtmann/gogenfilter/v3`. All docs, website source, and README must reference `/v3`. CI validates this.
+- **`.gitignore` filtering is out of scope** — Rejected (2026-05-27): would require alpha dependency (`go-git/v6`) and blur the library's identity from "generated code detector" to "general file filterer". Use `WithExcludePatterns("vendor/**", "**/testdata/**")` for common exclusions, or pre-filter with any gitignore library before passing to gogenfilter. Documented in `website/src/content/docs/guides/gitignore-pre-filtering.mdx`.
 - **BuildFlow `todo-check`** — Detects `note:` as a `NOTE:` comment marker. Use `hint` instead of `note` for TypeScript property names to avoid false positives.
 - **`.buildflow.yml`** — Configures BuildFlow with project-specific excludes (testdata, website/dist, website/node_modules).
 - **Dependabot alerts** — All 4 alerts are npm ecosystem (website transitive deps), not Go production deps. The `yaml` alert is npm `yaml`, not `go-faster/yaml`.

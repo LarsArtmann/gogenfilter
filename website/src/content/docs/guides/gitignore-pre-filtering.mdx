@@ -1,0 +1,102 @@
+---
+title: Gitignore Pre-Filtering
+description: Compose gogenfilter with gitignore libraries for advanced filtering.
+---
+
+## Why Not Built-In?
+
+gogenfilter's scope is detecting and filtering *auto-generated* Go code. `.gitignore` addresses a different concern: "files git shouldn't track." While there's overlap (e.g., `vendor/`, build artifacts), these concepts diverge:
+
+- `.gitignore` may exclude handwritten files (IDE configs, secrets, temporary outputs)
+- Many generated files are committed to git and should be filtered by gogenfilter
+- `.gitignore` semantics (negation with `!`, directory-specific rules, precedence) require a full gitignore parser — adding significant dependency weight
+
+For these reasons, gogenfilter does **not** include native `.gitignore` support. Instead, the recommended approach is **composition**: use a gitignore library upstream, then gogenfilter downstream.
+
+## Composition Pattern
+
+Pre-filter with a gitignore library, then pass only the remaining files to gogenfilter:
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/sabhiram/go-gitignore"
+	"github.com/LarsArtmann/gogenfilter/v3"
+)
+
+func main() {
+	// Step 1: Load .gitignore rules for the project directory
+	ignore := gitignore.CompileIgnoreFile(".gitignore")
+
+	// Step 2: Your file list (from a linter, walker, etc.)
+	files := []string{
+		"vendor/github.com/foo/bar.go",
+		"db/models.go",
+		"main.go",
+		".env",
+	}
+
+	// Step 3: Pre-filter with gitignore (skips vendor/, .env, etc.)
+	var candidates []string
+	for _, f := range files {
+		if !ignore.MatchesPath(f) {
+			candidates = append(candidates, f)
+		}
+	}
+	// candidates: ["db/models.go", "main.go"]
+
+	// Step 4: Filter generated code with gogenfilter
+	filter, _ := gogenfilter.NewFilter(
+		gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+	)
+
+	for _, f := range candidates {
+		filtered, err := filter.Filter(f)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error checking %s: %v\n", f, err)
+			continue
+		}
+		if filtered {
+			fmt.Printf("Filtered (generated): %s\n", f)
+		}
+	}
+}
+```
+
+## Alternative: Use `WithExcludePatterns`
+
+For the 80% case — common directories like `vendor/`, `node_modules/`, `testdata/` — gogenfilter's built-in pattern matching is sufficient:
+
+```go
+filter, _ := gogenfilter.NewFilter(
+	gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
+	gogenfilter.WithExcludePatterns(
+		"vendor/**",      // skip vendor directory
+		"**/testdata/**", // skip test data
+		"**/node_modules/**",
+	),
+)
+```
+
+This requires zero external dependencies and avoids gitignore parsing overhead.
+
+## When to Use Which
+
+| Approach | Best For | Tradeoff |
+|----------|----------|----------|
+| `WithExcludePatterns` | Common vendor/testdata dirs, simple exclusions | Limited to glob patterns; no gitignore semantics |
+| Pre-filter with gitignore | Existing `.gitignore` already defined, complex rules | Extra dependency, two-pass filtering |
+| Both | Maximum coverage: gitignore for broad exclusion, gogenfilter for generated code detection | Most complex; usually unnecessary |
+
+## Recommended Libraries
+
+| Library | Status | Notes |
+|---------|--------|-------|
+| [sabhiram/go-gitignore](https://github.com/sabhiram/go-gitignore) | Popular, unmaintained (~2021) | Zero transitive deps, simple API |
+| [go-git/plumbing/format/gitignore](https://pkg.go.dev/github.com/go-git/go-git/v6/plumbing/format/gitignore) | Part of `go-git/v6` (alpha) | Full git spec compliance, but alpha release and many transitive deps |
+
+For most projects, `WithExcludePatterns` covers all real needs. Only reach for gitignore composition when your `.gitignore` already contains complex rules you'd otherwise need to duplicate.
