@@ -16,35 +16,35 @@ Adding `.gitignore` awareness to gogenfilter means: when a caller opts in, the f
 
 ### PROs
 
-| # | Argument | Weight |
-|---|----------|--------|
-| 1 | **Eliminates intent duplication** | High |
-|   | Projects already express "skip these files" in `.gitignore`. Reusing it means users don't duplicate exclude patterns in filter config. | |
-| 2 | **Zero-config correctness** | High |
-|   | A linter using gogenfilter would automatically skip `/vendor/`, build artifacts, generated files not yet covered, IDE files — no manual patterns. | |
-| 3 | **Git-native semantics** | Medium |
-|   | Handles directory-level patterns, negation (`!`), glob precedence, and nested `.gitignore` files correctly. Far more powerful than manual glob patterns. | |
-| 4 | **Aligns with user expectations** | Medium |
-|   | "Of course it shouldn't analyze files ignored by git." Natural mental model. | |
-| 5 | **Composable with existing options** | Low |
-|   | Becomes one more functional option alongside `WithIncludePatterns`/`WithExcludePatterns`. Clean additive API. | |
+| #   | Argument                                                                                                                                                 | Weight |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| 1   | **Eliminates intent duplication**                                                                                                                        | High   |
+|     | Projects already express "skip these files" in `.gitignore`. Reusing it means users don't duplicate exclude patterns in filter config.                   |        |
+| 2   | **Zero-config correctness**                                                                                                                              | High   |
+|     | A linter using gogenfilter would automatically skip `/vendor/`, build artifacts, generated files not yet covered, IDE files — no manual patterns.        |        |
+| 3   | **Git-native semantics**                                                                                                                                 | Medium |
+|     | Handles directory-level patterns, negation (`!`), glob precedence, and nested `.gitignore` files correctly. Far more powerful than manual glob patterns. |        |
+| 4   | **Aligns with user expectations**                                                                                                                        | Medium |
+|     | "Of course it shouldn't analyze files ignored by git." Natural mental model.                                                                             |        |
+| 5   | **Composable with existing options**                                                                                                                     | Low    |
+|     | Becomes one more functional option alongside `WithIncludePatterns`/`WithExcludePatterns`. Clean additive API.                                            |        |
 
 ### CONs
 
-| # | Argument | Weight |
-|---|----------|--------|
-| 1 | **Dependency burden** | **Critical** |
-|   | Requires a gitignore parsing library. The best option, `go-git/v6/plumbing/format/gitignore`, is part of an alpha release (`v6.0.0-alpha.4`). Adding it pulls ~20+ transitive deps. Current production deps: `doublestar/v4` (1 dep), `go-faster/yaml` (~5 deps). This is a 4x dependency explosion for one feature. | |
-| 2 | **Scope creep — fundamental** | **Critical** |
-|   | gogenfilter's purpose is "detect and filter *auto-generated* Go code." `.gitignore` is about "files git shouldn't track" — a much broader category that includes non-generated files (build artifacts, secrets, IDE configs). This blurs the library's identity from "generated code detector" to "general file filterer." | |
-| 3 | **I/O amplification in hot path** | High |
-|   | For every file filtered, `.gitignore` awareness requires walking up the directory tree, checking for `.gitignore` files, and parsing them. Currently `Filter()` does zero I/O until content-based detection needs it. Adding `.gitignore` adds filesystem I/O to the hot path. | |
-| 4 | **Performance requires caching** | High |
-|   | Without a `.gitignore` cache, `FilterPaths([]string{1000 files})` becomes pathological (O(n×depth) file I/O). A cache adds complexity: invalidation, thread-safety, scope boundaries. | |
-| 5 | **Already solvable by caller** | Medium |
-|   | `WithExcludePatterns("vendor/**", "**/testdata/**", "website/**")` handles 80%+ of cases. For the remaining 20%, callers can pre-filter with any gitignore library and pass the reduced list to gogenfilter. | |
-| 6 | **Unstable dependency** | Medium |
-|   | `go-git/v6` has no stable release. Pinning to alpha software in a library consumed by others is risky. `sabhiram/go-gitignore` exists but is unmaintained (2021). | |
+| #   | Argument                                                                                                                                                                                                                                                                                                                   | Weight       |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| 1   | **Dependency burden**                                                                                                                                                                                                                                                                                                      | **Critical** |
+|     | Requires a gitignore parsing library. The best option, `go-git/v6/plumbing/format/gitignore`, is part of an alpha release (`v6.0.0-alpha.4`). Adding it pulls ~20+ transitive deps. Current production deps: `doublestar/v4` (1 dep), `go-faster/yaml` (~5 deps). This is a 4x dependency explosion for one feature.       |              |
+| 2   | **Scope creep — fundamental**                                                                                                                                                                                                                                                                                              | **Critical** |
+|     | gogenfilter's purpose is "detect and filter _auto-generated_ Go code." `.gitignore` is about "files git shouldn't track" — a much broader category that includes non-generated files (build artifacts, secrets, IDE configs). This blurs the library's identity from "generated code detector" to "general file filterer." |              |
+| 3   | **I/O amplification in hot path**                                                                                                                                                                                                                                                                                          | High         |
+|     | For every file filtered, `.gitignore` awareness requires walking up the directory tree, checking for `.gitignore` files, and parsing them. Currently `Filter()` does zero I/O until content-based detection needs it. Adding `.gitignore` adds filesystem I/O to the hot path.                                             |              |
+| 4   | **Performance requires caching**                                                                                                                                                                                                                                                                                           | High         |
+|     | Without a `.gitignore` cache, `FilterPaths([]string{1000 files})` becomes pathological (O(n×depth) file I/O). A cache adds complexity: invalidation, thread-safety, scope boundaries.                                                                                                                                      |              |
+| 5   | **Already solvable by caller**                                                                                                                                                                                                                                                                                             | Medium       |
+|     | `WithExcludePatterns("vendor/**", "**/testdata/**", "website/**")` handles 80%+ of cases. For the remaining 20%, callers can pre-filter with any gitignore library and pass the reduced list to gogenfilter.                                                                                                               |              |
+| 6   | **Unstable dependency**                                                                                                                                                                                                                                                                                                    | Medium       |
+|     | `go-git/v6` has no stable release. Pinning to alpha software in a library consumed by others is risky. `sabhiram/go-gitignore` exists but is unmaintained (2021).                                                                                                                                                          |              |
 
 ### Initial Recommendation: Option B — Document the pattern
 
@@ -76,7 +76,7 @@ gogenfilter.WithRespectGitignore(),
 `FilterGitignore` doesn't need a `detector` entry. It's a **pre-detection filter** — like `WithExcludePatterns` but powered by gitignore rules instead of manual globs. The pipeline becomes:
 
 1. Pattern check (include/exclude) → `ReasonOutsideScope` / `ReasonExcludePattern`
-2. **Gitignore check** → `ReasonGitignore` *(new)*
+2. **Gitignore check** → `ReasonGitignore` _(new)_
 3. Generator detection → `ReasonSQLC` / `ReasonTempl` / ...
 
 The `FilterOption` becomes "reasons a file should be filtered" — a broader but more useful concept than "which generator to detect."
@@ -112,13 +112,13 @@ f, _ := gogenfilter.NewFilter(
 
 Applied the `go-modularize` skill's "When NOT to Modularize" scoring:
 
-| Signal | Weight | Applies? |
-|--------|--------|----------|
-| Small project | High | **YES** — 1 package, ~8400 lines |
-| Single developer | Medium | YES |
-| No external consumers | Medium | Partial — published library |
-| All packages change together | High | **YES** — single `package gogenfilter` |
-| Prototype | High | No |
+| Signal                       | Weight | Applies?                               |
+| ---------------------------- | ------ | -------------------------------------- |
+| Small project                | High   | **YES** — 1 package, ~8400 lines       |
+| Single developer             | Medium | YES                                    |
+| No external consumers        | Medium | Partial — published library            |
+| All packages change together | High   | **YES** — single `package gogenfilter` |
+| Prototype                    | High   | No                                     |
 
 **Score: 2 High + 1 Medium → "Consider partial modularization only."**
 
@@ -133,33 +133,33 @@ The dependency isolation goal (gitignore users don't pay for go-git) is real, bu
 
 ### The real decision: write it ourselves vs. accept the dep
 
-| | **Option A: Minimal parser** | **Option B: go-git dep** |
-|---|---|---|
-| **Effort** | 4-6h (parser + tests) | ~1h (integration) |
-| **New deps** | **Zero** | **+20 transitive** (go-git v6 alpha) |
-| **Correctness** | 95% of `.gitignore` spec | 100% |
-| **Maintenance** | We own it — full control | Upstream risk (alpha, breaking changes) |
-| **Fits `FilterOption`** | Yes | Yes |
-| **Performance** | Cacheable, no external allocations | Same |
-| **API** | `FilterGitignore` as `FilterOption` | `FilterGitignore` as `FilterOption` |
+|                         | **Option A: Minimal parser**        | **Option B: go-git dep**                |
+| ----------------------- | ----------------------------------- | --------------------------------------- |
+| **Effort**              | 4-6h (parser + tests)               | ~1h (integration)                       |
+| **New deps**            | **Zero**                            | **+20 transitive** (go-git v6 alpha)    |
+| **Correctness**         | 95% of `.gitignore` spec            | 100%                                    |
+| **Maintenance**         | We own it — full control            | Upstream risk (alpha, breaking changes) |
+| **Fits `FilterOption`** | Yes                                 | Yes                                     |
+| **Performance**         | Cacheable, no external allocations  | Same                                    |
+| **API**                 | `FilterGitignore` as `FilterOption` | `FilterGitignore` as `FilterOption`     |
 
 #### What "95% of gitignore spec" means
 
 The `.gitignore` spec has these features. A minimal parser would handle the marked ones:
 
-| Feature | Covered? | Notes |
-|---------|----------|-------|
-| Blank lines | ✅ | Skip |
-| `# comments` | ✅ | Skip |
-| `*.ext` glob | ✅ | Standard glob via `doublestar` (already a dep) |
-| `**/` recursive glob | ✅ | Already have `doublestar` |
-| `!` negation | ✅ | Essential — un-ignoring vendor files is common |
-| `/`-anchored patterns | ✅ | `/*.go` vs `*.go` semantics |
-| Trailing `/` (dir-only) | ✅ | `build/` matches dirs only |
-| Nested `.gitignore` files | ✅ | Walk up tree, merge rules |
-| `.git/info/exclude` | ⚠️ | Optional — low priority |
-| Global gitignore (`~/.gitignore`) | ❌ | Not worth the complexity |
-| `\` escaping | ⚠️ | Edge case for filenames with `#`, `!` |
+| Feature                           | Covered? | Notes                                          |
+| --------------------------------- | -------- | ---------------------------------------------- |
+| Blank lines                       | ✅       | Skip                                           |
+| `# comments`                      | ✅       | Skip                                           |
+| `*.ext` glob                      | ✅       | Standard glob via `doublestar` (already a dep) |
+| `**/` recursive glob              | ✅       | Already have `doublestar`                      |
+| `!` negation                      | ✅       | Essential — un-ignoring vendor files is common |
+| `/`-anchored patterns             | ✅       | `/*.go` vs `*.go` semantics                    |
+| Trailing `/` (dir-only)           | ✅       | `build/` matches dirs only                     |
+| Nested `.gitignore` files         | ✅       | Walk up tree, merge rules                      |
+| `.git/info/exclude`               | ⚠️       | Optional — low priority                        |
+| Global gitignore (`~/.gitignore`) | ❌       | Not worth the complexity                       |
+| `\` escaping                      | ⚠️       | Edge case for filenames with `#`, `!`          |
 
 #### Why Option A wins
 
@@ -173,12 +173,12 @@ The `.gitignore` spec has these features. A minimal parser would handle the mark
 
 ## Updated Option Matrix
 
-| Option | Description | Effort | Risk | Benefit |
-|--------|-------------|--------|------|---------|
-| ~~A. Full implementation~~ | ~~Add `WithRespectGitignore()`, dependency, cache~~ | ~~18-24h~~ | ~~High~~ | ~~Superseded by D~~ |
-| **B. Document the pattern** | Docs recipe for composition with external gitignore lib | 2-3h | None | Already delivered ✅ |
-| ~~C. Reject~~ | ~~Close as out of scope~~ | ~~0h~~ | ~~None~~ | ~~Superseded by D~~ |
-| **D. Implement with minimal parser** | `FilterGitignore` as `FilterOption`, custom parser, zero new deps | 4-6h | Low | Native support, clean API, zero dep cost |
+| Option                               | Description                                                       | Effort     | Risk     | Benefit                                  |
+| ------------------------------------ | ----------------------------------------------------------------- | ---------- | -------- | ---------------------------------------- |
+| ~~A. Full implementation~~           | ~~Add `WithRespectGitignore()`, dependency, cache~~               | ~~18-24h~~ | ~~High~~ | ~~Superseded by D~~                      |
+| **B. Document the pattern**          | Docs recipe for composition with external gitignore lib           | 2-3h       | None     | Already delivered ✅                     |
+| ~~C. Reject~~                        | ~~Close as out of scope~~                                         | ~~0h~~     | ~~None~~ | ~~Superseded by D~~                      |
+| **D. Implement with minimal parser** | `FilterGitignore` as `FilterOption`, custom parser, zero new deps | 4-6h       | Low      | Native support, clean API, zero dep cost |
 
 ---
 
@@ -201,7 +201,7 @@ The `.gitignore` spec has these features. A minimal parser would handle the mark
 
 The scope creep concern from Round 1 remains the deciding factor:
 
-> gogenfilter's purpose is "detect and filter *auto-generated* Go code." `.gitignore` is about "files git shouldn't track."
+> gogenfilter's purpose is "detect and filter _auto-generated_ Go code." `.gitignore` is about "files git shouldn't track."
 
 **Counterargument:** Users of the library — linters, static analysis tools — already treat "skip gitignored files" as a core requirement. They'll implement it themselves if we don't. Providing it natively with `FilterGitignore` as an opt-in `FilterOption` (not enabled unless explicitly requested or part of `FilterAll`) keeps the library focused while solving a real user need.
 
@@ -211,8 +211,8 @@ The scope creep concern from Round 1 remains the deciding factor:
 
 ## Decision Log
 
-| Date | Round | Decision | Rationale |
-|------|-------|----------|-----------|
-| 2026-05-27 | 1 | Chose Option B (document pattern) | Dependency cost, scope creep, already solvable by caller |
-| 2026-05-27 | 2 | Corrected API: `FilterGitignore` not `WithRespectGitignore()` | `FilterOption` is "what causes filtering," not "which generator." User's mental model wins. |
-| 2026-05-27 | 3 | Rejected sub-module modularization; proposed Option D (minimal parser) | Single-package library, sub-module can't compose with `FilterOption`, zero-dep parser eliminates dependency concern |
+| Date       | Round | Decision                                                               | Rationale                                                                                                           |
+| ---------- | ----- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-27 | 1     | Chose Option B (document pattern)                                      | Dependency cost, scope creep, already solvable by caller                                                            |
+| 2026-05-27 | 2     | Corrected API: `FilterGitignore` not `WithRespectGitignore()`          | `FilterOption` is "what causes filtering," not "which generator." User's mental model wins.                         |
+| 2026-05-27 | 3     | Rejected sub-module modularization; proposed Option D (minimal parser) | Single-package library, sub-module can't compose with `FilterOption`, zero-dep parser eliminates dependency concern |

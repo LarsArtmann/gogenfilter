@@ -14,15 +14,15 @@
 
 ### Library (Production Code)
 
-| Metric | Value |
-|---|---|
-| Architecture grade | A- |
-| Test coverage | 99.8% (8,362 LOC total, 4.5:1 test ratio) |
-| Detectors | 11 generators, table-driven |
-| Dependencies | 2 runtime (doublestar/v4, go-faster/yaml), 2 test-only |
-| Open issues | 0 |
-| Open PRs | 0 |
-| Go production vulns | 0 |
+| Metric              | Value                                                  |
+| ------------------- | ------------------------------------------------------ |
+| Architecture grade  | A-                                                     |
+| Test coverage       | 99.8% (8,362 LOC total, 4.5:1 test ratio)              |
+| Detectors           | 11 generators, table-driven                            |
+| Dependencies        | 2 runtime (doublestar/v4, go-faster/yaml), 2 test-only |
+| Open issues         | 0                                                      |
+| Open PRs            | 0                                                      |
+| Go production vulns | 0                                                      |
 
 ### Session 1 — Architecture Review + Docs Audit (12 commits)
 
@@ -54,12 +54,12 @@
 
 ### CI Health
 
-| Workflow | Latest Run | Result |
-|---|---|---|
-| Go CI (test + lint + govulncheck) | `96a48f1` | SUCCESS |
-| Website CI (build + deploy + validations) | `de53fbb` | SUCCESS |
-| Lighthouse CI | `de53fbb` | FAILURE (pre-existing) |
-| Benchmark | Not triggered (no Go file changes) | — |
+| Workflow                                  | Latest Run                         | Result                 |
+| ----------------------------------------- | ---------------------------------- | ---------------------- |
+| Go CI (test + lint + govulncheck)         | `96a48f1`                          | SUCCESS                |
+| Website CI (build + deploy + validations) | `de53fbb`                          | SUCCESS                |
+| Lighthouse CI                             | `de53fbb`                          | FAILURE (pre-existing) |
+| Benchmark                                 | Not triggered (no Go file changes) | —                      |
 
 ---
 
@@ -67,9 +67,9 @@
 
 ### Remaining Vulnerability
 
-| Alert | Severity | Package | Patched | Status |
-|---|---|---|---|---|
-| #3 | high | `devalue` (npm) | 5.8.1 | OPEN — transitive dep of Astro/Svelte, at 5.8.0 |
+| Alert | Severity | Package         | Patched | Status                                          |
+| ----- | -------- | --------------- | ------- | ----------------------------------------------- |
+| #3    | high     | `devalue` (npm) | 5.8.1   | OPEN — transitive dep of Astro/Svelte, at 5.8.0 |
 
 This is an Astro transitive dependency. Cannot fix without local `npm` (not in Nix PATH). Dependabot should auto-create a PR on next Monday run. Alternatively: `cd website && npm update devalue`.
 
@@ -145,33 +145,33 @@ All 4 GitHub Actions in `release.yml` were outdated (checkout v4, setup-go v5, g
 
 ## f) TOP #25 THINGS TO DO NEXT
 
-| # | Priority | Task | Effort |
-|---|---|---|---|
-| 1 | P0 | Fix Lighthouse accessibility (color-contrast on root page) | 1 hr |
-| 2 | P0 | Configure `LHCI_GITHUB_APP_TOKEN` secret | 10 min |
-| 3 | P0 | Fix devalue 5.8.0 → 5.8.1 (npm update or wait for Dependabot) | 10 min |
-| 4 | P1 | Add Node.js to Nix devShell | 30 min |
-| 5 | P1 | Add broken link checker to Website CI | 30 min |
-| 6 | P1 | Automate CHANGELOG derivation or add sync script | 1 hr |
-| 7 | P1 | Add `art-dupl` to Go CI workflow | 30 min |
-| 8 | P1 | Add fuzz testing target to CI | 30 min |
-| 9 | P2 | Create migration guide v2 → v3 for website | 30 min |
-| 10 | P2 | Add Go API reference docs page to website | 1 hr |
-| 11 | P2 | Add `govulncheck` to pre-push hook | 15 min |
-| 12 | P2 | Consider goreleaser for automated semantic versioning | 2 hr |
-| 13 | P2 | Create example integrations (golangci-lint plugin, pre-commit hook) | 2 hr |
-| 14 | P2 | Explore `RegisterDetector` public API (only if consumer requests) | 2 hr |
-| 15 | P2 | Add benchmark comparison chart to website | 1 hr |
-| 16 | P3 | Add contributing guide for new generator detectors | 1 hr |
-| 17 | P3 | Explore `cmp.Or` for Go 1.26 idioms | 30 min |
-| 18 | P3 | Add structured logging (slog) for debug tracing | 1 hr |
-| 19 | P3 | Add OpenSSF Scorecard analysis | 30 min |
-| 20 | P3 | Create GitHub Action wrapper for easy CI integration | 2 hr |
-| 21 | P4 | Add Go 1.26 arena experiment to hot paths | 1 hr |
-| 22 | P4 | Add website performance monitoring (Lighthouse budget alerts) | 30 min |
-| 23 | P4 | Add `CODEOWNERS` for review routing | 10 min |
-| 24 | P4 | Create release checklist documentation | 30 min |
-| 25 | P4 | Investigate Go workspace for testhelpers sub-package | 1 hr |
+| #   | Priority | Task                                                                | Effort |
+| --- | -------- | ------------------------------------------------------------------- | ------ |
+| 1   | P0       | Fix Lighthouse accessibility (color-contrast on root page)          | 1 hr   |
+| 2   | P0       | Configure `LHCI_GITHUB_APP_TOKEN` secret                            | 10 min |
+| 3   | P0       | Fix devalue 5.8.0 → 5.8.1 (npm update or wait for Dependabot)       | 10 min |
+| 4   | P1       | Add Node.js to Nix devShell                                         | 30 min |
+| 5   | P1       | Add broken link checker to Website CI                               | 30 min |
+| 6   | P1       | Automate CHANGELOG derivation or add sync script                    | 1 hr   |
+| 7   | P1       | Add `art-dupl` to Go CI workflow                                    | 30 min |
+| 8   | P1       | Add fuzz testing target to CI                                       | 30 min |
+| 9   | P2       | Create migration guide v2 → v3 for website                          | 30 min |
+| 10  | P2       | Add Go API reference docs page to website                           | 1 hr   |
+| 11  | P2       | Add `govulncheck` to pre-push hook                                  | 15 min |
+| 12  | P2       | Consider goreleaser for automated semantic versioning               | 2 hr   |
+| 13  | P2       | Create example integrations (golangci-lint plugin, pre-commit hook) | 2 hr   |
+| 14  | P2       | Explore `RegisterDetector` public API (only if consumer requests)   | 2 hr   |
+| 15  | P2       | Add benchmark comparison chart to website                           | 1 hr   |
+| 16  | P3       | Add contributing guide for new generator detectors                  | 1 hr   |
+| 17  | P3       | Explore `cmp.Or` for Go 1.26 idioms                                 | 30 min |
+| 18  | P3       | Add structured logging (slog) for debug tracing                     | 1 hr   |
+| 19  | P3       | Add OpenSSF Scorecard analysis                                      | 30 min |
+| 20  | P3       | Create GitHub Action wrapper for easy CI integration                | 2 hr   |
+| 21  | P4       | Add Go 1.26 arena experiment to hot paths                           | 1 hr   |
+| 22  | P4       | Add website performance monitoring (Lighthouse budget alerts)       | 30 min |
+| 23  | P4       | Add `CODEOWNERS` for review routing                                 | 10 min |
+| 24  | P4       | Create release checklist documentation                              | 30 min |
+| 25  | P4       | Investigate Go workspace for testhelpers sub-package                | 1 hr   |
 
 ---
 
@@ -192,15 +192,15 @@ I can see from the Lighthouse CI logs that `color-contrast` and `label-content-n
 
 ## Session Summary
 
-| Metric | Value |
-|---|---|
-| Total sessions today | 4 |
-| Total commits (all sessions) | 28 |
-| Production code changes | 0 |
-| Dependabot PRs closed | 9 (5 merged, 4 superseded) |
-| Dependabot alerts remaining | 1 (devalue, npm transitive) |
-| CI workflows healthy | 2/3 (Go CI + Website CI pass; Lighthouse fails pre-existing) |
-| Open issues | 0 |
-| Open PRs | 0 |
-| Working tree | CLEAN |
-| Unpushed commits | 0 |
+| Metric                       | Value                                                        |
+| ---------------------------- | ------------------------------------------------------------ |
+| Total sessions today         | 4                                                            |
+| Total commits (all sessions) | 28                                                           |
+| Production code changes      | 0                                                            |
+| Dependabot PRs closed        | 9 (5 merged, 4 superseded)                                   |
+| Dependabot alerts remaining  | 1 (devalue, npm transitive)                                  |
+| CI workflows healthy         | 2/3 (Go CI + Website CI pass; Lighthouse fails pre-existing) |
+| Open issues                  | 0                                                            |
+| Open PRs                     | 0                                                            |
+| Working tree                 | CLEAN                                                        |
+| Unpushed commits             | 0                                                            |
