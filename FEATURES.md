@@ -116,6 +116,14 @@
 | Benchmark tracking | FULLY_FUNCTIONAL | `benchmark.yml` pushes to `gh-pages`                                 |
 | Lighthouse CI      | PARTIALLY_SETUP  | `lighthouserc.json` configured, needs `LHCI_GITHUB_APP_TOKEN` secret |
 
+## Gitignore-Aware Filtering
+
+| Feature                                  | Status        | Details                                                                                                                                                                               |
+| ---------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native `.gitignore` parsing              | **REJECTED**  | Out of scope — gogenfilter detects *generated code*, `.gitignore` is broader (build artifacts, secrets, IDE configs). Would require alpha dependency (`go-git/v6`) and blur identity. |
+| `WithExcludePatterns` alternative        | FULLY_FUNCTIONAL | `WithExcludePatterns("vendor/**", "**/testdata/**")` covers 80%+ of gitignore-like exclusions with zero extra deps.                                                                   |
+| Composition pattern documented           | FULLY_FUNCTIONAL | Guide: `guides/gitignore-pre-filtering/` — shows how to pre-filter with external gitignore libraries before passing to gogenfilter.                                                    |
+
 ## Project Root Discovery
 
 | Feature              | Status           | Details                                     |

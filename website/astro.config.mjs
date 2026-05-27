@@ -61,6 +61,7 @@ export default defineConfig({
             { label: "Pattern Matching", slug: "guides/pattern-matching" },
             { label: "SQLC Config Discovery", slug: "guides/sqlc-config" },
             { label: "Custom Filesystems", slug: "guides/custom-filesystem" },
+            { label: "Gitignore Pre-Filtering", slug: "guides/gitignore-pre-filtering" },
             { label: "Benchmarks", slug: "guides/benchmarks" },
           ],
         },
