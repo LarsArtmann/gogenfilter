@@ -30,58 +30,7 @@ import { siteConfig } from '../data/config';
 </nav>
 </header>
 
-<script is:inline>
-  // Theme toggle
-  const themeToggle = document.getElementById('theme-toggle');
-  const lightIcon = themeToggle.querySelector('.theme-icon-light');
-  const darkIcon = themeToggle.querySelector('.theme-icon-dark');
-
-  function applyTheme() {
-    const isLight = document.documentElement.classList.contains('light');
-    lightIcon.classList.toggle('hidden', !isLight);
-    darkIcon.classList.toggle('hidden', isLight);
-    themeToggle.setAttribute('aria-pressed', String(isLight));
-  }
-
-  applyTheme();
-
-  themeToggle.addEventListener('click', () => {
-    const isLight = document.documentElement.classList.toggle('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    applyTheme();
-  });
-
-  // Listen for system theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      const isLight = !e.matches;
-      document.documentElement.classList.toggle('light', isLight);
-      applyTheme();
-    }
-  });
-
-  // Nav toggle
-  const toggle = document.getElementById('nav-toggle');
-  const navLinks = document.getElementById('nav-links');
-  const menuIcon = toggle.querySelector('.menu-icon');
-  const closeIcon = toggle.querySelector('.close-icon');
-
-  toggle.addEventListener('click', function() {
-    const isOpen = navLinks.classList.toggle('open');
-    menuIcon.classList.toggle('hidden', isOpen);
-    closeIcon.classList.toggle('hidden', !isOpen);
-    toggle.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  navLinks.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      menuIcon.classList.remove('hidden');
-      closeIcon.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
-  });
-</script>
+<script is:inline src="/js/header.js"></script>
 
 <style>
   @media (max-width: 39.9375rem) {
