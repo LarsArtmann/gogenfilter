@@ -56,6 +56,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Type-safe icon keys** — `FeatureIcon` and `UseCaseIcon` exported from `src/data/types.ts` as `as const` + `typeof ...[number]` unions.
 - **SEO** — Canonical URL, JSON-LD SoftwareApplication schema, OG meta tags all in `LandingLayout.astro`.
 - **Code deduplication** — jscpd v4.0.9 via `scripts/dedup.sh` wrapper (needed because jscpd v4 `formats-exts` is broken for `.astro` files). Script copies `.astro` → `.html` in temp dir, runs jscpd with `--min-lines 2 --min-tokens 20`, remaps paths back. Run: `cd website && npm run dedup`.
+- **CSP (Content Security Policy)** — Astro v6 built-in CSP (`security.csp` in `astro.config.mjs`). Astro auto-computes SHA-256 hashes for all inline scripts (including Starlight's ThemeProvider, ThemeSelect, Search, SidebarPersister, Tabs) and emits a `<meta http-equiv="content-security-policy">` tag with the hashes. CSP is NOT in Firebase headers — Firebase only sets non-CSP security headers (HSTS, X-Frame-Options, etc.). External scripts in `public/js/` are allowed via `'self'`. Style sources include `'unsafe-inline'` for Tailwind. If adding new inline scripts, Astro will automatically hash them at build time.
 
 #### Lighthouse / Performance
 
@@ -85,6 +86,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **`codeGeneratedPrefix` moved to `detection.go`** — Only used there, not in `types.go`.
 - **`detectorOptions(bool)` merged** — Replaces `allSpecificOptions()` + `allDetectorOptions()` with one function.
 - **Trace/non-trace unified** — `*WithTrace` variants are canonical implementations; non-trace versions (`getFilenameBasedReason`, `getContentBasedReason`, `detectReasonFS`) are thin wrappers that discard the trace string. Eliminates the biggest source of code duplication.
+- **CSP via Astro meta tags, not Firebase headers** — Starlight injects inline scripts (ThemeProvider, ThemeSelect, Search, SidebarPersister, Tabs). Firebase `script-src 'self'` blocks these since static hosting can't generate nonces. Solution: Astro v6 built-in CSP (`security.csp`) auto-computes SHA-256 hashes at build time and emits `<meta>` tags. Firebase headers only set non-CSP security headers (HSTS, X-Frame-Options, etc.).
 - **`coverage_test.go` dissolved** — Tests moved to their natural test files (`errors_test.go`, `filter_test.go`, `pattern_test.go`, `sqlc_test.go`, `project_test.go`). No more catch-all coverage file.
 
 ### Testing

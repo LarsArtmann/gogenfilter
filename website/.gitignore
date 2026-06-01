@@ -17,3 +17,6 @@ Thumbs.db
 
 # Astro
 .astro/
+
+# Bun (CI uses npm)
+bun.lock

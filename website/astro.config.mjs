@@ -6,6 +6,17 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   site: "https://gogenfilter.lars.software",
+  security: {
+    csp: {
+      scriptDirective: {
+        resources: ["'self'"],
+      },
+      styleDirective: {
+        resources: ["'self'", "'unsafe-inline'"],
+      },
+    },
+  },
+
   compressHTML: true,
 
   prefetch: {
