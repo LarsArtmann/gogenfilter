@@ -1,0 +1,171 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+interface GitHubRepo {
+  full_name: string;
+  html_url: string;
+  description: string | null;
+  stargazers_count: number;
+}
+
+interface CodeSearchResult {
+  total_count: number;
+  incomplete_results: boolean;
+  items: Array<{
+    repository: GitHubRepo;
+    path: string;
+  }>;
+}
+
+async function fetchDependents(): Promise<{
+  repos: Map<string, GitHubRepo>;
+  totalMatches: number;
+  truncated: boolean;
+}> {
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github.v3+json",
+  };
+  if (token) {
+    headers.Authorization = `token ${token}`;
+  }
+
+  const repos = new Map<string, GitHubRepo>();
+  let totalMatches = 0;
+  let truncated = false;
+  const perPage = 100;
+  let page = 1;
+  const maxPages = 10;
+
+  while (page <= maxPages) {
+    const query = encodeURIComponent(
+      `"LarsArtmann/gogenfilter" language:Go -repo:LarsArtmann/gogenfilter`,
+    );
+    const url = `https://api.github.com/search/code?q=${query}&per_page=${perPage}&page=${page}`;
+
+    let res: Response;
+    try {
+      res = await fetch(url, { headers });
+    } catch (e) {
+      console.error("GitHub API network error:", e);
+      break;
+    }
+
+    if (res.status === 403) {
+      console.error(
+        "GitHub API rate limited. Set GITHUB_TOKEN env var for higher limits.",
+      );
+      break;
+    }
+
+    if (!res.ok) {
+      console.error(`GitHub API error: ${res.status} ${res.statusText}`);
+      break;
+    }
+
+    const data: CodeSearchResult = await res.json();
+    totalMatches = data.total_count;
+
+    for (const item of data.items) {
+      const repo = item.repository;
+      if (!repos.has(repo.full_name)) {
+        repos.set(repo.full_name, repo);
+      }
+    }
+
+    if (data.items.length < perPage) break;
+    if (page === maxPages) {
+      truncated = true;
+      break;
+    }
+    page++;
+  }
+
+  return { repos, totalMatches, truncated };
+}
+
+const generatedAt = new Date();
+const { repos, totalMatches, truncated } = await fetchDependents();
+const sorted = [...repos.entries()].sort(
+  (a, b) => b[1].stargazers_count - a[1].stargazers_count,
+);
+---
+
+<StarlightPage
+  frontmatter={{ title: "Who Uses gogenfilter", description: "Public projects that depend on gogenfilter." }}
+>
+  <p>
+    Public Go projects that import
+    <code>github.com/LarsArtmann/gogenfilter/v3</code>, discovered via
+    GitHub code search.
+  </p>
+
+  {truncated && (
+    <p>
+      <em>
+        Results truncated — more dependents may exist beyond the first
+        {repos.size} repositories shown.
+      </em>
+    </p>
+  )}
+
+  {sorted.length === 0 ? (
+    <div style="margin-top: 2rem; text-align: center; padding: 2rem; border: 1px dashed var(--sl-color-gray-4); border-radius: 8px;">
+      <p style="font-size: 1.1em; margin-bottom: 0.5rem;">No public dependents found yet.</p>
+      <p>
+        Be the first —
+        <a href="/getting-started/quick-start/">get started with gogenfilter</a>.
+      </p>
+    </div>
+  ) : (
+    <table style="width: 100%; border-collapse: collapse; margin-top: 1.5rem;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--sl-color-gray-5);">
+          <th style="text-align: left; padding: 0.5rem 0.75rem;">Project</th>
+          <th style="text-align: left; padding: 0.5rem 0.75rem;">Description</th>
+          <th style="text-align: right; padding: 0.5rem 0.75rem;">&#9733;</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sorted.map(([, repo]) => (
+          <tr style="border-bottom: 1px solid var(--sl-color-hairline-light);">
+            <td style="padding: 0.5rem 0.75rem;">
+              <a
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {repo.full_name}
+              </a>
+            </td>
+            <td
+              style="padding: 0.5rem 0.75rem; color: var(--sl-color-gray-3);"
+            >
+              {repo.description ?? "—"}
+            </td>
+            <td style="padding: 0.5rem 0.75rem; text-align: right;">
+              {repo.stargazers_count > 0
+                ? repo.stargazers_count.toLocaleString()
+                : "—"}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+
+  <p
+    style="margin-top: 2rem; font-size: 0.85em; color: var(--sl-color-gray-3);"
+  >
+    Last updated:{" "}
+    <time datetime={generatedAt.toISOString()}>
+      {generatedAt.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}
+    </time>
+    . Found {totalMatches} matching file{totalMatches === 1 ? "" : "s"} across{" "}
+    {repos.size} repositories.
+  </p>
+</StarlightPage>

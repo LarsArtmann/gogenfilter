@@ -88,6 +88,7 @@ export default defineConfig({
             { label: "Changelog", slug: "changelog" },
             { label: "Contributing", slug: "contributing" },
             { label: "Related Tools", slug: "related-tools" },
+            { label: "Who Uses gogenfilter", link: "/dependents" },
           ],
         },
       ],
