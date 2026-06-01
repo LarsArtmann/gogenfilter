@@ -79,31 +79,10 @@ const highlightedCode = `<span class="text-text-muted">package</span> <span clas
           <span class="ml-3 text-xs text-text-muted font-mono">main.go</span>
         </div>
         <pre class="p-4 text-left text-sm font-mono leading-relaxed overflow-x-auto relative"><code id="hero-code" set:html={highlightedCode} /></pre>
-        <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-1.5 py-1.5 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" aria-label="Copy code to clipboard">Copy</button>
+        <button class="absolute top-2 right-2 bg-code-inline-bg/80 border border-border rounded-md text-text-muted px-1.5 py-1.5 cursor-pointer text-xs font-mono hover:text-text-primary hover:border-border-hover transition-all duration-150 opacity-0 [.code-preview:hover_&]:opacity-100" id="copy-btn" data-code={heroCode} aria-label="Copy code to clipboard">Copy</button>
       </div>
     </div>
   </div>
 </section>
 
-<script is:inline define:vars={{ heroCode }}>
-  const btn = document.getElementById('copy-btn');
-
-  if (btn) {
-    btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(heroCode);
-        btn.textContent = 'Copied!';
-        btn.classList.add('text-success');
-        setTimeout(() => {
-          btn.textContent = 'Copy';
-          btn.classList.remove('text-success');
-        }, 2000);
-      } catch {
-        btn.textContent = 'Failed';
-        setTimeout(() => {
-          btn.textContent = 'Copy';
-        }, 2000);
-      }
-    });
-  }
-</script>
+<script is:inline src="/js/copy-code.js"></script>
