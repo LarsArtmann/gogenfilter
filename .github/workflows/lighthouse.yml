@@ -1,3 +1,7 @@
+# NOTE: This workflow requires the Lighthouse CI GitHub App to be installed
+# and the LHCI_GITHUB_APP_TOKEN secret to be configured for status checks.
+# Without it, the workflow runs but produces no actionable GitHub status checks.
+# See: https://github.com/apps/lighthouse-ci
 name: Lighthouse CI
 
 on:

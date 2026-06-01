@@ -170,11 +170,11 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - Uploads results to temporary public storage + artifacts (14-day retention)
 - Config in `lighthouserc.json` only (budgets NOT used — LHCI v12 rejects budgets+assertions together)
 
-### CI Known Issues (2026-05-04)
+### CI Known Issues (2026-06-01)
 
 - **Website CI**: `PRIVATE_REPO_TOKEN` secret optional — md-go-validator checkout has `continue-on-error: true`, doc validation is skipped gracefully when unavailable
 - **Lighthouse CI**: Accessibility assertions fail on live site — `color-contrast`, `label-content-name-mismatch` on root page; `redirects` on `/docs`
-- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped
+- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped (documented in `lighthouse.yml` header comment)
 
 ## Key API Patterns
 
@@ -218,7 +218,7 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 - **`.buildflow.yml`** — Configures BuildFlow with project-specific excludes (testdata, website/dist, website/node_modules).
 - **Dependabot alerts** — All 4 alerts are npm ecosystem (website transitive deps), not Go production deps. The `yaml` alert is npm `yaml`, not `go-faster/yaml`.
 - **`gomodguard` deprecated** — Replaced by `gomodguard_v2` in `.golangci.yaml`.
-- **`docs/status/archive/`** — Historical status reports (pre-May-25) are archived here. Active reports remain in `docs/status/`.
+- **`docs/status/archive/`** — Historical status reports. Only the 3 most recent reports are kept in `docs/status/`; older reports are archived.
 
 ## License
 
