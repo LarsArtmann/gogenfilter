@@ -35,8 +35,7 @@ async function main() {
     let fixed = html.replace(STYLE_HASH_RE, " style-src 'self' 'unsafe-inline'");
 
     const missingHashes = new Set();
-    for (const [, attrs, body] of fixed.matchAll(INLINE_SCRIPT_RE)) {
-      if (attrs.includes("aria-hidden")) continue;
+    for (const [, , body] of fixed.matchAll(INLINE_SCRIPT_RE)) {
       const trimmed = body.trim();
       if (!trimmed) continue;
       const hash = sha256Base64(trimmed);
