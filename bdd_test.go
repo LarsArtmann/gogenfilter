@@ -546,7 +546,7 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 					Code:       gogenfilter.CodeSQLCConfigParse,
 					ConfigPath: "sqlc.yaml",
-					Operation:  testhelpers.ParseOp,
+					Operation:  gogenfilter.OpSQLCParse,
 					Message:    "invalid YAML",
 				}
 				gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc.yaml"))

@@ -342,7 +342,7 @@ func TestSQLCConfigError_Unwrap(t *testing.T) {
 	err := &SQLCConfigError{
 		Code:       CodeSQLCConfigParse,
 		ConfigPath: testFileSQLCConfig,
-		Operation:  "parse",
+		Operation:  OpSQLCParse,
 		Message:    "bad yaml",
 		Err:        os.ErrPermission,
 	}

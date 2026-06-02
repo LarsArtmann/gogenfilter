@@ -239,7 +239,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 			err := &gogenfilter.SQLCConfigError{
 				Code:       gogenfilter.CodeSQLCConfigParse,
 				ConfigPath: "sqlc.yaml",
-				Operation:  testhelpers.ParseOp,
+				Operation:  gogenfilter.OpSQLCParse,
 				Message:    "invalid YAML",
 				Err:        os.ErrInvalid,
 			}
@@ -250,7 +250,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.It("formats with operation and message only (no path)", func() {
 			err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 				Code:      gogenfilter.CodeSQLCConfigRead,
-				Operation: "read",
+				Operation: gogenfilter.OpSQLCRead,
 				Message:   "file missing",
 			}
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("sqlc_config_read"))
@@ -260,7 +260,7 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 		ginkgo.It("formats with cause (no path)", func() {
 			err := &gogenfilter.SQLCConfigError{ //nolint:exhaustruct
 				Code:      gogenfilter.CodeSQLCConfigParse,
-				Operation: "parse",
+				Operation: gogenfilter.OpSQLCParse,
 				Message:   "bad yaml",
 				Err:       os.ErrInvalid,
 			}

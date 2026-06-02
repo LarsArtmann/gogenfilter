@@ -87,7 +87,11 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **`detectorOptions(bool)` merged** — Replaces `allSpecificOptions()` + `allDetectorOptions()` with one function.
 - **Trace/non-trace unified** — `*WithTrace` variants are canonical implementations; non-trace versions (`getFilenameBasedReason`, `getContentBasedReason`, `detectReasonFS`) are thin wrappers that discard the trace string. Eliminates the biggest source of code duplication.
 - **CSP via Astro meta tags, not Firebase headers** — Starlight injects inline scripts (ThemeProvider, ThemeSelect, Search, SidebarPersister, Tabs). Firebase `script-src 'self'` blocks these since static hosting can't generate nonces. Solution: Astro v6 built-in CSP (`security.csp`) auto-computes SHA-256 hashes at build time and emits `<meta>` tags. Firebase headers only set non-CSP security headers (HSTS, X-Frame-Options, etc.).
+- **`SQLCOperation` typed constants** — `SQLCOperation string` type with `OpSQLCFind`, `OpSQLCWalk`, `OpSQLCRead`, `OpSQLCCollect`, `OpSQLCParse` constants. `SQLCConfigError.Operation` field is now `SQLCOperation` instead of raw `string`. Follows same pattern as `ErrorCode`, `FilterOption`, `FilterReason`.
 - **`coverage_test.go` dissolved** — Tests moved to their natural test files (`errors_test.go`, `filter_test.go`, `pattern_test.go`, `sqlc_test.go`, `project_test.go`). No more catch-all coverage file.
+- **Firebase deploy uses `firebase-tools` CLI directly** — Replaced `FirebaseExtended/action-hosting-deploy@v0` (Node 20 runtime, deprecated) with direct `firebase deploy` via `firebase-tools` npm package running under Node 24. Uses `GOOGLE_APPLICATION_CREDENTIALS` with service account key for auth.
+- **Website a11y fixes** — `dependents.astro` table: added `<caption>`, replaced bare `★` header with `aria-hidden` + `sr-only` text, added `aria-label` to star count cells.
+- **npm overrides added** — `brace-expansion@5.0.6` and `yaml@2.8.3` overrides added to `website/package.json` to resolve Dependabot alerts for transitive dev dependencies.
 
 ### Testing
 
@@ -159,7 +163,7 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - Stale reference detection: checks curated docs for references to deleted files
 - CHANGELOG sync check: verifies version sections match between root and website
 - Cross-repo checkout for `LarsArtmann/md-go-validator` uses `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback; `continue-on-error: true` so build/deploy proceeds even without access. `LarsArtmann/go-output` checkout removed (was unused).
-- Deploy to Firebase Hosting (master push only, least-privilege permissions)
+- Deploy to Firebase Hosting via `firebase-tools` CLI (master push only, runs under Node 24). Formerly used `FirebaseExtended/action-hosting-deploy@v0` (removed due to Node 20 deprecation).
 - Node version pinned via `website/.node-version` (currently Node 24)
 
 **Lighthouse CI** (`.github/workflows/lighthouse.yml`):

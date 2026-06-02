@@ -67,7 +67,7 @@ type sqlcCodegen struct {
 func newSQLCConfigError(
 	code ErrorCode,
 	configPath string,
-	operation string,
+	operation SQLCOperation,
 	message string,
 	err error,
 ) *SQLCConfigError {
@@ -84,7 +84,7 @@ func sqlcFindError(path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigFind,
 		path,
-		"find",
+		OpSQLCFind,
 		fmt.Sprintf("finding sqlc configs in %q", path),
 		err,
 	)
@@ -94,7 +94,7 @@ func sqlcWalkError(path string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigWalk,
 		path,
-		"walk",
+		OpSQLCWalk,
 		fmt.Sprintf("walking %q for sqlc configs", path),
 		err,
 	)
@@ -104,7 +104,7 @@ func sqlcReadError(configPath string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigRead,
 		configPath,
-		"read",
+		OpSQLCRead,
 		"reading sqlc config",
 		err,
 	)
@@ -114,7 +114,7 @@ func sqlcCollectError(configPath string, err error) *SQLCConfigError {
 	return newSQLCConfigError(
 		CodeSQLCConfigCollect,
 		configPath,
-		"collect-output-dirs",
+		OpSQLCCollect,
 		"processing sqlc config",
 		err,
 	)
@@ -232,7 +232,7 @@ func unmarshalSQLCYAML(data []byte, target any, configPath, errMsg string) *SQLC
 		return newSQLCConfigError(
 			CodeSQLCConfigParse,
 			configPath,
-			"parse",
+			OpSQLCParse,
 			errMsg,
 			err,
 		)
@@ -267,7 +267,7 @@ func unmarshalSQLCConfig(data []byte, configPath string) (*sqlcConfig, *SQLCConf
 		return nil, newSQLCConfigError(
 			CodeSQLCConfigParse,
 			configPath,
-			"parse",
+			OpSQLCParse,
 			fmt.Sprintf("unsupported sqlc config version %q", version.Version),
 			nil,
 		)
