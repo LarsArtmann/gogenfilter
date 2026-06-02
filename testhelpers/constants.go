@@ -6,9 +6,6 @@ const (
 	// TestMarkerGoMod is the marker file used to identify a Go project root.
 	TestMarkerGoMod = "go.mod"
 
-	// ParseOp is the parse operation string used in tests.
-	ParseOp = "parse"
-
 	// DbModelsGo is the path to SQLC generated models file.
 	DbModelsGo = "db/models.go"
 

@@ -26,7 +26,12 @@ Objects with identity — types that carry state across operations.
 | FilterOption | A named type of generated code to detect (e.g., `FilterSQLC`, `FilterTempl`, `FilterAll`)         | Configuration input                    |
 | FilterReason | Why a file was or wasn't filtered (e.g., `ReasonSQLC`, `ReasonOutsideScope`, `ReasonNotFiltered`) | Detection output                       |
 | FilterResult | The full outcome of filtering a file: filtered status, reason, path, and trace                    | Detailed output                        |
-| ErrorCode    | A specific error condition identifier (e.g., `CodeSQLCConfigParse`, `CodeProjectRootNotFound`)    | Error handling                         |
+| ErrorCode        | A specific error condition identifier (e.g., `CodeSQLCConfigParse`, `CodeProjectRootNotFound`)    | Error handling                         |
+| SQLCOperation    | An operation being performed on sqlc config files (e.g., `OpSQLCFind`, `OpSQLCParse`)            | Error context                          |
+| ErrorCoder       | Interface for programmatic access to an error's `ErrorCode`                                      | Error handling                         |
+| ProjectRootError | Error returned when project root cannot be found                                                  | Infrastructure error                   |
+| FilterConfigError| Error returned when a filter configuration is invalid                                              | Configuration error                    |
+| SQLCConfigError  | Error returned when a sqlc config file cannot be processed                                        | SQLC error                             |
 
 ## Value Objects
 
@@ -52,7 +57,11 @@ Actions the system performs.
 | DetectReason     | Detect without I/O — caller provides content, returns `FilterReason`           | Low-level API  |
 | FindSQLCConfigs  | Discover sqlc.yaml/sqlc.yml files by walking directories                       | SQLC feature   |
 | GetSQLOutputDirs | Parse sqlc configs and extract output directories                              | SQLC feature   |
-| FindProjectRoot  | Search parent directories for marker files (go.mod, etc.)                      | Infrastructure |
+| FindProjectRoot     | Search parent directories for marker files (go.mod, etc.)                      | Infrastructure |
+| DetectReasonReader  | Detect from an `io.Reader` — returns `FilterReason`                            | Low-level API  |
+| FindSQLCConfigsFS   | Like `FindSQLCConfigs` but accepts a custom `fs.FS`                            | SQLC feature   |
+| GetSQLOutputDirsFS  | Like `GetSQLOutputDirs` but accepts a custom `fs.FS`                           | SQLC feature   |
+| MatchPattern        | Test if a path matches a `**` glob pattern                                     | Pattern API    |
 
 ## Events
 

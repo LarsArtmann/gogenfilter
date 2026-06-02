@@ -119,11 +119,15 @@ const sorted = [...repos.entries()].sort(
     </div>
   ) : (
     <table style="width: 100%; border-collapse: collapse; margin-top: 1.5rem;">
+      <caption class="sr-only">Projects depending on gogenfilter</caption>
       <thead>
         <tr style="border-bottom: 2px solid var(--sl-color-gray-5);">
           <th style="text-align: left; padding: 0.5rem 0.75rem;">Project</th>
           <th style="text-align: left; padding: 0.5rem 0.75rem;">Description</th>
-          <th style="text-align: right; padding: 0.5rem 0.75rem;">&#9733;</th>
+          <th style="text-align: right; padding: 0.5rem 0.75rem;">
+            <span aria-hidden="true">&#9733;</span>
+            <span class="sr-only">Stars</span>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -143,7 +147,10 @@ const sorted = [...repos.entries()].sort(
             >
               {repo.description ?? "—"}
             </td>
-            <td style="padding: 0.5rem 0.75rem; text-align: right;">
+            <td
+              style="padding: 0.5rem 0.75rem; text-align: right;"
+              aria-label={`${repo.stargazers_count} stars`}
+            >
               {repo.stargazers_count > 0
                 ? repo.stargazers_count.toLocaleString()
                 : "—"}

@@ -15,6 +15,21 @@ type ErrorCode string
 // String returns the error code as a string.
 func (c ErrorCode) String() string { return string(c) }
 
+// SQLCOperation describes the operation being performed when a sqlc config error occurred.
+type SQLCOperation string
+
+// String returns the operation as a string.
+func (o SQLCOperation) String() string { return string(o) }
+
+// SQLC operations identify what step failed during sqlc config processing.
+const (
+	OpSQLCFind    SQLCOperation = "find"                // finding sqlc config files
+	OpSQLCWalk    SQLCOperation = "walk"                // walking directories for configs
+	OpSQLCRead    SQLCOperation = "read"                // reading a config file
+	OpSQLCCollect SQLCOperation = "collect-output-dirs" // processing config output dirs
+	OpSQLCParse   SQLCOperation = "parse"               // parsing YAML content
+)
+
 // Error codes identify specific error conditions for programmatic handling.
 const (
 	CodeProjectRootNotFound    ErrorCode = "project_root_not_found"    // project root not found from start path
@@ -123,7 +138,7 @@ func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
 type SQLCConfigError struct {
 	Code       ErrorCode
 	ConfigPath string
-	Operation  string
+	Operation  SQLCOperation
 	Message    string
 	Err        error
 }
