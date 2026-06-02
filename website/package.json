@@ -25,7 +25,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/fix-csp.mjs",
     "preview": "astro preview",
     "typecheck": "astro check",
     "clean": "rm -rf dist .astro node_modules/.cache",
