@@ -1,6 +1,6 @@
 # TODO List
 
-**Updated:** 2026-06-01
+**Updated:** 2026-06-02
 **Status:** Active
 
 ## In Progress
@@ -12,11 +12,11 @@ None.
 ### CI/CD
 
 - [ ] **Configure or remove Lighthouse CI** — `LHCI_GITHUB_APP_TOKEN` not configured; workflow runs but produces no status checks. Either install the [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci), add the token as a repo secret, or remove the workflow entirely. _Priority: MEDIUM | Effort: 15 min_
-- [ ] **Resolve 4 npm Dependabot alerts** — All in website transitive deps (not Go production code). Run `npm audit fix` or add overrides in `package.json`. Requires npm/node locally. _Priority: LOW | Effort: 10 min_
+- [ ] **Resolve npm Dependabot alerts** — All 4 alerts now have overrides in `package.json` (`brace-expansion@5.0.6`, `devalue@5.8.1`, `yaml@2.8.3`, `vite@7.3.2`). 5 Dependabot PRs (#17-#21) open for dep bumps — all pass Website CI, fail Lighthouse CI (token not configured). _Priority: LOW | Effort: merge PRs_
 
 ### Website
 
-- [ ] **Fix Lighthouse accessibility failures** — `color-contrast` and `label-content-name-mismatch` on root page; `redirects` on `/docs`. Fix CSS contrast ratios and ARIA labels, then re-run Lighthouse to confirm. _Priority: MEDIUM | Effort: 1-2 hrs_
+- [ ] **Fix Lighthouse accessibility failures** — `color-contrast` and `label-content-name-mismatch` on root page; `redirects` on `/docs`. Fix CSS contrast ratios and ARIA labels, then re-run Lighthouse to confirm. Dependents page a11y (caption, star labels) fixed 2026-06-02. _Priority: MEDIUM | Effort: 1-2 hrs_
 - [ ] **Add "Who Uses gogenfilter" CTA to landing page** — Dependents page exists at `/dependents` but is only linked from the docs sidebar. Add a link in HeroSection or CTASection to cross-promote it. _Priority: LOW | Effort: 15 min_
 - [ ] **Website performance audit** — Establish Lighthouse score baselines for performance, accessibility, SEO, best-practices. Use [unlighthouse.dev/tools](https://unlighthouse.dev/tools) for quick checks. _Priority: MEDIUM | Effort: 1 hr_
 - [ ] **Test dependents page with real dependents** — Currently renders empty state (no public repos found). Verify the table renders correctly when actual GitHub results exist. _Priority: LOW | Effort: 30 min_
@@ -31,6 +31,14 @@ None.
 - [ ] **Define v3 maintenance mode vs v4 vision** — The core library is complete (99.8% coverage, all features done). Decide: is v3 in maintenance mode, or is there a v4 scope? This determines the entire strategic direction. _Priority: HIGH | Effort: Decision_
 - [ ] **Evaluate `golangci-lint` plugin opportunity** — gogenfilter is a natural fit as a golangci-lint plugin for auto-generated code detection during linting. Research feasibility and community interest. _Priority: MEDIUM | Effort: Research_
 - [ ] **Design custom detector registration API** — Allow users to register their own detectors for proprietary code generators. Community extensibility play. _Priority: LOW | Effort: Design_
+
+## Completed (2026-06-02)
+
+- [x] **Fix 3 a11y issues on dependents page** — Added table `<caption>`, star column screen reader text, star cell `aria-label`
+- [x] **Fix Firebase Node 20 deprecation** — Replaced `FirebaseExtended/action-hosting-deploy@v0` with direct `firebase-tools` CLI under Node 24
+- [x] **Extract `SQLCOperation` typed constants** — New `SQLCOperation` type with 5 constants; `SQLCConfigError.Operation` now typed
+- [x] **Update DOMAIN_LANGUAGE.md** — Added 9 missing exports (types, functions, commands)
+- [x] **Resolve npm Dependabot alerts** — Added `brace-expansion@5.0.6` and `yaml@2.8.3` overrides
 
 ## Completed (2026-06-01)
 
