@@ -110,21 +110,21 @@ const sorted = [...repos.entries()].sort(
   )}
 
   {sorted.length === 0 ? (
-    <div style="margin-top: 2rem; text-align: center; padding: 2rem; border: 1px dashed var(--sl-color-gray-4); border-radius: 8px;">
-      <p style="font-size: 1.1em; margin-bottom: 0.5rem;">No public dependents found yet.</p>
+    <div class="mt-8 text-center p-8 border border-dashed rounded-lg border-[var(--sl-color-gray-4)]">
+      <p class="text-lg mb-2">No public dependents found yet.</p>
       <p>
         Be the first —
         <a href="/getting-started/quick-start/">get started with gogenfilter</a>.
       </p>
     </div>
   ) : (
-    <table style="width: 100%; border-collapse: collapse; margin-top: 1.5rem;">
+    <table class="w-full border-collapse mt-6">
       <caption class="sr-only">Projects depending on gogenfilter</caption>
       <thead>
-        <tr style="border-bottom: 2px solid var(--sl-color-gray-5);">
-          <th style="text-align: left; padding: 0.5rem 0.75rem;">Project</th>
-          <th style="text-align: left; padding: 0.5rem 0.75rem;">Description</th>
-          <th style="text-align: right; padding: 0.5rem 0.75rem;">
+        <tr class="border-b-2 border-[var(--sl-color-gray-5)]">
+          <th class="text-left px-3 py-2">Project</th>
+          <th class="text-left px-3 py-2">Description</th>
+          <th class="text-right px-3 py-2">
             <span aria-hidden="true">&#9733;</span>
             <span class="sr-only">Stars</span>
           </th>
@@ -132,8 +132,8 @@ const sorted = [...repos.entries()].sort(
       </thead>
       <tbody>
         {sorted.map(([, repo]) => (
-          <tr style="border-bottom: 1px solid var(--sl-color-hairline-light);">
-            <td style="padding: 0.5rem 0.75rem;">
+          <tr class="border-b border-[var(--sl-color-hairline-light)]">
+            <td class="px-3 py-2">
               <a
                 href={repo.html_url}
                 target="_blank"
@@ -143,12 +143,12 @@ const sorted = [...repos.entries()].sort(
               </a>
             </td>
             <td
-              style="padding: 0.5rem 0.75rem; color: var(--sl-color-gray-3);"
+              class="px-3 py-2 text-[var(--sl-color-gray-3)]"
             >
               {repo.description ?? "—"}
             </td>
             <td
-              style="padding: 0.5rem 0.75rem; text-align: right;"
+              class="px-3 py-2 text-right"
               aria-label={`${repo.stargazers_count} stars`}
             >
               {repo.stargazers_count > 0
@@ -162,7 +162,7 @@ const sorted = [...repos.entries()].sort(
   )}
 
   <p
-    style="margin-top: 2rem; font-size: 0.85em; color: var(--sl-color-gray-3);"
+    class="mt-8 text-[var(--sl-color-gray-3)] text-[0.85em]"
   >
     Last updated:{" "}
     <time datetime={generatedAt.toISOString()}>
