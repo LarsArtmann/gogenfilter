@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.1.0] — 2026-06-04
+
+### Added
+
+- **`SQLCOperation` typed constants** — `SQLCConfigError.Operation` is now `SQLCOperation` instead of `string`, providing compile-time type safety for sqlc error handling. Five exported constants: `OpSQLCFind`, `OpSQLCWalk`, `OpSQLCRead`, `OpSQLCCollect`, `OpSQLCParse`.
+- **`ExampleWithExcludePatterns_vendorAndTestdata`** — runnable example demonstrating vendor/testdata exclusion patterns.
+
+### Changed
+
+- **Breaking: `SQLCConfigError.Operation` field type** — `string` → `SQLCOperation`. Callers constructing `SQLCConfigError` directly must use `SQLCOperation` constants instead of raw strings.
+- **Detection markers extracted to named constants** — All content detection strings (`sqlcGenerateComment`, `templComponent`, `goEnumComment`, `mockgenGeneratorName`, etc.) and filename suffixes (`protobufFilenameSuffixes`, `sqlcCodePatternMarkers`) are now named constants/vars instead of inline literals.
+- **`errorPrefixFmt` constant** — Branded error prefix `"[gogenfilter:%s] "` extracted from repeated inline format strings.
+- **`filteredResult`/`notFilteredResult` removed** — Helper functions replaced with inline `FilterResult` struct literals in `detectReasonFSWithTrace`.
+- **Go 1.26.3** — `go.mod` updated.
+
+### Fixed
+
+- **Double-wrapped `sqlcFindError`** — `FindSQLCConfigs` returned `sqlcFindError(path, err)` which itself wrapped `err`, causing the same error to appear twice in the unwrap chain.
+
 ## [v3.0.2] — 2026-05-25
 
 ### Changed
