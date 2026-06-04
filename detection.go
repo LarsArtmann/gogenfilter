@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -415,7 +416,7 @@ func detectReasonFSWithTrace(
 		}, nil
 	}
 
-	content, err := fs.ReadFile(fsys, filePath)
+	content, err := readFile(fsys, filePath)
 	if err != nil {
 		return FilterResult{
 				Filtered: false,
@@ -477,4 +478,19 @@ func AllFilterReasons() []FilterReason {
 	}
 
 	return append(reasons, ReasonOutsideScope, ReasonExcludePattern, ReasonNotFiltered)
+}
+
+// readFile reads file content, falling back to os.ReadFile for absolute paths
+// when fs.ReadFile fails (os.DirFS rejects absolute paths).
+func readFile(fsys fs.FS, filePath string) ([]byte, error) {
+	content, err := fs.ReadFile(fsys, filePath)
+	if err == nil {
+		return content, nil
+	}
+
+	if filepath.IsAbs(filePath) {
+		return os.ReadFile(filePath)
+	}
+
+	return nil, err
 }
