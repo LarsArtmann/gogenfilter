@@ -34,6 +34,7 @@ Ongoing maintenance tasks:
 The fundamental question: **is gogenfilter "done" or does it have a next chapter?**
 
 **Option A: v3 Maintenance Mode**
+
 - Ship security patches and bug fixes only
 - Accept new generator detectors via PRs
 - Focus energy elsewhere
@@ -41,6 +42,7 @@ The fundamental question: **is gogenfilter "done" or does it have a next chapter
 - Con: Missed opportunity if community adoption grows
 
 **Option B: v4 with Expanded Scope**
+
 - Potential areas: custom detector registration API, golangci-lint plugin, Go analysis framework integration
 - Pro: Addresses real ecosystem gap (no good golangci-lint plugin for generated code filtering)
 - Con: Scope creep risk, requires sustained commitment

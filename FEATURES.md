@@ -135,10 +135,10 @@
 
 ## Website
 
-| Feature              | Status           | Details                           |
-| -------------------- | ---------------- | --------------------------------- |
-| Astro v6 + Starlight | FULLY_FUNCTIONAL | Marketing/docs site in `website/` |
+| Feature              | Status           | Details                                              |
+| -------------------- | ---------------- | ---------------------------------------------------- |
+| Astro v6 + Starlight | FULLY_FUNCTIONAL | Marketing/docs site in `website/`                    |
 | Landing page         | FULLY_FUNCTIONAL | Hero, features, code examples, CSP-compliant scripts |
-| Dependents page      | FULLY_FUNCTIONAL | Build-time GitHub code search for public users          |
-| Starlight docs       | FULLY_FUNCTIONAL | PageFind search                                        |
-| Firebase Hosting     | FULLY_FUNCTIONAL | Configured via `firebase.json`                         |
+| Dependents page      | FULLY_FUNCTIONAL | Build-time GitHub code search for public users       |
+| Starlight docs       | FULLY_FUNCTIONAL | PageFind search                                      |
+| Firebase Hosting     | FULLY_FUNCTIONAL | Configured via `firebase.json`                       |
