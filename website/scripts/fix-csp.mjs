@@ -6,7 +6,8 @@ const DIST = "dist";
 
 const STYLE_HASH_RE = / style-src 'self' 'unsafe-inline'(?: 'sha256-[^']+')+/g;
 
-const INLINE_SCRIPT_RE = /<script(?![^>]*\btype\s*=\s*["']module["'])(?![^>]*\bsrc\s*=)([^>]*)>([\s\S]*?)<\/script>/g;
+const INLINE_SCRIPT_RE =
+  /<script(?![^>]*\btype\s*=\s*["']module["'])(?![^>]*\bsrc\s*=)([^>]*)>([\s\S]*?)<\/script>/g;
 
 async function findHtmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -44,10 +45,7 @@ async function main() {
 
     if (missingHashes.size > 0) {
       const hashList = [...missingHashes].join(" ");
-      fixed = fixed.replace(
-        /script-src ('self'(?: 'sha256-[^']+')*)/,
-        `script-src $1 ${hashList}`,
-      );
+      fixed = fixed.replace(/script-src ('self'(?: 'sha256-[^']+')*)/, `script-src $1 ${hashList}`);
     }
 
     if (fixed !== html) {
