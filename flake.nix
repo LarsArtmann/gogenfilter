@@ -38,7 +38,7 @@
         }:
         let
           lib = pkgs.lib;
-          goPkg = pkgs.go_1_26;
+          goPkg = goPkg;
 
           goFiles = lib.fileset.fileFilter (file: file.hasExt "go") ./.;
           src = lib.fileset.toSource {
@@ -83,6 +83,7 @@
             };
           };
 
+          checks.format = config.treefmt.build.check self;
           devShells.default = pkgs.mkShell {
             packages = [
               goPkg
@@ -100,6 +101,15 @@
             shellHook = ''
               echo "gogenfilter dev shell — $(go version)"
             '';
+          };
+
+          devShells.ci = pkgs.mkShellNoCC {
+            packages = [
+              goPkg
+              pkgs.golangci-lint
+            ];
+
+            GOWORK = "off";
           };
 
           checks = {
@@ -151,5 +161,10 @@
                 '';
           };
         };
+
+      flake.overlays.default = final: _prev: {
+        gogenfilter = self.packages.${final.stdenv.system}.default;
+      };
+
     };
 }
