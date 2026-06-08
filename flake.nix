@@ -70,6 +70,7 @@
             inherit src;
             go = goPkg;
             vendorHash = "sha256-Thhxw5MwemGtcNP/5skcQVbHdChpAtgSV1k/aBC/pkQ=";
+            proxyVendor = true;
             meta = with pkgs.lib; {
               description = "Go struct field filter code generator";
               license = licenses.mit;
