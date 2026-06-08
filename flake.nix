@@ -38,7 +38,7 @@
         }:
         let
           lib = pkgs.lib;
-          goPkg = goPkg;
+          goPkg = pkgs.go_1_26;
 
           goFiles = lib.fileset.fileFilter (file: file.hasExt "go") ./.;
           src = lib.fileset.toSource {
