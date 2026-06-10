@@ -1,6 +1,6 @@
 # Roadmap
 
-**Updated:** 2026-06-01
+**Updated:** 2026-06-11
 **Current version:** v3.1.0
 
 ## v3 — Complete & Stable
@@ -43,18 +43,28 @@ The fundamental question: **is gogenfilter "done" or does it have a next chapter
 
 **Option B: v4 with Expanded Scope**
 
-- Potential areas: custom detector registration API, golangci-lint plugin, Go analysis framework integration
-- Pro: Addresses real ecosystem gap (no good golangci-lint plugin for generated code filtering)
+- **golangci-lint plugin** — Auto-exclude detected generated files from linting; fills a real ecosystem gap
+- **More generator detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger
+- **Custom detector registration API** — `RegisterDetector(...)` for proprietary/internal generators
+- Pro: Addresses real ecosystem gaps, grows the library's surface area meaningfully
 - Con: Scope creep risk, requires sustained commitment
 
 **Decision needed:** This is the #1 blocker for strategic planning. See `TODO_LIST.md` for the tracked action item.
 
-## Ideas (unprioritized)
+## v4 Candidates (ranked)
 
-- **golangci-lint plugin** — Use gogenfilter as the detection engine behind a `golangci-lint` plugin that auto-excludes generated files during linting
-- **Custom detector registration** — `RegisterDetector(name, filenameMatcher, contentChecker)` API for proprietary generators
-- **WASM build** — Browser-based generated file detection (unclear use case)
-- **Community feedback** — GitHub Discussions or Discord for gathering real-world usage data
+1. **golangci-lint plugin** — Auto-exclude detected generated files from linting. No good solution exists in the ecosystem today.
+2. **More generator detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger. Each has clear filename/content markers.
+3. **Custom detector registration** — `RegisterDetector(...)` API for proprietary/internal generators.
+
+## Evaluated and Deprioritized
+
+- **Pre-commit hook integration** — A hook that says "this file is generated" at commit time is not actionable. Generated files are routinely committed (protobuf, sqlc, wire). What would the hook *do*? Reject the commit? That's wrong. Warn the user? They already know. Pre-commit hooks for generated code should run the generator and diff-check outputs, not merely detect markers. You're not missing anything — it's a poor fit.
+- **WASM build** — No clear use case for browser-based generated file detection.
+
+## Backlog (unprioritized)
+
+- **Community feedback** — GitHub Discussions or Discord for real-world usage data
 - **Supply chain hardening** — Sigstore signing, SLSA provenance, SBOM generation
 - **CODE_OF_CONDUCT.md** — Standard community health file, link from website nav
 
