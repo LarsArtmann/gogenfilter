@@ -64,10 +64,10 @@ var (
 
 // ProjectRootError is returned when the project root cannot be found.
 type ProjectRootError struct {
-	Code      ErrorCode
-	StartPath string
-	Markers   []string
-	Err       error
+	Code      ErrorCode // classifies the failure (e.g., CodeProjectRootNotFound)
+	StartPath string    // directory where the search started
+	Markers   []string  // root marker files searched for (e.g., go.mod)
+	Err       error     // underlying error, if any
 }
 
 func (e *ProjectRootError) Error() string {
@@ -101,9 +101,9 @@ func (e *ProjectRootError) ErrorCode() ErrorCode { return e.Code }
 
 // FilterConfigError is returned when a filter configuration is invalid.
 type FilterConfigError struct {
-	Code   ErrorCode
-	Option FilterOption
-	Err    error
+	Code   ErrorCode    // classifies the failure (e.g., CodeInvalidFilterOption)
+	Option FilterOption // the option that caused the error
+	Err    error        // underlying error, if any
 }
 
 func (e *FilterConfigError) Error() string {
@@ -136,11 +136,11 @@ func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
-	Code       ErrorCode
-	ConfigPath string
-	Operation  SQLCOperation
-	Message    string
-	Err        error
+	Code       ErrorCode      // classifies the failure (e.g., CodeSQLCConfigParse)
+	ConfigPath string         // path to the config file being processed
+	Operation  SQLCOperation  // what was happening when the error occurred
+	Message    string         // human-readable description of the problem
+	Err        error          // underlying error, if any
 }
 
 func (e *SQLCConfigError) Error() string {
