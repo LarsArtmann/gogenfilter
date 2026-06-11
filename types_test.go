@@ -272,3 +272,22 @@ func TestFilterResultString(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterResultIs(t *testing.T) {
+	t.Parallel()
+
+	filtered := FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "db/models.go"}
+	notFiltered := FilterResult{Filtered: false, Reason: "", Path: "main.go"}
+
+	if !filtered.Is(ReasonSQLC) {
+		t.Error("expected Is(ReasonSQLC) = true for filtered result")
+	}
+
+	if filtered.Is(ReasonTempl) {
+		t.Error("expected Is(ReasonTempl) = false for sqlc result")
+	}
+
+	if notFiltered.Is(ReasonSQLC) {
+		t.Error("expected Is(ReasonSQLC) = false for not-filtered result")
+	}
+}

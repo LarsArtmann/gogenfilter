@@ -472,3 +472,35 @@ func TestExclusionPatternRegexCompiles(t *testing.T) {
 		})
 	}
 }
+
+func TestGeneratedFileString(t *testing.T) {
+	t.Parallel()
+
+	f := GeneratedFile{Path: "db/models.go", Reason: ReasonSQLC}
+	got := f.String()
+	assertContains(t, got, "db/models.go")
+	assertContains(t, got, "sqlc")
+}
+
+func TestExclusionString(t *testing.T) {
+	t.Parallel()
+
+	e := Exclusion{Pattern: `_templ\.go$`, Reason: "templ generated HTML components"}
+	got := e.String()
+	assertContains(t, got, "_templ")
+	assertContains(t, got, "templ generated")
+}
+
+func TestScanResultString(t *testing.T) {
+	t.Parallel()
+
+	r := &ScanResult{
+		ScannedFiles: 42,
+		Files:        []GeneratedFile{{Path: "a.go", Reason: ReasonTempl}},
+		Generators:   []string{"templ"},
+	}
+	got := r.String()
+	assertContains(t, got, "scanned=42")
+	assertContains(t, got, "generated=1")
+	assertContains(t, got, "templ")
+}

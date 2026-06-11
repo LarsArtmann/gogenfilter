@@ -162,6 +162,12 @@ type FilterResult struct {
 	Trace    string
 }
 
+// Is reports whether this result was filtered with the given reason.
+// Returns false if the file was not filtered or was filtered for a different reason.
+func (r FilterResult) Is(reason FilterReason) bool {
+	return r.Filtered && r.Reason == reason
+}
+
 // String returns a human-readable representation of the filter result.
 func (r FilterResult) String() string {
 	if !r.Filtered {
