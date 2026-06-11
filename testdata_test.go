@@ -335,10 +335,16 @@ func detectGeneratedTestCases() []filenameTestCase {
 			ReasonMockgen,
 		},
 		{
-			"detects mockgen mock_ by filename",
+			"mock_ prefix not matched by mockgen (belongs to mockery)",
 			"mock_service.go",
 			map[FilterOption]struct{}{FilterMockgen: {}},
-			ReasonMockgen,
+			ReasonNotFiltered,
+		},
+		{
+			"mock_ prefix matched by mockery",
+			"mock_service.go",
+			map[FilterOption]struct{}{FilterMockery: {}},
+			ReasonMockery,
 		},
 		{
 			"does not match mock_ in middle of filename",

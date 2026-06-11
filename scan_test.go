@@ -232,7 +232,7 @@ func TestExclusionPattern(t *testing.T) {
 		{ReasonStringer, true},
 		{ReasonMockery, true},
 		{ReasonEasyjson, true},
-		{ReasonMsgp, true},
+		{ReasonMsgp, false},
 		{ReasonCounterfeiter, true},
 		{ReasonEnt, false},
 		{ReasonGqlgen, false},

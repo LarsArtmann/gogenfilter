@@ -45,7 +45,6 @@ func (r FilterReason) ExclusionPattern() (string, bool) {
 		ReasonStringer:      `_string\.go$`,
 		ReasonMockery:       `mock_.*\.go$`,
 		ReasonEasyjson:      `_easyjson\.go$`,
-		ReasonMsgp:          `_gen\.go$`,
 		ReasonCounterfeiter: `fake_.*\.go$`,
 	}
 
