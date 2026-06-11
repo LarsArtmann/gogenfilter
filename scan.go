@@ -15,6 +15,11 @@ type GeneratedFile struct {
 	Reason FilterReason // which generator was detected
 }
 
+// String returns a human-readable representation of the generated file.
+func (f GeneratedFile) String() string {
+	return f.Path + " (" + string(f.Reason) + ")"
+}
+
 // ScanResult holds the results of scanning a project for generated files.
 type ScanResult struct {
 	Files        []GeneratedFile     // all detected generated files
@@ -24,31 +29,47 @@ type ScanResult struct {
 	Exclusions   []Exclusion         // derived exclusion patterns
 }
 
+// String returns a human-readable summary of the scan result.
+func (r *ScanResult) String() string {
+	return fmt.Sprintf("ScanResult(scanned=%d, generated=%d, generators=%v)",
+		r.ScannedFiles, len(r.Files), r.Generators)
+}
+
 // Exclusion represents a path-based exclusion pattern for auto-generated code.
 type Exclusion struct {
 	Pattern string // regex pattern suitable for golangci-lint exclusions.paths
 	Reason  string // human-readable reason for the exclusion
 }
 
+// String returns a human-readable representation of the exclusion.
+func (e Exclusion) String() string {
+	return e.Pattern + " # " + e.Reason
+}
+
+// exclusionPatterns maps FilterReason values to fixed regex patterns for generators
+// with consistent filename conventions. Used by ExclusionPattern() and deriveExclusions().
+// Generators not in this map need directory-based derivation (sqlc, oapi-codegen, generic, etc.).
+//
+//nolint:gochecknoglobals // immutable lookup table, never mutated
+var exclusionPatterns = map[FilterReason]string{
+	ReasonTempl:         `_templ\.go$`,
+	ReasonProtobuf:      `\.pb\.go$`,
+	ReasonGoEnum:        `_enum\.go$`,
+	ReasonDeepcopy:      `zz_generated\..*\.go$`,
+	ReasonWire:          `wire_gen\.go$`,
+	ReasonMoq:           `_moq\.go$`,
+	ReasonMockgen:       `_mock\.go$`,
+	ReasonStringer:      `_string\.go$`,
+	ReasonMockery:       `mock_.*\.go$`,
+	ReasonEasyjson:      `_easyjson\.go$`,
+	ReasonCounterfeiter: `fake_.*\.go$`,
+}
+
 // ExclusionPattern returns a fixed regex pattern for generators that have
 // consistent filename conventions. Returns ("", false) for generators
 // that need directory-based derivation (sqlc, oapi-codegen, generic).
 func (r FilterReason) ExclusionPattern() (string, bool) {
-	patterns := map[FilterReason]string{
-		ReasonTempl:         `_templ\.go$`,
-		ReasonProtobuf:      `\.pb\.go$`,
-		ReasonGoEnum:        `_enum\.go$`,
-		ReasonDeepcopy:      `zz_generated\..*\.go$`,
-		ReasonWire:          `wire_gen\.go$`,
-		ReasonMoq:           `_moq\.go$`,
-		ReasonMockgen:       `_mock\.go$`,
-		ReasonStringer:      `_string\.go$`,
-		ReasonMockery:       `mock_.*\.go$`,
-		ReasonEasyjson:      `_easyjson\.go$`,
-		ReasonCounterfeiter: `fake_.*\.go$`,
-	}
-
-	p, ok := patterns[r]
+	p, ok := exclusionPatterns[r]
 
 	return p, ok
 }

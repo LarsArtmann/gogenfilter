@@ -389,8 +389,8 @@ func detectReasonFromMap(filePath, content string, options map[FilterOption]stru
 		return reason
 	}
 
-	// Phase 2: Content-based detection only if needed
-	if needsContentCheck(options) {
+	// Phase 2: Content-based detection only if content is provided and needed
+	if content != "" && needsContentCheck(options) {
 		reason, _ = getContentBasedReasonWithTrace(filePath, content, options)
 
 		return reason
@@ -577,8 +577,9 @@ func readFile(fsys fs.FS, filePath string) ([]byte, error) {
 	}
 
 	if filepath.IsAbs(filePath) {
-		return os.ReadFile(filePath)
+		//nolint:gosec // G304: filePath is user-provided by design — library reads from fs.FS
+		return os.ReadFile(filePath) //nolint:wrapcheck // caller wraps with context
 	}
 
-	return nil, err
+	return nil, fmt.Errorf("read file from fs: %w", err)
 }
