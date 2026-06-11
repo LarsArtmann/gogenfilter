@@ -35,11 +35,11 @@ Your linter shouldn't waste time on files it didn't write. Generated code from s
 || [deepcopy-gen](https://pkg.go.dev/k8s.io/gengo/examples/deepcopy-gen) | `zz_generated.*` prefix + content |
 || [wire](https://github.com/google/wire) | `wire_gen.go` suffix + content |
 || [moq](https://github.com/matryer/moq) | `_moq.go` suffix + content |
-|| [mockgen](https://github.com/uber-go/mock) | `_mock.go` / `mock_` prefix + content |
+|| [mockgen](https://github.com/uber-go/mock) | `_mock.go` suffix + content |
 || [stringer](https://pkg.go.dev/golang.org/x/tools/cmd/stringer) | Content marker |
 || [mockery](https://github.com/vektra/mockery) | `mock_` prefix + content |
 || [ent](https://entgo.io) | Content marker |
-|| [gqlgen](https://gqlgen.com) | `generated.go` filename + content |
+|| [gqlgen](https://gqlgen.com) | Content marker |
 || [easyjson](https://github.com/mailru/easyjson) | `_easyjson.go` suffix + content |
 || [msgp](https://github.com/tinylib/msgp) | Content marker |
 || [counterfeiter](https://github.com/maxbrunsfeld/counterfeiter) | `fake_` prefix + content |
