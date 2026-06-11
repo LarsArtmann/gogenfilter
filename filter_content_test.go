@@ -128,6 +128,32 @@ func TestFilterWithContent(t *testing.T) {
 			t.Error("expected filtered=false for regular file with empty content")
 		}
 	})
+
+	t.Run("respects include patterns", func(t *testing.T) {
+		t.Parallel()
+
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithIncludePatterns("pkg/**"))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filtered, err := filter.FilterWithContent(
+			"other/models.go",
+			[]byte(sqlcGeneratedContentTest),
+		)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if !filtered {
+			t.Error("expected filtered=true for outside include scope")
+		}
+	})
 }
 
 func TestFilterDetailedWithContent(t *testing.T) {
@@ -251,6 +277,56 @@ func TestFilterDetailedWithContent(t *testing.T) {
 
 		if result.Reason != ReasonOutsideScope {
 			t.Errorf("expected reason=%v, got %v", ReasonOutsideScope, result.Reason)
+		}
+	})
+
+	t.Run("respects exclude patterns", func(t *testing.T) {
+		t.Parallel()
+
+		opts, err := WithFilterOptions(FilterAll)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithExcludePatterns("vendor/**"))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := filter.FilterDetailedWithContent(
+			"vendor/models.go",
+			[]byte(sqlcGeneratedContentTest),
+		)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if !result.Filtered {
+			t.Error("expected filtered=true for excluded path")
+		}
+
+		if result.Reason != ReasonExcludePattern {
+			t.Errorf("expected reason=%v, got %v", ReasonExcludePattern, result.Reason)
+		}
+	})
+
+	t.Run("detects via filename with empty content", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{}
+		filter := newAllFilterWithFS(fsys)
+
+		result, err := filter.FilterDetailedWithContent("page_templ.go", []byte{})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if !result.Filtered {
+			t.Error("expected filtered=true for templ filename")
+		}
+
+		if result.Reason != ReasonTempl {
+			t.Errorf("expected reason=%v, got %v", ReasonTempl, result.Reason)
 		}
 	})
 }
