@@ -9,7 +9,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 ## Architecture
 
 - **Two-phase detection**: filename-based (zero I/O) then content-based (reads file)
-- **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields
+- **Table-driven detector system**: `[]detector` slice with `option`, `reason`, `matchFilename`, and `checkContent` fields (18 detectors)
 - **Functional options API**: `NewFilter(WithFilterOptions(FilterAll), ...)` — Filter is immutable after construction, enabled when options/patterns are provided
 - **Branded errors**: `[gogenfilter:<code>]` prefix, sentinel errors for `errors.Is`, `ErrorCoder` interface, `Err` field for wrapped errors (stdlib convention)
 - **`fs.FS` abstraction**: `WithFS()` option for testability; tests use `fstest.MapFS`
@@ -93,6 +93,11 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **Website a11y fixes** — `dependents.astro` table: added `<caption>`, replaced bare `★` header with `aria-hidden` + `sr-only` text, added `aria-label` to star count cells.
 - **npm overrides added** — `brace-expansion@5.0.6` and `yaml@2.8.3` overrides added to `website/package.json` to resolve Dependabot alerts for transitive dev dependencies.
 - **Zero inline styles in website source** — All `style=""` attributes and `<style>` blocks eliminated from our components. `dependents.astro` uses Tailwind arbitrary values (`border-[var(--sl-color-gray-5)]`). `Logo.astro` uses `fill-[var(--color-accent)]`. `Header.astro` mobile nav uses `max-sm:` responsive utilities + `[&.open]:max-sm:flex` for JS toggle. Only Starlight's built-in SVG `style=""` attributes remain (unavoidable, covered by `style-src 'unsafe-inline'`).
+- **v3.2.0: `DetectReasonFile`/`DetectReasonFileFS`** — Standalone functions (not methods on Filter) for two-phase detection in one call. Eliminates 3 consumers' duplicated detection code. Uses `os.DirFS(".")` for no-FS variant, consistent with Filter's default.
+- **v3.2.0: `FilterWithContent`/`FilterDetailedWithContent`** — Methods on Filter that accept pre-read content. Bypasses `detectReasonFS` and calls `detectReasonFromMap` directly. Fixes double I/O for analyzers that already have file content.
+- **v3.2.0: `ScanProject`** — Walks `fs.FS`, detects generated files, returns `ScanResult`. Creates internal Filter from configs, defaults to `FilterAll`. Eliminates ~200 lines of reimplemented scanner in golangci-lint-auto-configure.
+- **v3.2.0: `ExclusionPattern()` on `FilterReason`** — Returns `(string, bool)`. Generators with consistent filename conventions (templ, protobuf, go-enum, wire, moq, mockgen, stringer, mockery, easyjson, counterfeiter) get fixed regex patterns. Generators with configurable output (sqlc, oapi-codegen, ent, gqlgen, go-swagger, generic) return `false`.
+- **v3.2.0: 7 new detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger. msgp uses content-only detection (`_gen.go` suffix too generic). mockery uses `mock_` prefix. counterfeiter uses `fake_` prefix. All follow existing table-driven pattern.
 
 ### Testing
 
@@ -197,10 +202,18 @@ filtered, err := f.Filter("file.go")
 // FilterPaths returns ([]bool, error) — batch filtering
 results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 
+// FilterWithContent accepts pre-read content — avoids double I/O
+filtered, err := f.FilterWithContent("file.go", content)
+result, err := f.FilterDetailedWithContent("file.go", content)
+
 // Variadic DetectReason (no I/O)
 reason := gogenfilter.DetectReason("file.go", content,
     gogenfilter.FilterSQLC, gogenfilter.FilterGeneric,
 )
+
+// DetectReasonFile — two-phase detection in one call (filename + content)
+reason := gogenfilter.DetectReasonFile("file.go", gogenfilter.FilterSQLC)
+reason, err := gogenfilter.DetectReasonFileFS(fsys, "file.go", gogenfilter.FilterAll)
 
 // Detailed result with trace info
 result, err := f.FilterDetailed("file.go")
@@ -208,6 +221,13 @@ fmt.Printf("filtered=%v reason=%s trace=%s\n", result.Filtered, result.Reason, r
 
 // Batch filtering
 results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
+
+// ScanProject — scan entire project for generated files
+result, err := gogenfilter.ScanProject(fsys)
+fmt.Printf("generators=%v files=%d exclusions=%d\n", result.Generators, len(result.Files), len(result.Exclusions))
+
+// ExclusionPattern — get regex pattern for a generator
+pattern, ok := gogenfilter.ReasonTempl.ExclusionPattern()
 ```
 
 ## Dependencies

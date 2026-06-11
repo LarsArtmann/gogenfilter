@@ -3,6 +3,17 @@ title: Changelog
 description: All notable changes to gogenfilter.
 ---
 
+## [v3.2.0] — 2026-06-11
+
+### Added
+
+- **`DetectReasonFile` / `DetectReasonFileFS`** — Two-phase detection in one call (filename + content)
+- **`FilterWithContent` / `FilterDetailedWithContent`** — Filter methods accepting pre-read content to avoid double I/O
+- **`ScanProject`** — Walk `fs.FS`, detect all generated files, return structured `ScanResult` with per-generator lists and exclusion patterns
+- **`ExclusionPattern()` on `FilterReason`** — Get regex patterns for generators with consistent filename conventions
+- **7 new detector entries** (18 total): mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger
+- **7 new `Is*Generated` functions** and **7 new `FilterOption`/`FilterReason` constants**
+
 ## [v3.1.0] — 2026-06-04
 
 ### Added

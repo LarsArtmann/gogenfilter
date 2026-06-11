@@ -64,9 +64,9 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 				gomega.Expect(filter.IsEnabled()).To(gomega.BeTrue())
 			})
 
-			ginkgo.It("returns all 11 filter reasons", func() {
+			ginkgo.It("returns all 18 filter reasons", func() {
 				reasons := filter.FilterReasons()
-				gomega.Expect(reasons).To(gomega.HaveLen(11))
+				gomega.Expect(reasons).To(gomega.HaveLen(18))
 			})
 
 			ginkgo.It("filters generated files", func() {

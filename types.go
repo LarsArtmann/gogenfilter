@@ -92,6 +92,27 @@ const (
 	// It acts as a fallback after specific detectors have been checked.
 	FilterGeneric FilterOption = "generic"
 
+	// FilterMockery filters vektra/mockery generated mock files.
+	FilterMockery FilterOption = "mockery"
+
+	// FilterEnt filters entgo.io/ent generated files.
+	FilterEnt FilterOption = "ent"
+
+	// FilterGqlgen filters 99designs/gqlgen generated files.
+	FilterGqlgen FilterOption = "gqlgen"
+
+	// FilterEasyjson filters mailru/easyjson generated files.
+	FilterEasyjson FilterOption = "easyjson"
+
+	// FilterMsgp filters tinylib/msgp generated files.
+	FilterMsgp FilterOption = "msgp"
+
+	// FilterCounterfeiter filters maxbrunsfeld/counterfeiter generated fake files.
+	FilterCounterfeiter FilterOption = "counterfeiter"
+
+	// FilterGoSwagger filters go-swagger/go-swagger generated files.
+	FilterGoSwagger FilterOption = "go-swagger"
+
 	// FilterAll filters all auto-generated code.
 	FilterAll FilterOption = "all"
 )
@@ -120,6 +141,13 @@ const (
 	ReasonMockgen        FilterReason = "mockgen"
 	ReasonStringer       FilterReason = "stringer"
 	ReasonGeneric        FilterReason = "generic"
+	ReasonMockery        FilterReason = "mockery"
+	ReasonEnt            FilterReason = "ent"
+	ReasonGqlgen         FilterReason = "gqlgen"
+	ReasonEasyjson       FilterReason = "easyjson"
+	ReasonMsgp           FilterReason = "msgp"
+	ReasonCounterfeiter  FilterReason = "counterfeiter"
+	ReasonGoSwagger      FilterReason = "go-swagger"
 	ReasonOutsideScope   FilterReason = "outside-scope"
 	ReasonExcludePattern FilterReason = "exclude-pattern"
 	ReasonNotFiltered    FilterReason = "not-filtered"

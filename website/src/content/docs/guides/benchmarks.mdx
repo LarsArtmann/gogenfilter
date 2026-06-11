@@ -48,7 +48,7 @@ This benchmarks the internal filename-only check. Results are exact-matched agai
 
 ### Per-Generator Checks
 
-Individual `Is*Generated` functions. Four of them (`IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`) check both filename patterns and content markers. The remaining seven check content only.
+Individual `Is*Generated` functions. Several check both filename patterns and content markers (`IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`, `IsMockgenGenerated`, `IsMockeryGenerated`, `IsCounterfeiterGenerated`, `IsGqlgenGenerated`, `IsEasyjsonGenerated`). The rest check content only.
 
 ```
 IsGenericGenerated    5.0 ns/op    0 B/op    0 allocs/op
