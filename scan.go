@@ -221,7 +221,12 @@ func exclusionsForGenerator(generator string, files []string) []Exclusion {
 	case string(FilterEnt), string(FilterGqlgen), string(FilterGoSwagger), string(FilterGeneric):
 		return dirBasedExclusions(files, generatorExclusionReasons[generator])
 	default:
-		return dirBasedExclusions(files, "auto-generated code")
+		reason, ok := generatorExclusionReasons[generator]
+		if !ok {
+			reason = "auto-generated code"
+		}
+
+		return dirBasedExclusions(files, reason)
 	}
 }
 
