@@ -98,16 +98,21 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **v3.2.0: `ScanProject`** — Walks `fs.FS`, detects generated files, returns `ScanResult`. Creates internal Filter from configs, defaults to `FilterAll`. Eliminates ~200 lines of reimplemented scanner in golangci-lint-auto-configure.
 - **v3.2.0: `ExclusionPattern()` on `FilterReason`** — Returns `(string, bool)`. Generators with consistent filename conventions (templ, protobuf, go-enum, wire, moq, mockgen, stringer, mockery, easyjson, counterfeiter) get fixed regex patterns. Generators with configurable output (sqlc, oapi-codegen, ent, gqlgen, go-swagger, generic, msgp) return `false`. msgp excluded because `_gen.go` is too generic (matches `wire_gen.go`, etc.).
 - **v3.2.0: 7 new detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger. msgp uses content-only detection (`_gen.go` suffix too generic). mockery exclusively owns `mock_` prefix (mockgen only matches `_mock.go` suffix). counterfeiter uses `fake_` prefix. gqlgen is content-only (`generated.go` too generic). All follow existing table-driven pattern.
+- **`exclusionPatterns` package-level var** — Moved from local map literal in `ExclusionPattern()` method to package-level immutable var. Avoids map allocation on every call.
+- **`detectReasonFromMap` empty content guard** — Skips content-based detection when `content == ""`. Previously called `needsContentCheck` + `getContentBasedReasonWithTrace` even with empty content, wasting iterations.
+- **`FilterResult.Is(reason) bool`** — Ergonomic reason check: `result.Is(ReasonSQLC)` instead of `result.Filtered && result.Reason == ReasonSQLC`.
+- **`String()` on `GeneratedFile`, `Exclusion`, `ScanResult`** — Debug/logging ergonomics for scan results.
+- **`readFile` lint suppression** — `#nolint:gosec` for G304 false positive (library reads from `fs.FS` by design). `#nolint:wrapcheck` for `os.ReadFile` fallback (caller wraps with context). Error from `fs.ReadFile` now wrapped with `fmt.Errorf("read file from fs: %w", err)`.
 
 ### Testing
 
 - Use table-driven tests where possible
 - Use `t.Parallel()` within `t.Run()` for proper test isolation
 - Generic helper functions in `helpers_test.go`: `assertFieldEqual[T]()`, `boolTestCase[T]`, `runBoolTableTest[T]()`. Error extraction helper `assertErrorType[T]()` is in `errors_test.go` (uses `errors.AsType` from Go 1.26).
-- **BDD tests**: ~120 ginkgo specs in `bdd_test.go`. Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
+- **BDD tests**: ~120 ginkgo specs in `bdd_test.go` + `bdd_extended_test.go`. Use `onsi/ginkgo/v2` + `onsi/gomega`. Patterns: `ginkgo.DescribeTable` for table-driven BDD, `ginkgo.BeforeEach` for FS setup, `gomega.Expect` with matchers.
 - **Error path tests**: Previously in `coverage_test.go`, now distributed to dedicated test files (`errors_test.go`, `filter_test.go`, `sqlc_test.go`, `pattern_test.go`, `project_test.go`).
 - Run tests with: `go test ./...`
-- **Coverage**: 99.8% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
+- **Coverage**: 98.3% (only untestable `filepath.Abs` error path in `FindProjectRoot` remains below 100%)
 
 ### Linting
 
