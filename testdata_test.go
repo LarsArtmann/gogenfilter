@@ -114,6 +114,96 @@ var generatedTestCases = []generatorTestCase{
 		),
 	},
 	{
+		name: "Mockery",
+		fn:   IsMockeryGenerated,
+		tests: simpleGeneratedFileTests(
+			"mockery",
+			mockUserServiceGo,
+			mockeryMarkerContentTest,
+			"service/service.go",
+			"package service\nfunc New() *Service { return nil }\n",
+		),
+	},
+	{
+		name: "Ent",
+		fn:   IsEntGenerated,
+		tests: []generatedFileTest{
+			{
+				name:     "ent generated file",
+				filePath: "ent/user.go",
+				content:  entMarkerContentTest,
+				expected: true,
+			},
+			{
+				name:     "ent alt marker (entc)",
+				filePath: "ent/client.go",
+				content:  entAltMarkerContentTest,
+				expected: true,
+			},
+			{
+				name:     "not ent - regular file",
+				filePath: "models/user.go",
+				content:  "package models\ntype User struct{ ID int }",
+				expected: false,
+			},
+		},
+	},
+	{
+		name: "Gqlgen",
+		fn:   IsGqlgenGenerated,
+		tests: simpleGeneratedFileTests(
+			"gqlgen",
+			"graph/generated.go",
+			gqlgenMarkerContentTest,
+			"graph/resolver.go",
+			"package graph\ntype Resolver struct{}\n",
+		),
+	},
+	{
+		name: "Easyjson",
+		fn:   IsEasyjsonGenerated,
+		tests: simpleGeneratedFileTests(
+			"easyjson",
+			modelsEasyjsonGo,
+			easyjsonMarkerContentTest,
+			"models/user.go",
+			"package models\ntype User struct{ ID int }\n",
+		),
+	},
+	{
+		name: "Msgp",
+		fn:   IsMsgpGenerated,
+		tests: simpleGeneratedFileTests(
+			"msgp",
+			"msgp_gen.go",
+			msgpMarkerContentTest,
+			"models/user.go",
+			"package models\ntype User struct{ ID int }\n",
+		),
+	},
+	{
+		name: "Counterfeiter",
+		fn:   IsCounterfeiterGenerated,
+		tests: simpleGeneratedFileTests(
+			"counterfeiter",
+			fakeUserServiceGo,
+			counterfeiterContentTest,
+			"service/service.go",
+			"package service\nfunc New() *Service { return nil }\n",
+		),
+	},
+	{
+		name: "GoSwagger",
+		fn:   IsGoSwaggerGenerated,
+		tests: simpleGeneratedFileTests(
+			"go-swagger",
+			"restapi/api.go",
+			goSwaggerContentTest,
+			"restapi/handler.go",
+			"package restapi\nfunc Handler() {}\n",
+		),
+	},
+	{
 		name: "Generic",
 		fn:   IsGenericGenerated,
 		tests: []generatedFileTest{

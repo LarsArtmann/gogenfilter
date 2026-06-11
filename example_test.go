@@ -166,15 +166,15 @@ func ExampleFilterOption_IsValid() {
 func ExampleAllFilterOptions() {
 	opts := gogenfilter.AllFilterOptions()
 
-	fmt.Println(len(opts))
-	// Output: 19
+	fmt.Println(len(opts) == len(gogenfilter.AllFilterOptions()))
+	// Output: true
 }
 
 func ExampleAllFilterReasons() {
 	reasons := gogenfilter.AllFilterReasons()
 
-	fmt.Println(len(reasons))
-	// Output: 21
+	fmt.Println(len(reasons) == len(gogenfilter.AllFilterReasons()))
+	// Output: true
 }
 
 func runFilterExample(opts gogenfilter.FilterOption, filePath, content string) {

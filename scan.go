@@ -74,6 +74,8 @@ func ScanProject(fsys fs.FS, configs ...FilterConfig) (*ScanResult, error) {
 		configs = []FilterConfig{opts}
 	}
 
+	configs = append(configs, WithFS(fsys))
+
 	filter, err := NewFilter(configs...)
 	if err != nil {
 		return nil, fmt.Errorf("create filter: %w", err)
