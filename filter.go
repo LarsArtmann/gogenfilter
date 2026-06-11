@@ -182,6 +182,50 @@ func (f *Filter) FilterDetailed(filePath string) (FilterResult, error) {
 	return f.shouldFilterDetailedWithExcludes(filePath)
 }
 
+// FilterWithContent is like Filter but accepts pre-read file content.
+// Use this when you already have the file content (e.g., from an AST parser)
+// to avoid redundant file I/O. When content is nil or empty, only filename-based
+// detection is performed.
+func (f *Filter) FilterWithContent(filePath string, content []byte) (bool, error) {
+	if !f.IsEnabled() {
+		return false, nil
+	}
+
+	if len(f.includePatterns) > 0 && !f.matchesAnyPattern(filePath, f.includePatterns) {
+		return true, nil
+	}
+
+	if f.matchesAnyPattern(filePath, f.excludePatterns) {
+		return true, nil
+	}
+
+	return f.shouldFilterByContent(filePath, content)
+}
+
+// FilterDetailedWithContent is like FilterDetailed but accepts pre-read file content.
+// Use this when you already have the file content to avoid redundant file I/O.
+func (f *Filter) FilterDetailedWithContent(filePath string, content []byte) (FilterResult, error) {
+	if !f.IsEnabled() {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, nil
+	}
+
+	if len(f.includePatterns) > 0 && !f.matchesAnyPattern(filePath, f.includePatterns) {
+		return FilterResult{
+			Filtered: true, Reason: ReasonOutsideScope,
+			Path: filePath, Trace: "excluded by include pattern scope",
+		}, nil
+	}
+
+	if f.matchesAnyPattern(filePath, f.excludePatterns) {
+		return FilterResult{
+			Filtered: true, Reason: ReasonExcludePattern,
+			Path: filePath, Trace: "matched exclude pattern",
+		}, nil
+	}
+
+	return f.shouldFilterDetailedByContent(filePath, content)
+}
+
 // FilterPathsDetailed is like FilterPaths but returns FilterResult values with
 // detailed information about each file.
 func (f *Filter) FilterPathsDetailed(paths []string) ([]FilterResult, error) {
@@ -299,6 +343,31 @@ func (f *Filter) shouldFilterDetailedByPattern(
 
 func (f *Filter) shouldFilterDetailedByDetection(filePath string) (FilterResult, error) {
 	return detectReasonFSWithTrace(f.fsys, filePath, f.options)
+}
+
+func (f *Filter) shouldFilterByContent(filePath string, content []byte) (bool, error) {
+	reason := detectReasonFromMap(filePath, string(content), f.options)
+
+	return reason != ReasonNotFiltered, nil
+}
+
+func (f *Filter) shouldFilterDetailedByContent(
+	filePath string,
+	content []byte,
+) (FilterResult, error) {
+	reason, trace := getFilenameBasedReasonWithTrace(filePath, f.options)
+	if reason != ReasonNotFiltered {
+		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+	}
+
+	if len(content) > 0 {
+		reason, trace = getContentBasedReasonWithTrace(filePath, string(content), f.options)
+		if reason != ReasonNotFiltered {
+			return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
+		}
+	}
+
+	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: ""}, nil
 }
 
 func (f *Filter) appendPatternPart(parts []string, label string, patterns []string) []string {

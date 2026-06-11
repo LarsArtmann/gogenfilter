@@ -187,3 +187,35 @@ func BenchmarkDetectReasonReader(b *testing.B) {
 		})
 	}
 }
+
+func BenchmarkDetectReasonFileFS(b *testing.B) {
+	fsys := fstest.MapFS{
+		"page_templ.go": &fstest.MapFile{
+			Data: []byte("package main\nfunc main() {}\n"),
+		},
+		"custom_gen.go": &fstest.MapFile{
+			Data: []byte(genericGeneratedContent),
+		},
+		mainGo: &fstest.MapFile{
+			Data: []byte(packageMainFunc),
+		},
+	}
+
+	b.Run("filename_only", func(b *testing.B) {
+		for b.Loop() {
+			_, _ = DetectReasonFileFS(fsys, "page_templ.go", FilterAll)
+		}
+	})
+
+	b.Run("content_based", func(b *testing.B) {
+		for b.Loop() {
+			_, _ = DetectReasonFileFS(fsys, "custom_gen.go", FilterAll)
+		}
+	})
+
+	b.Run("not_filtered", func(b *testing.B) {
+		for b.Loop() {
+			_, _ = DetectReasonFileFS(fsys, mainGo, FilterAll)
+		}
+	})
+}

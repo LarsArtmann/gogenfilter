@@ -165,7 +165,7 @@ func TestAllFilterOptions(t *testing.T) {
 
 	opts := AllFilterOptions()
 
-	assertEqual(t, "len(AllFilterOptions())", len(opts), 12)
+	assertEqual(t, "len(AllFilterOptions())", len(opts), 19)
 
 	assertAllValidity(t, "AllFilterOptions()", opts, true)
 }
@@ -175,7 +175,7 @@ func TestAllFilterReasons(t *testing.T) {
 
 	reasons := AllFilterReasons()
 
-	assertEqual(t, "len(AllFilterReasons())", len(reasons), 14)
+	assertEqual(t, "len(AllFilterReasons())", len(reasons), 21)
 
 	assertAllValidity(t, "AllFilterReasons()", reasons, true)
 }
@@ -185,7 +185,7 @@ func TestAllGeneratorOptions(t *testing.T) {
 
 	opts := AllGeneratorOptions()
 
-	assertEqual(t, "len(AllGeneratorOptions())", len(opts), 11)
+	assertEqual(t, "len(AllGeneratorOptions())", len(opts), 18)
 
 	for _, opt := range opts {
 		if opt == FilterAll {

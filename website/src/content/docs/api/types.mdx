@@ -19,7 +19,7 @@ type FilterOption string
 
 ### Constants
 
-`FilterSQLC`, `FilterTempl`, `FilterGoEnum`, `FilterProtobuf`, `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`, `FilterMockgen`, `FilterStringer`, `FilterGeneric`, `FilterAll`
+`FilterSQLC`, `FilterTempl`, `FilterGoEnum`, `FilterProtobuf`, `FilterOapi`, `FilterDeepcopy`, `FilterWire`, `FilterMoq`, `FilterMockgen`, `FilterStringer`, `FilterMockery`, `FilterEnt`, `FilterGqlgen`, `FilterEasyjson`, `FilterMsgp`, `FilterCounterfeiter`, `FilterGoSwagger`, `FilterGeneric`, `FilterAll`
 
 ## FilterReason
 
@@ -36,21 +36,21 @@ type FilterReason string
 
 ### Constants
 
-`ReasonSQLC`, `ReasonTempl`, `ReasonGoEnum`, `ReasonProtobuf`, `ReasonOapi`, `ReasonDeepcopy`, `ReasonWire`, `ReasonMoq`, `ReasonMockgen`, `ReasonStringer`, `ReasonGeneric`, `ReasonOutsideScope`, `ReasonExcludePattern`, `ReasonNotFiltered`
+`ReasonSQLC`, `ReasonTempl`, `ReasonGoEnum`, `ReasonProtobuf`, `ReasonOapi`, `ReasonDeepcopy`, `ReasonWire`, `ReasonMoq`, `ReasonMockgen`, `ReasonStringer`, `ReasonMockery`, `ReasonEnt`, `ReasonGqlgen`, `ReasonEasyjson`, `ReasonMsgp`, `ReasonCounterfeiter`, `ReasonGoSwagger`, `ReasonGeneric`, `ReasonOutsideScope`, `ReasonExcludePattern`, `ReasonNotFiltered`
 
 ## Derived Lists
 
 ### `AllFilterOptions() []FilterOption`
 
-Returns all 12 valid `FilterOption` values (11 detector options + `FilterAll`).
+Returns all 19 valid `FilterOption` values (18 detector options + `FilterAll`).
 
 ### `AllGeneratorOptions() []FilterOption`
 
-Returns all 11 detector `FilterOption` values (excludes `FilterAll`). Use when enumerating available generators rather than validating options.
+Returns all 18 detector `FilterOption` values (excludes `FilterAll`). Use when enumerating available generators rather than validating options.
 
 ### `AllFilterReasons() []FilterReason`
 
-Returns all 14 valid `FilterReason` values.
+Returns all 21 valid `FilterReason` values.
 
 All three are derived from the internal `detectors` table — `AllFilterOptions()` also includes `FilterAll`, and `AllFilterReasons()` also includes `ReasonOutsideScope`, `ReasonExcludePattern`, and `ReasonNotFiltered`.
 

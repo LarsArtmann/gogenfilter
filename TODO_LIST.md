@@ -1,11 +1,21 @@
 # TODO List
 
-**Updated:** 2026-06-02
+**Updated:** 2026-06-11
 **Status:** Active
 
 ## In Progress
 
 None.
+
+## Completed (v3.2.0)
+
+- [x] **Add 7 new generator detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger (18 total, up from 11)
+- [x] **Add `DetectReasonFile` / `DetectReasonFileFS`** — Two-phase detection in one call
+- [x] **Add `FilterWithContent` / `FilterDetailedWithContent`** — Avoid double I/O for callers with pre-read content
+- [x] **Add `ScanProject`** — Walk `fs.FS`, detect all generated files, return structured `ScanResult`
+- [x] **Add `ExclusionPattern()` on `FilterReason`** — Regex patterns for generators with consistent filenames
+- [x] **Update documentation** — AGENTS.md, FEATURES.md, CHANGELOG.md, README.md, website docs
+- [x] **Update ROADMAP.md** — Restructured into ranked v4 candidates with deprioritized items
 
 ## Pending
 
