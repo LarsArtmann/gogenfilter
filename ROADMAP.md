@@ -59,7 +59,7 @@ The fundamental question: **is gogenfilter "done" or does it have a next chapter
 
 ## Evaluated and Deprioritized
 
-- **Pre-commit hook integration** — A hook that says "this file is generated" at commit time is not actionable. Generated files are routinely committed (protobuf, sqlc, wire). What would the hook *do*? Reject the commit? That's wrong. Warn the user? They already know. Pre-commit hooks for generated code should run the generator and diff-check outputs, not merely detect markers. You're not missing anything — it's a poor fit.
+- **Pre-commit hook integration** — A hook that says "this file is generated" at commit time is not actionable. Generated files are routinely committed (protobuf, sqlc, wire). What would the hook _do_? Reject the commit? That's wrong. Warn the user? They already know. Pre-commit hooks for generated code should run the generator and diff-check outputs, not merely detect markers. You're not missing anything — it's a poor fit.
 - **WASM build** — No clear use case for browser-based generated file detection.
 
 ## Backlog (unprioritized)

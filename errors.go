@@ -136,11 +136,11 @@ func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {
-	Code       ErrorCode      // classifies the failure (e.g., CodeSQLCConfigParse)
-	ConfigPath string         // path to the config file being processed
-	Operation  SQLCOperation  // what was happening when the error occurred
-	Message    string         // human-readable description of the problem
-	Err        error          // underlying error, if any
+	Code       ErrorCode     // classifies the failure (e.g., CodeSQLCConfigParse)
+	ConfigPath string        // path to the config file being processed
+	Operation  SQLCOperation // what was happening when the error occurred
+	Message    string        // human-readable description of the problem
+	Err        error         // underlying error, if any
 }
 
 func (e *SQLCConfigError) Error() string {
