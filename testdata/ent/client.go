@@ -2,11 +2,6 @@
 
 package ent
 
-import (
-	"context"
-	"entgo.io/ent/dialect/sql"
-)
-
 type UserClient struct {
 	config
 }

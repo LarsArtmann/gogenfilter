@@ -2,6 +2,8 @@
 
 package example
 
+import "github.com/tinylib/msgp/msgp"
+
 type MyStruct struct {
 	Name string
 }

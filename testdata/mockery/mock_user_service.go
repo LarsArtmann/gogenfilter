@@ -6,8 +6,6 @@
 package mocks
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/mock"
 )
 
