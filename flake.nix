@@ -12,6 +12,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     systems.url = "github:nix-systems/default";
+    md-go-validator = {
+      url = "github:LarsArtmann/md-go-validator";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,6 +25,7 @@
       flake-parts,
       treefmt-nix,
       systems,
+      md-go-validator,
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import systems;
@@ -78,6 +83,10 @@
               mainProgram = "gogenfilter";
             };
           };
+
+          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
+            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
+          });
         in
         {
           treefmt = {
@@ -101,6 +110,7 @@
               pkgs.gotools
               pkgs.govulncheck
               pkgs.trash-cli
+              mdgo
             ];
 
             GOWORK = "off";
@@ -166,6 +176,10 @@
                   trash-put coverage.out 2>/dev/null || true
                   go clean -testcache
                 '';
+
+            validate-docs = mkApp "validate-docs" [ mdgo ] ''
+              md-go-validator -f table website/src/content/docs/
+            '';
           };
         };
 

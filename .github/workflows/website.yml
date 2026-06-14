@@ -8,6 +8,8 @@ on:
       - .github/workflows/website.yml
       - .github/workflows/lighthouse.yml
       - lighthouserc.json
+      - flake.nix
+      - flake.lock
   pull_request:
     branches: [master]
     paths:
@@ -15,6 +17,8 @@ on:
       - .github/workflows/website.yml
       - .github/workflows/lighthouse.yml
       - lighthouserc.json
+      - flake.nix
+      - flake.lock
   workflow_dispatch:
 
 permissions:
@@ -34,24 +38,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Checkout md-go-validator
-        continue-on-error: true
-        id: checkout-md-go-validator
-        uses: actions/checkout@v6
-        with:
-          repository: LarsArtmann/md-go-validator
-          path: md-go-validator
-          token: ${{ secrets.PRIVATE_REPO_TOKEN || github.token }}
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v17
 
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: website/package-lock.json
-
-      - uses: actions/setup-go@v6
-        with:
-          go-version: "1.26"
 
       - run: npm install
         working-directory: website
@@ -67,16 +61,9 @@ jobs:
       - run: npm run build
         working-directory: website
 
-      - name: Build md-go-validator from source
-        if: steps.checkout-md-go-validator.outcome == 'success'
-        id: build-md-go-validator
-        working-directory: md-go-validator
-        run: go build -o ../md-go-validator-bin ./cmd/md-go-validator
-
       - name: Validate documentation code blocks
-        if: steps.build-md-go-validator.outcome == 'success'
-        continue-on-error: true
-        run: ../md-go-validator-bin -f json -o validation-results.json src/content/docs/
+        run: nix run .#validate-docs
+        working-directory: website
 
       - name: Upload validation results
         if: always()
