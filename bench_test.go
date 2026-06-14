@@ -140,7 +140,7 @@ func BenchmarkDetectReason(b *testing.B) {
 		},
 		{
 			name:    "content_based",
-			path:    "custom_gen.go",
+			path:    customGenGo,
 			content: myToolGenContentTest,
 		},
 	}
@@ -190,7 +190,7 @@ func BenchmarkDetectReasonReader(b *testing.B) {
 
 func BenchmarkDetectReasonFileFS(b *testing.B) {
 	fsys := fstest.MapFS{
-		"page_templ.go": &fstest.MapFile{
+		pageTemplGo: &fstest.MapFile{
 			Data: []byte("package main\nfunc main() {}\n"),
 		},
 		"custom_gen.go": &fstest.MapFile{

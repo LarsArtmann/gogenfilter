@@ -464,14 +464,14 @@ var _ = ginkgo.Describe("gogenfilter extended", func() {
 				"db/querier.go": {
 					Data: []byte(testhelpers.SQLCGeneratedContentTest),
 				},
-				"page_templ.go": {
+				testhelpers.PageTemplGo: {
 					Data: []byte(
 						"package templ\nimport \"github.com/a-h/templ\"\nfunc Page() templ.Component { return nil }\n",
 					),
 				},
-				"main.go":         {Data: []byte("package main\nfunc main() {}\n")},
-				"types.go":        {Data: []byte("package models\ntype User struct{}\n")},
-				"vendor/pkg/f.go": {Data: []byte("package pkg\n")},
+				testhelpers.MainGo: {Data: []byte("package main\nfunc main() {}\n")},
+				"types.go":         {Data: []byte("package models\ntype User struct{}\n")},
+				"vendor/pkg/f.go":  {Data: []byte("package pkg\n")},
 			}
 			cfg, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
 			gomega.Expect(err).NotTo(gomega.HaveOccurred())
