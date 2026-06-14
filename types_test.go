@@ -15,7 +15,7 @@ func filterOptionStringCases() []struct {
 		expected string
 	}{
 		{FilterSQLC, "sqlc"},
-		{FilterTempl, "templ"},
+		{FilterTempl, string(FilterTempl)},
 		{FilterGoEnum, "go-enum"},
 		{FilterProtobuf, "protobuf"},
 		{FilterOapi, "oapi-codegen"},
@@ -38,7 +38,7 @@ func filterReasonStringCases() []struct {
 		expected string
 	}{
 		{ReasonSQLC, "sqlc"},
-		{ReasonTempl, "templ"},
+		{ReasonTempl, string(FilterTempl)},
 		{ReasonGoEnum, "go-enum"},
 		{ReasonProtobuf, "protobuf"},
 		{ReasonOapi, "oapi-codegen"},
@@ -276,8 +276,8 @@ func TestFilterResultString(t *testing.T) {
 func TestFilterResultIs(t *testing.T) {
 	t.Parallel()
 
-	filtered := FilterResult{Filtered: true, Reason: ReasonSQLC, Path: "db/models.go"}
-	notFiltered := FilterResult{Filtered: false, Reason: "", Path: "main.go"}
+	filtered := FilterResult{Filtered: true, Reason: ReasonSQLC, Path: dbModelsGo, Trace: ""}
+	notFiltered := FilterResult{Filtered: false, Reason: "", Path: "main.go", Trace: ""}
 
 	if !filtered.Is(ReasonSQLC) {
 		t.Error("expected Is(ReasonSQLC) = true for filtered result")

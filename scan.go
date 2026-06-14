@@ -46,13 +46,20 @@ func (e Exclusion) String() string {
 	return e.Pattern + " # " + e.Reason
 }
 
+// Generator exclusion pattern literals. Extracted to constants so the same
+// pattern is reused for the lookup table and the reason string.
+const (
+	templExclusionPattern = `_templ\.go$`
+	templExclusionReason  = "templ generated HTML components"
+)
+
 // exclusionPatterns maps FilterReason values to fixed regex patterns for generators
 // with consistent filename conventions. Used by ExclusionPattern() and deriveExclusions().
 // Generators not in this map need directory-based derivation (sqlc, oapi-codegen, generic, etc.).
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
 var exclusionPatterns = map[FilterReason]string{
-	ReasonTempl:         `_templ\.go$`,
+	ReasonTempl:         templExclusionPattern,
 	ReasonProtobuf:      `\.pb\.go$`,
 	ReasonGoEnum:        `_enum\.go$`,
 	ReasonDeepcopy:      `zz_generated\..*\.go$`,
@@ -209,40 +216,44 @@ func deriveExclusions(byGenerator map[string][]string) []Exclusion {
 	return exclusions
 }
 
-// generatorExclusionReasons maps generator names to human-readable reasons.
-var generatorExclusionReasons = map[string]string{
-	string(FilterTempl):           "templ generated HTML components",
-	string(FilterProtobuf):        "protobuf generated code",
-	string(FilterGoEnum):          "go-enum generated enumerations",
-	string(deepcopyGeneratorName): "deepcopy-gen generated code",
-	string(FilterWire):            "wire generated dependency injection",
-	string(moqGeneratorName):      "moq generated mocks",
-	string(FilterMockgen):         "mockgen generated mocks",
-	string(FilterStringer):        "stringer generated string methods",
-	string(FilterMockery):         "mockery generated mocks",
-	string(FilterEasyjson):        "easyjson generated marshalers",
-	string(FilterMsgp):            "msgp generated serialization",
-	string(FilterCounterfeiter):   "counterfeiter generated fakes",
-	string(FilterSQLC):            "sqlc generated database code",
-	string(FilterOapi):            "oapi-codegen generated API code",
+// generatorExclusionReasons returns a map of generator names to human-readable reasons.
+// Returned as a function-local value so the lookup table does not need to be a package-level
+// mutable global.
+func generatorExclusionReasons() map[string]string {
+	return map[string]string{
+		string(FilterTempl):           templExclusionReason,
+		string(FilterProtobuf):        "protobuf generated code",
+		string(FilterGoEnum):          "go-enum generated enumerations",
+		string(deepcopyGeneratorName): "deepcopy-gen generated code",
+		string(FilterWire):            "wire generated dependency injection",
+		string(moqGeneratorName):      "moq generated mocks",
+		string(FilterMockgen):         "mockgen generated mocks",
+		string(FilterStringer):        "stringer generated string methods",
+		string(FilterMockery):         "mockery generated mocks",
+		string(FilterEasyjson):        "easyjson generated marshalers",
+		string(FilterMsgp):            "msgp generated serialization",
+		string(FilterCounterfeiter):   "counterfeiter generated fakes",
+		string(FilterSQLC):            "sqlc generated database code",
+		string(FilterOapi):            "oapi-codegen generated API code",
+	}
 }
 
 func exclusionsForGenerator(generator string, files []string) []Exclusion {
 	if pattern, ok := FilterReason(generator).ExclusionPattern(); ok {
-		reason := generatorExclusionReasons[generator]
+		reason := generatorExclusionReasons()[generator]
 
 		return []Exclusion{{Pattern: pattern, Reason: reason}}
 	}
 
 	switch generator {
 	case string(FilterSQLC):
-		return dirBasedExclusions(files, generatorExclusionReasons[string(FilterSQLC)])
+		return dirBasedExclusions(files, generatorExclusionReasons()[string(FilterSQLC)])
 	case string(FilterOapi):
 		return oapiExclusions(files)
 	case string(FilterEnt), string(FilterGqlgen), string(FilterGoSwagger), string(FilterGeneric):
-		return dirBasedExclusions(files, generatorExclusionReasons[generator])
+		return dirBasedExclusions(files, generatorExclusionReasons()[generator])
 	default:
-		reason, ok := generatorExclusionReasons[generator]
+		reason, ok := generatorExclusionReasons()[generator]
 		if !ok {
 			reason = "auto-generated code"
 		}
@@ -256,12 +267,12 @@ func oapiExclusions(files []string) []Exclusion {
 	for _, f := range files {
 		if strings.HasSuffix(f, ".gen.go") {
 			return []Exclusion{
-				{Pattern: `.gen.go$`, Reason: generatorExclusionReasons[string(FilterOapi)]},
+				{Pattern: `.gen.go$`, Reason: generatorExclusionReasons()[string(FilterOapi)]},
 			}
 		}
 	}
 
-	return dirBasedExclusions(files, generatorExclusionReasons["oapi-codegen"])
+	return dirBasedExclusions(files, generatorExclusionReasons()["oapi-codegen"])
 }
 
 // dirBasedExclusions generates one exclusion per unique parent directory.

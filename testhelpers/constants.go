@@ -9,6 +9,9 @@ const (
 	// DbModelsGo is the path to SQLC generated models file.
 	DbModelsGo = "db/models.go"
 
+	// PageTemplGo is the path to templ generated page file.
+	PageTemplGo = "page_templ.go"
+
 	// MainGo is the main Go file path.
 	MainGo = "main.go"
 
