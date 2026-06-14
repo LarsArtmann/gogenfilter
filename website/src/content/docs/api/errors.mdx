@@ -58,6 +58,8 @@ type SQLCConfigError struct {
 
 Locates the project root by searching upward for marker files.
 
+<!-- skip-validate -->
+
 ```go
 FindProjectRoot(startPath string, markers []string) (string, *ProjectRootError)
 ```

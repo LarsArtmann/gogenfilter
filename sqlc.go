@@ -121,7 +121,7 @@ func sqlcCollectError(configPath string, err error) *SQLCConfigError {
 }
 
 // FindSQLCConfigs searches for sqlc.yaml or sqlc.yml files in the given paths.
-// Searches both the provided paths and their parent directories (up to 3 levels up).
+// Searches both the provided paths and their parent directories (up to 10 levels up).
 // Returns a map of config file path to project root directory.
 func FindSQLCConfigs(paths []string) (map[string]string, *SQLCConfigError) {
 	configs := make(map[string]string)

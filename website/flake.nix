@@ -3,10 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    md-go-validator = {
+      url = "github:LarsArtmann/md-go-validator";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
+    { self, nixpkgs, md-go-validator }:
     let
       systems = [
         "x86_64-linux"
@@ -21,6 +25,9 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
+            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
+          });
         in
         {
           dev = {
@@ -84,9 +91,12 @@
             program = "${
               pkgs.writeShellApplication {
                 name = "validate-docs";
-                runtimeInputs = with pkgs; [ nodejs ];
+                runtimeInputs = [
+                  pkgs.nodejs
+                  mdgo
+                ];
                 text = ''
-                  npm run validate:docs
+                  md-go-validator -f table src/content/docs/
                 '';
               }
             }/bin/validate-docs";
@@ -98,13 +108,16 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
+            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
+          });
         in
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
               nodejs
               firebase-tools
-            ];
+            ] ++ [ mdgo ];
           };
         }
       );

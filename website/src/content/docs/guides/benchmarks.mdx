@@ -9,32 +9,32 @@ gogenfilter is designed for linters and static analysis tools where detection ov
 
 ## Results
 
-Benchmarked on Go 1.26, AMD Ryzen AI MAX+ 395. Results may vary by hardware.
+Benchmarked on Go 1.26, Apple M2. Results may vary by hardware.
 
 ### Summary
 
 |                                | Benchmark | ns/op | B/op | allocs/op |
 | ------------------------------ | --------- | ----- | ---- | --------- |
-| Filter (enabled)               | 69        | 92    | 0    |
-| Filter (disabled)              | 1.2       | 0     | 0    |
+| Filter (enabled)               | 307       | 64    | 2    |
+| Filter (disabled)              | 5.0       | 0     | 0    |
 | Filename detection (Phase 1)   | 14        | 0     | 0    |
-| Per-generator check (avg)      | ~6        | 0     | 0    |
-| MatchPattern (doublestar `**`) | 72        | 0     | 0    |
-| DetectReason (filename)        | 353       | 632   | 4    |
-| DetectReason (content)         | 693       | 680   | 5    |
-| Error construction             | 2         | 0     | 0    |
-| errors.Is matching             | 9         | 0     | 0    |
+| Per-generator check (avg)      | ~15       | 0     | 0    |
+| MatchPattern (doublestar `**`) | 121       | 0     | 0    |
+| DetectReason (filename)        | 648       | 696   | 6    |
+| DetectReason (content)         | 1324      | 744   | 7    |
+| Error construction             | 3         | 0     | 0    |
+| errors.Is matching             | 10        | 0     | 0    |
 
 ### Filter
 
 The primary API. Full end-to-end detection including filesystem access.
 
 ```
-Filter/enabled    69 ns/op    92 B/op    0 allocs/op
-Filter/disabled   1.2 ns/op    0 B/op    0 allocs/op
+Filter/enabled    307 ns/op    64 B/op    2 allocs/op
+Filter/disabled   5.0 ns/op    0 B/op    0 allocs/op
 ```
 
-A disabled filter is essentially a branch prediction — 1.2 nanoseconds. An enabled filter with a known-generated file completes in ~69ns with zero heap allocations.
+A disabled filter is essentially a branch prediction — 5 nanoseconds. An enabled filter with a known-generated file completes in ~307ns with 2 small allocations.
 
 ### Phase 1: Filename Detection
 
@@ -51,21 +51,21 @@ This benchmarks the internal filename-only check. Results are exact-matched agai
 Individual `Is*Generated` functions. Several check both filename patterns and content markers (`IsSQLCGenerated`, `IsTemplGenerated`, `IsGoEnumGenerated`, `IsProtobufGenerated`, `IsMockgenGenerated`, `IsMockeryGenerated`, `IsCounterfeiterGenerated`, `IsGqlgenGenerated`, `IsEasyjsonGenerated`). The rest check content only.
 
 ```
-IsGenericGenerated    5.0 ns/op    0 B/op    0 allocs/op
-IsSQLCGenerated       5.9 ns/op    0 B/op    0 allocs/op
-IsProtobufGenerated   7.0 ns/op    0 B/op    0 allocs/op
+IsGenericGenerated    8.2 ns/op    0 B/op    0 allocs/op
+IsSQLCGenerated       23.3 ns/op    0 B/op    0 allocs/op
+IsProtobufGenerated   17.4 ns/op    0 B/op    0 allocs/op
 ```
 
-All under 7 nanoseconds with zero allocations.
+All under 25 nanoseconds with zero allocations.
 
 ### DetectReason
 
 Variadic detection across multiple filter options:
 
 ```
-DetectReason/filename_only    353 ns/op    632 B/op    4 allocs/op
-DetectReason/content_based    693 ns/op    680 B/op    5 allocs/op
-DetectReason/not_filtered     614 ns/op    680 B/op    5 allocs/op
+DetectReason/filename_only    648 ns/op    696 B/op    6 allocs/op
+DetectReason/content_based    1324 ns/op    744 B/op    7 allocs/op
+DetectReason/not_filtered     1031 ns/op    680 B/op    5 allocs/op
 ```
 
 Higher cost than the per-generator checks because it iterates all enabled detectors and performs content matching. Still sub-microsecond.
@@ -75,8 +75,8 @@ Higher cost than the per-generator checks because it iterates all enabled detect
 Same as `DetectReason` but reads from an `io.Reader`:
 
 ```
-DetectReasonReader/sqlc_filename    517 ns/op   1288 B/op    8 allocs/op
-DetectReasonReader/not_filtered     812 ns/op   1272 B/op    9 allocs/op
+DetectReasonReader/sqlc_filename    880 ns/op   1352 B/op    10 allocs/op
+DetectReasonReader/not_filtered      1283 ns/op   1272 B/op    9 allocs/op
 ```
 
 Includes the cost of reading content from the reader.
@@ -86,26 +86,26 @@ Includes the cost of reading content from the reader.
 `MatchPattern` with different glob patterns via doublestar:
 
 ```
-MatchPattern/question     25 ns/op    0 B/op    0 allocs/op
-MatchPattern/exact        40 ns/op    0 B/op    0 allocs/op
-MatchPattern/wildcard     46 ns/op    0 B/op    0 allocs/op
-MatchPattern/doublestar   72 ns/op    0 B/op    0 allocs/op
-MatchPattern/no_match     77 ns/op    0 B/op    0 allocs/op
+MatchPattern/question     58 ns/op    0 B/op    0 allocs/op
+MatchPattern/exact        78 ns/op    0 B/op    0 allocs/op
+MatchPattern/wildcard     113 ns/op    0 B/op    0 allocs/op
+MatchPattern/doublestar   121 ns/op    0 B/op    0 allocs/op
+MatchPattern/no_match     170 ns/op    0 B/op    0 allocs/op
 ```
 
-All zero-allocation. `**` globs are the most expensive at ~72ns — still negligible.
+All zero-allocation. `**` globs are the most expensive at ~121ns — still negligible.
 
 ### Error System
 
 Error construction and inspection:
 
 ```
-NewSQLCConfigError        0.2 ns/op     0 B/op    0 allocs/op
-NewProjectRootError       1.9 ns/op     0 B/op    0 allocs/op
-ProjectRootErrorIs        7.9 ns/op     0 B/op    0 allocs/op
-SQLCConfigErrorIs         8.9 ns/op     0 B/op    0 allocs/op
-ProjectRootErrorError   229 ns/op     144 B/op    3 allocs/op
-SQLCConfigErrorError    284 ns/op     176 B/op    5 allocs/op
+NewSQLCConfigError        2.8 ns/op     0 B/op    0 allocs/op
+NewProjectRootError       4.1 ns/op     0 B/op    0 allocs/op
+ProjectRootErrorIs        9.3 ns/op     0 B/op    0 allocs/op
+SQLCConfigErrorIs         9.9 ns/op     0 B/op    0 allocs/op
+ProjectRootErrorError     348 ns/op     144 B/op    3 allocs/op
+SQLCConfigErrorError      413 ns/op     176 B/op    5 allocs/op
 ```
 
 Error construction and `errors.Is` matching are essentially free. `Error()` string formatting allocates but is only called when displaying errors.
@@ -132,5 +132,5 @@ The dashboard shows:
 - Commit-level granularity with tooltips showing commit messages
 - Automatic regression highlighting when performance degrades >150%
 
-Results above are a point-in-time snapshot (Go 1.26, AMD Ryzen AI MAX+ 395).
+Results above are a point-in-time snapshot (Go 1.26, Apple M2).
 The dashboard provides continuous, hardware-consistent tracking from CI.
