@@ -10,7 +10,11 @@
   };
 
   outputs =
-    { self, nixpkgs, md-go-validator }:
+    {
+      self,
+      nixpkgs,
+      md-go-validator,
+    }:
     let
       systems = [
         "x86_64-linux"
@@ -114,10 +118,13 @@
         in
         {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              nodejs
-              firebase-tools
-            ] ++ [ mdgo ];
+            packages =
+              with pkgs;
+              [
+                nodejs
+                firebase-tools
+              ]
+              ++ [ mdgo ];
           };
         }
       );
