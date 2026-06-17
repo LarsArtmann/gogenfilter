@@ -79,33 +79,33 @@ Nothing. All changes are verified and working. No broken state.
 
 ## f) Top 25 Things to Get Done Next
 
-| #  | Task                                                                                            | Priority |
-| -- | ----------------------------------------------------------------------------------------------- | -------- |
-| 1  | Fix md-go-validator upstream `vendorHash` and remove `.overrideAttrs` workaround                | CRITICAL |
-| 2  | Test CI workflow end-to-end (push, trigger, verify Nix on Ubuntu)                               | CRITICAL |
-| 3  | Commit `flake.lock` files for reproducibility                                                   | HIGH     |
-| 4  | Update `AGENTS.md` with Nix flake documentation and new command patterns                        | HIGH     |
-| 5  | Update `CHANGELOG.md` with Nix integration + doc fixes                                          | HIGH     |
-| 6  | Review README.md against current API surface                                                    | HIGH     |
-| 7  | Review website landing page data files (`generators.ts`, `features.ts`, `hero-code.ts`) vs code | HIGH     |
-| 8  | Consider consolidating root + website flakes into one                                            | MEDIUM   |
-| 9  | Add `nix run .#test` and `nix run .#lint` to Go CI workflow                                     | MEDIUM   |
-| 10 | Add `nix flake check` to CI as a gate                                                           | MEDIUM   |
-| 11 | Pin Nixpkgs via `flake.lock` and set up Dependabot for Nix inputs                               | MEDIUM   |
-| 12 | Add a `nix develop` section to the Contributing docs                                            | MEDIUM   |
-| 13 | Consider `treefmt-nix` for formatting (Go + Nix + Markdown)                                     | MEDIUM   |
-| 14 | Add a root-level `just`/flake task to run `npm run dedup` in website                            | MEDIUM   |
-| 15 | Review `contributing.mdx` — mentions `npm run validate:docs` but should mention Nix path        | MEDIUM   |
-| 16 | Update `related-tools.mdx` with correct GitHub URLs (case: `LarsArtmann` vs `larsartmann`)      | MEDIUM   |
-| 17 | Verify all doc code examples compile (md-go-validator catches syntax, but not semantic errors)  | MEDIUM   |
-| 18 | Consider adding `md-go-validator` as a `flake-checks` target (run in `nix flake check`)         | LOW      |
-| 19 | Add `gogenfilter` Go package to root flake as a Nix package (not just apps)                     | LOW      |
-| 20 | Document the Nix flake architecture in `docs/`                                                  | LOW      |
-| 21 | Consider a `direnv` `.envrc` with `use flake` for automatic shell loading                       | LOW      |
-| 22 | Add Cachix integration for faster CI builds                                                     | LOW      |
-| 23 | Review if `website/flake.lock` should follow root `flake.lock`                                  | LOW      |
-| 24 | Explore `nixci` for multi-flake CI orchestration                                                | LOW      |
-| 25 | Add benchmark CI job using Nix for reproducible environment                                     | LOW      |
+| #   | Task                                                                                            | Priority |
+| --- | ----------------------------------------------------------------------------------------------- | -------- |
+| 1   | Fix md-go-validator upstream `vendorHash` and remove `.overrideAttrs` workaround                | CRITICAL |
+| 2   | Test CI workflow end-to-end (push, trigger, verify Nix on Ubuntu)                               | CRITICAL |
+| 3   | Commit `flake.lock` files for reproducibility                                                   | HIGH     |
+| 4   | Update `AGENTS.md` with Nix flake documentation and new command patterns                        | HIGH     |
+| 5   | Update `CHANGELOG.md` with Nix integration + doc fixes                                          | HIGH     |
+| 6   | Review README.md against current API surface                                                    | HIGH     |
+| 7   | Review website landing page data files (`generators.ts`, `features.ts`, `hero-code.ts`) vs code | HIGH     |
+| 8   | Consider consolidating root + website flakes into one                                           | MEDIUM   |
+| 9   | Add `nix run .#test` and `nix run .#lint` to Go CI workflow                                     | MEDIUM   |
+| 10  | Add `nix flake check` to CI as a gate                                                           | MEDIUM   |
+| 11  | Pin Nixpkgs via `flake.lock` and set up Dependabot for Nix inputs                               | MEDIUM   |
+| 12  | Add a `nix develop` section to the Contributing docs                                            | MEDIUM   |
+| 13  | Consider `treefmt-nix` for formatting (Go + Nix + Markdown)                                     | MEDIUM   |
+| 14  | Add a root-level `just`/flake task to run `npm run dedup` in website                            | MEDIUM   |
+| 15  | Review `contributing.mdx` — mentions `npm run validate:docs` but should mention Nix path        | MEDIUM   |
+| 16  | Update `related-tools.mdx` with correct GitHub URLs (case: `LarsArtmann` vs `larsartmann`)      | MEDIUM   |
+| 17  | Verify all doc code examples compile (md-go-validator catches syntax, but not semantic errors)  | MEDIUM   |
+| 18  | Consider adding `md-go-validator` as a `flake-checks` target (run in `nix flake check`)         | LOW      |
+| 19  | Add `gogenfilter` Go package to root flake as a Nix package (not just apps)                     | LOW      |
+| 20  | Document the Nix flake architecture in `docs/`                                                  | LOW      |
+| 21  | Consider a `direnv` `.envrc` with `use flake` for automatic shell loading                       | LOW      |
+| 22  | Add Cachix integration for faster CI builds                                                     | LOW      |
+| 23  | Review if `website/flake.lock` should follow root `flake.lock`                                  | LOW      |
+| 24  | Explore `nixci` for multi-flake CI orchestration                                                | LOW      |
+| 25  | Add benchmark CI job using Nix for reproducible environment                                     | LOW      |
 
 ---
 
