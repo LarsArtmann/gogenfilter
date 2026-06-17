@@ -13,6 +13,21 @@ description: All notable changes to gogenfilter.
 - **`ExclusionPattern()` on `FilterReason`** — Get regex patterns for generators with consistent filename conventions
 - **7 new detector entries** (18 total): mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger
 - **7 new `Is*Generated` functions** and **7 new `FilterOption`/`FilterReason` constants**
+- **`FilterResult.Is(reason)`** — Ergonomic reason check
+- **`String()` on `GeneratedFile`, `Exclusion`, `ScanResult`** — Debug/logging ergonomics
+- **`ExclusionPaths()`** — Extract regex pattern strings from exclusions for golangci-lint
+
+### Changed
+
+- **`ExclusionPattern()` allocation-free** — Package-level var avoids map allocation per call
+- **`detectReasonFromMap` empty content guard** — Skips content check when content is empty
+
+### Fixed
+
+- **Absolute paths in content-based detection** — `os.DirFS` rejects absolute paths; added `readFile` fallback to `os.ReadFile`
+- **`ScanProject` ignored custom filesystems** — Internal Filter now receives `WithFS()`
+- **mockgen/mockery prefix overlap** — mockery exclusively owns `mock_` prefix; mockgen only matches `_mock.go`
+- **msgp `ExclusionPattern` false positives** — `_gen.go$` would exclude `wire_gen.go`; removed from exclusion map
 
 ## [v3.1.0] — 2026-06-04
 
