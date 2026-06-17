@@ -125,22 +125,6 @@ This is a library project, so the main package resides at the root level. This f
 
 ## Commands
 
-```bash
-# Run tests
-go test ./...
-
-# Run tests with race detector
-go test -race ./...
-
-# Run linter
-golangci-lint run
-
-# Detect code duplication (excludes testdata/moq - generated mock code; sqlc.go - known false positive: function signature collision)
-art-dupl --semantic -t 15 --exclude-pattern 'testdata/moq/**' --exclude-pattern 'sqlc.go'
-
-# Website: detect code duplication (jscpd via wrapper script)
-cd website && npm run dedup
-```
 
 ## CI
 
@@ -195,45 +179,6 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 
 ## Key API Patterns
 
-```go
-// Functional options configuration
-f := gogenfilter.NewFilter(
-    gogenfilter.WithFilterOptions(gogenfilter.FilterAll),
-)
-
-// Filter returns (bool, error) — I/O errors propagate
-filtered, err := f.Filter("file.go")
-
-// FilterPaths returns ([]bool, error) — batch filtering
-results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
-
-// FilterWithContent accepts pre-read content — avoids double I/O
-filtered, err := f.FilterWithContent("file.go", content)
-result, err := f.FilterDetailedWithContent("file.go", content)
-
-// Variadic DetectReason (no I/O)
-reason := gogenfilter.DetectReason("file.go", content,
-    gogenfilter.FilterSQLC, gogenfilter.FilterGeneric,
-)
-
-// DetectReasonFile — two-phase detection in one call (filename + content)
-reason := gogenfilter.DetectReasonFile("file.go", gogenfilter.FilterSQLC)
-reason, err := gogenfilter.DetectReasonFileFS(fsys, "file.go", gogenfilter.FilterAll)
-
-// Detailed result with trace info
-result, err := f.FilterDetailed("file.go")
-fmt.Printf("filtered=%v reason=%s trace=%s\n", result.Filtered, result.Reason, result.Trace)
-
-// Batch filtering
-results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
-
-// ScanProject — scan entire project for generated files
-result, err := gogenfilter.ScanProject(fsys)
-fmt.Printf("generators=%v files=%d exclusions=%d\n", result.Generators, len(result.Files), len(result.Exclusions))
-
-// ExclusionPattern — get regex pattern for a generator
-pattern, ok := gogenfilter.ReasonTempl.ExclusionPattern()
-```
 
 ## Dependencies
 
