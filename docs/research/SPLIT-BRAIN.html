@@ -1,0 +1,1432 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Split-Brain Analysis &middot; gogenfilter</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Zero external dependencies: system fonts, no CDN, no build step.
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Shape --- */
+        --radius: 0px;
+        --radius-sm: 0px;
+
+        /* --- Type stacks --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
+          monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before {
+        background: var(--warning);
+      }
+      .stat-value {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value {
+        color: var(--problem);
+      }
+      .stat-good .stat-value {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value {
+        color: var(--warning);
+      }
+      .stat-label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      .tok-keyword {
+        color: var(--accent);
+      }
+      .tok-type {
+        color: var(--warning);
+      }
+      .tok-string {
+        color: var(--solution);
+      }
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      }
+      .tok-number {
+        color: var(--accent);
+      }
+      .tok-generic {
+        color: var(--problem);
+      }
+      .tok-builtin {
+        color: #4dd9ff;
+      }
+      .tok-punct {
+        color: var(--text-muted);
+      }
+      .tok-attr {
+        color: var(--accent);
+      }
+
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+      .dep-tree .warn {
+        color: var(--warning);
+      }
+
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .node-warn {
+        background: var(--warning);
+        color: var(--surface);
+        border-color: var(--warning);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>Architecture Review &middot; Split-Brain Detection</span>
+      <span>2026-06-19</span>
+      <span>gogenfilter v3.2.0</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#taxonomy">What Is a Split-Brain?</a>
+          <a href="#findings">Findings</a>
+          <a href="#sb1">SB1 &mdash; Dual Enum Types</a>
+          <a href="#sb2">SB2 &mdash; Duplicate Skip Logic</a>
+          <a href="#sb3">SB3 &mdash; Reason Key Drift</a>
+          <a href="#sb4">SB4 &mdash; Sentinel vs Code</a>
+          <a href="#sb5">SB5 &mdash; FilterReason Method Split</a>
+          <a href="#sb6">SB6 &mdash; Generator Identity</a>
+          <a href="#impact">Impact Matrix</a>
+          <a href="#proposal">Unified Model</a>
+          <a href="#plan">Remediation Plan</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Data Model Review</div>
+          <h1>Split-Brain Analysis</h1>
+          <p class="hero-subtitle">
+            A first-principles audit of duplicated concepts, parallel type hierarchies, and
+            divergent sources of truth across the gogenfilter data model &mdash; places where one
+            concept is represented by two or more independent definitions that can silently drift
+            out of sync.
+          </p>
+        </div>
+
+        <nav class="toc">
+          <h3>Contents</h3>
+          <ul>
+            <li><a href="#summary">Summary</a></li>
+            <li><a href="#taxonomy">What Is a Split-Brain?</a></li>
+            <li><a href="#findings">Findings</a></li>
+            <li><a href="#impact">Impact Matrix</a></li>
+            <li><a href="#proposal">Toward a Unified Model</a></li>
+            <li><a href="#plan">Remediation Plan</a></li>
+          </ul>
+        </nav>
+
+        <!-- =================== SUMMARY =================== -->
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+
+        <p>
+          gogenfilter's data model is well-factored at the macro level &mdash; a single
+          <code>detectors</code> table drives almost every enumeration in the library. But when you
+          zoom in, the same conceptual entity is represented by
+          <strong>two or more type-level definitions</strong> in at least six places. Each duplicate
+          pair must be kept in lockstep by hand. None of the pairings are enforced by the type
+          system, and only some are guarded by tests.
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat-card stat-bad">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Split-Brains Found</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Critical</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Important</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">1</div>
+            <div class="stat-label">Nice to Have</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Source Files Affected</div>
+          </div>
+        </div>
+
+        <p>
+          The most consequential split is also the most fundamental: every generator is described
+          twice &mdash; once as a <code>FilterOption</code> (the configuration vocabulary) and once
+          as a <code>FilterReason</code> (the outcome vocabulary). They share string values but live
+          in separate type worlds, and the only thing linking them is a hand-maintained column in
+          the <code>detectors</code> table. The other five are narrower but follow the same pattern:
+          one concept, two definitions, zero compile-time coupling.
+        </p>
+
+        <!-- =================== TAXONOMY =================== -->
+        <h2 id="taxonomy"><span class="num">01</span>What Is a Split-Brain?</h2>
+
+        <p>
+          A <strong>split-brain</strong> is any place where a single domain concept is encoded in
+          two or more independent definitions, such that:
+        </p>
+
+        <div class="card card-warning">
+          <ol style="padding-left: 1.4rem; margin: 0">
+            <li>The definitions can diverge without a compile error.</li>
+            <li>Keeping them aligned is a human responsibility, not a type-system guarantee.</li>
+            <li>A reader cannot tell which definition is authoritative.</li>
+          </ol>
+        </div>
+
+        <p>
+          Split-brains are not the same as duplication. Duplication is "the same code twice." A
+          split-brain is "the same <em>meaning</em> encoded in two different vocabularies that are
+          supposed to agree." That makes them subtler and more dangerous: tests pass until the day
+          the two vocabularies disagree, and then they fail in places far from the edit.
+        </p>
+
+        <!-- =================== FINDINGS =================== -->
+        <h2 id="findings"><span class="num">02</span>Findings</h2>
+
+        <p>
+          Each finding below lists the two (or more) definitions that purport to describe the same
+          thing, the location of each, and the specific risk the split introduces.
+        </p>
+
+        <!-- ----- SB1 ----- -->
+        <h3 id="sb1">SB1 &mdash; Dual Enum Types for One Concept</h3>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>FilterOption and FilterReason are parallel string-typed enums</h3>
+          <div class="where">types.go:39-57, 120-154 &middot; detection.go:17-22, 30-54</div>
+          <p>
+            Every supported generator is named <strong>twice</strong>. Once as a
+            <code>FilterOption</code> constant (the input vocabulary: "what to look for") and once
+            as a <code>FilterReason</code> constant (the output vocabulary: "what was found"). Both
+            are branded <code>string</code> types, both carry an identical set of 18 generator
+            names, and the string values are deliberately identical (<code
+              >FilterSQLC = "sqlc"</code
+            >
+            and <code>ReasonSQLC = "sqlc"</code>).
+          </p>
+          <p>
+            The only thing connecting an option to its reason is the <code>reason</code> column in
+            the <code>detector</code> struct, populated by hand for each of the 18 rows. The
+            <code>filterOptionToReason()</code> function is a linear scan over that table. If a new
+            detector is added with a mismatched pair (e.g. <code>FilterNewGen = "newgen"</code> but
+            <code>ReasonNewGen = "new-gen"</code>), nothing breaks at compile time. The reason
+            silently fails to round-trip.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain</strong>
+            One concept ("sqlc-ness") has two authoritative spellings across two types. The
+            <code>detectors</code> table is the de-facto join table, but Go gives it no privilege
+            &mdash; either column can be edited independently.
+          </div>
+          <div class="callout callout-solution">
+            <strong>Direction of fix</strong>
+            Collapse into a single <code>Generator</code> identity type. An option and its reason
+            become two views of the same value, not two values that are supposed to agree. See
+            <a href="#proposal">the unified model</a>.
+          </div>
+        </div>
+
+        <!-- ----- SB2 ----- -->
+        <h3 id="sb2">SB2 &mdash; Duplicate Directory-Skip Logic</h3>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>Two near-identical "should I skip this directory?" functions with divergent rules</h3>
+          <div class="where">
+            sqlc.go:183-190 (<code>shouldSkipDirectory</code>) &middot; scan.go:188-194
+            (<code>shouldSkipScanDir</code>)
+          </div>
+          <p>
+            Both functions decide whether a directory should be skipped during a filesystem walk.
+            They exist because two different walks (sqlc config discovery and scan-time file
+            collection) each rolled their own. The logic is <em>almost</em> identical but not quite:
+          </p>
+
+          <div class="compare-header">
+            <div class="compare-before">shouldSkipDirectory (sqlc.go:184)</div>
+            <div class="compare-after">shouldSkipScanDir (scan.go:188)</div>
+          </div>
+          <div class="compare-row">
+            <div>
+              <pre><code><span class="tok-keyword">func</span> <span class="tok-func">shouldSkipDirectory</span>(name <span class="tok-type">string</span>) <span class="tok-type">bool</span> {
+  <span class="tok-keyword">if</span> name == <span class="tok-string">"."</span> {
+    <span class="tok-keyword">return</span> <span class="tok-type">false</span>
+  }
+  <span class="tok-keyword">return</span> <span class="tok-func">strings.HasPrefix</span>(name, <span class="tok-string">"."</span>) ||
+    name == nodeModulesDir || name == vendorDir
+}</code></pre>
+            </div>
+            <div>
+              <pre><code><span class="tok-keyword">func</span> <span class="tok-func">shouldSkipScanDir</span>(name <span class="tok-type">string</span>) <span class="tok-type">bool</span> {
+  <span class="tok-keyword">if</span> <span class="tok-func">strings.HasPrefix</span>(name, <span class="tok-string">"."</span>) {
+    <span class="tok-keyword">return</span> <span class="tok-type">true</span>
+  }
+  <span class="tok-keyword">return</span> name == vendorDir || name == nodeModulesDir
+}</code></pre>
+            </div>
+          </div>
+
+          <p>
+            The sqlc version special-cases <code>"."</code> to return <code>false</code> before
+            checking the hidden-directory prefix; the scan version does not, because its caller
+            already guards <code>path != "."</code> before invoking it. The two functions are
+            semantically equivalent <em>today</em>, but only because of an invariant enforced at the
+            <strong>call site</strong>, not in the function itself. Add a new caller that invokes
+            <code>shouldSkipScanDir(".")</code> directly and it will skip the root, silently
+            returning zero files.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain</strong>
+            "Which directories does a walk skip?" has two answers that must agree. They live in
+            different files, were written by different authors, and have already drifted in
+            structure even if not yet in behavior.
+          </div>
+        </div>
+
+        <!-- ----- SB3 ----- -->
+        <h3 id="sb3">SB3 &mdash; Generator-Reason Map Keyed by Mixed Vocabularies</h3>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            generatorExclusionReasons() keys some entries by FilterOption, others by raw
+            generator-name strings
+          </h3>
+          <div class="where">scan.go:222-239 (<code>generatorExclusionReasons</code>)</div>
+          <p>
+            The human-readable reason map uses <code>string(FilterOption)</code> keys for most
+            generators, but two entries are keyed by raw detection-time constants instead:
+          </p>
+          <pre><code><span class="tok-keyword">return</span> <span class="tok-keyword">map</span>[<span class="tok-type">string</span>]<span class="tok-type">string</span>{
+  <span class="tok-func">string</span>(FilterTempl):           templExclusionReason,
+  <span class="tok-comment">// ... keyed by FilterOption value ...</span>
+  <span class="tok-func">string</span>(<span class="tok-attr">deepcopyGeneratorName</span>): <span class="tok-string">"deepcopy-gen generated code"</span>,  <span class="tok-comment">// raw constant!</span>
+  <span class="tok-func">string</span>(<span class="tok-attr">moqGeneratorName</span>):      <span class="tok-string">"moq generated mocks"</span>,          <span class="tok-comment">// raw constant!</span>
+  <span class="tok-comment">// ...</span>
+}</code></pre>
+          <p>
+            This happens to work because <code>deepcopyGeneratorName = "deepcopy-gen"</code> equals
+            <code>string(FilterDeepcopy)</code>, and likewise for moq. But that equality is
+            <strong>an accident of string value, not a type-system fact</strong>. The map is keyed
+            by <code>string</code>, erasing the distinction, and the lookup at
+            <code>scan.go:243,250,254</code> feeds in <code>string(result.Reason)</code>. A future
+            generator whose option value differs from its detection marker would silently miss the
+            lookup and fall through to the generic <code>"auto-generated code"</code> default.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain</strong>
+            The authoritative key for "what is this generator called?" is sometimes the
+            <code>FilterOption</code> vocabulary, sometimes the <code>detection.go</code> marker
+            constant vocabulary. The <code>string</code> map hides which is which.
+          </div>
+        </div>
+
+        <!-- ----- SB4 ----- -->
+        <h3 id="sb4">SB4 &mdash; Sentinel Errors Duplicated as Code Constants</h3>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            Every error condition is named twice: once as an ErrorCode constant, once as a sentinel
+            error variable
+          </h3>
+          <div class="where">errors.go:34-43 (codes) &middot; errors.go:54-63 (sentinels)</div>
+          <p>
+            Each error class has a paired definition:
+            <code>CodeSQLCConfigParse</code> (the enum) and <code>ErrSQLCConfigParse</code> (the
+            sentinel). The sentinel is a <code>*SQLCConfigError</code> with only the
+            <code>Code</code> field set; matching is by code equality via the
+            <code>Is()</code> method. The two must stay paired:
+          </p>
+          <pre><code><span class="tok-comment">// errors.go:39 + 59</span>
+CodeSQLCConfigParse ErrorCode = <span class="tok-string">"sqlc_config_parse"</span>
+ErrSQLCConfigParse         = &amp;SQLCConfigError{Code: CodeSQLCConfigParse}</code></pre>
+          <p>
+            This is a deliberate design (the sentinels enable <code>errors.Is</code> without
+            allocating), and the <code>Is()</code> methods compare codes rather than pointer
+            identity, so it is <em>safer than it looks</em>. But the pairing is still
+            hand-maintained: adding <code>CodeFoo</code> without <code>ErrFoo</code> (or vice versa)
+            compiles cleanly and produces a class of errors that cannot be matched with
+            <code>errors.Is</code>.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain</strong>
+            "What kinds of things can go wrong?" has two registries: the code enum and the sentinel
+            var-block. They must enumerate the same set. Nothing checks that they do.
+          </div>
+          <div class="callout callout-solution">
+            <strong>Mitigating factor</strong>
+            The <code>errors_sentinel_test.go</code> and <code>errors_unwrap_test.go</code>
+            suites verify the round-trip for every pair. This is the one split-brain that is
+            test-guarded, which is why it is rated Important rather than Critical.
+          </div>
+        </div>
+
+        <!-- ----- SB5 ----- -->
+        <h3 id="sb5">SB5 &mdash; ExclusionPattern Lives on FilterReason, Not FilterOption</h3>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            ExclusionPattern() is a method on FilterReason, but the parallel lookup table is
+            conceptually a property of the generator
+          </h3>
+          <div class="where">
+            scan.go:56-82 (<code>exclusionPatterns</code> map, <code>ExclusionPattern</code> method)
+          </div>
+          <p>
+            The regex used to derive a golangci-lint exclusion is keyed by
+            <code>FilterReason</code>. But it is read in <code>scan.go:242</code> via
+            <code>FilterReason(generator).ExclusionPattern()</code> where <code>generator</code> is
+            a raw <code>string</code> that was produced by <code>string(result.Reason)</code> at
+            <code>scan.go:130</code>. The chain works, but it threads the generator identity through
+            <code>string</code> three times: reason &rarr; string &rarr; FilterReason &rarr; method
+            receiver.
+          </p>
+          <p>
+            Meanwhile, <code>generatorExclusionReasons()</code> (SB3) is keyed by what is
+            effectively <code>FilterOption</code>. So the two exclusion-related lookups in the same
+            file disagree about which type is the key. A reader trying to answer "what do I key
+            exclusion data by?" gets two answers depending on which function they're looking at.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain</strong>
+            "Generator-scoped metadata" (exclusion pattern, human-readable reason) is attached to
+            <code>FilterReason</code> in one place and to <code>FilterOption</code> in another,
+            within the same file, for the same conceptual purpose.
+          </div>
+        </div>
+
+        <!-- ----- SB6 ----- -->
+        <h3 id="sb6">SB6 &mdash; Two String Vocabularies for the Same Generator Names</h3>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice to have</span>
+          <h3>
+            detection.go marker constants restate generator names that FilterOption already names
+          </h3>
+          <div class="where">
+            detection.go:115-140 (marker constants) &middot; types.go:59-118 (FilterOption
+            constants)
+          </div>
+          <p>
+            <code>deepcopyGeneratorName = "deepcopy-gen"</code>,
+            <code>moqGeneratorName = "moq"</code>, <code>wireGeneratorName = "Wire"</code>,
+            <code>mockgenGeneratorName = "MockGen"</code>, etc. are used to match
+            <code>// Code generated by X</code> comments. Several of these differ in case or
+            specificity from their <code>FilterOption</code> siblings (<code>"Wire"</code> vs
+            <code>FilterWire = "wire"</code>; <code>"MockGen"</code> vs
+            <code>FilterMockgen = "mockgen"</code>).
+          </p>
+          <p>
+            This is <strong>not strictly wrong</strong> &mdash; the detection marker must match the
+            literal string the generator emits, which is a different concern from the option's
+            stable identifier. But it does mean there are two string vocabularies for "what is this
+            generator called," and the mapping between them is implicit. The naming
+            <em>suggests</em> they should agree (both use the generator name), which invites the
+            assumption that they do.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why it's a split-brain (mild)</strong>
+            The two vocabularies describe genuinely different things (comment literal vs. public
+            identifier), but their visual similarity masks the distinction. A contributor renaming
+            <code>FilterWire</code> will not realize <code>wireGeneratorName</code> is unrelated.
+          </div>
+        </div>
+
+        <!-- =================== IMPACT =================== -->
+        <h2 id="impact"><span class="num">03</span>Impact Matrix</h2>
+
+        <p>
+          The findings cluster into two root causes. Half of them (SB1, SB3, SB5, SB6) are symptoms
+          of the same underlying decision:
+          <em>representing one generator identity with two branded string types</em>. Fixing SB1
+          dissolves the other three. SB2 and SB4 are independent.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>Concept with two definitions</th>
+              <th>Test-guarded?</th>
+              <th>Root cause</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SB1</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>A generator's identity (option vs. reason)</td>
+              <td><span class="badge badge-low">Partial</span></td>
+              <td>Dual enum types</td>
+            </tr>
+            <tr>
+              <td>SB2</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>Directory-skip rules during a walk</td>
+              <td><span class="badge badge-critical">No</span></td>
+              <td>Copy-paste divergence</td>
+            </tr>
+            <tr>
+              <td>SB3</td>
+              <td><span class="badge badge-high">Important</span></td>
+              <td>Generator &rarr; human reason key</td>
+              <td><span class="badge badge-critical">No</span></td>
+              <td>Dual enum types</td>
+            </tr>
+            <tr>
+              <td>SB4</td>
+              <td><span class="badge badge-high">Important</span></td>
+              <td>Error classification (code vs. sentinel)</td>
+              <td><span class="badge badge-fixed">Yes</span></td>
+              <td>Sentinel/code pairing</td>
+            </tr>
+            <tr>
+              <td>SB5</td>
+              <td><span class="badge badge-high">Important</span></td>
+              <td>Generator-scoped exclusion metadata</td>
+              <td><span class="badge badge-critical">No</span></td>
+              <td>Dual enum types</td>
+            </tr>
+            <tr>
+              <td>SB6</td>
+              <td><span class="badge badge-low">Nice</span></td>
+              <td>Generator display name (marker vs. option)</td>
+              <td><span class="badge badge-critical">No</span></td>
+              <td>Dual vocabularies</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="dep-tree">
+          <span class="root">split-brains</span> ├──
+          <span class="unwanted">SB1: dual enum types</span> │ ├──
+          <span class="warn">SB3: reason map key drift</span> │ ├──
+          <span class="warn">SB5: exclusion method on wrong type</span> │ └──
+          <span class="ok">SB6: marker vs option vocabularies</span> ├──
+          <span class="unwanted">SB2: duplicate skip logic</span> └──
+          <span class="warn">SB4: sentinel/code pairing</span>
+          <span class="ok">(test-guarded)</span>
+        </div>
+
+        <!-- =================== PROPOSAL =================== -->
+        <h2 id="proposal"><span class="num">04</span>Toward a Unified Model</h2>
+
+        <p>
+          The dominant root cause is that a "generator" is represented as two branded string types
+          that are supposed to agree. The clean fix is to make the generator identity a
+          <strong>single value</strong> from which both the option and the reason are derived views
+          &mdash; not two values joined by a hand-maintained table.
+        </p>
+
+        <div class="compare-header">
+          <div class="compare-before">Today: two types, one join table</div>
+          <div class="compare-after">Proposal: one identity, two views</div>
+        </div>
+        <div class="compare-row">
+          <div>
+            <pre><code><span class="tok-comment">// types.go</span>
+<span class="tok-keyword">type</span> <span class="tok-type">FilterOption</span> <span class="tok-type">string</span>
+<span class="tok-keyword">type</span> <span class="tok-type">FilterReason</span> <span class="tok-type">string</span>
+
+<span class="tok-keyword">const</span> (
+  FilterSQLC <span class="tok-type">FilterOption</span> = <span class="tok-string">"sqlc"</span>
+  ReasonSQLC <span class="tok-type">FilterReason</span> = <span class="tok-string">"sqlc"</span>
+  <span class="tok-comment">// ...18 generators, named twice...</span>
+)
+
+<span class="tok-comment">// detection.go: hand-maintained join</span>
+<span class="tok-keyword">type</span> detector <span class="tok-keyword">struct</span> {
+  option <span class="tok-type">FilterOption</span>
+  reason <span class="tok-type">FilterReason</span>
+  ...
+}</code></pre>
+          </div>
+          <div>
+            <pre><code><span class="tok-comment">// Proposed: one identity type</span>
+<span class="tok-keyword">type</span> <span class="tok-type">Generator</span> <span class="tok-type">string</span>
+
+<span class="tok-keyword">const</span> GeneratorSQLC <span class="tok-type">Generator</span> = <span class="tok-string">"sqlc"</span>
+
+<span class="tok-comment">// FilterOption and FilterReason become</span>
+<span class="tok-comment">// type aliases / views over Generator,</span>
+<span class="tok-comment">// preserving the public API.</span>
+<span class="tok-keyword">type</span> <span class="tok-type">FilterOption</span> = <span class="tok-type">Generator</span>
+<span class="tok-keyword">type</span> <span class="tok-type">FilterReason</span> = <span class="tok-type">Generator</span>
+
+<span class="tok-comment">// detector now carries one identity,</span>
+<span class="tok-comment">// not two that must agree.</span>
+<span class="tok-keyword">type</span> detector <span class="tok-keyword">struct</span> {
+  gen <span class="tok-type">Generator</span>
+  ...
+}</code></pre>
+          </div>
+        </div>
+
+        <p>
+          The type-alias approach is the lowest-risk migration: existing
+          <code>FilterSQLC</code> / <code>ReasonSQLC</code> references keep compiling because the
+          aliases resolve to the same underlying type, but the <em>source of truth</em> collapses to
+          one constant per generator. The <code>detectors</code> table loses its
+          <code>reason</code> column entirely; <code>filterOptionToReason</code> becomes the
+          identity function.
+        </p>
+
+        <p>
+          For SB2, the fix is mechanical: delete one function, point both callers at the other, and
+          add the <code>"."</code> guard inside the survivor so the invariant does not depend on the
+          call site. For SB4, consider a code-generation step or a test (already largely present)
+          that asserts every <code>Code*</code> has a paired <code>Err*</code> and vice versa.
+        </p>
+
+        <h3>Strengths Worth Preserving</h3>
+
+        <p>
+          The review also surfaced things the model gets right. Any remediation should preserve
+          them:
+        </p>
+
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Single detectors table as the central registry</strong>
+              <span
+                >18 generators defined in one place, with derived enumerators
+                (<code>AllFilterOptions</code>, <code>AllGeneratorOptions</code>,
+                <code>AllFilterReasons</code>). This is the right architecture; the split-brain is
+                that the table has two columns that should be one.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Branded string types, not raw strings</strong>
+              <span
+                ><code>FilterOption</code>, <code>FilterReason</code>, <code>ErrorCode</code>,
+                <code>SQLCOperation</code> are all distinct named types. This prevents the vast
+                majority of accidental cross-assignment. The split-brains survive
+                <em>despite</em> this discipline, which is a testament to how much it already
+                catches.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>errors.Is support via code comparison</strong>
+              <span
+                >The <code>Is()</code> methods compare <code>.Code</code> fields rather than pointer
+                identity, so sentinel matching is robust to allocation. The sentinel/code pairing
+                (SB4) is the most defensible of the split-brains.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Immutable, package-level lookup tables</strong>
+              <span
+                ><code>detectors</code>, <code>exclusionPatterns</code>, and the marker constants
+                are all package-level <code>var</code>/<code>const</code> blocks guarded by
+                <code>nolint:gochecknoglobals</code>. No mutable state, no initialization order
+                surprises.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- =================== PLAN =================== -->
+        <h2 id="plan"><span class="num">05</span>Remediation Plan</h2>
+
+        <p>
+          Ordered by impact-to-risk ratio. Steps 1 and 2 are low-risk, high-clarity wins that should
+          be done first. Step 3 is the architectural fix that dissolves the cluster; it is a larger
+          change but remains API-compatible via type aliases.
+        </p>
+
+        <div class="migration-step">
+          <div class="migration-num">1</div>
+          <div class="migration-content">
+            <h4>Unify the directory-skip functions (SB2)</h4>
+            <p>
+              Delete <code>shouldSkipScanDir</code>, fold its <code>"."</code> guard into
+              <code>shouldSkipDirectory</code>, and point the <code>scan.go</code> caller at the
+              survivor. Add a unit test that calls the function directly with <code>"."</code>,
+              <code>".hidden"</code>, <code>"vendor"</code>, <code>"node_modules"</code>, and
+              <code>"src"</code>. Lowest-risk, highest immediate clarity gain.
+            </p>
+          </div>
+        </div>
+
+        <div class="migration-step">
+          <div class="migration-num">2</div>
+          <div class="migration-content">
+            <h4>Re-key generatorExclusionReasons by FilterReason (SB3)</h4>
+            <p>
+              Replace the two raw-constant keys (<code>deepcopyGeneratorName</code>,
+              <code>moqGeneratorName</code>) with <code>string(FilterDeepcopy)</code> and
+              <code>string(FilterMoq)</code> so every entry uses the same vocabulary. Add a test
+              that asserts every key in the map is a member of <code>AllFilterReasons()</code>. This
+              is a one-line semantic fix plus a guard test.
+            </p>
+          </div>
+        </div>
+        <div class="migration-step">
+          <div class="migration-num">3</div>
+          <div class="migration-content">
+            <h4>Introduce a Generator identity type (SB1, SB5, SB6)</h4>
+            <p>
+              Add <code>type Generator string</code> with one constant per generator. Make
+              <code>FilterOption</code> and <code>FilterReason</code> type aliases for
+              <code>Generator</code> (or keep them distinct named types with a single shared
+              constant pool). Drop the <code>reason</code> column from <code>detector</code>. Move
+              <code>ExclusionPattern()</code> and the human-readable reason onto
+              <code>Generator</code> so generator-scoped metadata has one home. API-compatible via
+              aliases; dissolves SB1, SB3, SB5, and the vocabulary confusion of SB6 in one stroke.
+            </p>
+          </div>
+        </div>
+
+        <div class="migration-step">
+          <div class="migration-num">4</div>
+          <div class="migration-content">
+            <h4>Add a sentinel/code pairing invariant test (SB4)</h4>
+            <p>
+              The existing <code>errors_sentinel_test.go</code> covers round-tripping. Add a
+              reflection-based test that enumerates every <code>Code*</code> constant and asserts a
+              corresponding <code>Err*</code> sentinel exists (and vice versa), so the pairing
+              cannot silently drift when a new error class is added.
+            </p>
+          </div>
+        </div>
+
+        <div class="migration-step">
+          <div class="migration-num">5</div>
+          <div class="migration-content">
+            <h4>Document the marker-vs-identifier distinction (SB6)</h4>
+            <p>
+              If the detection-marker constants must remain distinct from option values (they often
+              must, due to case differences in emitted comments), add a doc comment block to
+              <code>detection.go</code> explicitly stating that
+              <code>*GeneratorName</code> constants are comment-literal matchers, not public
+              identifiers, and that they are intentionally allowed to differ from
+              <code>FilterOption</code> values. Naming alone will not convey this.
+            </p>
+          </div>
+        </div>
+
+        <div class="card card-solution">
+          <h4>Bottom line</h4>
+          <p style="margin-bottom: 0">
+            gogenfilter's data model is closer to right than wrong. The single
+            <code>detectors</code> table is a strong spine. But six places encode one concept twice,
+            and four of those trace to a single decision &mdash; representing generator identity as
+            two branded string types. Collapsing that decision via a <code>Generator</code> identity
+            type (with <code>FilterOption</code> / <code>FilterReason</code> as aliases) is the
+            highest-leverage change available, and it is doable without breaking the public API.
+          </p>
+        </div>
+
+        <footer class="footer">
+          Generated 2026-06-19 &middot; Findings verified against gogenfilter source at v3.2.0
+          (commit ec8d87d) &middot; All file:line references reflect that revision
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>

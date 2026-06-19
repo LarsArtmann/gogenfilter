@@ -125,7 +125,6 @@ This is a library project, so the main package resides at the root level. This f
 
 ## Commands
 
-
 ## CI
 
 Four separate GitHub Actions workflows, all triggered on push to master with path filters + `workflow_dispatch` for manual triggering (CI and Website also run on PRs):
@@ -178,7 +177,6 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped (documented in `lighthouse.yml` header comment)
 
 ## Key API Patterns
-
 
 ## Dependencies
 
