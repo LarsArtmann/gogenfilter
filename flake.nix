@@ -42,7 +42,7 @@
           ...
         }:
         let
-          lib = pkgs.lib;
+          inherit (pkgs) lib;
           goPkg = pkgs.go_1_26;
 
           goFiles = lib.fileset.fileFilter (file: file.hasExt "go") ./.;
