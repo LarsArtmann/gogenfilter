@@ -62,6 +62,7 @@ gogenfilter is a single-purpose library. It does one thing (detect generated cod
 Today, consumers write:
 
 ```go
+// skip-validate
 import "github.com/LarsArtmann/gogenfilter/v3"
 
 f, _ := gogenfilter.NewFilter(gogenfilter.WithFilterOptions(gogenfilter.FilterAll))

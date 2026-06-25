@@ -65,6 +65,7 @@ Delivered: website guide (`guides/gitignore-pre-filtering.mdx`), code example (`
 From the **user's** perspective, `FilterOption` means "what should cause this file to be filtered." Users don't care about internal detector tables. They think:
 
 ```go
+// skip-validate
 // Clean — one config mechanism, one concept
 gogenfilter.WithFilterOptions(gogenfilter.FilterAll, gogenfilter.FilterGitignore)
 
@@ -84,6 +85,7 @@ The `FilterOption` becomes "reasons a file should be filtered" — a broader but
 ### API sketch
 
 ```go
+// skip-validate
 // New constants
 FilterGitignore FilterOption = "gitignore"
 ReasonGitignore FilterReason = "gitignore"

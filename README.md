@@ -229,8 +229,6 @@ f.String()              // human-readable debug state
 All errors carry structured codes and support `errors.Is` matching:
 
 ```go
-import "errors"
-
 root, err := gogenfilter.FindProjectRoot(
     "/some/path",
     []string{"go.mod"},

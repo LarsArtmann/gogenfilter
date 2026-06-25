@@ -32,6 +32,7 @@ The tool flags `err` propagation as "losing context" even when the callee alread
 **Example — `filter.go:429`:**
 
 ```go
+// skip-validate
 // Flagged as CRITICAL — "loses trace, filePath, patternMatched, reason"
 result, err := f.shouldFilterDetailedByDetection(filePath)
 if err != nil {
@@ -42,6 +43,7 @@ if err != nil {
 But `shouldFilterDetailedByDetection` calls `detectReasonFSWithTrace` which calls:
 
 ```go
+// skip-validate
 // detection.go:442-444 — already wraps filePath
 return FilterResult{...}, fmt.Errorf("read file %q: %w", filePath, err)
 ```
@@ -60,6 +62,7 @@ The tool sees `sqlcFindError(path, err)` and flags it as losing `path`. But `sql
 **Example — `sqlc.go:138`:**
 
 ```go
+// skip-validate
 // Flagged: "Context variable 'path' not included in error"
 return sqlcFindError(path, err)
 
@@ -105,6 +108,7 @@ Several suggestions would produce nonsensical error messages:
 **Example — `sqlc.go:262`:**
 
 ```go
+// skip-validate
 // Flagged: "Context variable 'version' not included in error"
 return nil, newSQLCConfigError(
     ...
@@ -143,6 +147,7 @@ The tool suggests adding `path` (the walk root), but `filePath` (the specific fi
 **Lines:** `filter.go:226, 238, 273, 283`
 
 ```go
+// skip-validate
 // Current:
 return ..., fmt.Errorf("context check: %w", err)
 
