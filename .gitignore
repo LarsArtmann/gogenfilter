@@ -99,6 +99,11 @@ Thumbs.db
 .Trashes
 ehthumbs.db
 
+## Buildflow artifacts
+audit-log.*
+workflow-audit-log.*
+.buildflow-workflow-baseline.json
+
 ## Go
 go.work.sum
 
