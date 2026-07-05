@@ -8,73 +8,73 @@
 
 ### Go Source Documentation
 
-| # | Fix | Files | Commit |
-|---|-----|-------|--------|
-| 1 | Created `doc.go` — package doc moved from `types.go` | `doc.go`, `types.go` | `fe0cf3d` |
-| 2 | Fixed compile-breaking Quick Start example (`WithFilterOptions` returns `(FilterConfig, error)`) | `doc.go` | `d0fc9ea` |
-| 3 | Fixed compile-breaking `NewFilter` examples (3 examples, unchecked `err`) | `filter.go` | `d0fc9ea`, `5a7057e` |
-| 4 | Updated generator list (was missing 7: mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger) | `doc.go` | `d0fc9ea` |
-| 5 | Fixed `IsGenericGenerated` doc (said "go generate", actually any generator) | `detection.go` | `d0fc9ea` |
-| 6 | Fixed `getFilenameBasedReasonWithTrace` doc (named wrong function) | `detection.go` | `d0fc9ea` |
-| 7 | Fixed `FilterConfig` type doc (misleading error description) | `filter.go` | `d0fc9ea` |
-| 8 | Fixed `NewFilter` doc ("returns false" → `(false, nil)`) | `filter.go` | `d0fc9ea` |
-| 9 | Added individual doc comments to all 21 `FilterReason` constants | `types.go` | `5d02762` |
-| 10 | Added individual doc comments to all 8 sentinel error variables | `errors.go` | `031884c` |
+| #   | Fix                                                                                                     | Files                | Commit               |
+| --- | ------------------------------------------------------------------------------------------------------- | -------------------- | -------------------- |
+| 1   | Created `doc.go` — package doc moved from `types.go`                                                    | `doc.go`, `types.go` | `fe0cf3d`            |
+| 2   | Fixed compile-breaking Quick Start example (`WithFilterOptions` returns `(FilterConfig, error)`)        | `doc.go`             | `d0fc9ea`            |
+| 3   | Fixed compile-breaking `NewFilter` examples (3 examples, unchecked `err`)                               | `filter.go`          | `d0fc9ea`, `5a7057e` |
+| 4   | Updated generator list (was missing 7: mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger) | `doc.go`             | `d0fc9ea`            |
+| 5   | Fixed `IsGenericGenerated` doc (said "go generate", actually any generator)                             | `detection.go`       | `d0fc9ea`            |
+| 6   | Fixed `getFilenameBasedReasonWithTrace` doc (named wrong function)                                      | `detection.go`       | `d0fc9ea`            |
+| 7   | Fixed `FilterConfig` type doc (misleading error description)                                            | `filter.go`          | `d0fc9ea`            |
+| 8   | Fixed `NewFilter` doc ("returns false" → `(false, nil)`)                                                | `filter.go`          | `d0fc9ea`            |
+| 9   | Added individual doc comments to all 21 `FilterReason` constants                                        | `types.go`           | `5d02762`            |
+| 10  | Added individual doc comments to all 8 sentinel error variables                                         | `errors.go`          | `031884c`            |
 
 ### Website Documentation
 
-| # | Fix | Files | Commit |
-|---|-----|-------|--------|
-| 11 | Created Scan API reference page (9 previously undocumented symbols) | `scan.mdx` (new) | `d0fc9ea` |
-| 12 | Fixed `SQLCConfigError.Operation` type (`string` → `SQLCOperation`) | `errors.mdx` | `d0fc9ea` |
-| 13 | Fixed `IsGqlgenGenerated` description (content-only, no filename check) | `detection.mdx` | `d0fc9ea` |
-| 14 | Added `DetectReasonFile`/`DetectReasonFileFS` | `detection.mdx` | `d0fc9ea` |
-| 15 | Added `FilterWithContent`/`FilterDetailedWithContent` | `filter.mdx` | `d0fc9ea` |
-| 16 | Added `FilterResult` struct + `Is()` + `String()` | `types.mdx` | `d0fc9ea` |
-| 17 | Added `SQLCOperation` type + 5 constants | `errors.mdx` | `d0fc9ea` |
-| 18 | Added Scan to sidebar | `astro.config.mjs` | `d0fc9ea` |
-| 19 | Fixed `filter-options.mdx` usage example (discarded return values) | `filter-options.mdx` | `5a7057e` |
+| #   | Fix                                                                     | Files                | Commit    |
+| --- | ----------------------------------------------------------------------- | -------------------- | --------- |
+| 11  | Created Scan API reference page (9 previously undocumented symbols)     | `scan.mdx` (new)     | `d0fc9ea` |
+| 12  | Fixed `SQLCConfigError.Operation` type (`string` → `SQLCOperation`)     | `errors.mdx`         | `d0fc9ea` |
+| 13  | Fixed `IsGqlgenGenerated` description (content-only, no filename check) | `detection.mdx`      | `d0fc9ea` |
+| 14  | Added `DetectReasonFile`/`DetectReasonFileFS`                           | `detection.mdx`      | `d0fc9ea` |
+| 15  | Added `FilterWithContent`/`FilterDetailedWithContent`                   | `filter.mdx`         | `d0fc9ea` |
+| 16  | Added `FilterResult` struct + `Is()` + `String()`                       | `types.mdx`          | `d0fc9ea` |
+| 17  | Added `SQLCOperation` type + 5 constants                                | `errors.mdx`         | `d0fc9ea` |
+| 18  | Added Scan to sidebar                                                   | `astro.config.mjs`   | `d0fc9ea` |
+| 19  | Fixed `filter-options.mdx` usage example (discarded return values)      | `filter-options.mdx` | `5a7057e` |
 
 ### README
 
-| # | Fix | Commit |
-|---|-----|--------|
-| 20 | Fixed mockgen description (`_mock.go` / `mock_` prefix → `_mock.go` suffix only) | `d0fc9ea` |
-| 21 | Fixed gqlgen description (filename + content → content-only) | `d0fc9ea` |
+| #   | Fix                                                                              | Commit    |
+| --- | -------------------------------------------------------------------------------- | --------- |
+| 20  | Fixed mockgen description (`_mock.go` / `mock_` prefix → `_mock.go` suffix only) | `d0fc9ea` |
+| 21  | Fixed gqlgen description (filename + content → content-only)                     | `d0fc9ea` |
 
 ### Configuration & Metadata
 
-| # | Fix | Files | Commit |
-|---|-----|-------|--------|
-| 22 | Aligned `.golangci.yaml` Go version with `go.mod` (`1.26.3` → `1.26.4`) | `.golangci.yaml` | `aedc0f0` |
-| 23 | Updated AGENTS.md Key Source Files table (added `doc.go`, `scan.go`, fixed counts) | `AGENTS.md` | `106c8df` |
-| 24 | Added v3.2.1 changelog entry (synced root + website) | `CHANGELOG.md`, `changelog.mdx` | `7f7ac92` |
+| #   | Fix                                                                                | Files                           | Commit    |
+| --- | ---------------------------------------------------------------------------------- | ------------------------------- | --------- |
+| 22  | Aligned `.golangci.yaml` Go version with `go.mod` (`1.26.3` → `1.26.4`)            | `.golangci.yaml`                | `aedc0f0` |
+| 23  | Updated AGENTS.md Key Source Files table (added `doc.go`, `scan.go`, fixed counts) | `AGENTS.md`                     | `106c8df` |
+| 24  | Added v3.2.1 changelog entry (synced root + website)                               | `CHANGELOG.md`, `changelog.mdx` | `7f7ac92` |
 
 ### Testdata
 
-| # | Fix | Commit |
-|---|-----|--------|
-| 25 | Added missing `doc.go` to handwritten, wire, templ dirs | `4243879` |
+| #   | Fix                                                     | Commit    |
+| --- | ------------------------------------------------------- | --------- |
+| 25  | Added missing `doc.go` to handwritten, wire, templ dirs | `4243879` |
 
 ### Verification
 
-| Check | Result |
-|-------|--------|
-| `go vet ./...` | ✅ Pass |
-| `go build ./...` | ✅ Pass |
-| `go test ./...` | ✅ Pass (98.3% coverage) |
-| `go doc -all .` | ✅ Clean — all constants, errors, types have doc comments |
-| `astro check` | ✅ 0 errors, 0 warnings, 0 hints |
-| `astro build` | ✅ 21 pages built, scan page confirmed at `/api/scan/` |
+| Check            | Result                                                    |
+| ---------------- | --------------------------------------------------------- |
+| `go vet ./...`   | ✅ Pass                                                   |
+| `go build ./...` | ✅ Pass                                                   |
+| `go test ./...`  | ✅ Pass (98.3% coverage)                                  |
+| `go doc -all .`  | ✅ Clean — all constants, errors, types have doc comments |
+| `astro check`    | ✅ 0 errors, 0 warnings, 0 hints                          |
+| `astro build`    | ✅ 21 pages built, scan page confirmed at `/api/scan/`    |
 
 ---
 
 ## b) PARTIALLY DONE 🟡
 
-| Item | Status | What Remains |
-|------|--------|-------------|
-| testdata `doc.go` coverage | 17/18 dirs have `doc.go` | `sqlc/` skipped — intentionally mixed packages (`db` + `sqlc`), adding `doc.go` creates package conflict |
-| Lighthouse CI accessibility | Known failures | `color-contrast`, `label-content-name-mismatch` on root page — pre-existing, not touched this session |
+| Item                        | Status                   | What Remains                                                                                             |
+| --------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| testdata `doc.go` coverage  | 17/18 dirs have `doc.go` | `sqlc/` skipped — intentionally mixed packages (`db` + `sqlc`), adding `doc.go` creates package conflict |
+| Lighthouse CI accessibility | Known failures           | `color-contrast`, `label-content-name-mismatch` on root page — pre-existing, not touched this session    |
 
 ---
 
@@ -113,33 +113,33 @@ Nothing. No regressions, no broken builds, no data loss. All changes verified wi
 
 ## f) Top 25 Things to Do Next (sorted by impact/effort)
 
-| # | Task | Impact | Effort | Type |
-|---|------|--------|--------|------|
-| 1 | Fix Lighthouse CI accessibility (`color-contrast`) | High | Medium | Quality |
-| 2 | Add CI test: verify website API docs match exported Go symbols | High | Medium | Process |
-| 3 | Derive `.golangci.yaml` Go version from `go.mod` | Medium | Tiny | Process |
-| 4 | Replace pseudocode in `errors.mdx` with real function | Low | Tiny | Docs |
-| 5 | Investigate `testdata/templ/` — empty or add real fixture | Low | Tiny | Cleanup |
-| 6 | Add `go vet -all` or `revive` check for missing doc comments in CI | Medium | Small | Process |
-| 7 | Consider `doc.go` convention enforcement in linting | Low | Small | Process |
-| 8 | Fix Dependabot alerts (npm overrides) | Medium | Small | Security |
-| 9 | Add integration test that runs `ScanProject` on the repo itself | Medium | Small | Testing |
-| 10 | Generate API reference from `go doc -all` output | Medium | Large | Process |
-| 11 | Add `CHANGELOG.md` → `changelog.mdx` sync check to CI | Medium | Small | Process |
-| 12 | Document `FilterConfig` "closures never error" design decision in ADR | Low | Small | Docs |
-| 13 | Resolve `testdata/deepcopy` typecheck (missing `ConfigMap` type) | Low | Tiny | Cleanup |
-| 14 | Resolve `testdata/gqlgen` typecheck (missing `queryResolver`) | Low | Tiny | Cleanup |
-| 15 | Add `FilterPathsDetailed` to website `filter.mdx` | Low | Tiny | Docs |
-| 16 | Audit `generators.mdx` against detector table for completeness | Medium | Small | Docs |
-| 17 | Add benchmark results to website from `gh-pages` branch | Medium | Medium | Docs |
-| 18 | Consider `errors.AsType` examples in website error docs | Low | Small | Docs |
-| 19 | Review `quick-start.mdx` for accuracy against current API | Medium | Small | Docs |
-| 20 | Add `ExclusionPattern` to types.mdx `FilterReason` methods section | Low | Tiny | Docs |
-| 21 | Investigate jscpd OOM in BuildFlow pre-commit hook | Medium | Medium | Process |
-| 22 | Consider versioned docs (e.g., `/v3/` prefix) for future major versions | Low | Large | Strategy |
-| 23 | Add `CONTRIBUTING.md` note about updating docs when adding detectors | Low | Tiny | Process |
-| 24 | Review if `FilterReason` and `FilterOption` should be merged into one type | Low | Large | Architecture |
-| 25 | Consider generating README generator table from detector table | Medium | Medium | Process |
+| #   | Task                                                                       | Impact | Effort | Type         |
+| --- | -------------------------------------------------------------------------- | ------ | ------ | ------------ |
+| 1   | Fix Lighthouse CI accessibility (`color-contrast`)                         | High   | Medium | Quality      |
+| 2   | Add CI test: verify website API docs match exported Go symbols             | High   | Medium | Process      |
+| 3   | Derive `.golangci.yaml` Go version from `go.mod`                           | Medium | Tiny   | Process      |
+| 4   | Replace pseudocode in `errors.mdx` with real function                      | Low    | Tiny   | Docs         |
+| 5   | Investigate `testdata/templ/` — empty or add real fixture                  | Low    | Tiny   | Cleanup      |
+| 6   | Add `go vet -all` or `revive` check for missing doc comments in CI         | Medium | Small  | Process      |
+| 7   | Consider `doc.go` convention enforcement in linting                        | Low    | Small  | Process      |
+| 8   | Fix Dependabot alerts (npm overrides)                                      | Medium | Small  | Security     |
+| 9   | Add integration test that runs `ScanProject` on the repo itself            | Medium | Small  | Testing      |
+| 10  | Generate API reference from `go doc -all` output                           | Medium | Large  | Process      |
+| 11  | Add `CHANGELOG.md` → `changelog.mdx` sync check to CI                      | Medium | Small  | Process      |
+| 12  | Document `FilterConfig` "closures never error" design decision in ADR      | Low    | Small  | Docs         |
+| 13  | Resolve `testdata/deepcopy` typecheck (missing `ConfigMap` type)           | Low    | Tiny   | Cleanup      |
+| 14  | Resolve `testdata/gqlgen` typecheck (missing `queryResolver`)              | Low    | Tiny   | Cleanup      |
+| 15  | Add `FilterPathsDetailed` to website `filter.mdx`                          | Low    | Tiny   | Docs         |
+| 16  | Audit `generators.mdx` against detector table for completeness             | Medium | Small  | Docs         |
+| 17  | Add benchmark results to website from `gh-pages` branch                    | Medium | Medium | Docs         |
+| 18  | Consider `errors.AsType` examples in website error docs                    | Low    | Small  | Docs         |
+| 19  | Review `quick-start.mdx` for accuracy against current API                  | Medium | Small  | Docs         |
+| 20  | Add `ExclusionPattern` to types.mdx `FilterReason` methods section         | Low    | Tiny   | Docs         |
+| 21  | Investigate jscpd OOM in BuildFlow pre-commit hook                         | Medium | Medium | Process      |
+| 22  | Consider versioned docs (e.g., `/v3/` prefix) for future major versions    | Low    | Large  | Strategy     |
+| 23  | Add `CONTRIBUTING.md` note about updating docs when adding detectors       | Low    | Tiny   | Process      |
+| 24  | Review if `FilterReason` and `FilterOption` should be merged into one type | Low    | Large  | Architecture |
+| 25  | Consider generating README generator table from detector table             | Medium | Medium | Process      |
 
 ---
 
