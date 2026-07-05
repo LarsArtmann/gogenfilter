@@ -95,9 +95,14 @@ type Filter struct {
 // Examples:
 //
 //	opts, err := WithFilterOptions(FilterAll)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
 //	filter, err := NewFilter(opts)
+//
 //	opts, err = WithFilterOptions(FilterSQLC, FilterTempl)
 //	filter, err = NewFilter(opts, WithExcludePatterns("**/db/*.go"))
+//
 //	filter, err = NewFilter() // disabled, always returns (false, nil)
 func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	filter := &Filter{
