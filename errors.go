@@ -52,14 +52,29 @@ type ErrorCoder interface {
 //
 //nolint:exhaustruct
 var (
-	ErrProjectRootNotFound    = &ProjectRootError{Code: CodeProjectRootNotFound}
+	// ErrProjectRootNotFound is returned when no project root marker file is found.
+	ErrProjectRootNotFound = &ProjectRootError{Code: CodeProjectRootNotFound}
+
+	// ErrProjectRootInvalidPath is returned when the start path cannot be resolved.
 	ErrProjectRootInvalidPath = &ProjectRootError{Code: CodeProjectRootInvalidPath}
-	ErrInvalidFilterOption    = &FilterConfigError{Code: CodeInvalidFilterOption}
-	ErrSQLCConfigRead         = &SQLCConfigError{Code: CodeSQLCConfigRead}
-	ErrSQLCConfigParse        = &SQLCConfigError{Code: CodeSQLCConfigParse}
-	ErrSQLCConfigWalk         = &SQLCConfigError{Code: CodeSQLCConfigWalk}
-	ErrSQLCConfigCollect      = &SQLCConfigError{Code: CodeSQLCConfigCollect}
-	ErrSQLCConfigFind         = &SQLCConfigError{Code: CodeSQLCConfigFind}
+
+	// ErrInvalidFilterOption is returned when an unrecognized FilterOption is passed.
+	ErrInvalidFilterOption = &FilterConfigError{Code: CodeInvalidFilterOption}
+
+	// ErrSQLCConfigRead is returned when a sqlc config file cannot be read.
+	ErrSQLCConfigRead = &SQLCConfigError{Code: CodeSQLCConfigRead}
+
+	// ErrSQLCConfigParse is returned when sqlc config YAML is invalid.
+	ErrSQLCConfigParse = &SQLCConfigError{Code: CodeSQLCConfigParse}
+
+	// ErrSQLCConfigWalk is returned when walking directories for sqlc configs fails.
+	ErrSQLCConfigWalk = &SQLCConfigError{Code: CodeSQLCConfigWalk}
+
+	// ErrSQLCConfigCollect is returned when collecting output dirs from sqlc configs fails.
+	ErrSQLCConfigCollect = &SQLCConfigError{Code: CodeSQLCConfigCollect}
+
+	// ErrSQLCConfigFind is returned when finding sqlc config files fails.
+	ErrSQLCConfigFind = &SQLCConfigError{Code: CodeSQLCConfigFind}
 )
 
 // ProjectRootError is returned when the project root cannot be found.
