@@ -81,6 +81,7 @@ export default defineConfig({
           items: [
             { label: "Filter", slug: "api/filter" },
             { label: "Detection", slug: "api/detection" },
+            { label: "Scan", slug: "api/scan" },
             { label: "Types", slug: "api/types" },
             { label: "Errors", slug: "api/errors" },
           ],

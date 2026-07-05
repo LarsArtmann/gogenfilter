@@ -1,0 +1,112 @@
+---
+title: Scan
+description: High-level project scanning for auto-generated files with derived exclusion patterns.
+---
+
+## Overview
+
+The Scan API walks a project filesystem, detects all generated Go files, and returns structured results including per-generator file lists and derived exclusion patterns suitable for linter configuration.
+
+## Functions
+
+### `ScanProject(fsys fs.FS, configs ...FilterConfig) (*ScanResult, error)`
+
+Scans a project directory for auto-generated Go files. Walks the filesystem, detects generated files, and returns a `ScanResult` with per-generator file lists and derived exclusion patterns.
+
+- Default options (`FilterAll`) are used when no configs are provided
+- Directories named `vendor`, `node_modules`, and hidden directories (starting with `.`) are skipped
+
+```go
+result, err := gogenfilter.ScanProject(os.DirFS("."))
+if err != nil {
+    log.Fatal(err)
+}
+for _, file := range result.Files {
+    fmt.Println(file)
+}
+```
+
+Pass custom options to scan for specific generators only:
+
+```go
+opts, err := gogenfilter.WithFilterOptions(
+    gogenfilter.FilterSQLC,
+    gogenfilter.FilterTempl,
+)
+if err != nil {
+    log.Fatal(err)
+}
+result, err := gogenfilter.ScanProject(os.DirFS("."), opts)
+```
+
+### `ExclusionPaths(exclusions []Exclusion) []string`
+
+Extracts just the regex pattern strings from a slice of `Exclusion` values. Useful for feeding directly into linter configuration.
+
+```go
+result, _ := gogenfilter.ScanProject(os.DirFS("."))
+patterns := gogenfilter.ExclusionPaths(result.Exclusions)
+// patterns: ["_templ\\.go$", "\\.pb\\.go$", ...]
+```
+
+## Types
+
+### `ScanResult`
+
+Holds the results of scanning a project for generated files.
+
+```go
+type ScanResult struct {
+    Files        []GeneratedFile     // all detected generated files
+    ByGenerator  map[string][]string // generator name → list of file paths
+    ScannedFiles int                 // total .go files scanned
+    Generators   []string            // unique generator names, sorted
+    Exclusions   []Exclusion         // derived exclusion patterns
+}
+```
+
+Has a `String()` method for human-readable summaries.
+
+### `GeneratedFile`
+
+Information about a single detected generated file.
+
+```go
+type GeneratedFile struct {
+    Path   string       // relative path within the scanned directory
+    Reason FilterReason // which generator was detected
+}
+```
+
+Has a `String()` method — returns `"path (reason)"`.
+
+### `Exclusion`
+
+A path-based exclusion pattern for auto-generated code.
+
+```go
+type Exclusion struct {
+    Pattern string // regex pattern suitable for golangci-lint exclusions.paths
+    Reason  string // human-readable reason for the exclusion
+}
+```
+
+Has a `String()` method — returns `"pattern # reason"`.
+
+## Exclusion Pattern Derivation
+
+### `FilterReason.ExclusionPattern() (string, bool)`
+
+Returns a fixed regex pattern for generators with consistent filename conventions. Returns `("", false)` for generators that need directory-based derivation.
+
+```go
+pattern, ok := gogenfilter.ReasonTempl.ExclusionPattern()
+// pattern: "_templ\\.go$", ok: true
+
+pattern, ok := gogenfilter.ReasonSQLC.ExclusionPattern()
+// pattern: "", ok: false  (sqlc output dirs are configurable)
+```
+
+Generators with fixed patterns: templ, protobuf, go-enum, deepcopy-gen, wire, moq, mockgen, stringer, mockery, easyjson, counterfeiter.
+
+Generators without fixed patterns (need directory-based derivation): sqlc, oapi-codegen, ent, gqlgen, go-swagger, msgp, generic.

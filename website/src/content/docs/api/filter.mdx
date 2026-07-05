@@ -68,6 +68,14 @@ results, err := f.FilterPaths([]string{"a.go", "b.go", "c.go"})
 
 Batch variant of `FilterDetailed` — returns `FilterResult` values with trace information for each path.
 
+### `FilterWithContent(filePath string, content []byte) (bool, error)`
+
+Like `Filter` but accepts pre-read file content. Use this when you already have the file content (e.g., from an AST parser) to avoid redundant file I/O. When content is nil or empty, only filename-based detection is performed.
+
+### `FilterDetailedWithContent(filePath string, content []byte) (FilterResult, error)`
+
+Like `FilterDetailed` but accepts pre-read file content. Returns a `FilterResult` with detailed reason and trace information.
+
 ### `IsEnabled() bool`
 
 Returns whether the filter is active.

@@ -46,13 +46,15 @@ Returned when a sqlc configuration file cannot be found, read, parsed, or collec
 type SQLCConfigError struct {
     Code       ErrorCode
     ConfigPath string
-    Operation  string
+    Operation  SQLCOperation
     Message    string
     Err        error
 }
 ```
 
 **When it occurs:** `FindSQLCConfigs`, `GetSQLOutputDirs`, or internal sqlc parsing fails.
+
+The `Operation` field uses the `SQLCOperation` type (not raw `string`) to represent what was happening when the error occurred. Valid values: `OpSQLCFind`, `OpSQLCWalk`, `OpSQLCRead`, `OpSQLCCollect`, `OpSQLCParse`.
 
 ### `FindProjectRoot`
 
@@ -122,6 +124,26 @@ type ErrorCoder interface {
     ErrorCode() ErrorCode
 }
 ```
+
+## SQLCOperation
+
+The `SQLCOperation` type represents what operation was being performed when a sqlc config error occurred.
+
+```go
+type SQLCOperation string
+```
+
+### Constants
+
+| Constant        | Value                  |
+| --------------- | ---------------------- |
+| `OpSQLCFind`    | `"find"`               |
+| `OpSQLCWalk`    | `"walk"`               |
+| `OpSQLCRead`    | `"read"`               |
+| `OpSQLCCollect` | `"collect-output-dirs"` |
+| `OpSQLCParse`   | `"parse"`              |
+
+Has a `String() string` method. Used as the `Operation` field type on `SQLCConfigError`.
 
 ## Error Matching
 

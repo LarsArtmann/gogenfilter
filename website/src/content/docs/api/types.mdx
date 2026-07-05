@@ -38,6 +38,31 @@ type FilterReason string
 
 `ReasonSQLC`, `ReasonTempl`, `ReasonGoEnum`, `ReasonProtobuf`, `ReasonOapi`, `ReasonDeepcopy`, `ReasonWire`, `ReasonMoq`, `ReasonMockgen`, `ReasonStringer`, `ReasonMockery`, `ReasonEnt`, `ReasonGqlgen`, `ReasonEasyjson`, `ReasonMsgp`, `ReasonCounterfeiter`, `ReasonGoSwagger`, `ReasonGeneric`, `ReasonOutsideScope`, `ReasonExcludePattern`, `ReasonNotFiltered`
 
+## FilterResult
+
+Detailed result from `FilterDetailed` and `FilterDetailedWithContent`.
+
+```go
+type FilterResult struct {
+    Filtered bool
+    Reason   FilterReason
+    Path     string
+    Trace    string
+}
+```
+
+### Methods
+
+- `Is(reason FilterReason) bool` — reports whether this result was filtered with the given reason. Returns false if not filtered or filtered for a different reason.
+- `String() string` — human-readable representation
+
+```go
+result, _ := f.FilterDetailed("db/models.go")
+if result.Is(gogenfilter.ReasonSQLC) {
+    fmt.Println("sqlc file:", result.Path)
+}
+```
+
 ## Derived Lists
 
 ### `AllFilterOptions() []FilterOption`

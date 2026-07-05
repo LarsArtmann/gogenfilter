@@ -25,6 +25,27 @@ r := bytes.NewBufferString(content)
 reason, err := gogenfilter.DetectReasonReader("file.go", r, opts...)
 ```
 
+### `DetectReasonFile(filePath string, opts ...FilterOption) (FilterReason, error)`
+
+Checks if a file is auto-generated using two-phase detection in a single call. Phase 1 checks filename patterns (zero I/O). Phase 2 reads the file for content-based detection only if needed. Uses the OS filesystem (`os.DirFS(".")`).
+
+```go
+reason, err := gogenfilter.DetectReasonFile("db/models.go",
+    gogenfilter.FilterSQLC,
+    gogenfilter.FilterGeneric,
+)
+```
+
+### `DetectReasonFileFS(fsys fs.FS, filePath string, opts ...FilterOption) (FilterReason, error)`
+
+Same as `DetectReasonFile` but with a custom filesystem.
+
+```go
+reason, err := gogenfilter.DetectReasonFileFS(fsys, "db/models.go",
+    gogenfilter.FilterSQLC,
+)
+```
+
 ## Pattern Matching
 
 ### `MatchPattern(path, pattern string) bool`
@@ -53,7 +74,7 @@ Each generator has dedicated `Is*Generated(filePath, content string) bool` funct
 | `IsStringerGenerated`      | Content marker (`"stringer"`)               |
 | `IsMockeryGenerated`       | `mock_` prefix + content marker (`mockery`) |
 | `IsEntGenerated`           | Content marker (`ent` / `entc`)             |
-| `IsGqlgenGenerated`        | `generated.go` filename + content marker    |
+| `IsGqlgenGenerated`        | Content marker only (`github.com/99designs/gqlgen`)  |
 | `IsEasyjsonGenerated`      | `_easyjson.go` suffix + content marker      |
 | `IsMsgpGenerated`          | Content marker (`github.com/tinylib/msgp`)  |
 | `IsCounterfeiterGenerated` | `fake_` prefix + content marker             |
