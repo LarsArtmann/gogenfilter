@@ -10,7 +10,8 @@ import (
 )
 
 // FilterConfig is a functional option for configuring a Filter.
-// Returns an error if the configuration is invalid.
+// It is a closure that mutates the Filter during construction.
+// Errors are collected and joined by NewFilter after all configs are applied.
 type FilterConfig func(*Filter) error
 
 // WithFilterOptions specifies which generated code types to filter.
@@ -85,7 +86,7 @@ type Filter struct {
 }
 
 // NewFilter creates a new filter configured with the given functional options.
-// A filter with no options is disabled — Filter always returns false.
+// A filter with no options is disabled — Filter always returns (false, nil).
 // A filter is enabled when it has filter options, include patterns, or exclude patterns.
 //
 // Returns an error if any configuration option is invalid.
@@ -93,9 +94,11 @@ type Filter struct {
 //
 // Examples:
 //
-//	filter, err := NewFilter(WithFilterOptions(FilterAll))
-//	filter, err := NewFilter(WithFilterOptions(FilterSQLC, FilterTempl), WithExcludePatterns("**/db/*.go"))
-//	filter, err := NewFilter() // disabled, always returns (false, nil)
+//	opts, err := WithFilterOptions(FilterAll)
+//	filter, err := NewFilter(opts)
+//	opts, err = WithFilterOptions(FilterSQLC, FilterTempl)
+//	filter, err = NewFilter(opts, WithExcludePatterns("**/db/*.go"))
+//	filter, err = NewFilter() // disabled, always returns (false, nil)
 func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	filter := &Filter{
 		options:         make(map[FilterOption]struct{}),
@@ -164,7 +167,8 @@ func (f *Filter) Filter(filePath string) (bool, error) {
 //
 // Example:
 //
-//	filter, _ := NewFilter(WithFilterOptions(FilterSQLC))
+//	opts, err := WithFilterOptions(FilterSQLC)
+//	filter, err := NewFilter(opts)
 //	result, err := filter.FilterDetailed("db/models.go")
 //	if err != nil { log.Fatal(err) }
 //	if result.Filtered {
