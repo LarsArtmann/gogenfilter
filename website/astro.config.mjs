@@ -79,11 +79,11 @@ export default defineConfig({
         {
           label: "API Reference",
           items: [
-            { label: "Filter", slug: "api/filter" },
             { label: "Detection", slug: "api/detection" },
-            { label: "Scan", slug: "api/scan" },
-            { label: "Types", slug: "api/types" },
-            { label: "Errors", slug: "api/errors" },
+            {
+              label: "Full API on pkg.go.dev",
+              link: "https://pkg.go.dev/github.com/LarsArtmann/gogenfilter/v3",
+            },
           ],
         },
         {

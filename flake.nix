@@ -157,6 +157,10 @@
               golangci-lint run ./...
             '';
 
+            gendocs = mkApp "gendocs" [ goPkg ] ''
+              go run ./cmd/gendocs "$@"
+            '';
+
             coverage = mkApp "coverage" [ goPkg ] ''
               go test ./... -coverprofile=coverage.out -covermode=atomic "$@"
               go tool cover -func=coverage.out
