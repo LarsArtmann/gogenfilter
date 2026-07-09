@@ -126,6 +126,8 @@ linters:
     - wsl_v5
     - zerologlint
   settings:
+    cyclop:
+      max-complexity: 12
     depguard:
       rules:
         main:
@@ -139,9 +141,14 @@ linters:
     exhaustruct:
       exclude:
         - .*/fstest\.MapFile
+    ginkgolinter:
+      forbid-focus-container: true
+      forbid-spec-pollution: true
     gocritic:
       disabled-checks:
         - ifElseChain
+    gomoddirectives:
+      replace-local: true
     ireturn:
       allow:
         - error
@@ -149,7 +156,35 @@ linters:
         - anon
         - stdlib
         - generic
+    makezero:
+      always: true
+    revive:
+      rules:
+        - disabled: true
+          name: exported
+        - disabled: true
+          name: package-comments
+    testifylint:
+      disable:
+        - go-require
+      enable-all: true
+    varnamelen:
+      ignore-map-index-ok: true
+      ignore-names:
+        - err
+        - ok
+        - tt
+        - fn
+        - t
+        - i
+        - m
+        - g
+        - a
+        - b
+        - v
+      ignore-type-assert-ok: true
   exclusions:
+    generated: lax
     rules:
       - path: _test\.go
         linters:
@@ -158,10 +193,59 @@ linters:
           - gocognit
           - revive
           - testpackage
+      - path: _test\.go
+        text: unused
+        linters:
+          - unused
+    paths:
+      - \.gen\.go$
+      - \.pb\.go$
+      - _enum\.go$
+      - _mock\.go$
+      - _moq\.go$
+      - _string\.go$
+      - _templ\.go$
+      - testdata/counterfeiter/
+      - testdata/easyjson/
+      - testdata/ent/
+      - testdata/go-swagger/
+      - testdata/gqlgen/
+      - testdata/mockery/
+      - testdata/msgp/
+      - testdata/sqlc/
+      - vendor/
+      - wire_gen\.go$
+      - zz_generated\..*\.go$
 formatters:
   enable:
     - gci
     - goimports
     - gofumpt
     - golines
-issues: {}
+    - swaggo
+  settings:
+    golines:
+      max-len: 120
+  exclusions:
+    generated: lax
+    paths:
+      - \.gen\.go$
+      - \.pb\.go$
+      - _enum\.go$
+      - _mock\.go$
+      - _moq\.go$
+      - _string\.go$
+      - _templ\.go$
+      - testdata/counterfeiter/
+      - testdata/easyjson/
+      - testdata/ent/
+      - testdata/go-swagger/
+      - testdata/gqlgen/
+      - testdata/mockery/
+      - testdata/msgp/
+      - testdata/sqlc/
+      - wire_gen\.go$
+      - zz_generated\..*\.go$
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 10
