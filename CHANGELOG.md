@@ -6,26 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v3.3.0] — 2026-07-09
+
 ### Added
 
-- **Documentation generation pipeline (`cmd/gendocs`)** — A Go binary that reads the `detectors` table from `detection.go` and generates `generators.json`, README tables, `generators.mdx` detection table + tool count, `detection.mdx` per-generator function table, and `doc.go` generator list. Run via `go generate ./...`. CI enforces freshness with `git diff --exit-code`.
 - **`AllDetectorDocs()` function** — Returns structured documentation metadata for all detectors, derived from the `detectors` table. Used by gendocs to generate documentation artifacts.
 - **`DetectorDoc` struct** — Exported struct with `Option`, `Reason`, `URL`, `FilenameDetection`, `ContentDetection`, `IsFuncName`, `HasFilenamePhase`, `HasContentPhase` fields.
 - **`isFuncName` field on `detector` struct** — Records the exported `Is*Generated` function name for each detector, consumed by gendocs for the detection.mdx function table.
+- **`doc.go`** — Dedicated package documentation file (standard Go convention), moved from `types.go`.
+- **Individual doc comments on all 21 `FilterReason` constants** and **all 8 sentinel error variables**.
+- **Documentation generation pipeline (`cmd/gendocs`)** — A Go binary that reads the `detectors` table from `detection.go` and generates `generators.json`, README tables, `generators.mdx` detection table + tool count, `detection.mdx` per-generator function table, and `doc.go` generator list. Run via `go generate ./...`. CI enforces freshness with `git diff --exit-code`.
 - **CI docs freshness job** — Fails when generated docs are stale. Runs `go generate ./...` and checks `git diff --exit-code` on all generated files.
 - **`websiteMetadata` validation** — gendocs fails at build time if a detector lacks website presentation data, making drift impossible when adding new generators.
-
-### Changed
-
-- **`generators.ts`** — Rewritten from 50-line hand-maintained array to thin wrapper importing generated `generators.json`.
-- **README.md** — Generator and filter options tables now generated between gendocs marker comments.
-- **`generators.mdx`** — Detection table and tool count now generated between gendocs marker comments.
-- **`detection.mdx`** — Per-generator function table now generated between gendocs marker comments.
-- **`doc.go`** — Generator list now generated between gendocs marker comments.
-- **CONTRIBUTING.md** — Updated "Adding a New Generator Detector" section with gendocs workflow steps.
-- **CI path filters** — Added `website/**` and `doc.go` to push/PR triggers so docs freshness runs on any relevant change.
-
-## [v3.2.1] — 2026-07-05
+- **Website Scan API reference page** — Documents 9 previously undocumented exported symbols.
+- **Website API docs for `DetectReasonFile`/`DetectReasonFileFS`**, `FilterWithContent`/`FilterDetailedWithContent`, `FilterResult`, `SQLCOperation`.
+- **Missing `doc.go` in 3 testdata directories** (handwritten, wire, templ).
 
 ### Fixed
 
@@ -38,16 +33,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Website `SQLCConfigError.Operation` type** — Documented as `string`, actually `SQLCOperation` since v3.1.0.
 - **Website `IsGqlgenGenerated` description** — Claimed filename + content; actually content-only.
 
-### Added
-
-- **`doc.go`** — Dedicated package documentation file (standard Go convention), moved from `types.go`.
-- **Individual doc comments on all 21 `FilterReason` constants** and **all 8 sentinel error variables**.
-- **Website Scan API reference page** — Documents 9 previously undocumented exported symbols.
-- **Website API docs for `DetectReasonFile`/`DetectReasonFileFS`**, `FilterWithContent`/`FilterDetailedWithContent`, `FilterResult`, `SQLCOperation`.
-- **Missing `doc.go` in 3 testdata directories** (handwritten, wire, templ).
-
 ### Changed
 
+- **`generators.ts`** — Rewritten from 50-line hand-maintained array to thin wrapper importing generated `generators.json`.
+- **README.md** — Generator and filter options tables now generated between gendocs marker comments.
+- **`generators.mdx`** — Detection table and tool count now generated between gendocs marker comments.
+- **`detection.mdx`** — Per-generator function table now generated between gendocs marker comments.
+- **`doc.go`** — Generator list now generated between gendocs marker comments.
+- **CONTRIBUTING.md** — Updated "Adding a New Generator Detector" section with gendocs workflow steps.
+- **CI path filters** — Added `website/**` and `doc.go` to push/PR triggers so docs freshness runs on any relevant change.
 - **`.golangci.yaml` Go version** aligned to `1.26.4` (was `1.26.3`).
 - **AGENTS.md Key Source Files table** updated with `doc.go`, `scan.go`, correct detector/constant counts.
 
