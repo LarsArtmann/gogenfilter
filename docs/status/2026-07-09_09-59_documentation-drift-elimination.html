@@ -172,7 +172,10 @@
         min-width: 0;
       }
 
-      h1, h2, h3, h4 {
+      h1,
+      h2,
+      h3,
+      h4 {
         font-family: var(--font-heading);
         font-weight: 800;
         letter-spacing: -0.02em;
@@ -211,7 +214,8 @@
       p {
         margin: 0 0 1rem;
       }
-      ul, ol {
+      ul,
+      ol {
         margin: 0 0 1rem;
         padding-left: 1.5rem;
       }
@@ -344,9 +348,15 @@
         margin-bottom: 0.6rem;
         color: var(--surface);
       }
-      .severity-critical { background: var(--problem); }
-      .severity-important { background: var(--warning); }
-      .severity-nice { background: var(--solution); }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
 
       .badge {
         display: inline-block;
@@ -359,11 +369,25 @@
         border: 1px solid var(--border-strong);
         color: var(--text-muted);
       }
-      .badge-critical { color: var(--problem); border-color: var(--problem); }
-      .badge-high { color: var(--warning); border-color: var(--warning); }
-      .badge-medium { color: var(--accent); border-color: var(--accent); }
-      .badge-low { color: var(--text-muted); }
-      .badge-fixed { color: var(--solution); border-color: var(--solution); }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
 
       .callout {
         margin: 0.8rem 0 0;
@@ -410,9 +434,15 @@
         height: 2px;
         background: var(--border-strong);
       }
-      .stat-bad::before { background: var(--problem); }
-      .stat-good::before { background: var(--solution); }
-      .stat-warn::before { background: var(--warning); }
+      .stat-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before {
+        background: var(--warning);
+      }
       .stat-value {
         font-family: var(--font-heading);
         font-size: 2rem;
@@ -421,9 +451,15 @@
         letter-spacing: -0.03em;
         color: var(--text);
       }
-      .stat-bad .stat-value { color: var(--problem); }
-      .stat-good .stat-value { color: var(--solution); }
-      .stat-warn .stat-value { color: var(--warning); }
+      .stat-bad .stat-value {
+        color: var(--problem);
+      }
+      .stat-good .stat-value {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value {
+        color: var(--warning);
+      }
       .stat-label {
         font-family: var(--font-mono);
         font-size: 0.65rem;
@@ -504,7 +540,9 @@
       code {
         font-family: var(--font-mono);
       }
-      p code, li code, td code {
+      p code,
+      li code,
+      td code {
         font-size: 0.88em;
         background: var(--surface-sunken);
         padding: 0.1rem 0.35rem;
@@ -546,7 +584,9 @@
       }
 
       @media (min-width: 1024px) {
-        .sidebar { display: block; }
+        .sidebar {
+          display: block;
+        }
       }
       @media (max-width: 768px) {
         .layout {
@@ -596,9 +636,9 @@
           <div class="hero-badge">Post-Execution Status</div>
           <h1>Documentation Drift Elimination</h1>
           <p class="hero-subtitle">
-            Comprehensive status of the gendocs pipeline expansion: extending the Go generator
-            to cover all remaining hand-maintained generator data copies, eliminating 483 lines
-            of duplicated data, and closing the last documentation sync surfaces.
+            Comprehensive status of the gendocs pipeline expansion: extending the Go generator to
+            cover all remaining hand-maintained generator data copies, eliminating 483 lines of
+            duplicated data, and closing the last documentation sync surfaces.
           </p>
         </div>
 
@@ -656,11 +696,11 @@
         <div class="card card-solution">
           <h4>Session Verdict</h4>
           <p>
-            All 14 planned tasks completed and verified. gendocs now generates 5 output files
-            from the single <code>detectors</code> table, eliminating every known documentation
-            drift surface. CI enforces freshness. The pipeline is self-documenting via
-            <code>websiteMetadata</code> validation. Two fuckups occurred and were fixed during
-            the session (detailed below).
+            All 14 planned tasks completed and verified. gendocs now generates 5 output files from
+            the single <code>detectors</code> table, eliminating every known documentation drift
+            surface. CI enforces freshness. The pipeline is self-documenting via
+            <code>websiteMetadata</code> validation. Two fuckups occurred and were fixed during the
+            session (detailed below).
           </p>
         </div>
 
@@ -671,8 +711,8 @@
           <h4>1. CI path filters expanded</h4>
           <p>
             Added <code>website/**</code> and <code>doc.go</code> to push/PR path triggers in
-            <code>ci.yml</code>. The docs freshness job now runs on any website or Go source
-            change, not just <code>.go</code> files. Previously, manual edits to
+            <code>ci.yml</code>. The docs freshness job now runs on any website or Go source change,
+            not just <code>.go</code> files. Previously, manual edits to
             <code>generators.json</code> or <code>generators.mdx</code> would not trigger the
             freshness check.
           </p>
@@ -681,17 +721,18 @@
         <div class="card card-solution">
           <h4>2. CI git diff includes all generated files</h4>
           <p>
-            Updated <code>git diff --exit-code</code> in the docs job to include <code>doc.go</code>
-            and <code>website/src/content/docs/api/detection.mdx</code>. All 5 generated files are
-            now CI-enforced: README.md, doc.go, generators.json, generators.mdx, detection.mdx.
+            Updated <code>git diff --exit-code</code> in the docs job to include
+            <code>doc.go</code> and <code>website/src/content/docs/api/detection.mdx</code>. All 5
+            generated files are now CI-enforced: README.md, doc.go, generators.json, generators.mdx,
+            detection.mdx.
           </p>
         </div>
 
         <div class="card card-solution">
           <h4>3. CONTRIBUTING.md updated for gendocs workflow</h4>
           <p>
-            Replaced outdated "Update the Supported Generators table in README.md" step with
-            gendocs workflow: add <code>websiteMetadata</code> entry, run <code>go generate ./...</code>.
+            Replaced outdated "Update the Supported Generators table in README.md" step with gendocs
+            workflow: add <code>websiteMetadata</code> entry, run <code>go generate ./...</code>.
             Updated project structure listing (added <code>scan.go</code>, <code>doc.go</code>,
             <code>cmd/gendocs/</code>). Added CI enforcement explanation.
           </p>
@@ -700,10 +741,10 @@
         <div class="card card-solution">
           <h4>4. generators.mdx tool count generated</h4>
           <p>
-            Added <code>{/* gendocs:count:start/end */}</code> inline markers around the "18"
-            tool count. Added <code>replaceSectionInline()</code> function to gendocs for
-            mid-line marker replacement (no newline injection). Count now auto-updates when
-            detectors are added or removed.
+            Added <code>{/* gendocs:count:start/end */}</code> inline markers around the "18" tool
+            count. Added <code>replaceSectionInline()</code> function to gendocs for mid-line marker
+            replacement (no newline injection). Count now auto-updates when detectors are added or
+            removed.
           </p>
         </div>
 
@@ -714,20 +755,20 @@
             <code>IsFuncName string</code> to the exported <code>DetectorDoc</code> struct.
             Populated for all 18 detectors (e.g., <code>"IsSQLCGenerated"</code>). Updated
             <code>AllDetectorDocs()</code> to include the new field. Updated
-            <code>TestAllDetectorDocs</code> to validate <code>IsFuncName</code> is non-empty
-            and follows the <code>Is*Generated</code> naming convention.
+            <code>TestAllDetectorDocs</code> to validate <code>IsFuncName</code> is non-empty and
+            follows the <code>Is*Generated</code> naming convention.
           </p>
         </div>
 
         <div class="card card-solution">
           <h4>6. detection.mdx per-generator table generated</h4>
           <p>
-            Added <code>generatePerGeneratorTable()</code> and <code>perGeneratorChecks()</code>
-            to gendocs. Builds the 18-row <code>| Function | Checks |</code> table from
+            Added <code>generatePerGeneratorTable()</code> and <code>perGeneratorChecks()</code> to
+            gendocs. Builds the 18-row <code>| Function | Checks |</code> table from
             <code>DetectorDoc.IsFuncName</code> + phase flags. Replaced hand-written table with
-            <code>{/* gendocs:per-generator:start/end */}</code> markers. The generated
-            descriptions are more accurate than the originals (show actual filename patterns
-            instead of generic "Filename + content markers").
+            <code>{/* gendocs:per-generator:start/end */}</code> markers. The generated descriptions
+            are more accurate than the originals (show actual filename patterns instead of generic
+            "Filename + content markers").
           </p>
         </div>
 
@@ -736,9 +777,9 @@
           <p>
             Added <code>generateDocGo()</code> and <code>generateDocGoList()</code> to gendocs.
             Builds comma-separated generator list with <code>//</code> comment prefix. Added
-            <code>// gendocs:generator-list:start/end</code> markers to doc.go. The generic
-            detector is rendered as "and any tool using the standard 'Code generated by' comment
-            convention". Go doc comments remain valid.
+            <code>// gendocs:generator-list:start/end</code> markers to doc.go. The generic detector
+            is rendered as "and any tool using the standard 'Code generated by' comment convention".
+            Go doc comments remain valid.
           </p>
         </div>
 
@@ -755,8 +796,8 @@
           <h4>9. CHANGELOG entry written (root + website sync)</h4>
           <p>
             Added <code>[Unreleased]</code> section to both <code>CHANGELOG.md</code> and
-            <code>website/src/content/docs/changelog.mdx</code>. Documents the gendocs pipeline,
-            all 5 generated outputs, CI enforcement, <code>AllDetectorDocs()</code>,
+            <code>website/src/content/docs/changelog.mdx</code>. Documents the gendocs pipeline, all
+            5 generated outputs, CI enforcement, <code>AllDetectorDocs()</code>,
             <code>DetectorDoc</code> struct, <code>isFuncName</code> field, and the API page
             deletion. Both files are in sync (CI enforces this via the CHANGELOG sync check).
           </p>
@@ -778,9 +819,10 @@
         <div class="card card-solution">
           <h4>11. API reference pages deleted, linked to pkg.go.dev</h4>
           <p>
-            Deleted 4 hand-written API pages (<code>api/filter.mdx</code>, <code>api/scan.mdx</code>,
-            <code>api/types.mdx</code>, <code>api/errors.mdx</code>) totaling 483 lines. pkg.go.dev
-            auto-generates this content from Go doc comments. Kept <code>api/detection.mdx</code>
+            Deleted 4 hand-written API pages (<code>api/filter.mdx</code>,
+            <code>api/scan.mdx</code>, <code>api/types.mdx</code>, <code>api/errors.mdx</code>)
+            totaling 483 lines. pkg.go.dev auto-generates this content from Go doc comments. Kept
+            <code>api/detection.mdx</code>
             because it has unique hand-written content (code examples, usage notes) plus the
             generated per-generator table. Updated sidebar to link to pkg.go.dev for full API
             reference. Verified no stale references in any active docs.
@@ -790,8 +832,8 @@
         <div class="card card-solution">
           <h4>12. gendocs app added to flake.nix</h4>
           <p>
-            Added <code>gendocs = mkApp "gendocs" [ goPkg ] ''go run ./cmd/gendocs "$@"''</code>
-            to the apps section. Can now run <code>nix run .#gendocs</code> to regenerate docs.
+            Added <code>gendocs = mkApp "gendocs" [ goPkg ] ''go run ./cmd/gendocs "$@"''</code> to
+            the apps section. Can now run <code>nix run .#gendocs</code> to regenerate docs.
           </p>
         </div>
 
@@ -822,17 +864,16 @@
           <h3>detection.mdx table column alignment</h3>
           <div class="where">website/src/content/docs/api/detection.mdx</div>
           <p>
-            The generated per-generator table has correct data but imperfect column alignment
-            in the raw markdown source. Markdown renderers handle this correctly (tables render
-            fine), but the source is not as visually clean as the original hand-written table.
-            The "Checks" column is not padded because values vary from 20 to 70+ chars, making
-            padding produce excessive whitespace. This is a cosmetic source-code issue, not a
-            rendering issue.
+            The generated per-generator table has correct data but imperfect column alignment in the
+            raw markdown source. Markdown renderers handle this correctly (tables render fine), but
+            the source is not as visually clean as the original hand-written table. The "Checks"
+            column is not padded because values vary from 20 to 70+ chars, making padding produce
+            excessive whitespace. This is a cosmetic source-code issue, not a rendering issue.
           </p>
           <div class="callout callout-solution">
             <strong>Fix</strong>
-            Pad the Checks column to a reasonable max width (e.g., 70 chars) or compute the
-            max width dynamically from the data.
+            Pad the Checks column to a reasonable max width (e.g., 70 chars) or compute the max
+            width dynamically from the data.
           </div>
         </div>
 
@@ -845,9 +886,9 @@
             fields (<code>option</code>, <code>reason</code>, <code>matchFilename</code>,
             <code>checkContent</code>) but does NOT mention the new documentation fields
             (<code>url</code>, <code>filenameDesc</code>, <code>contentDesc</code>,
-            <code>isFuncName</code>) or the <code>websiteMetadata</code> requirement. This
-            section is informational, not generated, and will mislead contributors who read
-            the website instead of CONTRIBUTING.md.
+            <code>isFuncName</code>) or the <code>websiteMetadata</code> requirement. This section
+            is informational, not generated, and will mislead contributors who read the website
+            instead of CONTRIBUTING.md.
           </p>
         </div>
 
@@ -856,16 +897,16 @@
           <h3>Website CI stale reference list not updated</h3>
           <div class="where">.github/workflows/website.yml:108</div>
           <p>
-            The <code>DELETED_FILES</code> variable in the website CI stale reference check
-            lists <code>"metrics.go phantom.go errorCodeDefs"</code> but does NOT include the
-            4 deleted API pages (<code>api/filter.mdx</code>, <code>api/scan.mdx</code>,
-            <code>api/types.mdx</code>, <code>api/errors.mdx</code>). If someone re-creates a
-            file referencing these old slugs, CI will not catch it.
+            The <code>DELETED_FILES</code> variable in the website CI stale reference check lists
+            <code>"metrics.go phantom.go errorCodeDefs"</code> but does NOT include the 4 deleted
+            API pages (<code>api/filter.mdx</code>, <code>api/scan.mdx</code>,
+            <code>api/types.mdx</code>, <code>api/errors.mdx</code>). If someone re-creates a file
+            referencing these old slugs, CI will not catch it.
           </p>
           <div class="callout callout-warning">
             <strong>Risk</strong>
-            Low — the sidebar no longer references these slugs, and no active docs link to them.
-            But adding them to the check list is a 2-minute fix that closes the gap.
+            Low — the sidebar no longer references these slugs, and no active docs link to them. But
+            adding them to the check list is a 2-minute fix that closes the gap.
           </div>
         </div>
 
@@ -876,11 +917,11 @@
           <h4>1. Website landing page generator count</h4>
           <p>
             <code>website/src/components/HeroSection.astro</code> and
-            <code>website/src/pages/og/[...slug].ts</code> consume <code>generatorCount</code>
-            from <code>generators.ts</code>, which imports from generated <code>generators.json</code>.
-            This is already auto-derived (the count comes from <code>generators.length</code>),
-            so this is technically done — but the count is not verified by a test. A website-side
-            test or snapshot would close this.
+            <code>website/src/pages/og/[...slug].ts</code> consume <code>generatorCount</code> from
+            <code>generators.ts</code>, which imports from generated <code>generators.json</code>.
+            This is already auto-derived (the count comes from <code>generators.length</code>), so
+            this is technically done — but the count is not verified by a test. A website-side test
+            or snapshot would close this.
           </p>
         </div>
 
@@ -896,16 +937,16 @@
           <h4>3. FEATURES.md not updated</h4>
           <p>
             <code>FEATURES.md</code> does not exist in this project. The feature inventory is
-            documented in README.md and the website. No action needed unless the user wants
-            a separate FEATURES.md.
+            documented in README.md and the website. No action needed unless the user wants a
+            separate FEATURES.md.
           </p>
         </div>
 
         <div class="card">
           <h4>4. TODO_LIST.md not updated</h4>
           <p>
-            <code>TODO_LIST.md</code> does not exist in this project. The next-steps list lives
-            in status reports. No action needed unless the user wants a living TODO list.
+            <code>TODO_LIST.md</code> does not exist in this project. The next-steps list lives in
+            status reports. No action needed unless the user wants a living TODO list.
           </p>
         </div>
 
@@ -921,8 +962,8 @@
         <div class="card">
           <h4>6. Website HTML validation not run in this session</h4>
           <p>
-            The website CI runs <code>html-validate</code> on <code>dist/**/*.html</code>. We
-            ran <code>astro check</code> and <code>astro build</code> but did not run
+            The website CI runs <code>html-validate</code> on <code>dist/**/*.html</code>. We ran
+            <code>astro check</code> and <code>astro build</code> but did not run
             <code>html-validate</code> locally. The CSP fix script
             (<code>scripts/fix-csp.mjs</code>) was also not run. CI will catch any issues.
           </p>
@@ -931,8 +972,8 @@
         <div class="card">
           <h4>7. Git commit not made</h4>
           <p>
-            All changes are in the working tree but not committed. The user has not explicitly
-            asked for a commit. 18 files modified, 4 files deleted, 4 files untracked.
+            All changes are in the working tree but not committed. The user has not explicitly asked
+            for a commit. 18 files modified, 4 files deleted, 4 files untracked.
           </p>
         </div>
 
@@ -944,11 +985,11 @@
           <h3>replace_all on "None" corrupted the constant declaration</h3>
           <div class="where">detection.go (during session, fixed before completion)</div>
           <p>
-            In the previous session (before this one), using <code>replace_all</code> on the
-            string <code>"None"</code> corrupted the constant declaration
+            In the previous session (before this one), using <code>replace_all</code> on the string
+            <code>"None"</code> corrupted the constant declaration
             <code>const filenameNoneDesc = "None"</code> into
-            <code>const filenameNoneDesc = filenameNoneDesc</code> (self-referential cycle).
-            This was already fixed, but it is a critical lesson: never use <code>replace_all</code>
+            <code>const filenameNoneDesc = filenameNoneDesc</code> (self-referential cycle). This
+            was already fixed, but it is a critical lesson: never use <code>replace_all</code>
             on a string that appears in its own definition.
           </p>
           <div class="callout callout-solution">
@@ -962,12 +1003,13 @@
           <h3>replaceSection broke inline count marker with newline injection</h3>
           <div class="where">cmd/gendocs/main.go (during session, fixed before completion)</div>
           <p>
-            The <code>replaceSection()</code> function adds <code>\n</code> after the start
-            marker. When used for the inline count marker in generators.mdx
-            (<code>by {/* gendocs:count:start */}18{/* gendocs:count:end */} tools</code>),
-            it produced <code>by {/* gendocs:count:start */}\n18\n{/* gendocs:count:end */} tools</code>
-            — breaking the sentence across lines. Also, <code>generateDocGoList()</code> did
-            not end with <code>\n</code>, causing the list to run into the end marker in doc.go.
+            The <code>replaceSection()</code> function adds <code>\n</code> after the start marker.
+            When used for the inline count marker in generators.mdx (<code
+              >by {/* gendocs:count:start */}18{/* gendocs:count:end */} tools</code
+            >), it produced
+            <code>by {/* gendocs:count:start */}\n18\n{/* gendocs:count:end */} tools</code> —
+            breaking the sentence across lines. Also, <code>generateDocGoList()</code> did not end
+            with <code>\n</code>, causing the list to run into the end marker in doc.go.
           </p>
           <div class="callout callout-solution">
             <strong>Fixed</strong>
@@ -982,22 +1024,22 @@
         <div class="card card-warning">
           <h4>1. gendocs test coverage is not measured</h4>
           <p>
-            <code>cmd/gendocs</code> now has 17 tests but its coverage is not included in the
-            98.4% number (that is library-only via <code>go test -coverprofile=. .</code>).
-            Running <code>go test -coverprofile=./cmd/gendocs/</code> would give us the gendocs
-            coverage separately. The <code>main()</code> function itself is untested (it does
-            file I/O on real project files), but all pure generation functions are tested.
+            <code>cmd/gendocs</code> now has 17 tests but its coverage is not included in the 98.4%
+            number (that is library-only via <code>go test -coverprofile=. .</code>). Running
+            <code>go test -coverprofile=./cmd/gendocs/</code> would give us the gendocs coverage
+            separately. The <code>main()</code> function itself is untested (it does file I/O on
+            real project files), but all pure generation functions are tested.
           </p>
         </div>
 
         <div class="card card-warning">
           <h4>2. detection.mdx table column widths are hardcoded</h4>
           <p>
-            <code>detectionFuncWidth = 26</code> and the header separator strings are hardcoded.
-            If a future detector has a longer <code>IsFuncName</code> than
+            <code>detectionFuncWidth = 26</code> and the header separator strings are hardcoded. If
+            a future detector has a longer <code>IsFuncName</code> than
             <code>IsCounterfeiterGenerated</code> (24 chars + 2 backticks = 26), the table will
-            misalign. The width should be computed dynamically from the data, or at minimum
-            asserted in a test.
+            misalign. The width should be computed dynamically from the data, or at minimum asserted
+            in a test.
           </p>
         </div>
 
@@ -1013,11 +1055,11 @@
         <div class="card card-warning">
           <h4>4. No test verifies generated output matches committed files</h4>
           <p>
-            The CI docs job checks freshness via <code>git diff --exit-code</code>, but there
-            is no local test that asserts "running gendocs produces output identical to what
-            is committed." Such a test would catch drift before pushing. Could be a simple
-            test that runs <code>generateMDXTable(AllDetectorDocs())</code> and compares the
-            result to the content between markers in the committed file.
+            The CI docs job checks freshness via <code>git diff --exit-code</code>, but there is no
+            local test that asserts "running gendocs produces output identical to what is
+            committed." Such a test would catch drift before pushing. Could be a simple test that
+            runs <code>generateMDXTable(AllDetectorDocs())</code> and compares the result to the
+            content between markers in the committed file.
           </p>
         </div>
 
@@ -1025,11 +1067,10 @@
           <h4>5. gendocs writes files relative to CWD</h4>
           <p>
             gendocs uses hardcoded relative paths (<code>"README.md"</code>,
-            <code>"website/src/data/generators.json"</code>, etc.). If run from a subdirectory,
-            it will fail with "file not found." The <code>//go:generate</code> directive runs
-            from the package directory (<code>.</code> for the root package), so this works
-            in practice, but it is fragile. Using <code>os.Getwd()</code> or embed directives
-            would be more robust.
+            <code>"website/src/data/generators.json"</code>, etc.). If run from a subdirectory, it
+            will fail with "file not found." The <code>//go:generate</code> directive runs from the
+            package directory (<code>.</code> for the root package), so this works in practice, but
+            it is fragile. Using <code>os.Getwd()</code> or embed directives would be more robust.
           </p>
         </div>
 
@@ -1038,8 +1079,8 @@
           <p>
             Historical status reports in <code>docs/status/</code> and
             <code>docs/planning/</code> contain references to <code>api/filter</code>,
-            <code>api/scan</code>, etc. These are historical documents and should NOT be
-            edited, but the website CI stale reference check scans <code>--include='*.md'</code>
+            <code>api/scan</code>, etc. These are historical documents and should NOT be edited, but
+            the website CI stale reference check scans <code>--include='*.md'</code>
             which could match these files if the search scope is broadened.
           </p>
         </div>
@@ -1047,11 +1088,10 @@
         <div class="card card-warning">
           <h4>7. No gendocs marker validation test</h4>
           <p>
-            There is no test that verifies all expected gendocs markers exist in all target
-            files. If someone accidentally deletes a marker, gendocs will silently skip that
-            section (the <code>replaceSection</code> function returns the original content
-            unchanged when markers are missing). A test that checks for marker presence in
-            all 5 files would catch this.
+            There is no test that verifies all expected gendocs markers exist in all target files.
+            If someone accidentally deletes a marker, gendocs will silently skip that section (the
+            <code>replaceSection</code> function returns the original content unchanged when markers
+            are missing). A test that checks for marker presence in all 5 files would catch this.
           </p>
         </div>
 
@@ -1061,8 +1101,8 @@
             The generated line in doc.go is a single <code>//</code> comment containing all 18
             generator names plus the generic suffix. It is 163 characters long. Go's
             <code>gofmt</code> does not break comment lines, and <code>golines</code> does not
-            reformat comments. This is valid Go but harder to read in a terminal. Could be
-            split across multiple <code>//</code> lines.
+            reformat comments. This is valid Go but harder to read in a terminal. Could be split
+            across multiple <code>//</code> lines.
           </p>
         </div>
 
@@ -1082,56 +1122,372 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td><span class="badge badge-critical">P0</span></td><td>Update generators.mdx "Adding New Generators" section with new detector fields + websiteMetadata</td><td>High</td><td>5 min</td></tr>
-              <tr><td>2</td><td><span class="badge badge-critical">P0</span></td><td>Add deleted API pages to website CI DELETED_FILES list</td><td>High</td><td>2 min</td></tr>
-              <tr><td>3</td><td><span class="badge badge-critical">P0</span></td><td>Commit all changes (18 modified, 4 deleted, 4 untracked files)</td><td>High</td><td>5 min</td></tr>
-              <tr><td>4</td><td><span class="badge badge-high">P1</span></td><td>Add gendocs marker presence test (verify all 5 files have markers)</td><td>High</td><td>10 min</td></tr>
-              <tr><td>5</td><td><span class="badge badge-high">P1</span></td><td>Add generated-output-matches-committed test for gendocs</td><td>High</td><td>15 min</td></tr>
-              <tr><td>6</td><td><span class="badge badge-high">P1</span></td><td>Compute detection.mdx table column widths dynamically from data</td><td>Medium</td><td>10 min</td></tr>
-              <tr><td>7</td><td><span class="badge badge-high">P1</span></td><td>Pad detection.mdx "Checks" column for better source readability</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>8</td><td><span class="badge badge-high">P1</span></td><td>Split doc.go generator list across multiple // lines for readability</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>9</td><td><span class="badge badge-medium">P2</span></td><td>Measure cmd/gendocs test coverage separately and add to CI</td><td>Medium</td><td>10 min</td></tr>
-              <tr><td>10</td><td><span class="badge badge-medium">P2</span></td><td>Add test for main() function (run in temp dir with copy of files)</td><td>Medium</td><td>20 min</td></tr>
-              <tr><td>11</td><td><span class="badge badge-medium">P2</span></td><td>Run html-validate on website dist after build</td><td>Medium</td><td>5 min</td></tr>
-              <tr><td>12</td><td><span class="badge badge-medium">P2</span></td><td>Run scripts/fix-csp.mjs and verify CSP headers in dist</td><td>Medium</td><td>10 min</td></tr>
-              <tr><td>13</td><td><span class="badge badge-medium">P2</span></td><td>Update website CI stale ref check scope to exclude docs/status/ and docs/planning/</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>14</td><td><span class="badge badge-medium">P2</span></td><td>Archive old status reports (keep only 3 most recent in docs/status/)</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>15</td><td><span class="badge badge-medium">P2</span></td><td>Add gendocs coverage to flake.nix coverage app</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>16</td><td><span class="badge badge-low">P3</span></td><td>Add nix flake check to CI (verify flake evaluates)</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>17</td><td><span class="badge badge-low">P3</span></td><td>Add bench test for AllDetectorDocs() (ensure no regression in generation speed)</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>18</td><td><span class="badge badge-low">P3</span></td><td>Document gendocs architecture in a dedicated website docs page</td><td>Low</td><td>20 min</td></tr>
-              <tr><td>19</td><td><span class="badge badge-low">P3</span></td><td>Add a "How gendocs works" diagram to AGENTS.md</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>20</td><td><span class="badge badge-low">P3</span></td><td>Consider generating the website sidebar API entries from Go source</td><td>Low</td><td>30 min</td></tr>
-              <tr><td>21</td><td><span class="badge badge-low">P3</span></td><td>Add go:generate directive comment in doc.go explaining what gendocs does</td><td>Low</td><td>2 min</td></tr>
-              <tr><td>22</td><td><span class="badge badge-low">P3</span></td><td>Consider embedding websiteMetadata in the detector struct (D2 from plan)</td><td>Low</td><td>30 min</td></tr>
-              <tr><td>23</td><td><span class="badge badge-low">P3</span></td><td>Add a Makefile-equivalent in flake.nix for "gendocs + test + lint" one-command run</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>24</td><td><span class="badge badge-low">P3</span></td><td>Verify nix flake check passes with new gendocs app</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>25</td><td><span class="badge badge-low">P3</span></td><td>Address Lighthouse CI accessibility failures (color-contrast, redirects)</td><td>Low</td><td>60 min</td></tr>
-              <tr><td>26</td><td><span class="badge badge-low">P3</span></td><td>Add Firebase redirect for old /docs/api/filter -> pkg.go.dev (and other deleted slugs)</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>27</td><td><span class="badge badge-low">P3</span></td><td>Generate the README "Quick Start" example from example_test.go</td><td>Low</td><td>30 min</td></tr>
-              <tr><td>28</td><td><span class="badge badge-low">P3</span></td><td>Add a CONTRIBUTING.md test that verifies steps match actual code structure</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>29</td><td><span class="badge badge-low">P3</span></td><td>Consider generating the limitations.mdx page from Go source (if derivable)</td><td>Low</td><td>20 min</td></tr>
-              <tr><td>30</td><td><span class="badge badge-low">P3</span></td><td>Add a pre-commit hook for go generate + git diff check</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>31</td><td><span class="badge badge-low">P3</span></td><td>Tag the release as v3.3.0 (Unreleased -> v3.3.0 with date)</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>32</td><td><span class="badge badge-low">P3</span></td><td>Update README.md badge links if any reference deleted API pages</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>33</td><td><span class="badge badge-low">P3</span></td><td>Verify Firebase redirects handle /api/filter, /api/scan, /api/types, /api/errors</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>34</td><td><span class="badge badge-low">P3</span></td><td>Add sitemap exclusion for deleted API pages</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>35</td><td><span class="badge badge-low">P3</span></td><td>Consider adding Open Graph images for the remaining detection.mdx page</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>36</td><td><span class="badge badge-low">P3</span></td><td>Review all website internal links for stale references to deleted pages</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>37</td><td><span class="badge badge-low">P3</span></td><td>Add a version flag to gendocs (--version) for debugging</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>38</td><td><span class="badge badge-low">P3</span></td><td>Consider generating the website changelog from root CHANGELOG.md</td><td>Low</td><td>30 min</td></tr>
-              <tr><td>39</td><td><span class="badge badge-low">P3</span></td><td>Add dependabot config for golangci-lint version updates</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>40</td><td><span class="badge badge-low">P3</span></td><td>Review and update .golangci.yaml for any new linter rules needed by gendocs</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>41</td><td><span class="badge badge-low">P3</span></td><td>Add a "Development" section to README.md with go generate instructions</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>42</td><td><span class="badge badge-low">P3</span></td><td>Consider adding JSON schema validation for generators.json in CI</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>43</td><td><span class="badge badge-low">P3</span></td><td>Add a test that verifies AllDetectorDocs() output is JSON-serializable</td><td>Low</td><td>5 min</td></tr>
-              <tr><td>44</td><td><span class="badge badge-low">P3</span></td><td>Consider generating the DetectorDoc struct documentation from Go reflect</td><td>Low</td><td>30 min</td></tr>
-              <tr><td>45</td><td><span class="badge badge-low">P3</span></td><td>Add error handling for missing markers in gendocs (warn instead of silent skip)</td><td>Medium</td><td>10 min</td></tr>
-              <tr><td>46</td><td><span class="badge badge-low">P3</span></td><td>Consider adding a --dry-run flag to gendocs</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>47</td><td><span class="badge badge-low">P3</span></td><td>Add integration test that runs go generate in a clean checkout</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>48</td><td><span class="badge badge-low">P3</span></td><td>Consider generating the og-image slug list from actual website pages</td><td>Low</td><td>15 min</td></tr>
-              <tr><td>49</td><td><span class="badge badge-low">P3</span></td><td>Add a website 404 test for deleted API page URLs</td><td>Low</td><td>10 min</td></tr>
-              <tr><td>50</td><td><span class="badge badge-low">P3</span></td><td>Write a blog post / announcement for the gendocs pipeline</td><td>Low</td><td>60 min</td></tr>
+              <tr>
+                <td>1</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>
+                  Update generators.mdx "Adding New Generators" section with new detector fields +
+                  websiteMetadata
+                </td>
+                <td>High</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>Add deleted API pages to website CI DELETED_FILES list</td>
+                <td>High</td>
+                <td>2 min</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>Commit all changes (18 modified, 4 deleted, 4 untracked files)</td>
+                <td>High</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>Add gendocs marker presence test (verify all 5 files have markers)</td>
+                <td>High</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>Add generated-output-matches-committed test for gendocs</td>
+                <td>High</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>Compute detection.mdx table column widths dynamically from data</td>
+                <td>Medium</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>Pad detection.mdx "Checks" column for better source readability</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>Split doc.go generator list across multiple // lines for readability</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Measure cmd/gendocs test coverage separately and add to CI</td>
+                <td>Medium</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Add test for main() function (run in temp dir with copy of files)</td>
+                <td>Medium</td>
+                <td>20 min</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Run html-validate on website dist after build</td>
+                <td>Medium</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Run scripts/fix-csp.mjs and verify CSP headers in dist</td>
+                <td>Medium</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Update website CI stale ref check scope to exclude docs/status/ and docs/planning/
+                </td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Archive old status reports (keep only 3 most recent in docs/status/)</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>Add gendocs coverage to flake.nix coverage app</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add nix flake check to CI (verify flake evaluates)</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add bench test for AllDetectorDocs() (ensure no regression in generation speed)
+                </td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Document gendocs architecture in a dedicated website docs page</td>
+                <td>Low</td>
+                <td>20 min</td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a "How gendocs works" diagram to AGENTS.md</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider generating the website sidebar API entries from Go source</td>
+                <td>Low</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>21</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add go:generate directive comment in doc.go explaining what gendocs does</td>
+                <td>Low</td>
+                <td>2 min</td>
+              </tr>
+              <tr>
+                <td>22</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider embedding websiteMetadata in the detector struct (D2 from plan)</td>
+                <td>Low</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>23</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add a Makefile-equivalent in flake.nix for "gendocs + test + lint" one-command run
+                </td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>24</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Verify nix flake check passes with new gendocs app</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>25</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Address Lighthouse CI accessibility failures (color-contrast, redirects)</td>
+                <td>Low</td>
+                <td>60 min</td>
+              </tr>
+              <tr>
+                <td>26</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add Firebase redirect for old /docs/api/filter -> pkg.go.dev (and other deleted
+                  slugs)
+                </td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>27</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Generate the README "Quick Start" example from example_test.go</td>
+                <td>Low</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>28</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a CONTRIBUTING.md test that verifies steps match actual code structure</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>29</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider generating the limitations.mdx page from Go source (if derivable)</td>
+                <td>Low</td>
+                <td>20 min</td>
+              </tr>
+              <tr>
+                <td>30</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a pre-commit hook for go generate + git diff check</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>31</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Tag the release as v3.3.0 (Unreleased -> v3.3.0 with date)</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>32</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Update README.md badge links if any reference deleted API pages</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>33</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Verify Firebase redirects handle /api/filter, /api/scan, /api/types, /api/errors
+                </td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>34</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add sitemap exclusion for deleted API pages</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>35</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider adding Open Graph images for the remaining detection.mdx page</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>36</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Review all website internal links for stale references to deleted pages</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>37</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a version flag to gendocs (--version) for debugging</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>38</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider generating the website changelog from root CHANGELOG.md</td>
+                <td>Low</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>39</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add dependabot config for golangci-lint version updates</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>40</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Review and update .golangci.yaml for any new linter rules needed by gendocs</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>41</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a "Development" section to README.md with go generate instructions</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>42</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider adding JSON schema validation for generators.json in CI</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>43</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a test that verifies AllDetectorDocs() output is JSON-serializable</td>
+                <td>Low</td>
+                <td>5 min</td>
+              </tr>
+              <tr>
+                <td>44</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider generating the DetectorDoc struct documentation from Go reflect</td>
+                <td>Low</td>
+                <td>30 min</td>
+              </tr>
+              <tr>
+                <td>45</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add error handling for missing markers in gendocs (warn instead of silent skip)
+                </td>
+                <td>Medium</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>46</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider adding a --dry-run flag to gendocs</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>47</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add integration test that runs go generate in a clean checkout</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>48</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Consider generating the og-image slug list from actual website pages</td>
+                <td>Low</td>
+                <td>15 min</td>
+              </tr>
+              <tr>
+                <td>49</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a website 404 test for deleted API page URLs</td>
+                <td>Low</td>
+                <td>10 min</td>
+              </tr>
+              <tr>
+                <td>50</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Write a blog post / announcement for the gendocs pipeline</td>
+                <td>Low</td>
+                <td>60 min</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1143,9 +1499,9 @@
           <span class="severity severity-important">Question 1</span>
           <h3>Should we commit these changes now, or do you want to review first?</h3>
           <p>
-            18 files are modified, 4 deleted, 4 untracked. All checks pass (build, vet, lint,
-            tests, coverage, Astro typecheck, Astro build). The changes are NOT committed.
-            Should I commit with a descriptive message, or do you want to review the diff first?
+            18 files are modified, 4 deleted, 4 untracked. All checks pass (build, vet, lint, tests,
+            coverage, Astro typecheck, Astro build). The changes are NOT committed. Should I commit
+            with a descriptive message, or do you want to review the diff first?
           </p>
         </div>
 
@@ -1153,11 +1509,11 @@
           <span class="severity severity-important">Question 2</span>
           <h3>Should the old status report (09-07) be archived or deleted?</h3>
           <p>
-            There are now 7 status reports in <code>docs/status/</code> (plus the archive
-            folder). AGENTS.md says "only the 3 most recent reports are kept in docs/status/.
-            Older reports are archived." The 09-07 report from earlier today and this new one
-            would push older reports into the archive. Should I archive the 3 oldest as part
-            of the commit, or leave that for a separate cleanup task?
+            There are now 7 status reports in <code>docs/status/</code> (plus the archive folder).
+            AGENTS.md says "only the 3 most recent reports are kept in docs/status/. Older reports
+            are archived." The 09-07 report from earlier today and this new one would push older
+            reports into the archive. Should I archive the 3 oldest as part of the commit, or leave
+            that for a separate cleanup task?
           </p>
         </div>
 
