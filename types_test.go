@@ -1,6 +1,9 @@
 package gogenfilter
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 type validatable interface {
 	IsValid() bool
@@ -194,6 +197,63 @@ func TestAllGeneratorOptions(t *testing.T) {
 	}
 
 	assertAllValidity(t, "AllGeneratorOptions()", opts, true)
+}
+
+func TestAllDetectorDocs(t *testing.T) {
+	t.Parallel()
+
+	docs := AllDetectorDocs()
+
+	assertEqual(t, "len(AllDetectorDocs())", len(docs), len(detectors))
+
+	seen := make(map[FilterOption]bool, len(docs))
+
+	for _, doc := range docs {
+		if seen[doc.Option] {
+			t.Errorf("AllDetectorDocs() duplicate option %q", doc.Option)
+		}
+
+		seen[doc.Option] = true
+
+		if doc.Reason == "" {
+			t.Errorf("AllDetectorDocs() doc for %q has empty Reason", doc.Option)
+		}
+
+		if doc.FilenameDetection == "" {
+			t.Errorf("AllDetectorDocs() doc for %q has empty FilenameDetection", doc.Option)
+		}
+
+		if doc.ContentDetection == "" {
+			t.Errorf("AllDetectorDocs() doc for %q has empty ContentDetection", doc.Option)
+		}
+
+		if doc.IsFuncName == "" {
+			t.Errorf("AllDetectorDocs() doc for %q has empty IsFuncName", doc.Option)
+		}
+
+		hasPrefix := strings.HasPrefix(doc.IsFuncName, "Is")
+		hasSuffix := strings.HasSuffix(doc.IsFuncName, "Generated")
+
+		if !hasPrefix || !hasSuffix {
+			t.Errorf(
+				"AllDetectorDocs() doc for %q has malformed IsFuncName %q",
+				doc.Option, doc.IsFuncName,
+			)
+		}
+
+		if !doc.HasContentPhase {
+			t.Errorf(
+				"AllDetectorDocs() doc for %q should have HasContentPhase (all detectors check content)",
+				doc.Option,
+			)
+		}
+	}
+
+	for _, detector := range detectors {
+		if !seen[detector.option] {
+			t.Errorf("AllDetectorDocs() missing detector %q", detector.option)
+		}
+	}
 }
 
 func TestFilterOptionReasonFilterAllReturnsFalse(t *testing.T) {

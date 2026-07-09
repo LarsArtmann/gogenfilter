@@ -11,6 +11,9 @@ on:
       - .golangci.yml
       - .golangci.yaml
       - .github/workflows/ci.yml
+      - README.md
+      - doc.go
+      - website/**
   pull_request:
     branches: [master]
     paths:
@@ -21,6 +24,9 @@ on:
       - .golangci.yml
       - .golangci.yaml
       - .github/workflows/ci.yml
+      - README.md
+      - doc.go
+      - website/**
 
 permissions:
   contents: read
@@ -48,7 +54,9 @@ jobs:
 
       - run: go vet ./...
 
-      - run: go test -race -coverprofile=coverage.out ./...
+      - run: go test -race ./... # all packages compile and pass
+
+      - run: go test -race -coverprofile=coverage.out .
 
       - name: Coverage threshold
         run: |
@@ -104,3 +112,24 @@ jobs:
           art-dupl --semantic -t 15 \
             --exclude-pattern 'testdata/moq/**' \
             --exclude-pattern 'sqlc.go'
+
+  docs:
+    name: Generated Docs Freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.26"
+
+      - name: Regenerate docs from Go source
+        run: go generate ./...
+
+      - name: Check for stale generated docs
+        run: |
+          if ! git diff --exit-code -- README.md doc.go website/src/data/generators.json website/src/content/docs/generators.mdx website/src/content/docs/api/detection.mdx; then
+            echo "::error::Generated docs are stale. Run 'go generate ./...' and commit the changes."
+            git diff --stat
+            exit 1
+          fi
