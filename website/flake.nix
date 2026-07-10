@@ -3,6 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    systems.url = "github:nix-systems/default";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     md-go-validator = {
       url = "github:LarsArtmann/md-go-validator";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,137 +23,69 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      md-go-validator,
-    }:
-    let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
-      apps = forAllSystems (
-        system:
+    inputs@{ self, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import inputs.systems;
+
+      imports = [ inputs.treefmt-nix.flakeModule ];
+
+      perSystem =
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
-          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
+          mdgo = inputs.md-go-validator.packages.${pkgs.stdenv.system}.default.overrideAttrs (_: {
             vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
           });
+
+          mkApp = name: runtimeInputs: text: {
+            type = "app";
+            program = "${
+              pkgs.writeShellApplication {
+                inherit name runtimeInputs text;
+              }
+            }/bin/${name}";
+          };
         in
         {
-          dev = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "dev";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run dev
-                '';
-              }
-            }/bin/dev";
-          };
-
-          build = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "build";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run build
-                '';
-              }
-            }/bin/build";
-          };
-
-          preview = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "preview";
-                runtimeInputs = with pkgs; [ nodejs ];
-                text = ''
-                  npm run preview
-                '';
-              }
-            }/bin/preview";
-          };
-
-          deploy = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "deploy";
-                runtimeInputs = with pkgs; [
-                  nodejs
-                  firebase-tools
-                ];
-                text = ''
+          apps = {
+            dev = mkApp "dev" [ pkgs.nodejs ] "npm run dev";
+            build = mkApp "build" [ pkgs.nodejs ] "npm run build";
+            preview = mkApp "preview" [ pkgs.nodejs ] "npm run preview";
+            deploy =
+              mkApp "deploy"
+                [
+                  pkgs.nodejs
+                  pkgs.firebase-tools
+                ]
+                ''
                   npm run build
                   firebase deploy --only hosting
                 '';
-              }
-            }/bin/deploy";
+            validate-docs = mkApp "validate-docs" [
+              pkgs.nodejs
+              mdgo
+            ] "md-go-validator -f table src/content/docs/";
           };
 
-          validate-docs = {
-            type = "app";
-            program = "${
-              pkgs.writeShellApplication {
-                name = "validate-docs";
-                runtimeInputs = [
-                  pkgs.nodejs
-                  mdgo
-                ];
-                text = ''
-                  md-go-validator -f table src/content/docs/
-                '';
-              }
-            }/bin/validate-docs";
+          devShells.default = pkgs.mkShellNoCC {
+            packages = [
+              pkgs.nodejs
+              pkgs.firebase-tools
+              mdgo
+            ];
           };
-        }
-      );
 
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
-            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
-          });
-        in
-        {
-          default = pkgs.mkShell {
-            packages =
-              with pkgs;
-              [
-                nodejs
-                firebase-tools
-              ]
-              ++ [ mdgo ];
+          treefmt = {
+            programs = {
+              nixfmt.enable = true;
+            };
           };
-        }
-      );
 
-      checks = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          format = pkgs.runCommand "format-check" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
-            nixfmt --check ${./flake.nix} && touch $out
-          '';
-        }
-      );
-
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+          checks.format = config.treefmt.build.check self;
+        };
     };
 }
