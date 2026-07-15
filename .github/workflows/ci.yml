@@ -35,6 +35,9 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  GOEXPERIMENT: jsonv2
+
 jobs:
   test:
     name: Test
