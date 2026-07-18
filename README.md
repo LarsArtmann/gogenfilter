@@ -26,6 +26,7 @@ Your linter shouldn't waste time on files it didn't write. Generated code from s
 ## Supported Generators
 
 <!-- gendocs:generators:start -->
+
 || Tool | Detection |
 || --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 || [sqlc](https://sqlc.dev) | `models.go`, `querier.go`, `query.sql.go`, `batch.go`, `*.sql.go` + content |
@@ -124,6 +125,7 @@ f, _ := gogenfilter.NewFilter()
 ## Filter Options
 
 <!-- gendocs:filter-options:start -->
+
 || Option | Detection |
 || ---------------- | -------------------------------------------------------------------- |
 || `FilterSQLC` | `models.go`, `querier.go`, `query.sql.go`, `batch.go`, `*.sql.go` + content |
