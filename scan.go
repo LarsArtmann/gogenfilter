@@ -289,12 +289,12 @@ func dirBasedExclusions(files []string, reason string) []Exclusion {
 
 	sort.Strings(dirs)
 
-	exclusions := make([]Exclusion, len(dirs))
-	for i, dir := range dirs {
-		exclusions[i] = Exclusion{
+	exclusions := make([]Exclusion, 0, len(dirs))
+	for _, dir := range dirs {
+		exclusions = append(exclusions, Exclusion{
 			Pattern: regexp.QuoteMeta(dir) + "/",
 			Reason:  reason,
-		}
+		})
 	}
 
 	return exclusions
@@ -302,9 +302,9 @@ func dirBasedExclusions(files []string, reason string) []Exclusion {
 
 // ExclusionPaths extracts just the pattern strings from a slice of Exclusions.
 func ExclusionPaths(exclusions []Exclusion) []string {
-	paths := make([]string, len(exclusions))
-	for i, e := range exclusions {
-		paths[i] = e.Pattern
+	paths := make([]string, 0, len(exclusions))
+	for _, e := range exclusions {
+		paths = append(paths, e.Pattern)
 	}
 
 	return paths

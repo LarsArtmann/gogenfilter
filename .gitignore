@@ -74,6 +74,8 @@ Thumbs.db
 
 # Templ generated files
 *_templ.go
+# Keep templ test fixture tracked (needed by integration tests)
+!testdata/templ/page_templ.go
 
 # Build artifacts
 /v3
