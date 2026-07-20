@@ -30,7 +30,11 @@
         "image-aspect-ratio": "warn",
         "errors-in-console": "warn",
         "inspector-issues": "warn",
-        "redirects": "warn"
+        "redirects": "warn",
+        "image-delivery-insight": "warn",
+        "network-dependency-tree-insight": "warn",
+        "uses-responsive-images": "warn",
+        "document-latency-insight": "warn"
       }
     },
     "upload": {
