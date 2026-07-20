@@ -1,7 +1,7 @@
 {
   "name": "gogenfilter",
   "short_name": "gogenfilter",
-  "description": "Detect and filter auto-generated Go code files",
+  "description": "Skip auto-generated Go code in linters and CI",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0a09",

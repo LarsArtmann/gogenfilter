@@ -7,7 +7,7 @@ import SectionHeader from './SectionHeader.astro';
 ---
 
 <div>
-  <SectionHeader title={`${generatorCount} generators. One filter.`} subtitle="Detects output from every major Go code generation tool." />
+  <SectionHeader eyebrow="Supported Tools" title={`${generatorCount} generators. One filter.`} subtitle="Detects output from every major Go code generation tool." />
 
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {generators.map((gen) => (
