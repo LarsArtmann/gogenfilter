@@ -5,6 +5,21 @@ description: All notable changes to gogenfilter.
 
 ## [Unreleased]
 
+### Added
+
+- **README table consistency test** — Validates that all markdown tables in README.md have consistent column counts. Regression guard for the gendocs `||` phantom-column corruption that produced broken tables.
+
+### Fixed
+
+- **README.md generator and filter-options tables** — Rendered with phantom empty columns caused by a `||` formatting bug in gendocs (`cmd/gendocs/main.go`). Tables now render correctly.
+- **3 integration tests** — Failed after `testdata/templ/page_templ.go` was accidentally deleted; fixture restored from git history.
+- **Benchmark CI workflow** — Failed because `GOEXPERIMENT=jsonv2` was missing (required by `cmd/gendocs`, which imports `encoding/json/v2`).
+- **Firebase deploy in Website CI** — Failed due to bash quote mangling when passing the service account JSON via `echo "${{ secrets.X }}"`. Switched to the `env:` + `printf '%s'` pattern.
+
+### Changed
+
+- **Removed unused `filenameNone` constant** in `cmd/gendocs/main.go` (dead code flagged by static analysis).
+
 ## [v3.3.0] — 2026-07-09
 
 ### Added
