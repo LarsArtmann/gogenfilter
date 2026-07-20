@@ -210,9 +210,9 @@ func generateReadme(docs []gogenfilter.DetectorDoc) error {
 func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 	var builder strings.Builder
 
-	builder.WriteString("|| Tool | Detection |\n")
+	builder.WriteString("| Tool | Detection |\n")
 	builder.WriteString(
-		"|| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |\n",
+		"| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |\n",
 	)
 
 	for _, doc := range docs {
@@ -220,9 +220,9 @@ func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 		detection := readmeDetection(doc)
 
 		if doc.URL != "" {
-			fmt.Fprintf(&builder, "|| [%s](%s) | %s |\n", name, doc.URL, detection)
+			fmt.Fprintf(&builder, "| [%s](%s) | %s |\n", name, doc.URL, detection)
 		} else {
-			fmt.Fprintf(&builder, "|| **%s** | %s |\n", name, detection)
+			fmt.Fprintf(&builder, "| **%s** | %s |\n", name, detection)
 		}
 	}
 
@@ -233,18 +233,18 @@ func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 func generateReadmeFilterOptionsTable(docs []gogenfilter.DetectorDoc) string {
 	var builder strings.Builder
 
-	builder.WriteString("|| Option | Detection |\n")
+	builder.WriteString("| Option | Detection |\n")
 	builder.WriteString(
-		"|| ---------------- | -------------------------------------------------------------------- |\n",
+		"| ---------------- | -------------------------------------------------------------------- |\n",
 	)
 
 	for _, doc := range docs {
 		optionConst := optionToConstName(string(doc.Option))
 		detection := readmeDetection(doc)
-		fmt.Fprintf(&builder, "|| `%s` | %s |\n", optionConst, detection)
+		fmt.Fprintf(&builder, "| `%s` | %s |\n", optionConst, detection)
 	}
 
-	builder.WriteString("|| `FilterAll` | Enables all of the above |\n")
+	builder.WriteString("| `FilterAll` | Enables all of the above |\n")
 
 	return builder.String()
 }
