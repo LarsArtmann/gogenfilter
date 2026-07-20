@@ -4,7 +4,7 @@
       "url": [
         "https://gogenfilter.web.app/",
         "https://gogenfilter.web.app/getting-started/installation/",
-        "https://gogenfilter.web.app/api/filter",
+        "https://gogenfilter.web.app/api/detection",
         "https://gogenfilter.web.app/changelog"
       ],
       "numberOfRuns": 3
