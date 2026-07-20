@@ -60,15 +60,16 @@ const highlightedCode = `<span class="text-[#bd93f9]">package</span> <span class
         Free &amp; MIT licensed
       </span>
     </div>
-    <h1 class="text-[clamp(2.75rem,8vw,4.75rem)] font-bold tracking-tighter leading-[1.05] mb-6">
-      <span>Skip the </span><span class="bg-gradient-to-r from-accent via-accent-light to-amber bg-clip-text text-transparent">generated</span><span> noise.</span>
+    <h1 class="text-[clamp(2.5rem,7vw,4.5rem)] font-bold tracking-tighter leading-[1.05] mb-6">
+      Stop linting code <span class="bg-gradient-to-r from-accent via-accent-light to-amber bg-clip-text text-transparent">no human wrote</span>.
     </h1>
 
-    <p class="text-[clamp(1.15rem,2.5vw,1.35rem)] text-text-secondary max-w-3xl mx-auto mb-10 leading-relaxed">
-      Detect and filter auto-generated Go code files from
-      <em class="not-italic text-text-primary font-medium">sqlc</em>, <em class="not-italic text-text-primary font-medium">protobuf</em>, <em class="not-italic text-text-primary font-medium">templ</em>, <em class="not-italic text-text-primary font-medium">mockgen</em>,
-      and {generatorCount - 4} more tools.
-      Built for linters and static analysis.
+    <p class="text-[clamp(1.125rem,2.5vw,1.35rem)] text-text-secondary max-w-3xl mx-auto mb-4 leading-relaxed">
+      gogenfilter detects files from {generatorCount} Go code generators — sqlc, protobuf, templ, and more — so your linters, analyzers, and CI skip them automatically.
+    </p>
+
+    <p class="text-sm text-text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+      New to code generation? Tools like sqlc, protobuf, and templ produce <em class="not-italic text-text-secondary">.go files automatically</em> from schemas, proto definitions, and templates. They're valid Go — but no engineer wrote or maintains them.
     </p>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">

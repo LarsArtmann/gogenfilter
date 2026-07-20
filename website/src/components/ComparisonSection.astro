@@ -1,22 +1,52 @@
 ---
-import { comparisons } from '../data/sections';
 import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
+
+const beforeIssues = [
+  { file: 'models.pb.go', line: '15', msg: '`User` is unused', linter: 'unused' },
+  { file: 'db/sqlc_gen.go', line: '8', msg: 'cyclomatic complexity 38', linter: 'gocyclo' },
+  { file: 'user_templ.go', line: '3', msg: 'too many statements', linter: 'funlen' },
+  { file: 'mock_user_mock.go', line: '5', msg: '`MockUser` is unused', linter: 'unused' },
+  { file: 'wire_gen.go', line: '12', msg: 'ineffectual assignment', linter: 'ineffassign' },
+];
 ---
 
-<SectionHeader title="Why gogenfilter?" subtitle="Purpose-built for Go. Not a generic file filter." />
+<SectionHeader title="See the difference." subtitle="Generated files vanish from your linter output." />
 
-<div class="grid gap-4 sm:grid-cols-3">
-  {comparisons.map((item) => (
-    <div class={`p-6 rounded-xl border bg-bg-card text-center transition-all duration-200 ${item.accent ? 'border-accent/50 bg-accent-dim ring-1 ring-accent/30 relative overflow-hidden' : 'border-border'}`}>
-      {item.accent && <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-accent-light to-success" aria-hidden="true"></div>}
-      <div class="font-semibold text-text-primary mb-2 text-base">{item.variant}</div>
-      <div class={`text-3xl font-bold mb-4 ${item.accent ? 'bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent' : 'text-text-muted'}`}>{item.price}</div>
-      {item.pros.map((pro) => (
-        <div class="text-sm text-text-secondary py-1 flex items-center justify-center gap-1.5"><span class="text-success" aria-hidden="true">&#x2713;</span> {pro}</div>
-      ))}
-      {item.cons.map((con) => (
-        <div class="text-sm text-text-muted py-1 flex items-center justify-center gap-1.5"><span class="text-text-muted" aria-hidden="true">&#x2717;</span> {con}</div>
-      ))}
+<div class="grid gap-4 md:grid-cols-2 text-left max-w-4xl mx-auto">
+  <!-- BEFORE -->
+  <div class="rounded-xl border border-border bg-bg-card overflow-hidden">
+    <div class="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-red-500/5">
+      <Icon name="close" size={16} />
+      <span class="text-sm font-semibold text-text-secondary">Without gogenfilter</span>
     </div>
-  ))}
+    <div class="p-4 font-mono text-xs leading-relaxed space-y-1.5">
+      <div class="text-text-muted">$ golangci-lint run</div>
+      {beforeIssues.map((issue) => (
+        <div class="text-[#ff5555]">
+          <span class="text-[#f1fa8c]">{issue.file}</span><span class="text-text-muted">:{issue.line}: </span>{issue.msg} <span class="text-[#6272a4]">({issue.linter})</span>
+        </div>
+      ))}
+      <div class="text-text-muted pt-2">{beforeIssues.length} issues — all on generated files</div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="rounded-xl border border-success/30 bg-bg-card overflow-hidden">
+    <div class="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-success/5">
+      <Icon name="check" size={16} />
+      <span class="text-sm font-semibold text-success">With gogenfilter</span>
+    </div>
+    <div class="p-4 font-mono text-xs leading-relaxed space-y-1.5">
+      <div class="text-text-muted">$ golangci-lint run</div>
+      <div class="text-[#50fa7b] pt-1">
+        {beforeIssues.length} generated files skipped
+      </div>
+      <div class="text-text-muted pt-2">0 issues from generated code</div>
+    </div>
+  </div>
 </div>
+
+<p class="text-center mt-6 text-sm text-text-muted">
+  Add one call to your analyzer. Every generated file disappears from the results.
+</p>

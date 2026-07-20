@@ -60,7 +60,8 @@
   --color-code-inline-bg: #e7e5e4;
   --color-code-dot: #a8a29e;
   --color-code-comment: #57534e;
-  --color-success: #22c55e;
+  --color-amber: #b45309;
+  --color-success: #15803d;
 }
 
 @keyframes fade-in {

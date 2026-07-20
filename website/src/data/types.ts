@@ -49,16 +49,6 @@ export interface PhaseCard {
   hintIcon: UseCaseIcon;
 }
 
-export type ComparisonVariant = "DIY" | "gogenfilter" | "Heavy";
-
-export interface ComparisonItem {
-  variant: ComparisonVariant;
-  price: string;
-  pros: string[];
-  cons: string[];
-  accent: boolean;
-}
-
 export const useCaseIconKeys = ["cog", "chart", "refresh", "bolt", "check"] as const;
 export type UseCaseIcon = (typeof useCaseIconKeys)[number];
 
