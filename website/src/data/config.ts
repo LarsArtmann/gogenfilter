@@ -1,10 +1,10 @@
 export const siteConfig = {
   name: "gogenfilter",
-  title: "gogenfilter — Detect & Filter Auto-Generated Go Code",
+  title: "gogenfilter — Skip Auto-Generated Go Code in Linters & CI",
   description:
-    "Detect and filter auto-generated Go code files. Built for linters, static analysis, and code quality tools.",
+    "Detect and skip auto-generated Go code files from sqlc, protobuf, templ, and more. Built for linters, static analysis, and CI pipelines.",
   ogDescription:
-    "Detect and filter auto-generated Go code files from {count} generators. Built for linters and static analysis.",
+    "Stop linting code no human wrote. Detect and skip {count} Go code generators in your linters and CI.",
   siteUrl: "https://gogenfilter.lars.software",
   github: "https://github.com/LarsArtmann/gogenfilter",
   author: {

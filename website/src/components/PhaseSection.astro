@@ -4,11 +4,15 @@ import Icon from './Icon.astro';
 import SectionHeader from './SectionHeader.astro';
 ---
 
-<SectionHeader title="Two-phase detection." subtitle="Filename first, content second. Most files are classified without reading a single byte." />
+<SectionHeader eyebrow="Detection" title="Two-phase detection." subtitle="Filename first, content second. Most files are classified without reading a single byte." />
 
-<div class="grid gap-4 text-left sm:grid-cols-2 items-stretch">
-  {phases.map((phase) => (
-    <div class={`p-6 rounded-xl border bg-bg-card ${phase.phaseColor === 'accent' ? 'border-accent/30' : 'border-amber/30'}`}>
+<div class="grid gap-4 text-left sm:grid-cols-2 items-stretch relative">
+  <!-- Connecting flow indicator (desktop only) -->
+  <div class="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-bg-primary border-2 border-border items-center justify-center" aria-hidden="true">
+    <Icon name="arrow-right" size={18} />
+  </div>
+  {phases.map((phase, i) => (
+    <div class={`p-6 rounded-xl border bg-bg-card ${phase.phaseColor === 'accent' ? 'border-accent/30' : 'border-amber/30'} ${i === 0 ? 'sm:pr-8' : 'sm:pl-8'}`}>
       <div class="flex items-center gap-3 mb-4">
         <div class={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-mono font-bold ${phase.phaseColor === 'accent' ? 'bg-accent-dim text-accent' : 'bg-amber/10 text-amber'}`}>{phase.phase}</div>
         <h3 class="font-semibold text-text-primary text-lg">{phase.title}</h3>
