@@ -1,5 +1,4 @@
-import type { PhaseCard, ComparisonItem, UseCase } from "./types";
-import { generatorCount } from "./generators";
+import type { PhaseCard, UseCase } from "./types";
 
 export const phases: PhaseCard[] = [
   {
@@ -19,36 +18,6 @@ export const phases: PhaseCard[] = [
     hint: "Only runs when Phase 1 is inconclusive",
     hintColor: "amber",
     hintIcon: "check",
-  },
-];
-
-export const comparisons: ComparisonItem[] = [
-  {
-    variant: "DIY",
-    price: "DIY",
-    accent: false,
-    pros: [],
-    cons: ["No filename detection", "Manual pattern maintenance", "No structured results"],
-  },
-  {
-    variant: "gogenfilter",
-    price: "Free",
-    accent: true,
-    pros: [
-      `${generatorCount} generators, table-driven`,
-      "Two-phase (zero I/O first)",
-      "FilterResult with trace info",
-      "fs.FS testable",
-      "Pattern scoping",
-    ],
-    cons: [],
-  },
-  {
-    variant: "Heavy",
-    price: "Heavy",
-    accent: false,
-    pros: [],
-    cons: ["Requires go/ast import", "Slow (parse entire file)", "Overkill for filtering"],
   },
 ];
 
