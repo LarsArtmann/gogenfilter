@@ -28,7 +28,6 @@ import (
 const (
 	logoGeneric        = "/logos/generic.svg"
 	displayContent     = "content only"
-	filenameNone       = "None"
 	readmeReadmePath   = "README.md"
 	docGoPath          = "doc.go"
 	generatorsJSONPath = "website/src/data/generators.json"
