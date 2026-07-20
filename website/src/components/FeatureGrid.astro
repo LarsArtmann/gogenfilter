@@ -3,19 +3,26 @@ import { features } from '../data/features';
 import Icon from './Icon.astro';
 import Card from './Card.astro';
 import SectionHeader from './SectionHeader.astro';
+import type { AccentColor } from '../data/types';
+
+const iconColor: Record<AccentColor, string> = {
+  accent: 'text-accent bg-accent-dim',
+  amber: 'text-amber bg-amber/10',
+  success: 'text-success bg-success/10',
+};
 ---
 
 <div>
-  <SectionHeader title="Engineered for performance." subtitle="Every API decision optimized for real-world static analysis pipelines." />
+  <SectionHeader title="Built to do one thing well." subtitle="Every decision tuned for real-world static analysis pipelines — no magic, no bloat." />
 
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
-      <Card variant="feature">
-        <div class="text-accent mb-3">
+      <Card variant="feature" class="hover:border-border-hover hover:-translate-y-0.5 transition-all duration-200">
+        <div class={`inline-flex w-11 h-11 items-center justify-center rounded-lg mb-4 ${iconColor[feature.accent]}`}>
           <Icon name={feature.icon} />
         </div>
-        <h3 class="font-semibold text-text-primary mb-2">{feature.title}</h3>
-        <p class="text-sm text-text-muted leading-relaxed">{feature.desc}</p>
+        <h3 class="font-semibold text-text-primary mb-2 text-lg">{feature.title}</h3>
+        <p class="text-base text-text-muted leading-relaxed">{feature.desc}</p>
       </Card>
     ))}
   </div>

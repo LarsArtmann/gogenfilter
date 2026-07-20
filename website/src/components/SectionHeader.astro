@@ -7,7 +7,7 @@ export interface Props {
 const { title, subtitle } = Astro.props;
 ---
 
-<div class="text-center mb-12">
-  <h2 class="text-[clamp(1.875rem,4vw,2.25rem)] font-bold text-text-primary mb-4">{title}</h2>
-  {subtitle && <p class="text-lg text-text-muted mb-12">{subtitle}</p>}
+<div class="text-center mb-14">
+  <h2 class="text-[clamp(2rem,4.5vw,2.75rem)] font-bold text-text-primary mb-4 tracking-tight">{title}</h2>
+  {subtitle && <p class="text-lg md:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
 </div>

@@ -4,7 +4,27 @@ import { createHash } from "node:crypto";
 
 const DIST = "dist";
 
-const STYLE_HASH_RE = / style-src 'self' 'unsafe-inline'(?: 'sha256-[^']+')+/g;
+/**
+ * Per the CSP specification, when a `style-src` (or `default-src`) source list
+ * contains ANY hash or nonce source, the `'unsafe-inline'` keyword is IGNORED
+ * entirely. Starlight and Expressive Code rely on inline `style` attributes
+ * (e.g. expressive-code tokens: `style="--0:#color;--1:#color"`), so we must
+ * strip every hash/nonce source from the style-src directive to keep
+ * `'unsafe-inline'` effective. Astro regenerates these hashes on every build,
+ * in any order, so we strip them defensively regardless of position/type.
+ */
+const STYLE_HASH_TOKEN_RE = /'sha\d{3}-[^']+'|'nonce-[^']+'/g;
+
+function stripStyleHashes(cspContent) {
+  return cspContent.replace(/style-src[^;"]*/g, (directive) => {
+    const sources = directive
+      .slice("style-src".length)
+      .replace(STYLE_HASH_TOKEN_RE, "")
+      .trim()
+      .replace(/\s{2,}/g, " ");
+    return `style-src ${sources}`.trim();
+  });
+}
 
 const INLINE_SCRIPT_RE =
   /<script(?![^>]*\btype\s*=\s*["']module["'])(?![^>]*\bsrc\s*=)([^>]*)>([\s\S]*?)<\/script>/g;
@@ -33,7 +53,7 @@ async function main() {
 
   for (const file of files) {
     const html = await readFile(file, "utf-8");
-    let fixed = html.replace(STYLE_HASH_RE, " style-src 'self' 'unsafe-inline'");
+    let fixed = stripStyleHashes(html);
 
     const missingHashes = new Set();
     for (const [, , body] of fixed.matchAll(INLINE_SCRIPT_RE)) {

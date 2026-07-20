@@ -28,7 +28,7 @@ export const comparisons: ComparisonItem[] = [
     price: "DIY",
     accent: false,
     pros: [],
-    cons: ["No filename detection", "Manual pattern maintenance", "No structued results"],
+    cons: ["No filename detection", "Manual pattern maintenance", "No structured results"],
   },
   {
     variant: "gogenfilter",
@@ -57,15 +57,18 @@ export const useCases: UseCase[] = [
     title: "Linters",
     desc: "Skip generated files in static analysis",
     icon: "cog",
+    accent: "accent",
   },
   {
     title: "Code Quality",
     desc: "Exclude generated code from reports",
     icon: "chart",
+    accent: "amber",
   },
   {
     title: "CI / CD",
     desc: "Filter noise from review tooling",
     icon: "refresh",
+    accent: "success",
   },
 ];

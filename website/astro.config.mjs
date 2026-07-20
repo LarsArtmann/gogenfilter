@@ -52,7 +52,7 @@ export default defineConfig({
       favicon: "/favicon.svg",
       customCss: ["./src/styles/starlight.css"],
       expressiveCode: {
-        themes: ["github-light", "github-dark"],
+        themes: ["github-light", "dracula"],
         frames: {
           showCopyToClipboardButton: true,
         },

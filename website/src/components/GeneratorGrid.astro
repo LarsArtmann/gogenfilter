@@ -11,7 +11,7 @@ import SectionHeader from './SectionHeader.astro';
 
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
     {generators.map((gen) => (
-      <Card padding="xs" dashed={!gen.url} href={gen.url || undefined} external={!!gen.url} class="hover:border-accent/30 hover:bg-bg-card-solid transition-all duration-200">
+      <Card padding="xs" dashed={!gen.url} href={gen.url || undefined} external={!!gen.url} class="hover:border-accent/40 hover:bg-bg-card-solid hover:-translate-y-0.5 transition-all duration-200">
         <div class="flex items-center gap-2 mb-1">
           <img src={gen.logo} alt={gen.name} class="w-6 h-6" width="24" height="24" loading="lazy" />
           <span class="font-semibold text-text-primary text-sm">{gen.name}</span>
@@ -22,7 +22,7 @@ import SectionHeader from './SectionHeader.astro';
     ))}
   </div>
 
-  <p class="text-center mt-6 text-sm text-text-muted">
+  <p class="text-center mt-8 text-sm text-text-muted">
     Built by <a href={siteConfig.author.url} target="_blank" rel="noopener noreferrer" class="text-accent font-semibold hover:underline">{siteConfig.author.name}</a>
   </p>
 </div>
