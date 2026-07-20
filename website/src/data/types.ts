@@ -30,10 +30,13 @@ export const featureIconKeys = [
 ] as const;
 export type FeatureIcon = (typeof featureIconKeys)[number];
 
+export type AccentColor = "accent" | "amber" | "success";
+
 export interface Feature {
   icon: FeatureIcon;
   title: string;
   desc: string;
+  accent: AccentColor;
 }
 
 export interface PhaseCard {
@@ -63,6 +66,7 @@ export interface UseCase {
   title: string;
   desc: string;
   icon: UseCaseIcon;
+  accent: AccentColor;
 }
 
 export const uiIconKeys = [

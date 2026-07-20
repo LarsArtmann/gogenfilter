@@ -3,6 +3,7 @@
 @theme {
   /* Dark mode (default) */
   --color-bg-primary: #0c0a09;
+  --color-bg-raised: #110e0c;
   --color-bg-card: rgba(28, 25, 23, 0.5);
   --color-bg-card-solid: #1c1917;
   --color-bg-code: rgba(28, 25, 23, 0.8);
@@ -39,6 +40,7 @@
 :root.light {
   color-scheme: light;
   --color-bg-primary: #fafaf9;
+  --color-bg-raised: #f3f2f0;
   --color-bg-card: rgba(245, 245, 244, 0.7);
   --color-bg-card-solid: #f5f5f4;
   --color-bg-code: rgba(245, 245, 244, 0.9);

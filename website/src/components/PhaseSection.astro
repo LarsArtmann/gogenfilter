@@ -6,26 +6,31 @@ import SectionHeader from './SectionHeader.astro';
 
 <SectionHeader title="Two-phase detection." subtitle="Filename first, content second. Most files are classified without reading a single byte." />
 
-<div class="grid gap-4 text-left sm:grid-cols-2">
+<div class="grid gap-4 text-left sm:grid-cols-2 items-stretch">
   {phases.map((phase) => (
-    <div class="p-6 rounded-xl border border-border bg-bg-card">
-      <div class="flex items-center gap-3 mb-3">
-        <div class={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-mono font-bold ${phase.phaseColor === 'accent' ? 'bg-accent-dim text-accent' : 'bg-amber/10 text-amber'}`}>{phase.phase}</div>
-        <h3 class="font-semibold text-text-primary">{phase.title}</h3>
+    <div class={`p-6 rounded-xl border bg-bg-card ${phase.phaseColor === 'accent' ? 'border-accent/30' : 'border-amber/30'}`}>
+      <div class="flex items-center gap-3 mb-4">
+        <div class={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-mono font-bold ${phase.phaseColor === 'accent' ? 'bg-accent-dim text-accent' : 'bg-amber/10 text-amber'}`}>{phase.phase}</div>
+        <h3 class="font-semibold text-text-primary text-lg">{phase.title}</h3>
       </div>
-      <p class="text-sm text-text-muted mb-3">
+      <p class="text-base text-text-muted mb-4">
         Scan for{' '}
-        {phase.patterns.map((p, i) => (
+        {phase.patterns.map((p, j) => (
           <>
-            <code class="bg-code-inline-bg px-1.5 py-0.5 rounded text-xs text-accent/80">{p}</code>
-            {i < phase.patterns.length - 1 && ' and '}
+            <code class={`bg-code-inline-bg px-1.5 py-0.5 rounded text-xs ${phase.phaseColor === 'accent' ? 'text-accent' : 'text-amber'}`}>{p}</code>
+            {j < phase.patterns.length - 1 && ' and '}
           </>
         ))}
       </p>
-      <span class={`inline-flex items-center gap-1.5 text-xs ${phase.hintColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
-        <Icon name={phase.hintIcon} size={14} />
+      <span class={`inline-flex items-center gap-1.5 text-sm font-medium ${phase.hintColor === 'accent' ? 'text-accent' : 'text-amber'}`}>
+        <Icon name={phase.hintIcon} size={15} />
         {phase.hint}
       </span>
     </div>
   ))}
 </div>
+
+<p class="text-center mt-6 text-sm text-success font-medium inline-flex items-center justify-center gap-1.5 w-full">
+  <Icon name="check" size={15} />
+  Every file classified — zero ambiguity
+</p>

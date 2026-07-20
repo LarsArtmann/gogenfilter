@@ -3,6 +3,7 @@ export interface Props {
   animate?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   width?: 'narrow' | 'wide';
+  tone?: 'default' | 'raised';
   class?: string;
 }
 
@@ -10,6 +11,7 @@ const {
   animate = true,
   padding = 'md',
   width,
+  tone = 'default',
   class: className,
 } = Astro.props;
 
@@ -21,8 +23,13 @@ const paddingClasses: Record<string, string> = {
 };
 
 const widthClasses: Record<string, string> = {
-  narrow: 'max-w-3xl',
-  wide: 'max-w-6xl',
+  narrow: 'max-w-5xl',
+  wide: 'max-w-7xl',
+};
+
+const toneClasses: Record<string, string> = {
+  default: '',
+  raised: 'bg-bg-raised',
 };
 ---
 
@@ -30,6 +37,7 @@ const widthClasses: Record<string, string> = {
   class:list={[
     'relative',
     paddingClasses[padding],
+    toneClasses[tone],
     className,
   ]}
   data-animate={animate ? '' : undefined}

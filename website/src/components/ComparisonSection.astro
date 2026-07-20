@@ -7,14 +7,15 @@ import SectionHeader from './SectionHeader.astro';
 
 <div class="grid gap-4 sm:grid-cols-3">
   {comparisons.map((item) => (
-    <div class={`p-6 rounded-xl border bg-bg-card text-center ${item.accent ? 'border-accent bg-accent-dim' : 'border-border'}`}>
+    <div class={`p-6 rounded-xl border bg-bg-card text-center transition-all duration-200 ${item.accent ? 'border-accent/50 bg-accent-dim ring-1 ring-accent/30 relative overflow-hidden' : 'border-border'}`}>
+      {item.accent && <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent via-accent-light to-success" aria-hidden="true"></div>}
       <div class="font-semibold text-text-primary mb-2 text-base">{item.variant}</div>
-      <div class="text-2xl font-bold text-accent mb-3">{item.price}</div>
+      <div class={`text-3xl font-bold mb-4 ${item.accent ? 'bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent' : 'text-text-muted'}`}>{item.price}</div>
       {item.pros.map((pro) => (
-        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-success" aria-hidden="true">&#x2713;</span> {pro}</div>
+        <div class="text-sm text-text-secondary py-1 flex items-center justify-center gap-1.5"><span class="text-success" aria-hidden="true">&#x2713;</span> {pro}</div>
       ))}
       {item.cons.map((con) => (
-        <div class="text-[0.8125rem] text-text-muted py-1"><span class="text-text-muted" aria-hidden="true">&#x2717;</span> {con}</div>
+        <div class="text-sm text-text-muted py-1 flex items-center justify-center gap-1.5"><span class="text-text-muted" aria-hidden="true">&#x2717;</span> {con}</div>
       ))}
     </div>
   ))}
