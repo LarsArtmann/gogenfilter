@@ -2,12 +2,15 @@ const themeToggle = document.getElementById("theme-toggle");
 if (themeToggle) {
   const lightIcon = themeToggle.querySelector(".theme-icon-light");
   const darkIcon = themeToggle.querySelector(".theme-icon-dark");
+  const themeColorMetas = document.querySelectorAll('meta[name="theme-color"]');
 
   function applyTheme() {
     const isLight = document.documentElement.classList.contains("light");
     if (lightIcon) lightIcon.classList.toggle("hidden", !isLight);
     if (darkIcon) darkIcon.classList.toggle("hidden", isLight);
     themeToggle.setAttribute("aria-pressed", String(isLight));
+    const color = isLight ? "#fafaf9" : "#0c0a09";
+    themeColorMetas.forEach((m) => m.setAttribute("content", color));
   }
 
   applyTheme();
