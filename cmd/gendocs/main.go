@@ -14,8 +14,7 @@
 package main
 
 import (
-	"encoding/json/jsontext"
-	"encoding/json/v2"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -170,7 +169,7 @@ func generateJSON(docs []gogenfilter.DetectorDoc) error {
 		})
 	}
 
-	data, err := json.Marshal(generators, jsontext.WithIndentPrefix(""), jsontext.WithIndent("  "))
+	data, err := json.MarshalIndent(generators, "", "  ")
 	if err != nil {
 		return fmt.Errorf("marshal JSON: %w", err)
 	}
