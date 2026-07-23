@@ -69,11 +69,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1784336870,
-        "narHash": "sha256-yp/KZ+VgQtdhh0NkZ2leE6oUERznx4DfpsYqDaadIqU=",
+        "lastModified": 1784641379,
+        "narHash": "sha256-BFTqTj4o+ZKc2wDyKY3N+ZC4pvY/trlPQlLwjIerBPY=",
         "owner": "LarsArtmann",
         "repo": "md-go-validator",
-        "rev": "a81408f78fa478d998c9f3a8c348fbfba93bb840",
+        "rev": "36f4cdb9778b90ade62d440a557bb3906ec5411e",
         "type": "github"
       },
       "original": {
