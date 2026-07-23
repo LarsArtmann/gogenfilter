@@ -25,6 +25,7 @@
       treefmt-nix,
       systems,
       md-go-validator,
+      ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import systems;
