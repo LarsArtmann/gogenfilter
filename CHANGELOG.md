@@ -323,3 +323,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Removed
 
 - `Reasons()` method from `FilterStats` — unused and untested
+
+---
+
+[Unreleased]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.1...HEAD
+[v3.3.1]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.0...v3.3.1
+[v3.3.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.2.0...v3.3.0
+[v3.2.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.1.0...v3.2.0
+[v3.1.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.0.2...v3.1.0
+[v3.0.2]: https://github.com/LarsArtmann/gogenfilter/compare/v3.0.1...v3.0.2
+[v3.0.1]: https://github.com/LarsArtmann/gogenfilter/compare/v3.0.0...v3.0.1
+[v3.0.0]: https://github.com/LarsArtmann/gogenfilter/releases/tag/v3.0.0
