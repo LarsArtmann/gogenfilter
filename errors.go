@@ -103,12 +103,7 @@ func (e *ProjectRootError) Unwrap() error { return e.Err }
 
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *ProjectRootError) Is(target error) bool {
-	t, ok := target.(*ProjectRootError)
-	if !ok {
-		return false
-	}
-
-	return e.Code == t.Code
+	return errorCodeMatches(e.Code, target)
 }
 
 // ErrorCode returns the error code for programmatic matching.
@@ -138,12 +133,7 @@ func (e *FilterConfigError) Unwrap() error { return e.Err }
 
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *FilterConfigError) Is(target error) bool {
-	t, ok := target.(*FilterConfigError)
-	if !ok {
-		return false
-	}
-
-	return e.Code == t.Code
+	return errorCodeMatches(e.Code, target)
 }
 
 // ErrorCode returns the error code for programmatic matching.
@@ -197,13 +187,14 @@ func (e *SQLCConfigError) Unwrap() error { return e.Err }
 
 // Is supports errors.Is by comparing error codes with sentinel errors.
 func (e *SQLCConfigError) Is(target error) bool {
-	t, ok := target.(*SQLCConfigError)
-	if !ok {
-		return false
-	}
-
-	return e.Code == t.Code
+	return errorCodeMatches(e.Code, target)
 }
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *SQLCConfigError) ErrorCode() ErrorCode { return e.Code }
+
+func errorCodeMatches(code ErrorCode, target error) bool {
+	targetError, ok := target.(ErrorCoder)
+
+	return ok && code == targetError.ErrorCode()
+}
