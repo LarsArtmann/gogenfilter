@@ -53,8 +53,6 @@
 - [ ] **Add gendocs single-pass idempotency test** — gendocs needed 2 passes to converge from a
       stale state. Add a test that asserts `go generate ./...` is idempotent (second run produces no
       diff). _Priority: LOW | Effort: 30 min_
-- [ ] **Add `nix run .#gendocs` app** — The generator is only runnable via `go run ./cmd/gendocs`.
-      Add a flake app alias. _Priority: LOW | Effort: 15 min_
 
 ## Dependencies / Security
 
