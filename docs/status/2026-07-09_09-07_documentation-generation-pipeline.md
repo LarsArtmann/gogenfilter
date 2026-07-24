@@ -236,17 +236,17 @@ Currently, `websiteMetadata` (logos, display filenames) lives in `cmd/gendocs/ma
 > Written after the session. The pipeline shipped in v3.3.0 and the open items below were largely
 > resolved in follow-up work. Verified against current source.
 
-| Item in report | Section | Resolution |
-| -------------- | ------- | ---------- |
-| API reference pages (`api/*.mdx`) "not touched" | §b.1 | DONE (Q1 decided): 4 hand-written pages (`filter/scan/types/errors.mdx`) **deleted**; only `detection.mdx` kept (unique hand-written examples). Sidebar links to pkg.go.dev for full reference. Shipped in the drift-elimination work (`9b72ada`). |
-| `generators.mdx` "18 tools" count hardcoded | §b.2 | DONE: now generated via `{/* gendocs:count:start/end */}` inline marker |
-| `doc.go` generator list drifts | §b.3 | DONE: now generated via `// gendocs:generators:start/end` markers |
-| `detection.mdx` per-generator function table | §b.4 | DONE: now generated via `{/* gendocs:functions:start/end */}` markers |
-| Phase 3: delete API MDX → pkg.go.dev | §c.3 | DONE — see Q1 above |
-| `replaceSectionInline` for mid-line count marker | §c | DONE: `replaceSectionInline` exists in gendocs for the inline count marker |
-| README `||` phantom-column bug class | §d.1 | DEFENDED: `readme_test.go` (`fe0395a`) validates column consistency on every `go test` |
-| `filenameNone` constant | §e.8 / §48 | DONE: removed as dead code (`fe0395a`) |
-| `websiteMetadata` location (Q2) | §g.2 | KEPT in `cmd/gendocs/main.go` — `validateMetadata()` enforces coverage; documented as a design decision in AGENTS.md |
+| Item in report                                   | Section    | Resolution                                                                                                                                                                                                                                         |
+| ------------------------------------------------ | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| API reference pages (`api/*.mdx`) "not touched"  | §b.1       | DONE (Q1 decided): 4 hand-written pages (`filter/scan/types/errors.mdx`) **deleted**; only `detection.mdx` kept (unique hand-written examples). Sidebar links to pkg.go.dev for full reference. Shipped in the drift-elimination work (`9b72ada`). |
+| `generators.mdx` "18 tools" count hardcoded      | §b.2       | DONE: now generated via `{/* gendocs:count:start/end */}` inline marker                                                                                                                                                                            |
+| `doc.go` generator list drifts                   | §b.3       | DONE: now generated via `// gendocs:generators:start/end` markers                                                                                                                                                                                  |
+| `detection.mdx` per-generator function table     | §b.4       | DONE: now generated via `{/* gendocs:functions:start/end */}` markers                                                                                                                                                                              |
+| Phase 3: delete API MDX → pkg.go.dev             | §c.3       | DONE — see Q1 above                                                                                                                                                                                                                                |
+| `replaceSectionInline` for mid-line count marker | §c         | DONE: `replaceSectionInline` exists in gendocs for the inline count marker                                                                                                                                                                         |
+| README `                                         |            | ` phantom-column bug class                                                                                                                                                                                                                         | §d.1 | DEFENDED: `readme_test.go` (`fe0395a`) validates column consistency on every `go test` |
+| `filenameNone` constant                          | §e.8 / §48 | DONE: removed as dead code (`fe0395a`)                                                                                                                                                                                                             |
+| `websiteMetadata` location (Q2)                  | §g.2       | KEPT in `cmd/gendocs/main.go` — `validateMetadata()` enforces coverage; documented as a design decision in AGENTS.md                                                                                                                               |
 
 **Still open:** integration test for `cmd/gendocs` itself (0% coverage); `nix run .#gendocs` alias
 (see TODO_LIST).

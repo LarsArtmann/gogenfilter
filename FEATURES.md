@@ -117,23 +117,23 @@
 | Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
 | Runnable examples    | FULLY_FUNCTIONAL | `Example*` functions in `example_test.go`                      |
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
-| BDD specs             | FULLY_FUNCTIONAL | ~120 Ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)     |
-| README table test     | FULLY_FUNCTIONAL | `readme_test.go` — validates markdown table column consistency |
+| BDD specs            | FULLY_FUNCTIONAL | ~120 Ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)     |
+| README table test    | FULLY_FUNCTIONAL | `readme_test.go` — validates markdown table column consistency |
 
 ## CI/CD
 
-| Feature            | Status           | Details                                                              |
-| ------------------ | ---------------- | -------------------------------------------------------------------- |
-| GitHub Actions CI  | FULLY_FUNCTIONAL | Test, build, vet, lint, govulncheck on push/PR to master       |
-| Race detector      | FULLY_FUNCTIONAL | `go test -race` in CI                                          |
-| Coverage threshold | FULLY_FUNCTIONAL | 98% threshold in CI (library at 98.4%)                         |
-| golangci-lint v2   | FULLY_FUNCTIONAL | Comprehensive config in `.golangci.yaml` (uses `gomodguard_v2`) |
-| Code duplication    | FULLY_FUNCTIONAL | `art-dupl` (pinned v0.1.0) in CI                               |
-| Docs freshness      | FULLY_FUNCTIONAL | `go generate ./... && git diff --exit-code` enforced in CI     |
-| govulncheck         | FULLY_FUNCTIONAL | Vulnerability scan in CI                                       |
-| Website deployment  | FULLY_FUNCTIONAL | Firebase Hosting via `website.yml`                             |
-| Benchmark tracking | FULLY_FUNCTIONAL | `benchmark.yml` pushes to `gh-pages`                           |
-| Release workflow    | FULLY_FUNCTIONAL | `release.yml` — tag-based GitHub Release                       |
+| Feature            | Status               | Details                                                                                                                   |
+| ------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Actions CI  | FULLY_FUNCTIONAL     | Test, build, vet, lint, govulncheck on push/PR to master                                                                  |
+| Race detector      | FULLY_FUNCTIONAL     | `go test -race` in CI                                                                                                     |
+| Coverage threshold | FULLY_FUNCTIONAL     | 98% threshold in CI (library at 98.4%)                                                                                    |
+| golangci-lint v2   | FULLY_FUNCTIONAL     | Comprehensive config in `.golangci.yaml` (uses `gomodguard_v2`)                                                           |
+| Code duplication   | FULLY_FUNCTIONAL     | `art-dupl` (pinned v0.1.0) in CI                                                                                          |
+| Docs freshness     | FULLY_FUNCTIONAL     | `go generate ./... && git diff --exit-code` enforced in CI                                                                |
+| govulncheck        | FULLY_FUNCTIONAL     | Vulnerability scan in CI                                                                                                  |
+| Website deployment | FULLY_FUNCTIONAL     | Firebase Hosting via `website.yml`                                                                                        |
+| Benchmark tracking | FULLY_FUNCTIONAL     | `benchmark.yml` pushes to `gh-pages`                                                                                      |
+| Release workflow   | FULLY_FUNCTIONAL     | `release.yml` — tag-based GitHub Release                                                                                  |
 | Lighthouse CI      | PARTIALLY_FUNCTIONAL | `lighthouserc.json` configured; assertions advisory (warnings); `LHCI_GITHUB_APP_TOKEN` not configured — no status checks |
 
 ## Gitignore-Aware Filtering
@@ -155,32 +155,32 @@
 
 ## Website
 
-| Feature              | Status           | Details                                                                                          |
-| -------------------- | ---------------- | ------------------------------------------------------------------------------------------------ |
-| Astro v7 + Starlight | FULLY_FUNCTIONAL | Marketing/docs site in `website/` (migrated from v6)                                             |
+| Feature              | Status           | Details                                                                                                  |
+| -------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
+| Astro v7 + Starlight | FULLY_FUNCTIONAL | Marketing/docs site in `website/` (migrated from v6)                                                     |
 | Landing page         | FULLY_FUNCTIONAL | Hero ("Stop linting code no human wrote"), before/after linter proof, 3-color accent system, funnel logo |
-| Dracula syntax theme | FULLY_FUNCTIONAL | Vivid highlighting in docs; CSP hardened (`fix-csp.mjs` strips hash sources so `unsafe-inline` works) |
-| Dependents page      | FULLY_FUNCTIONAL | Build-time GitHub code search for public users                                                   |
-| Starlight docs       | FULLY_FUNCTIONAL | PageFind search; API reference via pkg.go.dev                                                    |
-| Firebase Hosting     | FULLY_FUNCTIONAL | Configured via `firebase.json`; deploys on push to master                                        |
-| WCAG AA contrast     | FULLY_FUNCTIONAL | Audited across all surfaces, both themes; `--color-on-accent` token pattern                       |
+| Dracula syntax theme | FULLY_FUNCTIONAL | Vivid highlighting in docs; CSP hardened (`fix-csp.mjs` strips hash sources so `unsafe-inline` works)    |
+| Dependents page      | FULLY_FUNCTIONAL | Build-time GitHub code search for public users                                                           |
+| Starlight docs       | FULLY_FUNCTIONAL | PageFind search; API reference via pkg.go.dev                                                            |
+| Firebase Hosting     | FULLY_FUNCTIONAL | Configured via `firebase.json`; deploys on push to master                                                |
+| WCAG AA contrast     | FULLY_FUNCTIONAL | Audited across all surfaces, both themes; `--color-on-accent` token pattern                              |
 
 ## Documentation Generation Pipeline
 
-| Feature                     | Status           | Details                                                                                                            |
-| --------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `cmd/gendocs` generator     | FULLY_FUNCTIONAL | Derives docs from the `detectors` table — single source of truth                                                   |
-| `generators.json`           | FULLY_FUNCTIONAL | 18-entry data file consumed by Astro components                                                                    |
-| README tables               | FULLY_FUNCTIONAL | Generated between `<!-- gendocs:*:start/end -->` markers                                                           |
+| Feature                      | Status           | Details                                                                                                          |
+| ---------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `cmd/gendocs` generator      | FULLY_FUNCTIONAL | Derives docs from the `detectors` table — single source of truth                                                 |
+| `generators.json`            | FULLY_FUNCTIONAL | 18-entry data file consumed by Astro components                                                                  |
+| README tables                | FULLY_FUNCTIONAL | Generated between `<!-- gendocs:*:start/end -->` markers                                                         |
 | `generators.mdx` table/count | FULLY_FUNCTIONAL | Generated between `{/* gendocs:*:start/end */}` MDX markers (incl. inline tool count via `replaceSectionInline`) |
-| `detection.mdx` table       | FULLY_FUNCTIONAL | Per-generator `Is*Generated` function table, generated                                                             |
-| `doc.go` generator list     | FULLY_FUNCTIONAL | Generated between `// gendocs:*:start/end` markers                                                                 |
-| `websiteMetadata` validation | FULLY_FUNCTIONAL | gendocs fails at build time if a detector lacks presentation data — drift impossible                              |
-| Detector doc metadata       | FULLY_FUNCTIONAL | `url`, `filenameDesc`, `contentDesc`, `isFuncName` on each detector; powers `AllDetectorDocs()`                    |
+| `detection.mdx` table        | FULLY_FUNCTIONAL | Per-generator `Is*Generated` function table, generated                                                           |
+| `doc.go` generator list      | FULLY_FUNCTIONAL | Generated between `// gendocs:*:start/end` markers                                                               |
+| `websiteMetadata` validation | FULLY_FUNCTIONAL | gendocs fails at build time if a detector lacks presentation data — drift impossible                             |
+| Detector doc metadata        | FULLY_FUNCTIONAL | `url`, `filenameDesc`, `contentDesc`, `isFuncName` on each detector; powers `AllDetectorDocs()`                  |
 
 ## Developer Environment
 
-| Feature             | Status           | Details                                                              |
-| ------------------- | ---------------- | -------------------------------------------------------------------- |
-| Nix flake           | FULLY_FUNCTIONAL | `flake.nix` with flake-parts architecture + treefmt-nix formatting   |
-| Reproducible builds | FULLY_FUNCTIONAL | `nix build`, `nix run .#test`, `nix run .#lint`                       |
+| Feature             | Status           | Details                                                            |
+| ------------------- | ---------------- | ------------------------------------------------------------------ |
+| Nix flake           | FULLY_FUNCTIONAL | `flake.nix` with flake-parts architecture + treefmt-nix formatting |
+| Reproducible builds | FULLY_FUNCTIONAL | `nix build`, `nix run .#test`, `nix run .#lint`                    |

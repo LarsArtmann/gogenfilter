@@ -266,11 +266,11 @@ _Foot: 1 session · 4 files changed (1 new) · 0 commits (uncommitted — see Q1
 
 > The uncommitted work (Q1) was subsequently committed and shipped in v3.3.1.
 
-| Item | Resolution |
-| ---- | ---------- |
-| Q1 commit the 4 files | DONE — shipped as `fe0395a` ("post-recovery hardening — fix README phantom columns and add regression test"); included in v3.3.1 |
-| `readme_test.go` (A1) | DONE — live in repo, runs in `go test ./...` |
-| `filenameNone` removal (A2) | DONE |
-| CHANGELOG entries (A3) | DONE — now in `[v3.3.1]` |
-| Q2 Go 1.27 migration | STILL OPEN — tracked in ROADMAP |
-| Q3 Lighthouse gate-vs-monitor | STILL OPEN (advisory) — tracked in TODO_LIST |
+| Item                          | Resolution                                                                                                                       |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Q1 commit the 4 files         | DONE — shipped as `fe0395a` ("post-recovery hardening — fix README phantom columns and add regression test"); included in v3.3.1 |
+| `readme_test.go` (A1)         | DONE — live in repo, runs in `go test ./...`                                                                                     |
+| `filenameNone` removal (A2)   | DONE                                                                                                                             |
+| CHANGELOG entries (A3)        | DONE — now in `[v3.3.1]`                                                                                                         |
+| Q2 Go 1.27 migration          | STILL OPEN — tracked in ROADMAP                                                                                                  |
+| Q3 Lighthouse gate-vs-monitor | STILL OPEN (advisory) — tracked in TODO_LIST                                                                                     |

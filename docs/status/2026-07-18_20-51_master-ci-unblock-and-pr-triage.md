@@ -243,14 +243,14 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 > The CI unblock work shipped; master has been healthy since. Re-checked the open questions and
 > follow-ups against current state.
 
-| Item | Resolution |
-| ---- | ---------- |
-| Master CI health | DONE — all four workflows green (recovered fully in the 2026-07-20 sessions); `testdata/templ/page_templ.go` restored (`b1ae4dd`) |
-| gendocs non-idempotency (§d.2, §e.6) | PARTIALLY — gendocs `||` phantom-column root cause fixed + defended by `readme_test.go` (`fe0395a`); single-pass idempotency of the generator itself not formally verified |
-| `art-dupl@v0.3.0` broken upstream (Q2) | STILL PINNED to v0.1.0 in CI — upstream fix pending |
-| Firebase Deploy (Q1) | DONE — recovered in 2026-07-20 session (`9a6abd0`: `env:` + `printf '%s'`); `master` deploys on push |
-| CHANGELOG not updated (§c) | DONE — entries added in `[v3.3.1]` |
-| Branch protection / required checks (§f.29) | STILL OPEN — no branch protection configured |
+| Item                                        | Resolution                                                                                                                        |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Master CI health                            | DONE — all four workflows green (recovered fully in the 2026-07-20 sessions); `testdata/templ/page_templ.go` restored (`b1ae4dd`) |
+| gendocs non-idempotency (§d.2, §e.6)        | PARTIALLY — gendocs `                                                                                                             |     | `phantom-column root cause fixed + defended by`readme_test.go` (`fe0395a`); single-pass idempotency of the generator itself not formally verified |
+| `art-dupl@v0.3.0` broken upstream (Q2)      | STILL PINNED to v0.1.0 in CI — upstream fix pending                                                                               |
+| Firebase Deploy (Q1)                        | DONE — recovered in 2026-07-20 session (`9a6abd0`: `env:` + `printf '%s'`); `master` deploys on push                              |
+| CHANGELOG not updated (§c)                  | DONE — entries added in `[v3.3.1]`                                                                                                |
+| Branch protection / required checks (§f.29) | STILL OPEN — no branch protection configured                                                                                      |
 
 **Carried to TODO_LIST:** branch protection, `art-dupl` upstream fix, single-pass idempotency test
 for gendocs.

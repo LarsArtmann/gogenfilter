@@ -193,12 +193,12 @@
 
 > Re-checked the 3 "confirmed bugs found but NOT fixed" (§c) against current source.
 
-| Bug | Status (2026-07-24) |
-| --- | ------------------ |
-| §c.1 `--color-accent-dim` light mismatch (`rgba(8,145,178,0.1)` vs accent `#0e7490`) | **STILL OPEN** — `global.css:58` unchanged. Fix: `rgba(14, 116, 144, 0.1)`. |
-| §c.2 `--color-border` light cool-gray (`rgba(228,228,231,0.8)` = zinc-200) | **STILL OPEN** — `global.css:49` unchanged. Should be warm stone. |
-| §c.3 `--color-code-comment` dead token (0 refs outside CSS) | **STILL OPEN** — 0 references confirmed. Delete or wire up. |
-| §b theme split-brain (`.light` vs `data-theme="light"`) | STILL OPEN — two independent theme systems with separate persistence. Tracked in TODO_LIST. |
+| Bug                                                                                  | Status (2026-07-24)                                                                         |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| §c.1 `--color-accent-dim` light mismatch (`rgba(8,145,178,0.1)` vs accent `#0e7490`) | **STILL OPEN** — `global.css:58` unchanged. Fix: `rgba(14, 116, 144, 0.1)`.                 |
+| §c.2 `--color-border` light cool-gray (`rgba(228,228,231,0.8)` = zinc-200)           | **STILL OPEN** — `global.css:49` unchanged. Should be warm stone.                           |
+| §c.3 `--color-code-comment` dead token (0 refs outside CSS)                          | **STILL OPEN** — 0 references confirmed. Delete or wire up.                                 |
+| §b theme split-brain (`.light` vs `data-theme="light"`)                              | STILL OPEN — two independent theme systems with separate persistence. Tracked in TODO_LIST. |
 
 The 8 shipped fixes (§a) and the `--color-on-accent` pattern remain in place. These items are
 carried into TODO_LIST for the next website pass.

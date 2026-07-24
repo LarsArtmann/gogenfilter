@@ -234,11 +234,11 @@ The syntax highlighting bug existed on the live site despite `fix-csp.mjs` being
 > Written after the session. The messaging/clarity work shipped; the open items below were checked
 > against current source.
 
-| Item in report | Resolution |
-| -------------- | ---------- |
+| Item in report                               | Resolution                                                                                                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | §D.2 Starlight `head` meta description stale | STILL OPEN — `astro.config.mjs:120` still reads "Detect and filter auto-generated Go code files..." (verified 2026-07-24). Tracked in TODO_LIST. |
-| §D.3 Newsletter inline `onsubmit` CSP risk | STILL OPEN — unverified under CSP. Tracked in TODO_LIST. |
-| §D.1 "still never rendered a pixel" | STILL OPEN — no session has screenshot-verified the site |
-| WCAG contrast (amber/success light mode) | EXTENDED: full AA audit in `2026-07-21_02-17` (`8d63d43`); `--color-on-accent` token added |
-| §A messaging rewrite (M1-M6) | DONE — hero, before/after, eyebrows, who-for all shipped |
-| §G.3 deploy pipeline runs `fix-csp.mjs` | CONFIRMED: Website CI runs `npm run build` (includes `fix-csp.mjs`) before Firebase deploy |
+| §D.3 Newsletter inline `onsubmit` CSP risk   | STILL OPEN — unverified under CSP. Tracked in TODO_LIST.                                                                                         |
+| §D.1 "still never rendered a pixel"          | STILL OPEN — no session has screenshot-verified the site                                                                                         |
+| WCAG contrast (amber/success light mode)     | EXTENDED: full AA audit in `2026-07-21_02-17` (`8d63d43`); `--color-on-accent` token added                                                       |
+| §A messaging rewrite (M1-M6)                 | DONE — hero, before/after, eyebrows, who-for all shipped                                                                                         |
+| §G.3 deploy pipeline runs `fix-csp.mjs`      | CONFIRMED: Website CI runs `npm run build` (includes `fix-csp.mjs`) before Firebase deploy                                                       |
