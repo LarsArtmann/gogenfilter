@@ -1521,6 +1521,21 @@
           Generated 2026-07-09 09:59 &middot; All claims verified against source code and test
           output in this session
         </footer>
+
+        <section id="resolution">
+          <h2><span class="num">&#8627;</span>Resolution (2026-07-24 audit pass)</h2>
+          <p>
+            Written after the session. The drift-elimination work shipped in v3.3.0; the gendocs
+            <code>||</code> phantom-column bug that anchors this report is now both fixed at the
+            source and defended by a regression test.
+          </p>
+          <ul>
+            <li><strong>gendocs <code>||</code> bug</strong> — FIXED at source and DEFENDED by <code>readme_test.go</code> (<code>fe0395a</code>), which fails <code>go test</code> on any column-count mismatch in README tables.</li>
+            <li><strong>Q1 "commit now?"</strong> — DONE: shipped (<code>9b72ada</code>) and released in v3.3.0/v3.3.1.</li>
+            <li><strong>Q2 "archive old reports?"</strong> — PARTIALLY: <code>docs/status/archive/</code> now holds 31 reports; 15 remain unarchived (AGENTS.md policy says keep 3). Cleanup tracked in TODO_LIST.</li>
+            <li><strong>API MDX drift</strong> — RESOLVED: hand-written API pages deleted in favor of pkg.go.dev (only <code>detection.mdx</code> kept).</li>
+          </ul>
+        </section>
       </main>
     </div>
 

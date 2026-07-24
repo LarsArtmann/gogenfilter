@@ -1,67 +1,86 @@
 # TODO List
 
-**Updated:** 2026-06-11
-**Status:** Active
+**Updated:** 2026-07-24
+**Current version:** v3.3.1
 
-## In Progress
+> Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
+> [ROADMAP.md](ROADMAP.md). Items are grouped by area and tagged with `_Priority_` and `_Effort_`.
 
-None.
+## Website
 
-## Completed (v3.2.0)
+- [ ] **Visually verify the site (screenshots)** — No session has ever rendered a pixel. Three
+  consecutive design sessions verified structure/CSS/WCAG math but never opened a browser. Serve
+  locally (`cd website && npm run dev`), screenshot every page in both themes + mobile, confirm
+  colors/layouts/gradients. _Priority: HIGH | Effort: 1 hr_
+- [ ] **Fix 3 color-token bugs** (from `2026-07-21_02-17` color review, all confirmed still open):
+  (1) `--color-accent-dim` light mode is `rgba(8,145,178,0.1)` but accent is `#0e7490` →
+  `rgba(14,116,144,0.1)`; (2) `--color-border` light mode is cool zinc-200 on a warm-stone palette →
+  warm stone equivalent; (3) `--color-code-comment` is a dead token (0 refs outside CSS) → delete or
+  wire up. _Priority: MEDIUM | Effort: 30 min_
+- [ ] **Update Starlight `head` meta description** — `astro.config.mjs:120` still reads the old
+  "Detect and filter auto-generated Go code files..." on every docs page, diverging from the new
+  "Stop linting code no human wrote" positioning. _Priority: MEDIUM | Effort: 5 min_
+- [ ] **Verify Newsletter form under CSP** — `Newsletter.astro` uses an inline `onsubmit` handler;
+  `script-src` has no `'unsafe-hashes'`. The form may be silently broken. Move to
+  `addEventListener` in an external script, or add the hash. _Priority: MEDIUM | Effort: 20 min_
+- [ ] **Investigate theme split-brain** — Landing page uses `.light` class on `<html>` (custom JS);
+  Starlight docs use `data-theme="light"` + own toggle. Two independent theme systems with separate
+  persistence. Unify or document why they're intentionally separate. _Priority: LOW | Effort: 2 hr_
+- [ ] **Fix Lighthouse accessibility failures** — `color-contrast` and `label-content-name-mismatch`
+  on root page. The 2026-07-21 AA contrast pass may have resolved some; run Lighthouse to confirm
+  what remains, then fix. _Priority: MEDIUM | Effort: 1-2 hr_
+- [ ] **Website performance audit** — Establish Lighthouse baselines (performance, accessibility,
+  SEO, best-practices) on the post-redesign site. Bigger fonts/colors may affect CLS.
+  _Priority: MEDIUM | Effort: 1 hr_
+- [ ] **Add "Who Uses gogenfilter" CTA to landing page** — Dependents page exists at `/dependents`
+  but is only linked from the docs sidebar. _Priority: LOW | Effort: 15 min_
 
-- [x] **Add 7 new generator detectors** — mockery, ent, gqlgen, easyjson, msgp, counterfeiter, go-swagger (18 total, up from 11)
-- [x] **Add `DetectReasonFile` / `DetectReasonFileFS`** — Two-phase detection in one call
-- [x] **Add `FilterWithContent` / `FilterDetailedWithContent`** — Avoid double I/O for callers with pre-read content
-- [x] **Add `ScanProject`** — Walk `fs.FS`, detect all generated files, return structured `ScanResult`
-- [x] **Add `ExclusionPattern()` on `FilterReason`** — Regex patterns for generators with consistent filenames
-- [x] **Update documentation** — AGENTS.md, FEATURES.md, CHANGELOG.md, README.md, website docs
-- [x] **Update ROADMAP.md** — Restructured into ranked v4 candidates with deprioritized items
+## CI / Process
 
-## Pending
+- [ ] **Decide Lighthouse CI gate-vs-monitor policy** — All assertions currently downgraded to
+  advisory warnings. Proposed hybrid: gate on correctness (errors-in-console, HTTPS, viewport),
+  monitor performance as warnings. Awaits decision before tightening `lighthouserc.json`.
+  _Priority: MEDIUM | Effort: Decision + 30 min_
+- [ ] **Configure or remove Lighthouse CI status checks** — `LHCI_GITHUB_APP_TOKEN` not configured;
+  workflow runs but produces no status checks. Install the [Lighthouse CI GitHub
+  App](https://github.com/apps/lighthouse-ci) + add the token, or remove the workflow.
+  _Priority: LOW | Effort: 15 min_
+- [ ] **Enable branch protection / required status checks** — `master` is currently unprotected. No
+  required checks enforce CI before merge. _Priority: MEDIUM | Effort: 15 min_
+- [ ] **Add `cmd/gendocs` integration test** — The generator binary has 0% coverage. A simple test
+  (run gendocs, verify output files exist and contain expected markers) would prevent regressions.
+  _Priority: LOW | Effort: 1 hr_
+- [ ] **Add gendocs single-pass idempotency test** — gendocs needed 2 passes to converge from a
+  stale state. Add a test that asserts `go generate ./...` is idempotent (second run produces no
+  diff). _Priority: LOW | Effort: 30 min_
+- [ ] **Add `nix run .#gendocs` app** — The generator is only runnable via `go run ./cmd/gendocs`.
+  Add a flake app alias. _Priority: LOW | Effort: 15 min_
 
-### CI/CD
+## Dependencies / Security
 
-- [ ] **Configure or remove Lighthouse CI** — `LHCI_GITHUB_APP_TOKEN` not configured; workflow runs but produces no status checks. Either install the [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci), add the token as a repo secret, or remove the workflow entirely. _Priority: MEDIUM | Effort: 15 min_
-- [ ] **Resolve npm Dependabot alerts** — All 4 alerts now have overrides in `package.json` (`brace-expansion@5.0.6`, `devalue@5.8.1`, `yaml@2.8.3`, `vite@7.3.2`). 5 Dependabot PRs (#17-#21) open for dep bumps — all pass Website CI, fail Lighthouse CI (token not configured). _Priority: LOW | Effort: merge PRs_
+- [ ] **Resolve `art-dupl` upstream breakage** — `art-dupl@v0.3.0` doesn't compile (undefined
+  symbols in its own `printer/html.go`); CI is pinned to v0.1.0. Fix in `LarsArtmann/art-dupl` or
+  replace the dedup tool. _Priority: LOW | Effort: Research_
+- [ ] **Prune orphaned GCP service account keys** — Deploy attempts accumulated keys; 1 pruned, up
+  to 4 may remain. Needs `gcloud iam` + auth. Add a max-2-active-keys policy.
+  _Priority: LOW | Effort: 30 min_
 
-### Website
+## Documentation
 
-- [ ] **Fix Lighthouse accessibility failures** — `color-contrast` and `label-content-name-mismatch` on root page; `redirects` on `/docs`. Fix CSS contrast ratios and ARIA labels, then re-run Lighthouse to confirm. Dependents page a11y (caption, star labels) fixed 2026-06-02. _Priority: MEDIUM | Effort: 1-2 hrs_
-- [ ] **Add "Who Uses gogenfilter" CTA to landing page** — Dependents page exists at `/dependents` but is only linked from the docs sidebar. Add a link in HeroSection or CTASection to cross-promote it. _Priority: LOW | Effort: 15 min_
-- [ ] **Website performance audit** — Establish Lighthouse score baselines for performance, accessibility, SEO, best-practices. Use [unlighthouse.dev/tools](https://unlighthouse.dev/tools) for quick checks. _Priority: MEDIUM | Effort: 1 hr_
-- [ ] **Test dependents page with real dependents** — Currently renders empty state (no public repos found). Verify the table renders correctly when actual GitHub results exist. _Priority: LOW | Effort: 30 min_
-- [ ] **Add dependents page to stale reference CI check** — The `Check for stale references` step in `website.yml` should validate that `dependents.astro` is not orphaned. _Priority: LOW | Effort: 10 min_
+- [ ] **Prune `docs/status/` to 3 most recent** — AGENTS.md policy says keep only the 3 newest
+  reports in `docs/status/`; older ones go to `docs/status/archive/`. Currently 15 reports sit
+  unarchived (31 already archived). _Priority: LOW | Effort: 15 min_
+- [ ] **Review `docs/planning/`** — May contain outdated planning docs. Review and archive completed
+  items. _Priority: LOW | Effort: 30 min_
 
-### Documentation
+## Strategic (requires decision)
 
-- [ ] **Review and consolidate `docs/planning/`** — Planning docs from May 2026 may contain outdated information. Review and archive completed items. _Priority: LOW | Effort: 30 min_
-
-### Strategic (requires decision)
-
-- [ ] **Define v3 maintenance mode vs v4 vision** — The core library is complete (99.8% coverage, all features done). Decide: is v3 in maintenance mode, or is there a v4 scope? This determines the entire strategic direction. _Priority: HIGH | Effort: Decision_
-- [ ] **Evaluate `golangci-lint` plugin opportunity** — gogenfilter is a natural fit as a golangci-lint plugin for auto-generated code detection during linting. Research feasibility and community interest. _Priority: MEDIUM | Effort: Research_
-- [ ] **Design custom detector registration API** — Allow users to register their own detectors for proprietary code generators. Community extensibility play. _Priority: LOW | Effort: Design_
-
-## Completed (2026-06-02)
-
-- [x] **Fix 3 a11y issues on dependents page** — Added table `<caption>`, star column screen reader text, star cell `aria-label`
-- [x] **Fix Firebase Node 20 deprecation** — Replaced `FirebaseExtended/action-hosting-deploy@v0` with direct `firebase-tools` CLI under Node 24
-- [x] **Extract `SQLCOperation` typed constants** — New `SQLCOperation` type with 5 constants; `SQLCConfigError.Operation` now typed
-- [x] **Update DOMAIN_LANGUAGE.md** — Added 9 missing exports (types, functions, commands)
-- [x] **Resolve npm Dependabot alerts** — Added `brace-expansion@5.0.6` and `yaml@2.8.3` overrides
-
-## Completed (2026-06-01)
-
-- [x] Fix `goconst` lint warning — Extracted repeated sqlc string to `sqlcDBContent` constant in `example_test.go`
-- [x] Create `TODO_LIST.md` — This file
-- [x] Create `ROADMAP.md` — Strategic direction document
-- [x] Update `FEATURES.md` — Added dependents page, updated date
-- [x] Archive old status reports — Moved 9 older reports to `docs/status/archive/`
-- [x] Document Lighthouse CI status — Added note to `lighthouse.yml` and `AGENTS.md`
-
-## Completed (prior sessions)
-
-- [x] CSP security fix — All 4 inline scripts moved to `public/js/`, fully CSP-compliant
-- [x] Dependents page — Build-time GitHub code search with star count table
-- [x] BuildFlow TODO false positives — Renamed `note:` to `hint:` in TypeScript property names
-- [x] `goconst` was the only remaining lint warning — now fixed
+- [ ] **Define v3 maintenance mode vs v4 vision** — The core library is feature-complete (98.4%
+  coverage, 18 detectors, all features done). Decide whether v3 is in maintenance mode or there is
+  a v4 scope. This determines the entire strategic direction. See [ROADMAP.md](ROADMAP.md).
+  _Priority: HIGH | Effort: Decision_
+- [ ] **Evaluate `golangci-lint` plugin opportunity** — gogenfilter is a natural fit as a
+  golangci-lint plugin for auto-generated code detection during linting. Research feasibility and
+  community interest. _Priority: MEDIUM | Effort: Research_
+- [ ] **Design custom detector registration API** — Allow users to register their own detectors for
+  proprietary code generators. Community extensibility play. _Priority: LOW | Effort: Design_
