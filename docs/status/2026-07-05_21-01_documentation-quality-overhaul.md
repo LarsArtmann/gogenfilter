@@ -169,3 +169,23 @@ d0fc9ea fix: correct documentation errors across Go source, website, and README
 ```
 
 **Total: 10 commits, 18 files changed, 349 insertions, 88 deletions across Go source, website, README, and config.**
+
+---
+
+## Resolution (2026-07-24 audit pass)
+
+> Written after the session. The "Top #1 Question" below — how to keep README/website/doc comments
+> in sync when the detector table changes — was **answered** by the gendocs pipeline built in the
+> 2026-07-09 session and shipped in v3.3.0.
+
+| Item in report | Resolution |
+| -------------- | ---------- |
+| §g "Top #1 Question" — 7 files to touch per detector | **SOLVED**: `cmd/gendocs` now derives `generators.json`, README tables, `generators.mdx` (table + count), `detection.mdx` (function table), and `doc.go` generator list from the `detectors` table. CI enforces freshness (`go generate ./... && git diff --exit-code`). See `2026-07-09_09-07_documentation-generation-pipeline.md`. |
+| §c.2 Lighthouse CI accessibility | STILL OPEN — `color-contrast` / `label-content-name-mismatch` on root page (tracked in TODO_LIST) |
+| §c.3 Dependabot alerts (npm) | PARTIALLY: overrides added; alerts are website transitive deps only |
+| §c.4 `errors.mdx` pseudocode | MOOT — `errors.mdx` was deleted in favor of pkg.go.dev |
+| §c.5 empty `testdata/templ/` | DONE: `page_templ.go` fixture restored (`b1ae4dd`) |
+| §f.2 CI test: website API docs match Go symbols | SUPERSEDED: API MDX pages deleted → pkg.go.dev is now the API reference |
+| §f.25 generate README table from detector table | DONE via gendocs |
+
+**Verification gate at the time still holds:** `go vet` / `go build` / `go test` (98.3%+) / `astro check` / `astro build` all green.

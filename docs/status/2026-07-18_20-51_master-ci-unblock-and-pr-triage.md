@@ -235,3 +235,22 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 2. **`art-dupl` upstream ownership** — I pinned `art-dupl` to v0.1.0 in CI because v0.3.0 doesn't compile (undefined symbols in its own codebase). The v0.3.0 release is dated 2026-05-17 and is clearly broken. **Should I (a) file an issue on `LarsArtmann/art-dupl` and fix it as a separate task, (b) leave the v0.1.0 pin indefinitely, or (c) replace art-dupl with a different dedup tool entirely (e.g., jscpd for Go too)?** You own that repo so you know the intent better than I do.
 
 3. **Commit history style** — I used `git merge --no-ff` for PRs #26 and #22 (workflow-file changes that the API token couldn't merge), producing merge commits inconsistent with the project's squash-merge convention. **Do you want me to rewrite master's recent history to convert those to squash merges (irreversible, rewrites public history), or leave them as-is for consistency with "never rewrite public history"?** I defaulted to leaving them, but you may prefer cleanliness.
+
+---
+
+## Resolution (2026-07-24 audit pass)
+
+> The CI unblock work shipped; master has been healthy since. Re-checked the open questions and
+> follow-ups against current state.
+
+| Item | Resolution |
+| ---- | ---------- |
+| Master CI health | DONE — all four workflows green (recovered fully in the 2026-07-20 sessions); `testdata/templ/page_templ.go` restored (`b1ae4dd`) |
+| gendocs non-idempotency (§d.2, §e.6) | PARTIALLY — gendocs `||` phantom-column root cause fixed + defended by `readme_test.go` (`fe0395a`); single-pass idempotency of the generator itself not formally verified |
+| `art-dupl@v0.3.0` broken upstream (Q2) | STILL PINNED to v0.1.0 in CI — upstream fix pending |
+| Firebase Deploy (Q1) | DONE — recovered in 2026-07-20 session (`9a6abd0`: `env:` + `printf '%s'`); `master` deploys on push |
+| CHANGELOG not updated (§c) | DONE — entries added in `[v3.3.1]` |
+| Branch protection / required checks (§f.29) | STILL OPEN — no branch protection configured |
+
+**Carried to TODO_LIST:** branch protection, `art-dupl` upstream fix, single-pass idempotency test
+for gendocs.

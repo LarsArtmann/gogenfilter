@@ -281,3 +281,25 @@ The current design sends **mixed signals** (MIT + free = open source, but pricin
 - **Build status:** Green (typecheck 0 errors, 17 pages built, html-validate pass, CSP clean on all pages)
 - **Critical bug fixed:** Docs syntax highlighting (CSP hash-vs-unsafe-inline spec conflict)
 - **Biggest miss:** Never visually verified the result; missed the clarity problem until user pointed it out
+
+---
+
+## Resolution (2026-07-24 audit pass)
+
+> Written after the session. The headline self-critique in §D — "I MISSED THE CLARITY PROBLEM" and
+> "I NEVER VISUALLY VERIFIED" — was addressed in the immediately-following round-2 session
+> (`2026-07-20_12-36_messaging-clarity-and-verification-round-2.md`).
+
+| Item in report | Resolution |
+| -------------- | ---------- |
+| §D.2 "missed the clarity problem" | DONE (round-2): hero rewritten to "Stop linting code no human wrote"; SaaS pricing-table comparison deleted → replaced with before/after linter output (`23b922b`, `68215d8`) |
+| §D.3 comparison section "reinforces SaaS vibe" | DONE: pricing-table pattern removed entirely |
+| §C hero copy rewrite | DONE in round-2 |
+| §D.1 "never rendered a pixel" | PARTIALLY: round-2 fetched/served HTML + ran analysis scripts, but still no screenshot; color contrast math verified in `2026-07-21_02-17` |
+| §B docs syntax highlighting bug | DONE & HARDENED: `fix-csp.mjs` robustly strips all hash/nonce sources from `style-src` (`681aef0`) |
+| §G.2 Newsletter stay/go | DECIDED: kept, reframed as "Releases & updates" (round-2 M6) |
+| WCAG contrast (§E.10) | DONE: full AA pass in `2026-07-21_02-17` color review (`8d63d43`) |
+
+**Still open:** real-browser/screenshot visual verification (no session has rendered pixels yet);
+Starlight `head` meta description still shows old copy (round-2 §B); 3 color-token bugs from the
+07-21 review. All tracked in TODO_LIST.
