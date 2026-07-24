@@ -1,10 +1,13 @@
 package gogenfilter
 
 import (
-	"os"
+	_ "embed"
 	"strings"
 	"testing"
 )
+
+//go:embed README.md
+var readmeContent string
 
 // TestREADMETablesHaveConsistentColumns ensures every markdown table in README.md
 // has rows with matching column counts. This is a regression guard for the gendocs
@@ -14,10 +17,7 @@ import (
 func TestREADMETablesHaveConsistentColumns(t *testing.T) {
 	t.Parallel()
 
-	data, err := os.ReadFile("README.md")
-	if err != nil {
-		t.Fatalf("read README.md: %v", err)
-	}
+	data := readmeContent
 
 	tables := extractMarkdownTables(string(data))
 	if len(tables) == 0 {

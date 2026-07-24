@@ -51,6 +51,7 @@
             fileset = lib.fileset.unions [
               ./go.mod
               ./go.sum
+              ./README.md
               ./testhelpers
               ./testdata
               goFiles
