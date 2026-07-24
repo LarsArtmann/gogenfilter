@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v3.3.1] — 2026-07-24
+
 ### Added
 
-- **README table consistency test** — Validates that all markdown tables in README.md have consistent column counts. Regression guard for the gendocs `||` phantom-column corruption that produced broken tables.
+- **README table consistency test** (`readme_test.go`) — Validates that all markdown tables in README.md have consistent column counts. Regression guard for the gendocs `||` phantom-column corruption that produced broken tables.
+- **Nix flake configuration** — Reproducible development environments via `flake.nix` with flake-parts architecture and treefmt-nix for formatting.
 
 ### Fixed
 
@@ -19,7 +22,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **Inlined `isGeneratedBy` helper** — The unexported `isGeneratedBy(content, generator)` function was inlined at all 5 call sites in `detection.go`, removing an unnecessary indirection layer.
+- **Simplified slice construction in `scan.go`** — `dirBasedExclusions` and `ExclusionPaths` switched from pre-allocated indexed assignment to idiomatic `append` pattern.
 - **Removed unused `filenameNone` constant** in `cmd/gendocs/main.go` (dead code flagged by static analysis).
+- **Website visual design overhaul** — Three-color accent system (cyan/amber/emerald), funnel logo mark, dracula syntax highlighting theme, expanded call-to-action sections, and WCAG AA color contrast pass across all surfaces.
 
 ## [v3.3.0] — 2026-07-09
 
