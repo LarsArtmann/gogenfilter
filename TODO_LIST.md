@@ -67,9 +67,6 @@
 
 ## Documentation
 
-- [ ] **Prune `docs/status/` to 3 most recent** — AGENTS.md policy says keep only the 3 newest
-      reports in `docs/status/`; older ones go to `docs/status/archive/`. Currently 15 reports sit
-      unarchived (31 already archived). _Priority: LOW | Effort: 15 min_
 - [ ] **Review `docs/planning/`** — May contain outdated planning docs. Review and archive completed
       items. _Priority: LOW | Effort: 30 min_
 
