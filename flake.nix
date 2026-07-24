@@ -74,7 +74,7 @@
             version = self.rev or self.dirtyRev or "dev";
             inherit src;
             go = goPkg;
-            vendorHash = "sha256-HSnibRe5YDy3u4qQsO9NzYI3ksVDfYaon7Xua9bjVOw=";
+            vendorHash = "sha256-x4cy+Lyr68u7CrLuUq/fHP/qOmj8j43BD/drOkY8g50=";
             proxyVendor = true;
             meta = with pkgs.lib; {
               description = "Go struct field filter code generator";
