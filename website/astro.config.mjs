@@ -117,7 +117,7 @@ export default defineConfig({
           attrs: {
             name: "description",
             content:
-              "Detect and filter auto-generated Go code files. Built for linters, static analysis tools, and code quality tools.",
+              "Stop linting code no human wrote. gogenfilter detects and filters auto-generated Go files for linters, static analysis, and code quality tools.",
           },
         },
       ],
