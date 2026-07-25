@@ -334,7 +334,11 @@ func TestReplaceSectionIsIdempotent(t *testing.T) {
 	twice := replaceSection(once, "<!-- start -->", "<!-- end -->", replacement)
 
 	if once != twice {
-		t.Errorf("replaceSection is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n", once, twice)
+		t.Errorf(
+			"replaceSection is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n",
+			once,
+			twice,
+		)
 	}
 }
 
@@ -348,7 +352,11 @@ func TestReplaceSectionInlineIsIdempotent(t *testing.T) {
 	twice := replaceSectionInline(once, "{/* start */}", "{/* end */}", replacement)
 
 	if once != twice {
-		t.Errorf("replaceSectionInline is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n", once, twice)
+		t.Errorf(
+			"replaceSectionInline is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n",
+			once,
+			twice,
+		)
 	}
 }
 
