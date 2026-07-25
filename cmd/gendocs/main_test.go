@@ -323,3 +323,53 @@ func TestPadRight(t *testing.T) {
 		t.Errorf("padRight(\"abcdef\", 3) = %q, want \"abcdef\"", got)
 	}
 }
+
+func TestReplaceSectionIsIdempotent(t *testing.T) {
+	t.Parallel()
+
+	content := "before\n<!-- start -->\nold\n<!-- end -->\nafter"
+	replacement := "freshly generated content"
+
+	once := replaceSection(content, "<!-- start -->", "<!-- end -->", replacement)
+	twice := replaceSection(once, "<!-- start -->", "<!-- end -->", replacement)
+
+	if once != twice {
+		t.Errorf("replaceSection is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n", once, twice)
+	}
+}
+
+func TestReplaceSectionInlineIsIdempotent(t *testing.T) {
+	t.Parallel()
+
+	content := "text {/* start */}old{/* end */} more text"
+	replacement := "42"
+
+	once := replaceSectionInline(content, "{/* start */}", "{/* end */}", replacement)
+	twice := replaceSectionInline(once, "{/* start */}", "{/* end */}", replacement)
+
+	if once != twice {
+		t.Errorf("replaceSectionInline is not idempotent:\n--- once ---\n%s\n--- twice ---\n%s\n", once, twice)
+	}
+}
+
+func TestGeneratedTablesHaveNoPhantomColumns(t *testing.T) {
+	t.Parallel()
+
+	docs := gogenfilter.AllDetectorDocs()
+
+	tables := map[string]string{
+		"readme generators":   generateReadmeGeneratorsTable(docs),
+		"readme filter opts":  generateReadmeFilterOptionsTable(docs),
+		"mdx detection table": generateMDXTable(docs),
+		"mdx per-generator":   generatePerGeneratorTable(docs),
+	}
+
+	for name, table := range tables {
+		if strings.Contains(table, "||") {
+			t.Errorf(
+				"%s table contains a double-pipe (phantom column bug):\n%s",
+				name, table,
+			)
+		}
+	}
+}
