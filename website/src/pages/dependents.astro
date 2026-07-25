@@ -51,9 +51,9 @@ async function fetchDependents(): Promise<{
       break;
     }
 
-    if (res.status === 403) {
+    if (res.status === 401 || res.status === 403) {
       console.error(
-        "GitHub API rate limited. Set GITHUB_TOKEN env var for higher limits.",
+        "GitHub API unauthorized or rate limited. Set GITHUB_TOKEN env var for higher limits.",
       );
       break;
     }

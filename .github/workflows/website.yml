@@ -60,6 +60,8 @@ jobs:
 
       - run: npm run build
         working-directory: website
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate documentation code blocks
         run: nix run .#validate-docs

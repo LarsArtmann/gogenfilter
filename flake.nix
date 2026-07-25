@@ -178,8 +178,7 @@
             '';
 
             clean =
-              mkApp "clean"
-                "Remove coverage artifacts and clear test cache"
+              mkApp "clean" "Remove coverage artifacts and clear test cache"
                 [
                   goPkg
                   pkgs.trash-cli
@@ -189,9 +188,11 @@
                   go clean -testcache
                 '';
 
-            validate-docs = mkApp "validate-docs" "Validate website docs structure with md-go-validator" [ mdgo ] ''
-              md-go-validator -f table website/src/content/docs/
-            '';
+            validate-docs =
+              mkApp "validate-docs" "Validate website docs structure with md-go-validator" [ mdgo ]
+                ''
+                  md-go-validator -f table website/src/content/docs/
+                '';
           };
         };
 
