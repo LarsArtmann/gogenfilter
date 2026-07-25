@@ -91,7 +91,7 @@
           };
 
           mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
-            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
+            vendorHash = "sha256-I7oN6zZueidT9TfytKNvbMhSkj6y0WLySQEzujRvnw0=";
           });
         in
         {

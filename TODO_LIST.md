@@ -33,8 +33,9 @@
       _Priority: LOW | Effort: 15 min | Needs: GitHub App install_
 - [ ] **Enable branch protection / required status checks** — `master` is currently unprotected. No
       required checks enforce CI before merge. _Priority: MEDIUM | Effort: 15 min | Needs: `gh` admin_
-- [ ] **Pin GitHub Actions to SHA hashes** — 41 `go-structure-linter` findings flag unpinned action
-      versions. Pin to commits for supply-chain security. _Priority: LOW | Effort: 1 hr_
+- [ ] **Pin GitHub Actions to SHA hashes** — 30 unpinned `uses:` statements across
+      `.github/workflows/*.yml`. Pin each to its commit SHA for supply-chain security.
+      _Priority: LOW | Effort: 1 hr_
 
 ## Dependencies / Security
 
@@ -48,6 +49,11 @@
       (CI matrix, Nix `go_1_26` pin) before bumping. _Priority: LOW | Effort: 2 hr_
 
 ## Documentation
+
+- [ ] **Investigate unifying theme systems** — Landing page uses `.light` class on `<html>`;
+      Starlight docs use `data-theme` attribute (documented as accepted trade-off in AGENTS.md).
+      Revisit whether a unified theme system is worth the migration cost.
+      _Priority: LOW | Effort: Research | Status: Accepted trade-off, revisit if pain grows_
 
 - [ ] **Audit npm overrides** (`website/package.json`) — `brace-expansion`, `devalue`, `vite`,
       `yaml` overrides were added for Dependabot alerts. Re-evaluate whether each is still needed
