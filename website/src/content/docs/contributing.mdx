@@ -62,6 +62,46 @@ All pull requests must pass:
 4. Add test fixtures in `testdata/`
 5. `AllFilterOptions()` and `AllFilterReasons()` update automatically
 
+## Documentation Generation (gendocs)
+
+The `detectors` table in `detection.go` is the **single source of truth** for all
+generator data. The `cmd/gendocs` binary reads this table and generates
+documentation artifacts automatically.
+
+### Running gendocs
+
+```bash
+go generate ./...
+```
+
+This updates five output files:
+
+- `website/src/data/generators.json` — consumed by Astro components
+- `README.md` — generator tables (between `<!-- gendocs:*:start/end -->` markers)
+- `website/src/content/docs/generators.mdx` — detection table + tool count
+- `website/src/content/docs/api/detection.mdx` — per-generator function table
+- `doc.go` — package comment generator list
+
+### Adding Website Metadata
+
+Each detector needs presentation data (display name, logo, example filename) that
+isn't derivable from Go source. Add this to the `websiteMetadata` map in
+`cmd/gendocs/main.go`. If you add a detector without metadata, `gendocs` will
+fail with a validation error.
+
+### CI Enforcement
+
+CI runs `go generate ./... && git diff --exit-code` to verify generated docs are
+fresh. If you modify the detectors table, always run `go generate ./...` and
+commit the output.
+
+## Website Development
+
+The website uses Astro v6 + Starlight + Tailwind v4. The color system uses a
+warm-stone background palette with a three-color accent rotation (cyan, amber,
+emerald). See [`docs/adr/001-color-system.md`](https://github.com/LarsArtmann/gogenfilter/blob/master/docs/adr/001-color-system.md)
+for the full decision record and instructions for adding new accent colors.
+
 ## Pull Requests
 
 - Ensure all tests pass: `go test -race ./...`
