@@ -218,9 +218,9 @@ func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 		detection := readmeDetection(doc)
 
 		if doc.URL != "" {
-			fmt.Fprintf(&builder, "| [%s](%s) | %s |\n", name, doc.URL, detection)
+			builder.WriteString(markdownRow([]string{"[" + name + "](" + doc.URL + ")", detection}))
 		} else {
-			fmt.Fprintf(&builder, "| **%s** | %s |\n", name, detection)
+			builder.WriteString(markdownRow([]string{"**" + name + "**", detection}))
 		}
 	}
 
@@ -239,10 +239,10 @@ func generateReadmeFilterOptionsTable(docs []gogenfilter.DetectorDoc) string {
 	for _, doc := range docs {
 		optionConst := optionToConstName(string(doc.Option))
 		detection := readmeDetection(doc)
-		fmt.Fprintf(&builder, "| `%s` | %s |\n", optionConst, detection)
+		builder.WriteString(markdownRow([]string{"`" + optionConst + "`", detection}))
 	}
 
-	builder.WriteString("| `FilterAll` | Enables all of the above |\n")
+	builder.WriteString(markdownRow([]string{"`FilterAll`", "Enables all of the above"}))
 
 	return builder.String()
 }
@@ -293,7 +293,7 @@ func generatePerGeneratorTable(docs []gogenfilter.DetectorDoc) string {
 		funcName := "`" + doc.IsFuncName + "`"
 		checks := perGeneratorChecks(doc)
 		padFunc := padRight(funcName, detectionFuncWidth)
-		fmt.Fprintf(&builder, "| %s | %s |\n", padFunc, checks)
+		builder.WriteString(markdownRow([]string{padFunc, checks}))
 	}
 
 	return builder.String()
@@ -365,7 +365,7 @@ func generateMDXTable(docs []gogenfilter.DetectorDoc) string {
 		boldName := "**" + name + "**"
 		padName := padRight(boldName, mdxNameWidth)
 		padFilename := padRight(doc.FilenameDetection, mdxFilenameWidth)
-		fmt.Fprintf(&builder, "| %s | %s | %s |\n", padName, padFilename, doc.ContentDetection)
+		builder.WriteString(markdownRow([]string{padName, padFilename, doc.ContentDetection}))
 	}
 
 	return builder.String()
@@ -433,6 +433,16 @@ func padRight(text string, width int) string {
 	}
 
 	return text + strings.Repeat(" ", width-len(text))
+}
+
+// markdownRow joins cells into a markdown table row, escaping any pipe characters
+// in cell content to prevent phantom columns (the "||" corruption bug).
+func markdownRow(cells []string) string {
+	escaped := make([]string, len(cells))
+	for i, c := range cells {
+		escaped[i] = strings.ReplaceAll(c, "|", "\\|")
+	}
+	return "| " + strings.Join(escaped, " | ") + " |\n"
 }
 
 // replaceSection replaces content between marker comments in a file.
