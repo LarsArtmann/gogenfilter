@@ -438,9 +438,9 @@ func padRight(text string, width int) string {
 // markdownRow joins cells into a markdown table row, escaping any pipe characters
 // in cell content to prevent phantom columns (the "||" corruption bug).
 func markdownRow(cells []string) string {
-	escaped := make([]string, len(cells))
-	for i, c := range cells {
-		escaped[i] = strings.ReplaceAll(c, "|", "\\|")
+	escaped := make([]string, 0, len(cells))
+	for _, c := range cells {
+		escaped = append(escaped, strings.ReplaceAll(c, "|", "\\|"))
 	}
 
 	return "| " + strings.Join(escaped, " | ") + " |\n"
