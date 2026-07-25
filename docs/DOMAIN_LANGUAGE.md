@@ -26,6 +26,9 @@ Objects with identity — types that carry state across operations.
 | FilterOption      | A named type of generated code to detect (e.g., `FilterSQLC`, `FilterTempl`, `FilterAll`)         | Configuration input                    |
 | FilterReason      | Why a file was or wasn't filtered (e.g., `ReasonSQLC`, `ReasonOutsideScope`, `ReasonNotFiltered`) | Detection output                       |
 | FilterResult      | The full outcome of filtering a file: filtered status, reason, path, and trace                    | Detailed output                        |
+| ScanResult        | The outcome of scanning a project: per-generator `GeneratedFile` lists and `Exclusion` patterns   | Project-wide scan                      |
+| GeneratedFile     | A detected generated file record: path, generator (`FilterOption`), and detection reason          | Scan output element                    |
+| Exclusion         | A regex pattern (with description) that a consumer can use to exclude a generator's files          | Derived from `FilterReason`            |
 | ErrorCode         | A specific error condition identifier (e.g., `CodeSQLCConfigParse`, `CodeProjectRootNotFound`)    | Error handling                         |
 | SQLCOperation     | An operation being performed on sqlc config files (e.g., `OpSQLCFind`, `OpSQLCParse`)             | Error context                          |
 | ErrorCoder        | Interface for programmatic access to an error's `ErrorCode`                                       | Error handling                         |
@@ -44,6 +47,7 @@ Immutable objects defined by their attributes.
 | Include pattern | A glob pattern restricting scope — files not matching are filtered as `ReasonOutsideScope` | Scope restriction |
 | Exclude pattern | A glob pattern that filters matching files regardless of detection                         | Override          |
 | Trace           | A human-readable string explaining how detection reached its conclusion                    | Debugging         |
+| ExclusionPattern | A regex string returned by `FilterReason.ExclusionPattern()` for generators with consistent filename conventions | Convenience for linters |
 
 ## Commands
 
@@ -54,6 +58,11 @@ Actions the system performs.
 | Filter             | Determine if a file should be excluded from analysis — returns `(bool, error)` | Primary API    |
 | FilterDetailed     | Like Filter but returns `FilterResult` with reason and trace                   | Diagnostic API |
 | FilterPaths        | Batch filtering of multiple paths                                              | Bulk API       |
+| FilterWithContent  | Filter using pre-read content — avoids double I/O for analyzers that already have the bytes | Performance API |
+| FilterDetailedWithContent | Like `FilterWithContent` but returns `FilterResult`                          | Diagnostic API   |
+| ScanProject        | Walk an `fs.FS`, detect all generated files, return a `ScanResult` with per-generator lists and exclusion patterns | Project scan API |
+| DetectReasonFile   | Standalone two-phase detection in one call (filename + content) — no `Filter` needed  | Convenience API  |
+| DetectReasonFileFS | Like `DetectReasonFile` but accepts a custom `fs.FS`                                      | Convenience API  |
 | DetectReason       | Detect without I/O — caller provides content, returns `FilterReason`           | Low-level API  |
 | FindSQLCConfigs    | Discover sqlc.yaml/sqlc.yml files by walking directories                       | SQLC feature   |
 | GetSQLOutputDirs   | Parse sqlc configs and extract output directories                              | SQLC feature   |
