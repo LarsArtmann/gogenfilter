@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
@@ -27,6 +28,12 @@ const repoRoot = "../.."
 func TestGoGenerateEndToEnd(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test in short mode")
+	}
+
+	// Skip in environments where gendocs output targets don't exist
+	// (e.g., Nix sandbox which only includes Go source files).
+	if _, err := os.Stat(repoRoot + "/website/src/data"); err != nil {
+		t.Skip("skipping: website/src/data not found (sandbox or minimal checkout)")
 	}
 
 	ctx := context.Background()
