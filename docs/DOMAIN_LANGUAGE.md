@@ -47,7 +47,7 @@ Immutable objects defined by their attributes.
 | Include pattern | A glob pattern restricting scope — files not matching are filtered as `ReasonOutsideScope` | Scope restriction |
 | Exclude pattern | A glob pattern that filters matching files regardless of detection                         | Override          |
 | Trace           | A human-readable string explaining how detection reached its conclusion                    | Debugging         |
-| ExclusionPattern | A regex string returned by `FilterReason.ExclusionPattern()` for generators with consistent filename conventions | Convenience for linters |
+
 
 ## Commands
 
@@ -70,7 +70,7 @@ Actions the system performs.
 | DetectReasonReader | Detect from an `io.Reader` — returns `FilterReason`                            | Low-level API  |
 | FindSQLCConfigsFS  | Like `FindSQLCConfigs` but accepts a custom `fs.FS`                            | SQLC feature   |
 | GetSQLOutputDirsFS | Like `GetSQLOutputDirs` but accepts a custom `fs.FS`                           | SQLC feature   |
-| MatchPattern       | Test if a path matches a `**` glob pattern                                     | Pattern API    |
+
 
 ## Events
 
