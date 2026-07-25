@@ -1,87 +1,106 @@
 package main
 
 import (
+	"context"
 	"os/exec"
 	"strings"
 	"testing"
+
+	"github.com/LarsArtmann/gogenfilter/v3"
 )
 
-// TestGoGenerateIsIdempotent runs the full `go generate ./...` pipeline and
-// verifies that the committed documentation artifacts are already fresh.
+const repoRoot = "../.."
+
+// TestGoGenerateEndToEnd is the integration test for the gendocs binary.
 //
-// This is the end-to-end integration test for the gendocs binary: it exercises
-// detector table extraction, metadata validation, and all five output targets
-// (README.md, doc.go, generators.json, generators.mdx, detection.mdx).
+// It runs the full `go generate ./...` pipeline (which invokes
+// `go run ./cmd/gendocs` via the //go:generate directive in detection.go),
+// then verifies:
 //
+// 1. All five output files exist and contain expected content.
+// 2. The output is idempotent — re-running produces no changes.
+//
+// This test is NOT parallel because `go generate` writes to tracked files.
 // If this test fails, run `go generate ./...` and commit the changes.
-func TestGoGenerateIsIdempotent(t *testing.T) {
+//
+//nolint:paralleltest // writes to tracked files; cannot run in parallel
+func TestGoGenerateEndToEnd(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping integration test in short mode")
 	}
 
-	// Run go generate ./... — this invokes `go run ./cmd/gendocs` via the
-	// //go:generate directive in detection.go.
-	cmd := exec.Command("go", "generate", "./...")
-	cmd.Dir = "../.."
-	if out, err := cmd.CombinedOutput(); err != nil {
+	ctx := context.Background()
+
+	// Phase 1: Run go generate ./... and verify it succeeds.
+	cmd := exec.CommandContext(ctx, "go", "generate", "./...")
+	cmd.Dir = repoRoot
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
 		t.Fatalf("go generate ./... failed:\n%s\n%v", out, err)
 	}
 
-	// Verify no files changed — the committed output must already be fresh.
-	diff := exec.Command("git", "diff", "--exit-code")
-	diff.Dir = "../.."
-	if out, err := diff.CombinedOutput(); err != nil {
-		t.Errorf(
-			"go generate produced changes — committed docs are stale.\n"+
-				"Run `go generate ./...` and commit the result.\n%s",
-			out,
-		)
-	}
-}
-
-// TestGoGenerateProducesAllOutputs verifies that every expected output file
-// exists and contains gendocs markers after running the generation pipeline.
-func TestGoGenerateProducesAllOutputs(t *testing.T) {
-	if testing.Short() {
-		t.Skip("skipping integration test in short mode")
+	// Phase 2: Verify all output files contain expected content.
+	docs := gogenfilter.AllDetectorDocs()
+	if len(docs) == 0 {
+		t.Fatal("AllDetectorDocs() returned no detectors")
 	}
 
-	// Run go generate to ensure outputs are present.
-	cmd := exec.Command("go", "generate", "./...")
-	cmd.Dir = "../.."
-	if out, err := cmd.CombinedOutput(); err != nil {
-		t.Fatalf("go generate ./... failed:\n%s\n%v", out, err)
-	}
+	firstOption := string(docs[0].Option)
 
 	checks := []struct {
-		path    string
-		marker  string
+		path   string
+		needle string
 	}{
 		{"README.md", "<!-- gendocs:generators:start -->"},
 		{"doc.go", "// gendocs:generator-list:start"},
-		{"website/src/data/generators.json", "\"generators\""},
-		{"website/src/content/docs/generators.mdx", "{/* gendocs:detection-table:start */}"},
-		{"website/src/content/docs/api/detection.mdx", "{/* gendocs:per-generator:start */}"},
+		{"website/src/data/generators.json", firstOption},
+		{
+			"website/src/content/docs/generators.mdx",
+			"{/* gendocs:detection-table:start */}",
+		},
+		{
+			"website/src/content/docs/api/detection.mdx",
+			"{/* gendocs:per-generator:start */}",
+		},
 	}
 
 	for _, check := range checks {
-		check := check
-		t.Run(check.path, func(t *testing.T) {
-			t.Parallel()
+		//nolint:gosec // G204: check.path is a hardcoded test constant
+		read := exec.CommandContext(ctx, "cat", check.path)
+		read.Dir = repoRoot
 
-			read := exec.Command("cat", check.path)
-			read.Dir = "../.."
-			out, err := read.Output()
-			if err != nil {
-				t.Fatalf("could not read %s: %v", check.path, err)
-			}
+		out, err := read.Output()
+		if err != nil {
+			t.Errorf("could not read %s: %v", check.path, err)
 
-			if !strings.Contains(string(out), check.marker) {
-				t.Errorf(
-					"%s does not contain expected gendocs marker %q",
-					check.path, check.marker,
-				)
-			}
-		})
+			continue
+		}
+
+		if !strings.Contains(string(out), check.needle) {
+			t.Errorf("%s does not contain expected content %q", check.path, check.needle)
+		}
+	}
+
+	// Phase 3: Verify idempotency — the committed output must already be fresh.
+	outputFiles := []string{
+		"README.md",
+		"doc.go",
+		"website/src/data/generators.json",
+		"website/src/content/docs/generators.mdx",
+		"website/src/content/docs/api/detection.mdx",
+	}
+
+	args := append([]string{"diff", "--exit-code", "--"}, outputFiles...)
+	//nolint:gosec // G204: args are hardcoded test constants
+	diff := exec.CommandContext(ctx, "git", args...)
+	diff.Dir = repoRoot
+
+	if out, err := diff.CombinedOutput(); err != nil {
+		t.Errorf(
+			"go generate produced changes to managed files — committed docs are stale.\n"+
+				"Run `go generate ./...` and commit the result.\n%s",
+			out,
+		)
 	}
 }
