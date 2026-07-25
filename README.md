@@ -303,7 +303,8 @@ This library is at **v3** and follows [Go module versioning](https://go.dev/doc/
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. See
+[RELEASING.md](RELEASING.md) for the release process if you need to cut a release.
 
 ## License
 

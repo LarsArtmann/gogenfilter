@@ -144,41 +144,42 @@
           };
 
           apps = {
-            test = mkApp "test" [ goPkg ] ''
+            test = mkApp "test" "Run the Go test suite" [ goPkg ] ''
               go test ./... -count=1 "$@"
             '';
 
-            test-race = mkApp "test-race" [ goPkg ] ''
+            test-race = mkApp "test-race" "Run tests with the race detector" [ goPkg ] ''
               go test ./... -race -count=1 "$@"
             '';
 
-            build = mkApp "build" [ goPkg ] ''
+            build = mkApp "build" "Compile all Go packages" [ goPkg ] ''
               go build ./...
             '';
 
-            vet = mkApp "vet" [ goPkg ] ''
+            vet = mkApp "vet" "Run go vet on all packages" [ goPkg ] ''
               go vet ./...
             '';
 
-            lint = mkApp "lint" [ pkgs.golangci-lint ] ''
+            lint = mkApp "lint" "Run golangci-lint" [ pkgs.golangci-lint ] ''
               golangci-lint run ./...
             '';
 
-            gendocs = mkApp "gendocs" [ goPkg ] ''
+            gendocs = mkApp "gendocs" "Generate documentation from the detectors table" [ goPkg ] ''
               go run ./cmd/gendocs "$@"
             '';
 
-            coverage = mkApp "coverage" [ goPkg ] ''
+            coverage = mkApp "coverage" "Generate test coverage report" [ goPkg ] ''
               go test ./... -coverprofile=coverage.out -covermode=atomic "$@"
               go tool cover -func=coverage.out
             '';
 
-            vulncheck = mkApp "vulncheck" [ pkgs.govulncheck ] ''
+            vulncheck = mkApp "vulncheck" "Scan for Go vulnerabilities with govulncheck" [ pkgs.govulncheck ] ''
               govulncheck ./...
             '';
 
             clean =
               mkApp "clean"
+                "Remove coverage artifacts and clear test cache"
                 [
                   goPkg
                   pkgs.trash-cli
@@ -188,7 +189,7 @@
                   go clean -testcache
                 '';
 
-            validate-docs = mkApp "validate-docs" [ mdgo ] ''
+            validate-docs = mkApp "validate-docs" "Validate website docs structure with md-go-validator" [ mdgo ] ''
               md-go-validator -f table website/src/content/docs/
             '';
           };

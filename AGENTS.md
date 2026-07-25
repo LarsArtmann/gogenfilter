@@ -136,6 +136,8 @@ This is a library project, so the main package resides at the root level. This f
 
 ## Commands
 
+> See [RELEASING.md](RELEASING.md) for the full release runbook (version bump, tag, push, verify).
+
 ## CI
 
 Four separate GitHub Actions workflows, all triggered on push to master with path filters + `workflow_dispatch` for manual triggering (CI and Website also run on PRs):
