@@ -44,8 +44,8 @@ def should_skip(path: Path, root: Path) -> bool:
 def strip_code_blocks(content: str) -> str:
     """Remove fenced code blocks and inline code from markdown content."""
     # Remove fenced code blocks (```...``` or ~~~...~~~)
-    content = re.sub(r"```[\\s\\S]*?```", "", content)
-    content = re.sub(r"~~~[\\s\\S]*?~~~", "", content)
+    content = re.sub(r"```[\s\S]*?```", "", content)
+    content = re.sub(r"~~~[\s\S]*?~~~", "", content)
     # Remove inline code (`...`) — but not links inside code
     content = re.sub(r"`[^`]+`", "", content)
     return content

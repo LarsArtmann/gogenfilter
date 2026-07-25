@@ -136,3 +136,6 @@ jobs:
             git diff --stat
             exit 1
           fi
+
+      - name: Check internal markdown links
+        run: python3 scripts/check-markdown-links.py
