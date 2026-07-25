@@ -26,6 +26,12 @@ function stripStyleHashes(cspContent) {
   });
 }
 
+const EMPTY_STRING_HASH = "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='";
+
+function stripEmptyScriptHash(cspContent) {
+  return cspContent.replaceAll(` ${EMPTY_STRING_HASH}`, "");
+}
+
 const INLINE_SCRIPT_RE =
   /<script(?![^>]*\btype\s*=\s*["']module["'])(?![^>]*\bsrc\s*=)([^>]*)>([\s\S]*?)<\/script>/g;
 
@@ -54,6 +60,7 @@ async function main() {
   for (const file of files) {
     const html = await readFile(file, "utf-8");
     let fixed = stripStyleHashes(html);
+    fixed = stripEmptyScriptHash(fixed);
 
     const missingHashes = new Set();
     for (const [, , body] of fixed.matchAll(INLINE_SCRIPT_RE)) {

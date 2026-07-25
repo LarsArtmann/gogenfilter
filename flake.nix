@@ -59,10 +59,11 @@
           };
 
           mkApp =
-            name: runtimeInputs: text:
+            name: description: runtimeInputs: text:
             let
               script = pkgs.writeShellApplication {
                 inherit name runtimeInputs text;
+                meta.description = description;
               };
             in
             {
