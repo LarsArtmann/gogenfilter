@@ -442,6 +442,7 @@ func markdownRow(cells []string) string {
 	for i, c := range cells {
 		escaped[i] = strings.ReplaceAll(c, "|", "\\|")
 	}
+
 	return "| " + strings.Join(escaped, " | ") + " |\n"
 }
 

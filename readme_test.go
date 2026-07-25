@@ -19,7 +19,7 @@ func TestREADMETablesHaveConsistentColumns(t *testing.T) {
 
 	data := readmeContent
 
-	tables := extractMarkdownTables(string(data))
+	tables := extractMarkdownTables(data)
 	if len(tables) == 0 {
 		t.Fatal("expected at least one markdown table in README.md")
 	}
