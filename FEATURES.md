@@ -105,20 +105,20 @@
 
 ## Testing
 
-| Feature              | Status           | Details                                                        |
-| -------------------- | ---------------- | -------------------------------------------------------------- |
-| Table-driven tests   | FULLY_FUNCTIONAL | All test files use table-driven patterns                       |
-| Parallel tests       | FULLY_FUNCTIONAL | `t.Parallel()` throughout                                      |
-| Integration tests    | FULLY_FUNCTIONAL | Real generated files via `//go:embed testdata`                 |
-| Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                         |
-| Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants             |
-| Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                      |
-| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                                    |
-| Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                        |
-| Runnable examples    | FULLY_FUNCTIONAL | `Example*` functions in `example_test.go`                      |
-| Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
-| BDD specs            | FULLY_FUNCTIONAL | ~120 Ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)     |
-| README table test    | FULLY_FUNCTIONAL | `readme_test.go` — validates markdown table column consistency |
+| Feature              | Status           | Details                                                                    |
+| -------------------- | ---------------- | -------------------------------------------------------------------------- |
+| Table-driven tests   | FULLY_FUNCTIONAL | All test files use table-driven patterns                                   |
+| Parallel tests       | FULLY_FUNCTIONAL | `t.Parallel()` throughout                                                  |
+| Integration tests    | FULLY_FUNCTIONAL | Real generated files via `//go:embed testdata`                             |
+| Fuzz tests           | FULLY_FUNCTIONAL | `FuzzMatchPattern`, `FuzzDetectReason`                                     |
+| Property tests       | FULLY_FUNCTIONAL | `testing/quick` for idempotency/pattern invariants                         |
+| Benchmark tests      | FULLY_FUNCTIONAL | All hot paths benchmarked                                                  |
+| Concurrent tests     | FULLY_FUNCTIONAL | 100-goroutine `Filter` test                                                |
+| Edge case tests      | FULLY_FUNCTIONAL | Empty path, unicode, long names, nil FS                                    |
+| Runnable examples    | FULLY_FUNCTIONAL | `Example*` functions in `example_test.go`                                  |
+| Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]`             |
+| BDD specs            | FULLY_FUNCTIONAL | ~120 Ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)                 |
+| README table test    | FULLY_FUNCTIONAL | `readme_test.go` — validates markdown table column consistency             |
 | Gendocs integration  | FULLY_FUNCTIONAL | `cmd/gendocs/integration_test.go` — end-to-end `go generate` + idempotency |
 
 ## CI/CD
@@ -168,16 +168,16 @@
 
 ## Documentation Generation Pipeline
 
-| Feature                      | Status           | Details                                                                                                          |
-| ---------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Feature                      | Status           | Details                                                                                                                         |
+| ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `cmd/gendocs` generator      | FULLY_FUNCTIONAL | Derives docs from the `detectors` table — single source of truth; `formatMarkdownTable` provides dynamic column-width alignment |
-| `generators.json`            | FULLY_FUNCTIONAL | 18-entry data file consumed by Astro components                                                                  |
-| README tables                | FULLY_FUNCTIONAL | Generated between `<!-- gendocs:*:start/end -->` markers                                                         |
-| `generators.mdx` table/count | FULLY_FUNCTIONAL | Generated between `{/* gendocs:*:start/end */}` MDX markers (incl. inline tool count via `replaceSectionInline`) |
-| `detection.mdx` table        | FULLY_FUNCTIONAL | Per-generator `Is*Generated` function table, generated                                                           |
-| `doc.go` generator list      | FULLY_FUNCTIONAL | Generated between `// gendocs:*:start/end` markers                                                               |
-| `websiteMetadata` validation | FULLY_FUNCTIONAL | gendocs fails at build time if a detector lacks presentation data — drift impossible                             |
-| Detector doc metadata        | FULLY_FUNCTIONAL | `url`, `filenameDesc`, `contentDesc`, `isFuncName` on each detector; powers `AllDetectorDocs()`                  |
+| `generators.json`            | FULLY_FUNCTIONAL | 18-entry data file consumed by Astro components                                                                                 |
+| README tables                | FULLY_FUNCTIONAL | Generated between `<!-- gendocs:*:start/end -->` markers                                                                        |
+| `generators.mdx` table/count | FULLY_FUNCTIONAL | Generated between `{/* gendocs:*:start/end */}` MDX markers (incl. inline tool count via `replaceSectionInline`)                |
+| `detection.mdx` table        | FULLY_FUNCTIONAL | Per-generator `Is*Generated` function table, generated                                                                          |
+| `doc.go` generator list      | FULLY_FUNCTIONAL | Generated between `// gendocs:*:start/end` markers                                                                              |
+| `websiteMetadata` validation | FULLY_FUNCTIONAL | gendocs fails at build time if a detector lacks presentation data — drift impossible                                            |
+| Detector doc metadata        | FULLY_FUNCTIONAL | `url`, `filenameDesc`, `contentDesc`, `isFuncName` on each detector; powers `AllDetectorDocs()`                                 |
 
 ## Developer Environment
 

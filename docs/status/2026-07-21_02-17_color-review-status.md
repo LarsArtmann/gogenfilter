@@ -193,12 +193,12 @@
 
 > Re-checked the 3 "confirmed bugs found but NOT fixed" (§c) against current source.
 
-| Bug                                                                                  | Status (2026-07-26)                                                                                                                   |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Bug                                                                                  | Status (2026-07-26)                                                                                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | §c.1 `--color-accent-dim` light mismatch (`rgba(8,145,178,0.1)` vs accent `#0e7490`) | **FIXED** — `global.css:57` now `rgba(14, 116, 144, 0.1)`. Fixed in the 2026-07-25 session (see `2026-07-25_04-07_post-session-brutal-self-review.md` §a.4). |
-| §c.2 `--color-border` light cool-gray (`rgba(228,228,231,0.8)` = zinc-200)           | **FIXED** — `global.css:48` now `rgba(231, 229, 228, 0.8)` (warm stone-300). Fixed in the same session.                               |
-| §c.3 `--color-code-comment` dead token (0 refs outside CSS)                          | **FIXED** — token deleted from both dark and light mode (0 references confirmed post-deletion). Fixed in the same session.            |
-| §b theme split-brain (`.light` vs `data-theme="light"`)                              | ACCEPTED TRADE-OFF — two independent theme systems with separate persistence. Documented in AGENTS.md; tracked in TODO_LIST.           |
+| §c.2 `--color-border` light cool-gray (`rgba(228,228,231,0.8)` = zinc-200)           | **FIXED** — `global.css:48` now `rgba(231, 229, 228, 0.8)` (warm stone-300). Fixed in the same session.                                                      |
+| §c.3 `--color-code-comment` dead token (0 refs outside CSS)                          | **FIXED** — token deleted from both dark and light mode (0 references confirmed post-deletion). Fixed in the same session.                                   |
+| §b theme split-brain (`.light` vs `data-theme="light"`)                              | ACCEPTED TRADE-OFF — two independent theme systems with separate persistence. Documented in AGENTS.md; tracked in TODO_LIST.                                 |
 
 The 8 shipped fixes (§a) and the `--color-on-accent` pattern remain in place. All 3 bugs from §c are
 now resolved — the next website pass (2026-07-25) fixed them.
