@@ -111,8 +111,8 @@ centralized table formatter.
 
 1. **The `makezero` cargo-culting** (described above) — I let a linter dictate worse
    code instead of thinking about whether the lint rule applied. This violates the
-   project's own philosophy: *"Challenge instructions and tool output — both can be
-   wrong."* The linter was wrong here; I complied anyway.
+   project's own philosophy: _"Challenge instructions and tool output — both can be
+   wrong."_ The linter was wrong here; I complied anyway.
 
 2. **I let the `gendocs` binary stay tracked in git** — A 3.5MB compiled binary
    (`gendocs`) is committed to the repo and appeared in my diff. I explicitly
@@ -168,6 +168,7 @@ centralized table formatter.
 Ordered by impact (highest first):
 
 ### High impact — correctness & quality
+
 1. Revert `makezero` cargo-cult on 3 lines in `formatMarkdownTable` → use `//nolint:makezero`
 2. Add unit tests for `formatMarkdownTable` (alignment, separator, empty, escaping)
 3. Untrack `gendocs` binary from git (`git rm --cached`, add to `.gitignore`)
@@ -177,12 +178,14 @@ Ordered by impact (highest first):
 7. Add a CI assertion that checks markdown table alignment explicitly (not just idempotency)
 
 ### Medium impact — documentation & memory
+
 8. Update `AGENTS.md` gendocs section: document `formatMarkdownTable` and removal of width constants
 9. Add a design decision bullet to `AGENTS.md`: "why dynamic column widths over hardcoded"
 10. Add `formatMarkdownTable` to the "Design Decisions" section with rationale
 11. Document the `makezero` false positive pattern in AGENTS.md gotchas for future sessions
 
 ### Lower impact — polish & hardening
+
 12. Consider extracting `formatMarkdownTable` + `markdownRow` + `padRight` into a `tableutil.go` file
 13. Add a benchmark for `formatMarkdownTable` (called 4x per `go generate`)
 14. Consider using `strings.Repeat` for the separator instead of per-cell loop (minor)
@@ -194,6 +197,7 @@ Ordered by impact (highest first):
 20. Check if the blank-line formatting around marker comments changed (pre-1985cb4 had blank lines)
 
 ### Website & docs
+
 21. Verify Starlight renders the aligned tables correctly
 22. Check if `html-validate` passes on the built website pages
 23. Run the dedup check: `cd website && npm run dedup`
@@ -201,6 +205,7 @@ Ordered by impact (highest first):
 25. Check if README.md renders correctly on GitHub (aligned tables in source view)
 
 ### Process & tooling
+
 26. Review whether the auto-commit daemon should be disabled during active development
 27. Consider adding a pre-commit hook that runs `go generate ./... && git diff --exit-code`
 28. Add a Makefile/nix target for the full "regenerate + verify" loop
@@ -208,6 +213,7 @@ Ordered by impact (highest first):
 30. Check if there are other tables in the codebase that need alignment
 
 ### Future considerations
+
 31. Consider a "table schema" type that encodes column count + headers, reducing runtime errors
 32. Add fuzz testing for `formatMarkdownTable` with edge cases (empty cells, very long cells)
 33. Consider supporting reflow/wrapping for very long cells (current: no wrapping, just pad)
@@ -220,6 +226,7 @@ Ordered by impact (highest first):
 40. Add a test that verifies the separator dashes count matches column width
 
 ### Cleanup
+
 41. Remove the tracked `gendocs` binary from git history (requires `git filter-branch` or BFG)
 42. Check if `.gitignore` needs an entry for `gendocs`
 43. Verify `go.mod` doesn't need updates after the refactor

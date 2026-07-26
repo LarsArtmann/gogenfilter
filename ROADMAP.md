@@ -1,6 +1,6 @@
 # Roadmap
 
-**Updated:** 2026-07-24
+**Updated:** 2026-07-26
 **Current version:** v3.3.1
 
 ## v3 — Complete & Stable
@@ -20,11 +20,12 @@ documentation website.
 - **Scan API** — `ScanProject` walks `fs.FS`, returns per-generator lists + exclusion regex patterns
 - **SQLC config discovery** — v1 and v2 formats, output directory extraction
 - **Branded error system** with sentinel errors, `ErrorCode` type, `errors.AsType` migration
-- **Deterministic documentation pipeline** (`cmd/gendocs`) — derives `generators.json`, README
+- **Deterministic documentation pipeline** (`cmd/gendocs`) — Derives `generators.json`, README
   tables, `generators.mdx` (table + count), `detection.mdx` (function table), and `doc.go` from the
-  single `detectors` table; CI enforces freshness
+  single `detectors` table; CI enforces freshness. Dynamic column-width formatting via
+  `formatMarkdownTable`; `markdownRow` helper structurally prevents `||` phantom-column bug.
 - **Comprehensive testing** — table-driven, fuzz, property, benchmark, BDD (~120 Ginkgo specs),
-  concurrent, README table-consistency regression test
+  concurrent, README table-consistency regression test, gendocs integration + idempotency tests
 - **Website** — Astro v7 + Starlight with landing page (3-color accent system, funnel logo, dracula
   syntax theme, before/after proof), docs, dependents page, Firebase Hosting
 - **Reproducible dev environment** — `flake.nix` (flake-parts + treefmt-nix)
@@ -37,8 +38,8 @@ Ongoing maintenance tasks — see [TODO_LIST.md](TODO_LIST.md) for the tracked i
 
 - Lighthouse CI gate-vs-monitor policy decision
 - Branch protection / required checks
-- `cmd/gendocs` integration test + idempotency test
 - `art-dupl` upstream fix or replacement
+- Gendocs coverage improvement (currently 57.2% on `cmd/gendocs`)
 - Periodic `docs/status/` archival
 
 ## Open Strategic Question
@@ -92,8 +93,6 @@ for the tracked action item.
 - **Community feedback** — GitHub Discussions or Discord for real-world usage data
 - **Supply chain hardening** — Sigstore signing, SLSA provenance, SBOM generation
 - **CODE_OF_CONDUCT.md** — Standard community health file, link from website nav
-- **Release runbook** — Documented release checklist (verify tests → CHANGELOG → FEATURES/TODO →
-  tag → push → verify GitHub Release) to prevent skipping steps
 
 ---
 

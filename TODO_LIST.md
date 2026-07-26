@@ -1,10 +1,35 @@
 # TODO List
 
-**Updated:** 2026-07-25
+**Updated:** 2026-07-26
 **Current version:** v3.3.1
 
 > Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
 > [ROADMAP.md](ROADMAP.md). Items are grouped by area and tagged with `_Priority_` and `_Effort_`.
+
+## Gendocs
+
+- [ ] **Add unit tests for `formatMarkdownTable`** — The new `formatMarkdownTable` function
+      (`cmd/gendocs/main.go:413`) has zero dedicated tests. It is the single point of failure for all
+      4 table outputs (README generators, README filter options, detection.mdx, generators.mdx). Test:
+      column alignment, separator row correctness, empty input, single-column, pipe escaping.
+      _Priority: HIGH | Effort: 30 min_
+      _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §c)_
+- [ ] **Revert `makezero` cargo-cult** — Three lines in `formatMarkdownTable` (`widths`, `cells`,
+      `sep` at `cmd/gendocs/main.go:420,436,448`) use awkward `make([]T, 0, n) + append loop` to
+      satisfy a false-positive `makezero` lint warning. The code accesses by index, never appends.
+      Replace with idiomatic `make([]T, n)` + `//nolint:makezero`.
+      _Priority: MEDIUM | Effort: 10 min_
+      _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §b)_
+- [ ] **Untrack `gendocs` binary from git** — A 3.5MB compiled binary (`gendocs`) is tracked in git.
+      The `//go:generate` directive runs `go run ./cmd/gendocs`, so the binary is never needed at
+      runtime. Add `gendocs` to `.gitignore` and `git rm --cached gendocs`.
+      _Priority: MEDIUM | Effort: 5 min_
+      _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §d.2)_
+- [ ] **Update AGENTS.md with `formatMarkdownTable` design decision** — Document the centralized table
+      formatter, removal of 3 hardcoded width constants, and the dynamic column-width approach. The
+      gendocs section in AGENTS.md still describes the old architecture.
+      _Priority: LOW | Effort: 10 min_
+      _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §c)_
 
 ## Website
 
@@ -23,14 +48,10 @@
 
 ## CI / Process
 
-- [ ] **Decide Lighthouse CI gate-vs-monitor policy** — All assertions currently downgraded to
-      advisory warnings. Proposed hybrid: gate on correctness (errors-in-console, HTTPS, viewport),
-      monitor performance as warnings. Awaits decision before tightening `lighthouserc.json`.
-      _Priority: MEDIUM | Effort: Decision + 30 min_
-- [ ] **Configure or remove Lighthouse CI status checks** — `LHCI_GITHUB_APP_TOKEN` not configured;
-      workflow runs but produces no status checks. Install the [Lighthouse CI GitHub
-      App](https://github.com/apps/lighthouse-ci) + add the token, or remove the workflow.
-      _Priority: LOW | Effort: 15 min | Needs: GitHub App install_
+- [ ] **Decide Lighthouse CI gate-vs-monitor policy** — Correctness assertions (errors-in-console,
+      HTTPS, viewport) upgraded to `error` level, but `LHCI_GITHUB_APP_TOKEN` is not configured so
+      status checks are not produced. Awaits token configuration before assertions actually gate.
+      _Priority: MEDIUM | Effort: Decision + 30 min | Needs: GitHub App install_
 - [ ] **Enable branch protection / required status checks** — `master` is currently unprotected. No
       required checks enforce CI before merge. _Priority: MEDIUM | Effort: 15 min | Needs: `gh` admin_
 - [ ] **Pin GitHub Actions to SHA hashes** — 30 unpinned `uses:` statements across
@@ -54,7 +75,6 @@
       Starlight docs use `data-theme` attribute (documented as accepted trade-off in AGENTS.md).
       Revisit whether a unified theme system is worth the migration cost.
       _Priority: LOW | Effort: Research | Status: Accepted trade-off, revisit if pain grows_
-
 - [ ] **Audit npm overrides** (`website/package.json`) — `brace-expansion`, `devalue`, `vite`,
       `yaml` overrides were added for Dependabot alerts. Re-evaluate whether each is still needed
       when bumping Astro/Starlight. _Priority: LOW | Effort: 10 min_
