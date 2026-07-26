@@ -54,6 +54,7 @@ Thumbs.db
 
 # Build artifacts
 /gogenfilter
+/gendocs
 /md-go-validator-bin
 /go-output/
 /md-go-validator/

@@ -69,6 +69,7 @@
             {
               type = "app";
               program = lib.getExe script;
+              meta.description = description;
             };
 
           pkg = pkgs.buildGoModule {
