@@ -33,9 +33,6 @@ const (
 	generatorsMDXPath  = "website/src/content/docs/generators.mdx"
 	detectionMDXPath   = "website/src/content/docs/api/detection.mdx"
 
-	mdxNameWidth       = 20
-	mdxFilenameWidth   = 65
-	detectionFuncWidth = 26
 	filePerm           = 0o600
 
 	generatorsStartMarker = "<!-- gendocs:generators:start -->"
@@ -206,45 +203,35 @@ func generateReadme(docs []gogenfilter.DetectorDoc) error {
 
 // generateReadmeGeneratorsTable produces the "Supported Generators" table.
 func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
-	var builder strings.Builder
-
-	builder.WriteString("| Tool | Detection |\n")
-	builder.WriteString(
-		"| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |\n",
-	)
+	rows := [][]string{{"Tool", "Detection"}}
 
 	for _, doc := range docs {
 		name := displayName(string(doc.Reason))
 		detection := readmeDetection(doc)
 
 		if doc.URL != "" {
-			builder.WriteString(markdownRow([]string{"[" + name + "](" + doc.URL + ")", detection}))
+			rows = append(rows, []string{"[" + name + "](" + doc.URL + ")", detection})
 		} else {
-			builder.WriteString(markdownRow([]string{"**" + name + "**", detection}))
+			rows = append(rows, []string{"**" + name + "**", detection})
 		}
 	}
 
-	return builder.String()
+	return formatMarkdownTable(rows)
 }
 
 // generateReadmeFilterOptionsTable produces the "Filter Options" table.
 func generateReadmeFilterOptionsTable(docs []gogenfilter.DetectorDoc) string {
-	var builder strings.Builder
-
-	builder.WriteString("| Option | Detection |\n")
-	builder.WriteString(
-		"| ---------------- | -------------------------------------------------------------------- |\n",
-	)
+	rows := [][]string{{"Option", "Detection"}}
 
 	for _, doc := range docs {
 		optionConst := optionToConstName(string(doc.Option))
 		detection := readmeDetection(doc)
-		builder.WriteString(markdownRow([]string{"`" + optionConst + "`", detection}))
+		rows = append(rows, []string{"`" + optionConst + "`", detection})
 	}
 
-	builder.WriteString(markdownRow([]string{"`FilterAll`", "Enables all of the above"}))
+	rows = append(rows, []string{"`FilterAll`", "Enables all of the above"})
 
-	return builder.String()
+	return formatMarkdownTable(rows)
 }
 
 // generateGeneratorsMDX updates the detection table and tool count in generators.mdx
@@ -280,23 +267,15 @@ func generateDetectionMDX(docs []gogenfilter.DetectorDoc) error {
 
 // generatePerGeneratorTable produces the | Function | Checks | table for detection.mdx.
 func generatePerGeneratorTable(docs []gogenfilter.DetectorDoc) string {
-	var builder strings.Builder
-
-	builder.WriteString(
-		"| Function                     | Checks                                              |\n",
-	)
-	builder.WriteString(
-		"| ---------------------------- | --------------------------------------------------- |\n",
-	)
+	rows := [][]string{{"Function", "Checks"}}
 
 	for _, doc := range docs {
 		funcName := "`" + doc.IsFuncName + "`"
 		checks := perGeneratorChecks(doc)
-		padFunc := padRight(funcName, detectionFuncWidth)
-		builder.WriteString(markdownRow([]string{padFunc, checks}))
+		rows = append(rows, []string{funcName, checks})
 	}
 
-	return builder.String()
+	return formatMarkdownTable(rows)
 }
 
 // perGeneratorChecks produces a human-readable description of what each
@@ -351,24 +330,14 @@ func generateDocGoList(docs []gogenfilter.DetectorDoc) string {
 
 // generateMDXTable produces the full detection table for generators.mdx.
 func generateMDXTable(docs []gogenfilter.DetectorDoc) string {
-	var builder strings.Builder
-
-	builder.WriteString(
-		"| Tool                 | Filename Detection                                                | Content Detection                                             |\n",
-	)
-	builder.WriteString(
-		"| -------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------- |\n",
-	)
+	rows := [][]string{{"Tool", "Filename Detection", "Content Detection"}}
 
 	for _, doc := range docs {
-		name := displayName(string(doc.Reason))
-		boldName := "**" + name + "**"
-		padName := padRight(boldName, mdxNameWidth)
-		padFilename := padRight(doc.FilenameDetection, mdxFilenameWidth)
-		builder.WriteString(markdownRow([]string{padName, padFilename, doc.ContentDetection}))
+		name := "**" + displayName(string(doc.Reason)) + "**"
+		rows = append(rows, []string{name, doc.FilenameDetection, doc.ContentDetection})
 	}
 
-	return builder.String()
+	return formatMarkdownTable(rows)
 }
 
 // readmeDetection produces a short human-readable detection description for README tables.
@@ -433,6 +402,50 @@ func padRight(text string, width int) string {
 	}
 
 	return text + strings.Repeat(" ", width-len(text))
+}
+
+// formatMarkdownTable builds an aligned markdown table from rows of cells.
+// The first row is the header. Column widths are calculated from the widest
+// cell in each column, and all cells are padded to produce aligned source output.
+func formatMarkdownTable(rows [][]string) string {
+	if len(rows) == 0 {
+		return ""
+	}
+
+	numCols := len(rows[0])
+	widths := make([]int, numCols)
+
+	for _, row := range rows {
+		for i := 0; i < numCols && i < len(row); i++ {
+			if len(row[i]) > widths[i] {
+				widths[i] = len(row[i])
+			}
+		}
+	}
+
+	var builder strings.Builder
+
+	for rowIdx, row := range rows {
+		cells := make([]string, numCols)
+		for i := 0; i < numCols; i++ {
+			if i < len(row) {
+				cells[i] = padRight(row[i], widths[i])
+			} else {
+				cells[i] = strings.Repeat(" ", widths[i])
+			}
+		}
+		builder.WriteString(markdownRow(cells))
+
+		if rowIdx == 0 {
+			sep := make([]string, numCols)
+			for i, w := range widths {
+				sep[i] = strings.Repeat("-", w)
+			}
+			builder.WriteString(markdownRow(sep))
+		}
+	}
+
+	return builder.String()
 }
 
 // markdownRow joins cells into a markdown table row, escaping any pipe characters
