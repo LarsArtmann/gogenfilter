@@ -1,6 +1,6 @@
 # Features
 
-**Updated:** 2026-07-24
+**Updated:** 2026-07-26
 **Version:** v3.3.1
 **Source:** Code audit of all source files + website features
 
@@ -119,6 +119,7 @@
 | Generic test helpers | FULLY_FUNCTIONAL | `assertErrorType[T]`, `boolTestCase[T]`, `runBoolTableTest[T]` |
 | BDD specs            | FULLY_FUNCTIONAL | ~120 Ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)     |
 | README table test    | FULLY_FUNCTIONAL | `readme_test.go` — validates markdown table column consistency |
+| Gendocs integration  | FULLY_FUNCTIONAL | `cmd/gendocs/integration_test.go` — end-to-end `go generate` + idempotency |
 
 ## CI/CD
 
@@ -169,7 +170,7 @@
 
 | Feature                      | Status           | Details                                                                                                          |
 | ---------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `cmd/gendocs` generator      | FULLY_FUNCTIONAL | Derives docs from the `detectors` table — single source of truth                                                 |
+| `cmd/gendocs` generator      | FULLY_FUNCTIONAL | Derives docs from the `detectors` table — single source of truth; `formatMarkdownTable` provides dynamic column-width alignment |
 | `generators.json`            | FULLY_FUNCTIONAL | 18-entry data file consumed by Astro components                                                                  |
 | README tables                | FULLY_FUNCTIONAL | Generated between `<!-- gendocs:*:start/end -->` markers                                                         |
 | `generators.mdx` table/count | FULLY_FUNCTIONAL | Generated between `{/* gendocs:*:start/end */}` MDX markers (incl. inline tool count via `replaceSectionInline`) |

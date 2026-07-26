@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **RELEASING.md** — Full release runbook: quality gates, CHANGELOG sync, version bump, tag, push, verify, rollback procedure.
+- **Color system ADR** (`docs/adr/001-color-system.md`) — Decision record for the warm-stone + 3-color accent system (cyan/amber/emerald), WCAG AA contrast decisions, and a step-by-step guide for adding new accent colors.
+- **Gendocs integration test** (`cmd/gendocs/integration_test.go`) — End-to-end test running `go generate ./...`, verifying all 5 output files contain expected content, and checking idempotency via `git diff --exit-code`.
+- **Gendocs unit tests** — Idempotency proofs (`TestReplaceSectionIsIdempotent`, `TestReplaceSectionInlineIsIdempotent`) and phantom-column regression guard (`TestGeneratedTablesHaveNoPhantomColumns`).
+- **Markdown link checker** (`scripts/check-markdown-links.py`) — Validates all internal (relative) markdown links repo-wide; wired into CI as a quality gate.
+- **`markdownRow` helper in gendocs** — Joins table cells with proper pipe escaping, structurally preventing the `||` phantom-column bug at the helper level.
+- **`formatMarkdownTable` helper in gendocs** — Dynamic column-width calculation for all 4 markdown table outputs, replacing 3 hardcoded width constants (`mdxNameWidth`, `mdxFilenameWidth`, `detectionFuncWidth`).
+- **`stripEmptyScriptHash()` in CSP fix script** — Removes the SHA-256 hash of an empty string from `script-src` (generated internally by Astro, present on all built pages).
+- **Gendocs workflow section in CONTRIBUTING.md** — Documents the `detectors` table as single source of truth, how to run gendocs, the 5 output files, and the `websiteMetadata` requirement.
+- **Nix flake app descriptions** — `meta.description` on all 10 flake apps, eliminating `nix flake check` warnings.
+- **DOMAIN_LANGUAGE.md expanded** — Added v3.2 entities (`ScanResult`, `GeneratedFile`, `Exclusion`, `ExclusionPattern`, `ScanProject`, `DetectReasonFile`, `FilterWithContent`) and v3.3 entities (`DetectorDoc`, `AllDetectorDocs`, `AllFilterOptions`, `AllFilterReasons`, `AllGeneratorOptions`).
+- **Archived stale planning docs** — Moved `docs/planning/2026-05-*` to `docs/status/archive/`; removed empty `docs/planning/` directory.
+
+### Fixed
+
+- **Broken OG image generation** — `param: "slug"` option wrongly removed from `OGImageRoute()` during astro-og-canvas 0.13 migration; restored (was causing `PrerenderDynamicEndpointPathCollide` build error, blocking all website builds).
+- **3 website color-token bugs** — (1) `--color-accent-dim` light mode was `rgba(8,145,178,0.1)` (old accent) instead of `rgba(14,116,144,0.1)` (current accent `#0e7490`); (2) `--color-border` light mode was cool zinc (`rgba(228,228,231,...)`) on a warm-stone palette, changed to `rgba(231,229,228,...)`; (3) `--color-code-comment` dead token (0 references outside CSS) deleted.
+- **Newsletter CSP violation** — Inline `onsubmit` handler moved to Astro `<script>` block (bundled as external module, covered by `script-src 'self'`).
+- **Starlight meta description** — Updated from stale "Detect and filter auto-generated Go code files" to current "Stop linting code no human wrote" positioning.
+- **`nix flake check` — 3 latent bugs** — (1) stale `vendorHash` after `go.sum` change; (2) non-hermetic test (`os.ReadFile("README.md")` fails in Nix sandbox, fixed with `//go:embed`); (3) `README.md` missing from `lib.fileset.unions` source set.
+- **Stale md-go-validator `vendorHash`** — Updated in `flake.nix` to match current `go.sum`.
+- **Gendocs README table alignment** — Tables were unaligned (cells not padded to column width); `formatMarkdownTable` dynamically calculates column widths from the widest cell in each column.
+- **Dependents page GitHub API 401** — Added 401 to rate-limit handling branch (was only catching 403); unauthenticated builds now degrade gracefully.
+- **`errorCodeMatches` refactor** — Three `Is()` methods in `errors.go` now share an `errorCodeMatches(code, target)` helper that matches via the `ErrorCoder` interface, replacing three concrete type assertions.
+
+### Changed
+
+- **Gendocs: all 4 table generators refactored** to use `formatMarkdownTable` (README generators table, README filter options table, detection.mdx per-generator table, generators.mdx detection table).
+- **GITHUB_TOKEN wired into website CI** — `npm run build` step passes `GITHUB_TOKEN` for authenticated GitHub API calls on the dependents page (30 req/min vs 10 unauthenticated).
+- **Lighthouse CI assertions** — Correctness checks (errors-in-console, redirects, inspector-issues, viewport, image-aspect-ratio) upgraded from `warn` to `error`.
+- **AGENTS.md policies revised** — Removed "keep only 3 most recent reports" rule in favor of relevance/age-based pruning guidance; added 6 new Gotchas (Nix quality gates, sandbox testing, vendorHash maintenance, theme split-brain, astro-og-canvas param, BuildFlow auto-commit behavior).
+- **Markdown link checker wired into CI** — New "Check internal markdown links" step in `.github/workflows/ci.yml`.
+
 ## [v3.3.1] — 2026-07-24
 
 ### Added
