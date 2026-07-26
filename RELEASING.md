@@ -31,6 +31,7 @@ Every command must pass. If `nix flake check` reports a `vendorHash` mismatch, u
 ## 3. Bump the version
 
 Update the version in:
+
 - `TODO_LIST.md` header (`**Current version:**`)
 - `ROADMAP.md` (if it tracks current version)
 - `doc.go` (if it references a version)
@@ -57,6 +58,7 @@ git push origin vX.Y.Z
 ```
 
 Pushing the tag triggers:
+
 - GitHub Actions CI (runs on tag push)
 - Go module proxy picks up the tag (may take a few minutes)
 

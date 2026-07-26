@@ -49,6 +49,7 @@ Confirmed via Python hash computation: the Newsletter `<script>` body produces `
 ### 9. P2: Added gendocs end-to-end integration test
 
 Created `cmd/gendocs/integration_test.go` with `TestGoGenerateEndToEnd`:
+
 - Runs `go generate ./...` (exercises the full gendocs binary via the `//go:generate` directive).
 - Verifies all 5 output files contain expected content (markers + first detector option).
 - Verifies idempotency via `git diff --exit-code` scoped to gendocs-managed files only.
@@ -57,6 +58,7 @@ Created `cmd/gendocs/integration_test.go` with `TestGoGenerateEndToEnd`:
 ### 10. P2: Created color system ADR + accent color guide
 
 `docs/adr/001-color-system.md`: Full decision record covering:
+
 - Warm-stone background palette (why stone, not zinc/slate)
 - Three-color accent rotation (cyan/amber/emerald) with role assignments
 - All contrast decisions (`--color-on-accent`, light-mode darkening, etc.)
@@ -65,6 +67,7 @@ Created `cmd/gendocs/integration_test.go` with `TestGoGenerateEndToEnd`:
 ### 11. P3: Added gendocs workflow section to contributing.mdx
 
 Expanded `contributing.mdx` with:
+
 - "Documentation Generation (gendocs)" section explaining the detectors table as single source of truth, how to run gendocs, the 5 output files, and website metadata requirement.
 - "Website Development" section pointing to the ADR for the color system.
 
@@ -75,6 +78,7 @@ Added missing entities: `DetectorDoc` (Value Object), `ExclusionPaths` (Command)
 ### 13. P3: Created markdown link checker + wired into CI
 
 `scripts/check-markdown-links.py`: Python script that:
+
 - Walks all `.md`/`.mdx` files repo-wide (excluding node_modules, dist, .git).
 - Strips code blocks and inline code to avoid false positives.
 - Checks internal (relative) links resolve to existing files.
@@ -98,18 +102,18 @@ Scanned every `.astro` and `.mdx` file. All external links use either `rel="noop
 
 ### 17. Quality gates verified green (via Nix, per AGENTS.md)
 
-| Gate | Result |
-| --- | --- |
-| `nix flake check` | All checks passed (sandbox) |
-| `nix run .#lint` (golangci-lint) | 0 issues |
-| `nix run .#test` | Pass (98.3% coverage on root package) |
-| `nix run .#test-race` | Pass (race detector clean) |
-| `nix run .#vulncheck` | 0 vulnerabilities in our code |
-| `nix run .#coverage` | Root: 98.3%, gendocs: 57.2%, total: 88.4% |
-| `go generate ./... && git diff --exit-code` | Fresh / idempotent |
-| `astro check` | 0 errors, 0 warnings, 0 hints |
-| `astro build` | Complete (17 pages, CSP fix patched all) |
-| Markdown link checker | 10 links, 0 broken |
+| Gate                                        | Result                                    |
+| ------------------------------------------- | ----------------------------------------- |
+| `nix flake check`                           | All checks passed (sandbox)               |
+| `nix run .#lint` (golangci-lint)            | 0 issues                                  |
+| `nix run .#test`                            | Pass (98.3% coverage on root package)     |
+| `nix run .#test-race`                       | Pass (race detector clean)                |
+| `nix run .#vulncheck`                       | 0 vulnerabilities in our code             |
+| `nix run .#coverage`                        | Root: 98.3%, gendocs: 57.2%, total: 88.4% |
+| `go generate ./... && git diff --exit-code` | Fresh / idempotent                        |
+| `astro check`                               | 0 errors, 0 warnings, 0 hints             |
+| `astro build`                               | Complete (17 pages, CSP fix patched all)  |
+| Markdown link checker                       | 10 links, 0 broken                        |
 
 ---
 
@@ -155,6 +159,7 @@ These items from the prior 50-item list were not attempted (they require externa
 This is the **third consecutive session** where BuildFlow has auto-committed work mid-session with generic, non-descriptive messages. The prior two self-reviews (`2026-07-25_00-26` and `2026-07-25_04-07`) both flagged this exact problem. I read both reports at session start. I documented the risk in my mental model. **And I let it happen again.**
 
 BuildFlow captured my work across **9 commits** with messages like:
+
 ```
 b46a667 chore(deps): update project configuration and TODO list
 b3fdbdc chore(nix): update flake configuration and CSP fix script
@@ -169,6 +174,7 @@ f3fc4f6 chore(ci): add markdown link validation to CI pipeline
 ```
 
 These bundle unrelated changes:
+
 - `210f57c` bundles `flake.nix` (Nix apps) + `dependents.astro` (401 handling) + `website.yml` (GITHUB_TOKEN) — three unrelated concerns
 - `af0a226` bundles README.md + AGENTS.md — two different docs
 - `b3fdbdc` bundles `fix-csp.mjs` (CSP hash removal) + `flake.nix` (vendorHash fix) — website CSP work mixed with Nix dependency update
@@ -215,103 +221,103 @@ A reviewer looking at `git log` sees 9 generic commits with no clear narrative. 
 
 ### Immediate (fix this session's loose ends)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 1 | P0 | **Decide BuildFlow auto-commit policy** — squash? branch? disable? excludes? THIS IS NOW A 3-SESSION PATTERN | Tooling |
-| 2 | P0 | **Squash or rebase the 9+ BuildFlow commits** into logical commits (CSP fix, Nix apps, integration test, ADR, link checker) | Git hygiene |
-| 3 | P1 | **Bring gendocs coverage above 80%** — the 57.2% drags total to 88.4% | Testing |
-| 4 | P1 | **Pin GitHub Actions to SHA hashes** (30 `uses:` statements) | Security |
-| 5 | P2 | **Investigate WHY Astro emits the empty-string hash** — fix at source, not in post-build | Website CSP |
-| 6 | P2 | **Add `.buildflow.yml` excludes** for `docs/status/`, `*.md`, `flake.nix` | Tooling |
+| #   | Priority | Task                                                                                                                        | Area        |
+| --- | -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 1   | P0       | **Decide BuildFlow auto-commit policy** — squash? branch? disable? excludes? THIS IS NOW A 3-SESSION PATTERN                | Tooling     |
+| 2   | P0       | **Squash or rebase the 9+ BuildFlow commits** into logical commits (CSP fix, Nix apps, integration test, ADR, link checker) | Git hygiene |
+| 3   | P1       | **Bring gendocs coverage above 80%** — the 57.2% drags total to 88.4%                                                       | Testing     |
+| 4   | P1       | **Pin GitHub Actions to SHA hashes** (30 `uses:` statements)                                                                | Security    |
+| 5   | P2       | **Investigate WHY Astro emits the empty-string hash** — fix at source, not in post-build                                    | Website CSP |
+| 6   | P2       | **Add `.buildflow.yml` excludes** for `docs/status/`, `*.md`, `flake.nix`                                                   | Tooling     |
 
 ### Website (carried from prior sessions)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 7 | P1 | **Visually verify the site** — serve locally, screenshot every page, both themes + mobile | Website |
-| 8 | P1 | **Run Lighthouse on live site** — verify color-token fixes resolved a11y failures | Website a11y |
-| 9 | P2 | **Website performance audit** — establish Lighthouse baselines | Website perf |
-| 10 | P2 | **Test on real browsers** (Chrome, Firefox, Safari) | Website |
-| 11 | P2 | **Extend markdown link checker to validate Astro routes** — cross-reference `/path/` links against routing config | CI |
-| 12 | P3 | **Regenerate OG image with funnel logo** | Website |
-| 13 | P3 | **Add JSON-LD HowTo schema** for before/after section | Website SEO |
-| 14 | P3 | **Consider interactive "try it" demo** (filename → detection result) | Website |
-| 15 | P3 | **Verify reduced-motion preferences** on animations | Website a11y |
-| 16 | P3 | **Add contrast-ratio CI check** (pa11y or custom WCAG checker) | CI |
+| #   | Priority | Task                                                                                                              | Area         |
+| --- | -------- | ----------------------------------------------------------------------------------------------------------------- | ------------ |
+| 7   | P1       | **Visually verify the site** — serve locally, screenshot every page, both themes + mobile                         | Website      |
+| 8   | P1       | **Run Lighthouse on live site** — verify color-token fixes resolved a11y failures                                 | Website a11y |
+| 9   | P2       | **Website performance audit** — establish Lighthouse baselines                                                    | Website perf |
+| 10  | P2       | **Test on real browsers** (Chrome, Firefox, Safari)                                                               | Website      |
+| 11  | P2       | **Extend markdown link checker to validate Astro routes** — cross-reference `/path/` links against routing config | CI           |
+| 12  | P3       | **Regenerate OG image with funnel logo**                                                                          | Website      |
+| 13  | P3       | **Add JSON-LD HowTo schema** for before/after section                                                             | Website SEO  |
+| 14  | P3       | **Consider interactive "try it" demo** (filename → detection result)                                              | Website      |
+| 15  | P3       | **Verify reduced-motion preferences** on animations                                                               | Website a11y |
+| 16  | P3       | **Add contrast-ratio CI check** (pa11y or custom WCAG checker)                                                    | CI           |
 
 ### CI / Process
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 17 | P1 | **Enable branch protection / required status checks** — `master` is unprotected | CI |
-| 18 | P1 | **Configure LHCI GitHub App token** (or `error` assertions are inert) | CI |
-| 19 | P2 | **Add pre-commit hook** for `go generate ./... && git diff --exit-code` | Process |
-| 20 | P3 | **Consider versioned docs** (`/v3/` prefix) for future major versions | Strategy |
-| 21 | P3 | **Automate `vendorHash` updates** — CI check that flags stale hashes | CI |
+| #   | Priority | Task                                                                            | Area     |
+| --- | -------- | ------------------------------------------------------------------------------- | -------- |
+| 17  | P1       | **Enable branch protection / required status checks** — `master` is unprotected | CI       |
+| 18  | P1       | **Configure LHCI GitHub App token** (or `error` assertions are inert)           | CI       |
+| 19  | P2       | **Add pre-commit hook** for `go generate ./... && git diff --exit-code`         | Process  |
+| 20  | P3       | **Consider versioned docs** (`/v3/` prefix) for future major versions           | Strategy |
+| 21  | P3       | **Automate `vendorHash` updates** — CI check that flags stale hashes            | CI       |
 
 ### Dependencies / Security
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 22 | P2 | **Resolve `art-dupl` v0.3.0 upstream breakage** (pinned to v0.1.0) | Dependencies |
-| 23 | P3 | **Prune orphaned GCP service account keys** — needs gcloud auth | Security |
-| 24 | P3 | **Audit npm overrides** (`brace-expansion`, `devalue`, `vite`, `yaml`) | Dependencies |
-| 25 | P3 | **Migrate to Go 1.27** (drops GOEXPERIMENT=jsonv2) | Dependencies |
+| #   | Priority | Task                                                                   | Area         |
+| --- | -------- | ---------------------------------------------------------------------- | ------------ |
+| 22  | P2       | **Resolve `art-dupl` v0.3.0 upstream breakage** (pinned to v0.1.0)     | Dependencies |
+| 23  | P3       | **Prune orphaned GCP service account keys** — needs gcloud auth        | Security     |
+| 24  | P3       | **Audit npm overrides** (`brace-expansion`, `devalue`, `vite`, `yaml`) | Dependencies |
+| 25  | P3       | **Migrate to Go 1.27** (drops GOEXPERIMENT=jsonv2)                     | Dependencies |
 
 ### Documentation
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 26 | P2 | **Create ADR-002 for CSP strategy** — document the `fix-csp.mjs` post-build approach and why | Docs |
-| 27 | P2 | **Create ADR-003 for gendocs pipeline** — document the detectors-table-as-source-of-truth pattern | Docs |
-| 28 | P3 | **Verify all Starlight sidebar links** resolve to real pages | Docs |
-| 29 | P3 | **Add "how to add a new detector" guide** (beyond the contributing.mdx section) | Docs |
-| 30 | P3 | **Document the theme split-brain decision** as an ADR | Docs |
+| #   | Priority | Task                                                                                              | Area |
+| --- | -------- | ------------------------------------------------------------------------------------------------- | ---- |
+| 26  | P2       | **Create ADR-002 for CSP strategy** — document the `fix-csp.mjs` post-build approach and why      | Docs |
+| 27  | P2       | **Create ADR-003 for gendocs pipeline** — document the detectors-table-as-source-of-truth pattern | Docs |
+| 28  | P3       | **Verify all Starlight sidebar links** resolve to real pages                                      | Docs |
+| 29  | P3       | **Add "how to add a new detector" guide** (beyond the contributing.mdx section)                   | Docs |
+| 30  | P3       | **Document the theme split-brain decision** as an ADR                                             | Docs |
 
 ### Code Quality
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 31 | P2 | **Add tests for `LandingLayout.astro` SEO meta tags** | Testing |
-| 32 | P3 | **Add NixOS-compatible jscpd wrapper** for `npm run dedup` | DX |
-| 33 | P3 | **Consider extracting website design tokens** to a separate file | Code quality |
-| 34 | P3 | **Add `ExclusionPaths` test coverage** | Testing |
+| #   | Priority | Task                                                             | Area         |
+| --- | -------- | ---------------------------------------------------------------- | ------------ |
+| 31  | P2       | **Add tests for `LandingLayout.astro` SEO meta tags**            | Testing      |
+| 32  | P3       | **Add NixOS-compatible jscpd wrapper** for `npm run dedup`       | DX           |
+| 33  | P3       | **Consider extracting website design tokens** to a separate file | Code quality |
+| 34  | P3       | **Add `ExclusionPaths` test coverage**                           | Testing      |
 
 ### Strategic (requires decision)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 35 | P1 | **Define v3 maintenance mode vs v4 vision** | Strategy |
-| 36 | P2 | **Evaluate golangci-lint plugin opportunity** | Strategy |
-| 37 | P3 | **Design custom detector registration API** | Strategy |
+| #   | Priority | Task                                          | Area     |
+| --- | -------- | --------------------------------------------- | -------- |
+| 35  | P1       | **Define v3 maintenance mode vs v4 vision**   | Strategy |
+| 36  | P2       | **Evaluate golangci-lint plugin opportunity** | Strategy |
+| 37  | P3       | **Design custom detector registration API**   | Strategy |
 
 ### Polish (lower priority)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 38 | P3 | **Add `image-delivery-insight` as error** in Lighthouse CI | CI |
-| 39 | P3 | **Add `manifest.json` PWA support** | Website |
-| 40 | P3 | **Verify OG image alt text accuracy** across all pages | Website SEO |
-| 41 | P3 | **Add `noopener` audit** as a CI check (not just manual) | CI |
-| 42 | P3 | **Consider adding `CONTRIBUTING.md`** at repo root (currently only `contributing.mdx` in website) | Docs |
-| 43 | P3 | **Add link checker for website build output** (check `dist/**/*.html` for broken internal links) | CI |
+| #   | Priority | Task                                                                                              | Area        |
+| --- | -------- | ------------------------------------------------------------------------------------------------- | ----------- |
+| 38  | P3       | **Add `image-delivery-insight` as error** in Lighthouse CI                                        | CI          |
+| 39  | P3       | **Add `manifest.json` PWA support**                                                               | Website     |
+| 40  | P3       | **Verify OG image alt text accuracy** across all pages                                            | Website SEO |
+| 41  | P3       | **Add `noopener` audit** as a CI check (not just manual)                                          | CI          |
+| 42  | P3       | **Consider adding `CONTRIBUTING.md`** at repo root (currently only `contributing.mdx` in website) | Docs        |
+| 43  | P3       | **Add link checker for website build output** (check `dist/**/*.html` for broken internal links)  | CI          |
 
 ### Tooling
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 44 | P0 | **Investigate whether BuildFlow can be configured to not auto-commit** — or whether it should be disabled entirely | Tooling |
-| 45 | P2 | **Add `.buildflow.yml` exclude for `website/dist/`** (if not already excluded) | Tooling |
-| 46 | P3 | **Consider a `make git-save` script** that creates logical commits with descriptive messages | Process |
+| #   | Priority | Task                                                                                                               | Area    |
+| --- | -------- | ------------------------------------------------------------------------------------------------------------------ | ------- |
+| 44  | P0       | **Investigate whether BuildFlow can be configured to not auto-commit** — or whether it should be disabled entirely | Tooling |
+| 45  | P2       | **Add `.buildflow.yml` exclude for `website/dist/`** (if not already excluded)                                     | Tooling |
+| 46  | P3       | **Consider a `make git-save` script** that creates logical commits with descriptive messages                       | Process |
 
 ### Testing
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 47 | P2 | **Add fuzzing targets** for `MatchPattern` and `DetectReason` (Go 1.18+ `func Fuzz*`) | Testing |
-| 48 | P3 | **Add snapshot tests** for gendocs output (catch unintended changes to generated docs) | Testing |
-| 49 | P3 | **Add property-based tests** for filter idempotency and exclusion pattern correctness | Testing |
-| 50 | P3 | **Benchmark comparison CI** — flag regressions against baseline | CI |
+| #   | Priority | Task                                                                                   | Area    |
+| --- | -------- | -------------------------------------------------------------------------------------- | ------- |
+| 47  | P2       | **Add fuzzing targets** for `MatchPattern` and `DetectReason` (Go 1.18+ `func Fuzz*`)  | Testing |
+| 48  | P3       | **Add snapshot tests** for gendocs output (catch unintended changes to generated docs) | Testing |
+| 49  | P3       | **Add property-based tests** for filter idempotency and exclusion pattern correctness  | Testing |
+| 50  | P3       | **Benchmark comparison CI** — flag regressions against baseline                        | CI      |
 
 ---
 
@@ -320,6 +326,7 @@ A reviewer looking at `git log` sees 9 generic commits with no clear narrative. 
 ### 1. How do you want BuildFlow's auto-commit behavior handled?
 
 Three sessions in a row, BuildFlow has auto-committed work mid-session with generic messages, bundling unrelated changes. The prior reports flagged this; I failed to act on it again. The options are:
+
 - **(a) Squash all BuildFlow commits into one clean commit before pushing** (my recommendation — preserves work, cleans history)
 - **(b) Disable BuildFlow auto-commit entirely** — I commit manually with descriptive messages
 - **(c) Add excludes to `.buildflow.yml`** for `docs/`, `*.md`, `flake.nix`, `website/` — BuildFlow only commits Go source changes
@@ -330,6 +337,7 @@ I need to know your preference before the next session. This is the single highe
 ### 2. Is the gendocs 57.2% coverage acceptable, or should it be brought to 80%+?
 
 The root package is at 98.3%, but `cmd/gendocs` is at 57.2% (mostly untested `main()` and file-write paths). This drags the total to 88.4%. The integration test exercises the binary end-to-end but doesn't count toward package coverage. Options:
+
 - **(a) Accept 57.2%** — gendocs is a build tool, not a library; the integration test covers the critical path
 - **(b) Add unit tests for `main()` and file-write paths** to reach 80%+
 - **(c) Exclude `cmd/gendocs` from coverage reporting**
@@ -337,6 +345,7 @@ The root package is at 98.3%, but `cmd/gendocs` is at 57.2% (mostly untested `ma
 ### 3. Should the 9 BuildFlow commits from this session be squashed before any further work?
 
 Master is now 9 commits ahead of origin/master, all with generic messages. If I squash them, I lose the per-file granularity (though the prior history was already garbage). If I don't, the history stays polluted. The logical changes were:
+
 1. CSP empty-hash fix (`fix-csp.mjs`)
 2. Nix flake app descriptions (`flake.nix`)
 3. md-go-validator vendorHash fix (`flake.nix`)

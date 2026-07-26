@@ -21,15 +21,15 @@ Commit `08da14b` ("fix(website): remove dropped `param` option for astro-og-canv
 
 ### 3. Quality gates verified green (via Nix, per AGENTS.md)
 
-| Gate | Result |
-| --- | --- |
-| `nix flake check` | All checks passed |
-| `nix run .#lint` (golangci-lint) | 0 issues |
-| `nix run .#test` | Pass (98.3% coverage) |
-| `go generate ./... && git diff --exit-code` | Fresh / idempotent |
-| `astro check` | 0 errors, 0 warnings, 0 hints |
-| `astro build` | Complete (was broken before) |
-| `go vet ./...` | Pass |
+| Gate                                        | Result                        |
+| ------------------------------------------- | ----------------------------- |
+| `nix flake check`                           | All checks passed             |
+| `nix run .#lint` (golangci-lint)            | 0 issues                      |
+| `nix run .#test`                            | Pass (98.3% coverage)         |
+| `go generate ./... && git diff --exit-code` | Fresh / idempotent            |
+| `astro check`                               | 0 errors, 0 warnings, 0 hints |
+| `astro build`                               | Complete (was broken before)  |
+| `go vet ./...`                              | Pass                          |
 
 ### 4. Fixed 3 color-token bugs (website a11y)
 
@@ -101,12 +101,12 @@ Full release process: quality gates → CHANGELOG update → version bump → ta
 
 Original had 19 open items; my rewrite has 15. I correctly removed 8 resolved items but should have retained the remaining items I dropped:
 
-| Dropped item | Why it matters |
-| --- | --- |
-| "Investigate theme split-brain" | I documented it in AGENTS.md but removed the TODO. User may want the investigation tracked separately. |
-| "Add `cmd/gendocs` integration test" | I added unit tests but not an end-to-end integration test (run binary, verify output files). |
-| "Pin GitHub Actions to SHA hashes" | I added it back but the count (41 findings) needs verification. |
-| "Consider adding `CONTRIBUTING.md` section about gendocs workflow" | Was in the 50-item list but not in the TODO_LIST I was rewriting. |
+| Dropped item                                                       | Why it matters                                                                                         |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| "Investigate theme split-brain"                                    | I documented it in AGENTS.md but removed the TODO. User may want the investigation tracked separately. |
+| "Add `cmd/gendocs` integration test"                               | I added unit tests but not an end-to-end integration test (run binary, verify output files).           |
+| "Pin GitHub Actions to SHA hashes"                                 | I added it back but the count (41 findings) needs verification.                                        |
+| "Consider adding `CONTRIBUTING.md` section about gendocs workflow" | Was in the 50-item list but not in the TODO_LIST I was rewriting.                                      |
 
 ### 2. `nix run .#vulncheck` NOT run
 
@@ -204,98 +204,98 @@ The file `docs/status/2026-07-25_00-26_docs-health-and-historical-annotation-pas
 
 ### Immediate (fix this session's loose ends)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 1 | P0 | Squash the 9 unpushed BuildFlow commits into clean, descriptive commits | Git hygiene |
-| 2 | P0 | Investigate `errors.go` `errorCodeMatches` refactor — verify correctness | Code safety |
-| 3 | P0 | Run `nix run .#vulncheck` | Quality gate |
-| 4 | P1 | Restore the 4 dropped TODO items (theme split-brain, integration test, GHA pinning, CONTRIBUTING) | TODO hygiene |
-| 5 | P1 | Trace and remove the empty-string SHA-256 hash from CSP | Website CSP |
-| 6 | P1 | Add `meta.description` to all 10 Nix flake apps | Nix |
-| 7 | P1 | Link `RELEASING.md` from README.md and AGENTS.md | Docs |
-| 8 | P2 | Verify CSP Newsletter script works in built output | Website CSP |
+| #   | Priority | Task                                                                                              | Area         |
+| --- | -------- | ------------------------------------------------------------------------------------------------- | ------------ |
+| 1   | P0       | Squash the 9 unpushed BuildFlow commits into clean, descriptive commits                           | Git hygiene  |
+| 2   | P0       | Investigate `errors.go` `errorCodeMatches` refactor — verify correctness                          | Code safety  |
+| 3   | P0       | Run `nix run .#vulncheck`                                                                         | Quality gate |
+| 4   | P1       | Restore the 4 dropped TODO items (theme split-brain, integration test, GHA pinning, CONTRIBUTING) | TODO hygiene |
+| 5   | P1       | Trace and remove the empty-string SHA-256 hash from CSP                                           | Website CSP  |
+| 6   | P1       | Add `meta.description` to all 10 Nix flake apps                                                   | Nix          |
+| 7   | P1       | Link `RELEASING.md` from README.md and AGENTS.md                                                  | Docs         |
+| 8   | P2       | Verify CSP Newsletter script works in built output                                                | Website CSP  |
 
 ### Website (carried from prior sessions)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 9 | P1 | Visually verify the site (screenshots, both themes, mobile) — needs browser | Website |
-| 10 | P1 | Run Lighthouse on live site to verify color-token fixes resolved a11y failures | Website a11y |
-| 11 | P2 | Website performance audit (Lighthouse baselines) | Website perf |
-| 12 | P2 | Test on real browsers (Chrome, Firefox, Safari) | Website |
-| 13 | P2 | Configure `GITHUB_TOKEN` for dependents page build-time fetch | Website |
-| 14 | P3 | Regenerate OG image with funnel logo (not just text) | Website |
-| 15 | P3 | Add "illustrative output" disclaimer to before/after section — DONE but verify rendering | Website |
-| 16 | P3 | Custom OG image template with logo | Website |
-| 17 | P3 | Add JSON-LD HowTo schema for before/after | Website SEO |
-| 18 | P3 | Consider interactive "try it" demo (filename → detection result) | Website |
-| 19 | P3 | Verify reduced-motion preferences on animations | Website a11y |
-| 20 | P3 | Add contrast-ratio CI check (pa11y or custom WCAG checker) | CI |
+| #   | Priority | Task                                                                                     | Area         |
+| --- | -------- | ---------------------------------------------------------------------------------------- | ------------ |
+| 9   | P1       | Visually verify the site (screenshots, both themes, mobile) — needs browser              | Website      |
+| 10  | P1       | Run Lighthouse on live site to verify color-token fixes resolved a11y failures           | Website a11y |
+| 11  | P2       | Website performance audit (Lighthouse baselines)                                         | Website perf |
+| 12  | P2       | Test on real browsers (Chrome, Firefox, Safari)                                          | Website      |
+| 13  | P2       | Configure `GITHUB_TOKEN` for dependents page build-time fetch                            | Website      |
+| 14  | P3       | Regenerate OG image with funnel logo (not just text)                                     | Website      |
+| 15  | P3       | Add "illustrative output" disclaimer to before/after section — DONE but verify rendering | Website      |
+| 16  | P3       | Custom OG image template with logo                                                       | Website      |
+| 17  | P3       | Add JSON-LD HowTo schema for before/after                                                | Website SEO  |
+| 18  | P3       | Consider interactive "try it" demo (filename → detection result)                         | Website      |
+| 19  | P3       | Verify reduced-motion preferences on animations                                          | Website a11y |
+| 20  | P3       | Add contrast-ratio CI check (pa11y or custom WCAG checker)                               | CI           |
 
 ### CI / Process
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 21 | P1 | Enable branch protection / required status checks — needs `gh` admin | CI |
-| 22 | P1 | Configure LHCI GitHub App token (or my `error` assertions are inert) | CI |
-| 23 | P2 | Pin GitHub Actions to SHA hashes (41 go-structure-linter findings) | Security |
-| 24 | P2 | Add `cmd/gendocs` end-to-end integration test (run binary, verify output files) | Testing |
-| 25 | P3 | Add pre-commit hook for `go generate ./... && git diff --exit-code` | Process |
-| 26 | P3 | Consider versioned docs (`/v3/` prefix) for future major versions | Strategy |
+| #   | Priority | Task                                                                            | Area     |
+| --- | -------- | ------------------------------------------------------------------------------- | -------- |
+| 21  | P1       | Enable branch protection / required status checks — needs `gh` admin            | CI       |
+| 22  | P1       | Configure LHCI GitHub App token (or my `error` assertions are inert)            | CI       |
+| 23  | P2       | Pin GitHub Actions to SHA hashes (41 go-structure-linter findings)              | Security |
+| 24  | P2       | Add `cmd/gendocs` end-to-end integration test (run binary, verify output files) | Testing  |
+| 25  | P3       | Add pre-commit hook for `go generate ./... && git diff --exit-code`             | Process  |
+| 26  | P3       | Consider versioned docs (`/v3/` prefix) for future major versions               | Strategy |
 
 ### Dependencies / Security
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 27 | P2 | Resolve `art-dupl` v0.3.0 upstream breakage (pinned to v0.1.0) | Dependencies |
-| 28 | P3 | Prune orphaned GCP service account keys (up to 4 remain) — needs gcloud | Security |
-| 29 | P3 | Audit npm overrides (`brace-expansion`, `devalue`, `vite`, `yaml`) | Dependencies |
-| 30 | P3 | Migrate to Go 1.27 (drops GOEXPERIMENT=jsonv2 requirement) | Dependencies |
+| #   | Priority | Task                                                                    | Area         |
+| --- | -------- | ----------------------------------------------------------------------- | ------------ |
+| 27  | P2       | Resolve `art-dupl` v0.3.0 upstream breakage (pinned to v0.1.0)          | Dependencies |
+| 28  | P3       | Prune orphaned GCP service account keys (up to 4 remain) — needs gcloud | Security     |
+| 29  | P3       | Audit npm overrides (`brace-expansion`, `devalue`, `vite`, `yaml`)      | Dependencies |
+| 30  | P3       | Migrate to Go 1.27 (drops GOEXPERIMENT=jsonv2 requirement)              | Dependencies |
 
 ### Documentation
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 31 | P2 | Add color decision record (ADR-style) for warm-stone + 3-accent system | Docs |
-| 32 | P2 | Write "how to add a new accent color" guide (3-accent rotation is load-bearing) | Docs |
-| 33 | P3 | Consider adding `CONTRIBUTING.md` section about gendocs workflow | Docs |
-| 34 | P3 | Verify `docs/DOMAIN_LANGUAGE.md` fully covers all v3.3 API surface | Docs |
-| 35 | P3 | Verify all internal markdown links repo-wide (CI check) | Docs |
+| #   | Priority | Task                                                                            | Area |
+| --- | -------- | ------------------------------------------------------------------------------- | ---- |
+| 31  | P2       | Add color decision record (ADR-style) for warm-stone + 3-accent system          | Docs |
+| 32  | P2       | Write "how to add a new accent color" guide (3-accent rotation is load-bearing) | Docs |
+| 33  | P3       | Consider adding `CONTRIBUTING.md` section about gendocs workflow                | Docs |
+| 34  | P3       | Verify `docs/DOMAIN_LANGUAGE.md` fully covers all v3.3 API surface              | Docs |
+| 35  | P3       | Verify all internal markdown links repo-wide (CI check)                         | Docs |
 
 ### Code Quality
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 36 | P3 | Add NixOS-compatible jscpd wrapper for `npm run dedup` | DX |
-| 37 | P3 | Consider extracting website design tokens to a separate file | Code quality |
-| 38 | P3 | Add tests for `LandingLayout.astro` SEO meta tags | Testing |
+| #   | Priority | Task                                                         | Area         |
+| --- | -------- | ------------------------------------------------------------ | ------------ |
+| 36  | P3       | Add NixOS-compatible jscpd wrapper for `npm run dedup`       | DX           |
+| 37  | P3       | Consider extracting website design tokens to a separate file | Code quality |
+| 38  | P3       | Add tests for `LandingLayout.astro` SEO meta tags            | Testing      |
 
 ### Strategic (requires decision)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 39 | P1 | Define v3 maintenance mode vs v4 vision | Strategy |
-| 40 | P2 | Evaluate golangci-lint plugin opportunity | Strategy |
-| 41 | P3 | Design custom detector registration API | Strategy |
+| #   | Priority | Task                                      | Area     |
+| --- | -------- | ----------------------------------------- | -------- |
+| 39  | P1       | Define v3 maintenance mode vs v4 vision   | Strategy |
+| 40  | P2       | Evaluate golangci-lint plugin opportunity | Strategy |
+| 41  | P3       | Design custom detector registration API   | Strategy |
 
 ### BuildFlow / Tooling
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 42 | P0 | Decide BuildFlow auto-commit policy (squash? separate branch? disable for docs?) | Tooling |
-| 43 | P2 | Review all 9 BuildFlow commits from this session for correctness | Git hygiene |
-| 44 | P3 | Consider adding `.buildflow.yml` exclude for `docs/status/` | Tooling |
+| #   | Priority | Task                                                                             | Area        |
+| --- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| 42  | P0       | Decide BuildFlow auto-commit policy (squash? separate branch? disable for docs?) | Tooling     |
+| 43  | P2       | Review all 9 BuildFlow commits from this session for correctness                 | Git hygiene |
+| 44  | P3       | Consider adding `.buildflow.yml` exclude for `docs/status/`                      | Tooling     |
 
 ### Polish (lower priority)
 
-| # | Priority | Task | Area |
-| --- | --- | --- | --- |
-| 45 | P3 | Consider adding `image-delivery-insight` as error in Lighthouse CI | CI |
-| 46 | P3 | Add `noopener` audit for all `target="_blank"` links | Website a11y |
-| 47 | P3 | Verify `og:image:alt` text is accurate | Website SEO |
-| 48 | P3 | Consider adding `manifest.json` PWA support | Website |
-| 49 | P3 | Add `robots.txt` verification | Website SEO |
-| 50 | P3 | Consider adding sitemap.xml for docs | Website SEO |
+| #   | Priority | Task                                                               | Area         |
+| --- | -------- | ------------------------------------------------------------------ | ------------ |
+| 45  | P3       | Consider adding `image-delivery-insight` as error in Lighthouse CI | CI           |
+| 46  | P3       | Add `noopener` audit for all `target="_blank"` links               | Website a11y |
+| 47  | P3       | Verify `og:image:alt` text is accurate                             | Website SEO  |
+| 48  | P3       | Consider adding `manifest.json` PWA support                        | Website      |
+| 49  | P3       | Add `robots.txt` verification                                      | Website SEO  |
+| 50  | P3       | Consider adding sitemap.xml for docs                               | Website SEO  |
 
 ---
 
