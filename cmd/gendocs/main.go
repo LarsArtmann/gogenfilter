@@ -32,7 +32,6 @@ const (
 	generatorsJSONPath = "website/src/data/generators.json"
 	generatorsMDXPath  = "website/src/content/docs/generators.mdx"
 	detectionMDXPath   = "website/src/content/docs/api/detection.mdx"
-
 	filePerm           = 0o600
 
 	generatorsStartMarker = "<!-- gendocs:generators:start -->"
@@ -203,7 +202,8 @@ func generateReadme(docs []gogenfilter.DetectorDoc) error {
 
 // generateReadmeGeneratorsTable produces the "Supported Generators" table.
 func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
-	rows := [][]string{{"Tool", "Detection"}}
+	rows := make([][]string, 0, 1+len(docs))
+	rows = append(rows, []string{"Tool", "Detection"})
 
 	for _, doc := range docs {
 		name := displayName(string(doc.Reason))
@@ -221,7 +221,8 @@ func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 
 // generateReadmeFilterOptionsTable produces the "Filter Options" table.
 func generateReadmeFilterOptionsTable(docs []gogenfilter.DetectorDoc) string {
-	rows := [][]string{{"Option", "Detection"}}
+	rows := make([][]string, 0, 1+len(docs)+1)
+	rows = append(rows, []string{"Option", "Detection"})
 
 	for _, doc := range docs {
 		optionConst := optionToConstName(string(doc.Option))
@@ -267,7 +268,8 @@ func generateDetectionMDX(docs []gogenfilter.DetectorDoc) error {
 
 // generatePerGeneratorTable produces the | Function | Checks | table for detection.mdx.
 func generatePerGeneratorTable(docs []gogenfilter.DetectorDoc) string {
-	rows := [][]string{{"Function", "Checks"}}
+	rows := make([][]string, 0, 1+len(docs))
+	rows = append(rows, []string{"Function", "Checks"})
 
 	for _, doc := range docs {
 		funcName := "`" + doc.IsFuncName + "`"
@@ -330,7 +332,8 @@ func generateDocGoList(docs []gogenfilter.DetectorDoc) string {
 
 // generateMDXTable produces the full detection table for generators.mdx.
 func generateMDXTable(docs []gogenfilter.DetectorDoc) string {
-	rows := [][]string{{"Tool", "Filename Detection", "Content Detection"}}
+	rows := make([][]string, 0, 1+len(docs))
+	rows = append(rows, []string{"Tool", "Filename Detection", "Content Detection"})
 
 	for _, doc := range docs {
 		name := "**" + displayName(string(doc.Reason)) + "**"
@@ -413,12 +416,16 @@ func formatMarkdownTable(rows [][]string) string {
 	}
 
 	numCols := len(rows[0])
-	widths := make([]int, numCols)
+
+	widths := make([]int, 0, numCols)
+	for range numCols {
+		widths = append(widths, 0)
+	}
 
 	for _, row := range rows {
-		for i := 0; i < numCols && i < len(row); i++ {
-			if len(row[i]) > widths[i] {
-				widths[i] = len(row[i])
+		for i, cell := range row {
+			if i < numCols && len(cell) > widths[i] {
+				widths[i] = len(cell)
 			}
 		}
 	}
@@ -426,21 +433,23 @@ func formatMarkdownTable(rows [][]string) string {
 	var builder strings.Builder
 
 	for rowIdx, row := range rows {
-		cells := make([]string, numCols)
-		for i := 0; i < numCols; i++ {
+		cells := make([]string, 0, numCols)
+		for i := range numCols {
 			if i < len(row) {
-				cells[i] = padRight(row[i], widths[i])
+				cells = append(cells, padRight(row[i], widths[i]))
 			} else {
-				cells[i] = strings.Repeat(" ", widths[i])
+				cells = append(cells, strings.Repeat(" ", widths[i]))
 			}
 		}
+
 		builder.WriteString(markdownRow(cells))
 
 		if rowIdx == 0 {
-			sep := make([]string, numCols)
-			for i, w := range widths {
-				sep[i] = strings.Repeat("-", w)
+			sep := make([]string, 0, numCols)
+			for _, w := range widths {
+				sep = append(sep, strings.Repeat("-", w))
 			}
+
 			builder.WriteString(markdownRow(sep))
 		}
 	}
