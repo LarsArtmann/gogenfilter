@@ -16,6 +16,7 @@ const pages = {
 };
 
 export const { getStaticPaths, GET } = await OGImageRoute({
+  // @ts-expect-error param is required at runtime by astro-og-canvas (avoids PrerenderDynamicEndpointPathCollide) but absent from OGImageRouteConfig types
   param: "slug",
   pages,
   getImageOptions: (_path, page) => ({
