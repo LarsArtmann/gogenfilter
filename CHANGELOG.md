@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [v3.3.2] — 2026-07-26
+
 ### Added
 
 - **RELEASING.md** — Full release runbook: quality gates, CHANGELOG sync, version bump, tag, push, verify, rollback procedure.
@@ -32,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Gendocs README table alignment** — Tables were unaligned (cells not padded to column width); `formatMarkdownTable` dynamically calculates column widths from the widest cell in each column.
 - **Dependents page GitHub API 401** — Added 401 to rate-limit handling branch (was only catching 403); unauthenticated builds now degrade gracefully.
 - **`errorCodeMatches` refactor** — Three `Is()` methods in `errors.go` now share an `errorCodeMatches(code, target)` helper that matches via the `ErrorCoder` interface, replacing three concrete type assertions.
+- **Committed gendocs build binary untracked** — The 3.5 MB compiled `gendocs` binary was accidentally committed to git; untracked and added to `.gitignore`.
 
 ### Changed
 
@@ -361,7 +366,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.1...HEAD
+[Unreleased]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.2...HEAD
+[v3.3.2]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.1...v3.3.2
 [v3.3.1]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.0...v3.3.1
 [v3.3.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.2.0...v3.3.0
 [v3.2.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.1.0...v3.2.0

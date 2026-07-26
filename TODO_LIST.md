@@ -1,7 +1,7 @@
 # TODO List
 
 **Updated:** 2026-07-26
-**Current version:** v3.3.1
+**Current version:** v3.3.2
 
 > Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
 > [ROADMAP.md](ROADMAP.md). Items are grouped by area and tagged with `_Priority_` and `_Effort_`.
