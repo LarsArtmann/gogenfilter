@@ -106,10 +106,25 @@ func TestIsGeneratedStillRequiresFilename(t *testing.T) {
 		filename string
 		content  string
 	}{
-		{"IsSQLCGenerated with wrong filename", IsSQLCGenerated, "repository.go", sqlcGeneratedContentTest},
-		{"IsTemplGenerated with wrong filename", IsTemplGenerated, "custom_template.go", templContent},
+		{
+			"IsSQLCGenerated with wrong filename",
+			IsSQLCGenerated,
+			"repository.go",
+			sqlcGeneratedContentTest,
+		},
+		{
+			"IsTemplGenerated with wrong filename",
+			IsTemplGenerated,
+			"custom_template.go",
+			templContent,
+		},
 		{"IsGoEnumGenerated with wrong filename", IsGoEnumGenerated, "types.go", goEnumContent},
-		{"IsProtobufGenerated with wrong filename", IsProtobufGenerated, "messages.go", protobufGeneratedContent},
+		{
+			"IsProtobufGenerated with wrong filename",
+			IsProtobufGenerated,
+			"messages.go",
+			protobufGeneratedContent,
+		},
 	}
 
 	for _, tt := range tests {
