@@ -212,9 +212,11 @@ func checkSQLCContent(_, content string) bool {
 func checkTemplContent(_, content string) bool {
 	return hasTemplContent(content)
 }
+
 func checkGoEnumContent(_, content string) bool {
 	return hasGoEnumContent(content)
 }
+
 func checkProtobufContent(_, content string) bool {
 	return hasProtobufContent(content)
 }
