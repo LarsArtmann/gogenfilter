@@ -52,8 +52,6 @@
       HTTPS, viewport) upgraded to `error` level, but `LHCI_GITHUB_APP_TOKEN` is not configured so
       status checks are not produced. Awaits token configuration before assertions actually gate.
       _Priority: MEDIUM | Effort: Decision + 30 min | Needs: GitHub App install_
-- [ ] **Enable branch protection / required status checks** — `master` is currently unprotected. No
-      required checks enforce CI before merge. _Priority: MEDIUM | Effort: 15 min | Needs: `gh` admin_
 - [ ] **Pin GitHub Actions to SHA hashes** — 30 unpinned `uses:` statements across
       `.github/workflows/*.yml`. Pin each to its commit SHA for supply-chain security.
       _Priority: LOW | Effort: 1 hr_

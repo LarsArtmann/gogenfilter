@@ -37,7 +37,6 @@ documentation website.
 Ongoing maintenance tasks — see [TODO_LIST.md](TODO_LIST.md) for the tracked items:
 
 - Lighthouse CI gate-vs-monitor policy decision
-- Branch protection / required checks
 - `art-dupl` upstream fix or replacement
 - Gendocs coverage improvement (currently 57.2% on `cmd/gendocs`)
 - Periodic `docs/status/` archival
@@ -78,6 +77,10 @@ for the tracked action item.
 
 ## Evaluated and Deprioritized
 
+- **Branch protection / required status checks** — Rejected. This is a solo-maintainer repo with a
+  linear `master` workflow and no PR-based collaboration. Branch protection adds ceremony without
+  benefit — it would block the very workflow it's meant to protect (direct pushes to master by the
+  sole maintainer). CI runs on every push regardless. Revisit only if multiple contributors join.
 - **Pre-commit hook integration** — A hook that says "this file is generated" at commit time is not
   actionable. Generated files are routinely committed (protobuf, sqlc, wire). What would the hook
   _do_? Reject the commit? That's wrong. Warn the user? They already know. Pre-commit hooks for
