@@ -80,7 +80,7 @@
             vendorHash = "sha256-x4cy+Lyr68u7CrLuUq/fHP/qOmj8j43BD/drOkY8g50=";
             proxyVendor = true;
             meta = with pkgs.lib; {
-              description = "Go struct field filter code generator";
+              description = "Go library for detecting and filtering auto-generated code files";
               license = licenses.mit;
               maintainers = [
                 {
