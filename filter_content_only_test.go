@@ -143,19 +143,19 @@ func TestIsGeneratedStillRequiresFilename(t *testing.T) {
 func TestContentOnlyFunctionsNoFalsePositives(t *testing.T) {
 	t.Parallel()
 
-	if hasSQLCContent(packageMainFunc) {
-		t.Error("hasSQLCContent should return false for regular content")
+	if checkSQLCContent("", packageMainFunc) {
+		t.Error("checkSQLCContent should return false for regular content")
 	}
 
-	if hasTemplContent(packageMainFunc) {
-		t.Error("hasTemplContent should return false for regular content")
+	if checkTemplContent("", packageMainFunc) {
+		t.Error("checkTemplContent should return false for regular content")
 	}
 
-	if hasGoEnumContent(packageMainFunc) {
-		t.Error("hasGoEnumContent should return false for regular content")
+	if checkGoEnumContent("", packageMainFunc) {
+		t.Error("checkGoEnumContent should return false for regular content")
 	}
 
-	if hasProtobufContent(packageMainFunc) {
-		t.Error("hasProtobufContent should return false for regular content")
+	if checkProtobufContent("", packageMainFunc) {
+		t.Error("checkProtobufContent should return false for regular content")
 	}
 }
