@@ -205,8 +205,13 @@ func detectorOptions(includeGeneric bool) []FilterOption {
 //
 // See AGENTS.md "Content-only detection" for the design rationale.
 
-func checkSQLCContent(_, content string) bool { return hasSQLCContent(content) }
-func checkTemplContent(_, content string) bool { return hasTemplContent(content) }
+func checkSQLCContent(_, content string) bool {
+	return hasSQLCContent(content)
+}
+
+func checkTemplContent(_, content string) bool {
+	return hasTemplContent(content)
+}
 func checkGoEnumContent(_, content string) bool {
 	return hasGoEnumContent(content)
 }
