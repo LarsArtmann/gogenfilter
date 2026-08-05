@@ -52,24 +52,24 @@ Immutable objects defined by their attributes.
 
 Actions the system performs.
 
-| Term                      | Definition                                                                                                         | Context          |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| Filter                    | Determine if a file should be excluded from analysis — returns `(bool, error)`                                     | Primary API      |
-| FilterDetailed            | Like Filter but returns `FilterResult` with reason and trace                                                       | Diagnostic API   |
-| FilterPaths               | Batch filtering of multiple paths                                                                                  | Bulk API         |
-| FilterWithContent         | Filter using pre-read content — avoids double I/O for analyzers that already have the bytes                        | Performance API  |
-| FilterDetailedWithContent | Like `FilterWithContent` but returns `FilterResult`                                                                | Diagnostic API   |
+| Term                      | Definition                                                                                                           | Context          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Filter                    | Determine if a file should be excluded from analysis — returns `(bool, error)`                                       | Primary API      |
+| FilterDetailed            | Like Filter but returns `FilterResult` with reason and trace                                                         | Diagnostic API   |
+| FilterPaths               | Batch filtering of multiple paths                                                                                    | Bulk API         |
+| FilterWithContent         | Filter using pre-read content — avoids double I/O for analyzers that already have the bytes                          | Performance API  |
+| FilterDetailedWithContent | Like `FilterWithContent` but returns `FilterResult`                                                                  | Diagnostic API   |
 | FilterDetailedAndContent  | Like `FilterDetailed` but also returns file content read during phase-2 — lazy read + content return, no double-read | Performance API  |
-| ScanProject               | Walk an `fs.FS`, detect all generated files, return a `ScanResult` with per-generator lists and exclusion patterns | Project scan API |
-| DetectReasonFile          | Standalone two-phase detection in one call (filename + content) — no `Filter` needed                               | Convenience API  |
-| DetectReasonFileFS        | Like `DetectReasonFile` but accepts a custom `fs.FS`                                                               | Convenience API  |
-| DetectReason              | Detect without I/O — caller provides content, returns `FilterReason`                                               | Low-level API    |
-| FindSQLCConfigs           | Discover sqlc.yaml/sqlc.yml files by walking directories                                                           | SQLC feature     |
-| GetSQLOutputDirs          | Parse sqlc configs and extract output directories                                                                  | SQLC feature     |
-| FindProjectRoot           | Search parent directories for marker files (go.mod, etc.)                                                          | Infrastructure   |
-| DetectReasonReader        | Detect from an `io.Reader` — returns `FilterReason`                                                                | Low-level API    |
-| FindSQLCConfigsFS         | Like `FindSQLCConfigs` but accepts a custom `fs.FS`                                                                | SQLC feature     |
-| GetSQLOutputDirsFS        | Like `GetSQLOutputDirs` but accepts a custom `fs.FS`                                                               | SQLC feature     |
+| ScanProject               | Walk an `fs.FS`, detect all generated files, return a `ScanResult` with per-generator lists and exclusion patterns   | Project scan API |
+| DetectReasonFile          | Standalone two-phase detection in one call (filename + content) — no `Filter` needed                                 | Convenience API  |
+| DetectReasonFileFS        | Like `DetectReasonFile` but accepts a custom `fs.FS`                                                                 | Convenience API  |
+| DetectReason              | Detect without I/O — caller provides content, returns `FilterReason`                                                 | Low-level API    |
+| FindSQLCConfigs           | Discover sqlc.yaml/sqlc.yml files by walking directories                                                             | SQLC feature     |
+| GetSQLOutputDirs          | Parse sqlc configs and extract output directories                                                                    | SQLC feature     |
+| FindProjectRoot           | Search parent directories for marker files (go.mod, etc.)                                                            | Infrastructure   |
+| DetectReasonReader        | Detect from an `io.Reader` — returns `FilterReason`                                                                  | Low-level API    |
+| FindSQLCConfigsFS         | Like `FindSQLCConfigs` but accepts a custom `fs.FS`                                                                  | SQLC feature     |
+| GetSQLOutputDirsFS        | Like `GetSQLOutputDirs` but accepts a custom `fs.FS`                                                                 | SQLC feature     |
 
 ## Events
 

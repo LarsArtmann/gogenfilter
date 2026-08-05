@@ -38,10 +38,10 @@ art-dupl reads content upfront for **every file** when `--include-generated` is 
 
 gogenfilter provides two detection APIs, but neither does both lazy reading AND content return:
 
-| API | Lazy read? | Returns content? | Problem for art-dupl |
-|-----|-----------|------------------|----------------------|
-| `FilterDetailed(path)` | Yes — phase 1 filename, phase 2 content only if needed | **No** — content read internally then discarded | art-dupl must re-read files caught by `ReasonGeneric` for `allowsContent` (double-read) |
-| `FilterDetailedWithContent(path, content)` | No — caller must provide content upfront | N/A — caller already has it | art-dupl reads every file upfront, including files that phase 1 would catch by filename alone (wasted read) |
+| API                                        | Lazy read?                                             | Returns content?                                | Problem for art-dupl                                                                                        |
+| ------------------------------------------ | ------------------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `FilterDetailed(path)`                     | Yes — phase 1 filename, phase 2 content only if needed | **No** — content read internally then discarded | art-dupl must re-read files caught by `ReasonGeneric` for `allowsContent` (double-read)                     |
+| `FilterDetailedWithContent(path, content)` | No — caller must provide content upfront               | N/A — caller already has it                     | art-dupl reads every file upfront, including files that phase 1 would catch by filename alone (wasted read) |
 
 ### Internal Flow (Why the Gap Exists)
 
@@ -61,11 +61,11 @@ The content is read at step 2a but never returned to the caller. The information
 
 For a project with 1000 `.go` files, approximately:
 
-| File category | % of files | Current (upfront read) | With lazy + return |
-|--------------|-----------|----------------------|-------------------|
-| Regular (not generated) | ~90% | 1 read (needed for phase 2) | 1 read (same) |
-| Filename-caught generated (e.g., `models.go`, `_templ.go`) | ~5-10% | 1 read (**wasted** — phase 1 catches them) | 0 reads |
-| Content-caught generated (generic marker only) | ~1-5% | 1 read (needed for phase 2 + override) | 1 read (returned, reused) |
+| File category                                              | % of files | Current (upfront read)                     | With lazy + return        |
+| ---------------------------------------------------------- | ---------- | ------------------------------------------ | ------------------------- |
+| Regular (not generated)                                    | ~90%       | 1 read (needed for phase 2)                | 1 read (same)             |
+| Filename-caught generated (e.g., `models.go`, `_templ.go`) | ~5-10%     | 1 read (**wasted** — phase 1 catches them) | 0 reads                   |
+| Content-caught generated (generic marker only)             | ~1-5%      | 1 read (needed for phase 2 + override)     | 1 read (returned, reused) |
 
 The upfront-read approach wastes disk I/O on 5-10% of files that could be resolved by filename alone.
 
@@ -86,14 +86,14 @@ func (f *Filter) FilterDetailedAndContent(filePath string) (FilterResult, []byte
 
 ### Behavior Matrix
 
-| Scenario | Content returned | Why |
-|----------|-----------------|-----|
-| Filter disabled | `nil` | No detection performed |
-| Include/exclude pattern match | `nil` | No content read |
-| Phase 1 filename match (e.g., `models.go` → SQLC) | `nil` | Content not read (phase 1 sufficient) |
-| No content-check detectors enabled | `nil` | Content not needed |
-| Phase 2 content check ran (file not filtered) | `content` | Content was read, return for reuse |
-| Phase 2 content check ran (file filtered) | `content` | Content was read, return for reuse |
+| Scenario                                          | Content returned | Why                                   |
+| ------------------------------------------------- | ---------------- | ------------------------------------- |
+| Filter disabled                                   | `nil`            | No detection performed                |
+| Include/exclude pattern match                     | `nil`            | No content read                       |
+| Phase 1 filename match (e.g., `models.go` → SQLC) | `nil`            | Content not read (phase 1 sufficient) |
+| No content-check detectors enabled                | `nil`            | Content not needed                    |
+| Phase 2 content check ran (file not filtered)     | `content`        | Content was read, return for reuse    |
+| Phase 2 content check ran (file filtered)         | `content`        | Content was read, return for reuse    |
 
 ### Implementation Sketch
 
@@ -193,11 +193,11 @@ func shouldIncludeFile(f *gogenfilter.Filter, path string, includes generatorInc
 
 ### Why This Is Suboptimal
 
-| Approach | Regular files (90%) | Filename-caught (5-10%) | Generic-caught (1-5%) | Total reads (1000 files) |
-|----------|--------------------|-----------------------|----------------------|------------------------|
-| Current (upfront read) | 1 read | 1 read (**wasted**) | 1 read | ~1000 |
-| Workaround (`FilterDetailed` + re-read) | 1 read | 0 reads | **2 reads** (double-read) | ~920 |
-| Proposed API | 1 read | 0 reads | 1 read | ~910 |
+| Approach                                | Regular files (90%) | Filename-caught (5-10%) | Generic-caught (1-5%)     | Total reads (1000 files) |
+| --------------------------------------- | ------------------- | ----------------------- | ------------------------- | ------------------------ |
+| Current (upfront read)                  | 1 read              | 1 read (**wasted**)     | 1 read                    | ~1000                    |
+| Workaround (`FilterDetailed` + re-read) | 1 read              | 0 reads                 | **2 reads** (double-read) | ~920                     |
+| Proposed API                            | 1 read              | 0 reads                 | 1 read                    | ~910                     |
 
 The workaround is better than the current approach (eliminates wasted reads on filename-caught files) but still double-reads generic-caught files because `FilterDetailed` discards the content it read internally.
 
