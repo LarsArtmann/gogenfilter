@@ -1,7 +1,7 @@
 # Roadmap
 
 **Updated:** 2026-08-05
-**Current version:** v3.3.3
+**Current version:** v3.4.0
 
 ## v3 — Complete & Stable
 
