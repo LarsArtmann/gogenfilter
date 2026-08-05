@@ -235,6 +235,90 @@ func (f *Filter) FilterDetailedWithContent(filePath string, content []byte) (Fil
 	return f.shouldFilterDetailedByContent(filePath, content)
 }
 
+// FilterDetailedAndContent is like FilterDetailed but also returns the file
+// content if it was read during phase-2 detection. The content is nil when:
+//   - The filter is disabled
+//   - The file is caught by an include or exclude pattern
+//   - The file is caught by filename detection (phase 1)
+//   - No enabled detector requires content checks
+//
+// When content is non-nil, it was read exactly once from the filter's filesystem
+// and can be reused by the caller for additional checks without re-reading the
+// file. This avoids the double-read that FilterDetailed forces on callers that
+// need the content for post-detection logic (e.g., classifying a ReasonGeneric
+// hit into a specific generator category).
+//
+// Unlike FilterDetailedWithContent, which requires the caller to supply
+// pre-read content, FilterDetailedAndContent performs the lazy read itself
+// and returns the content it read.
+//
+// Example:
+//
+//	opts, err := WithFilterOptions(FilterAll)
+//	filter, err := NewFilter(opts)
+//	result, content, err := filter.FilterDetailedAndContent("repository.go")
+//	if err != nil { log.Fatal(err) }
+//	if result.Filtered && result.Reason == ReasonGeneric && isSQLC(content) {
+//	    // rescue this file from the generic catch-all
+//	}
+func (f *Filter) FilterDetailedAndContent(filePath string) (FilterResult, []byte, error) {
+	if !f.IsEnabled() {
+		return FilterResult{Filtered: false, Reason: "", Path: filePath, Trace: ""}, nil, nil
+	}
+
+	if len(f.includePatterns) > 0 && !f.matchesAnyPattern(filePath, f.includePatterns) {
+		return FilterResult{
+			Filtered: true, Reason: ReasonOutsideScope,
+			Path: filePath, Trace: "excluded by include pattern scope",
+		}, nil, nil
+	}
+
+	if f.matchesAnyPattern(filePath, f.excludePatterns) {
+		return FilterResult{
+			Filtered: true, Reason: ReasonExcludePattern,
+			Path: filePath, Trace: "matched exclude pattern",
+		}, nil, nil
+	}
+
+	reason, trace := getFilenameBasedReasonWithTrace(filePath, f.options)
+	if reason != ReasonNotFiltered {
+		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil, nil
+	}
+
+	if !needsContentCheck(f.options) {
+		return FilterResult{
+			Filtered: false,
+			Reason:   ReasonNotFiltered,
+			Path:     filePath,
+			Trace:    "",
+		}, nil, nil
+	}
+
+	content, err := readFile(f.fsys, filePath)
+	if err != nil {
+		return FilterResult{
+			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
+		}, nil, fmt.Errorf("read file %q: %w", filePath, err)
+	}
+
+	reason, trace = getContentBasedReasonWithTrace(filePath, string(content), f.options)
+	if reason != ReasonNotFiltered {
+		return FilterResult{
+			Filtered: true,
+			Reason:   reason,
+			Path:     filePath,
+			Trace:    trace,
+		}, content, nil
+	}
+
+	return FilterResult{
+		Filtered: false,
+		Reason:   ReasonNotFiltered,
+		Path:     filePath,
+		Trace:    "",
+	}, content, nil
+}
+
 // FilterPathsDetailed is like FilterPaths but returns FilterResult values with
 // detailed information about each file.
 func (f *Filter) FilterPathsDetailed(paths []string) ([]FilterResult, error) {

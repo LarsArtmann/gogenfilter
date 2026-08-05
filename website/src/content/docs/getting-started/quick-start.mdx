@@ -76,6 +76,24 @@ if result.Filtered {
 }
 ```
 
+## Lazy Content Return
+
+When you need the file content for your own post-detection checks (e.g., classifying a `ReasonGeneric` hit into a specific generator), use `FilterDetailedAndContent` to get the content gogenfilter already read — no double-read:
+
+```go
+result, content, err := f.FilterDetailedAndContent("repository.go")
+if err != nil {
+	log.Fatal(err)
+}
+// content is nil unless phase-2 read the file; non-nil content was read once
+// and can be reused for additional checks without re-reading the file.
+if result.Filtered && result.Reason == gogenfilter.ReasonGeneric {
+	if isSQLC(content) { // your own classification logic
+		fmt.Println("rescued from generic catch-all")
+	}
+}
+```
+
 ## Disabled Filter
 
 A disabled filter passes everything through — useful for feature flags:
