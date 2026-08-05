@@ -59,6 +59,7 @@ Actions the system performs.
 | FilterPaths               | Batch filtering of multiple paths                                                                                  | Bulk API         |
 | FilterWithContent         | Filter using pre-read content — avoids double I/O for analyzers that already have the bytes                        | Performance API  |
 | FilterDetailedWithContent | Like `FilterWithContent` but returns `FilterResult`                                                                | Diagnostic API   |
+| FilterDetailedAndContent  | Like `FilterDetailed` but also returns file content read during phase-2 — lazy read + content return, no double-read | Performance API  |
 | ScanProject               | Walk an `fs.FS`, detect all generated files, return a `ScanResult` with per-generator lists and exclusion patterns | Project scan API |
 | DetectReasonFile          | Standalone two-phase detection in one call (filename + content) — no `Filter` needed                               | Convenience API  |
 | DetectReasonFileFS        | Like `DetectReasonFile` but accepts a custom `fs.FS`                                                               | Convenience API  |

@@ -208,6 +208,9 @@ fmt.Printf("filtered=%v reason=%s trace=%s\n",
 // Filter with pre-read content — avoids double I/O
 filtered, err := f.FilterWithContent("db/models.go", content)
 result, err := f.FilterDetailedWithContent("db/models.go", content)
+
+// Lazy content return — filter reads content only when needed, returns it for reuse
+result, content, err := f.FilterDetailedAndContent("db/models.go")
 ```
 
 ## Filter API Reference
@@ -222,6 +225,7 @@ results, err := f.FilterPaths(paths)                 // ([]bool, error)
 detailed, err := f.FilterPathsDetailed(paths)        // ([]FilterResult, error)
 filtered, err = f.FilterWithContent("file.go", data) // (bool, error) — avoids double I/O
 result, err   = f.FilterDetailedWithContent("file.go", data) // (FilterResult, error)
+result, content, err = f.FilterDetailedAndContent("file.go") // (FilterResult, []byte, error) — lazy read + content return
 
 f.IsEnabled()           // bool
 f.FilterReasons()       // []FilterReason

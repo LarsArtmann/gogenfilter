@@ -69,6 +69,7 @@
 | DetectReasonFileFS        | FULLY_FUNCTIONAL | Same with pluggable `fs.FS`                          |
 | FilterWithContent         | FULLY_FUNCTIONAL | Avoid double I/O by passing pre-read content         |
 | FilterDetailedWithContent | FULLY_FUNCTIONAL | Same with trace info                                 |
+| FilterDetailedAndContent  | FULLY_FUNCTIONAL | Lazy read + return content, no double-read           |
 | Individual Is\* functions | FULLY_FUNCTIONAL | 18 exported `Is*Generated` functions                 |
 | ScanProject               | FULLY_FUNCTIONAL | Walk `fs.FS`, detect all generated files             |
 | ExclusionPattern()        | FULLY_FUNCTIONAL | Get regex pattern for a generator's filenames        |
