@@ -1,0 +1,112 @@
+---
+title: Filter
+description: The Filter type and its methods for detecting generated Go files.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+The `Filter` type is the primary API for detecting auto-generated Go code files.
+Create one with `NewFilter` and functional options, then call `Filter`,
+`FilterDetailed`, or `FilterDetailedAndContent` depending on how much detail you need.
+
+For the complete API reference with all methods, types, and examples, see
+[pkg.go.dev](https://pkg.go.dev/github.com/LarsArtmann/gogenfilter/v3).
+
+## Creating a Filter
+
+### `NewFilter(configs ...FilterConfig) (*Filter, error)`
+
+Creates an immutable filter from functional options. The filter is enabled when
+any filter options, include patterns, or exclude patterns are provided.
+
+```go
+opts, err := gogenfilter.WithFilterOptions(gogenfilter.FilterAll)
+if err != nil {
+    log.Fatal(err)
+}
+f, err := gogenfilter.NewFilter(opts)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+## Checking Files
+
+### `Filter(filePath string) (bool, error)`
+
+Returns whether a file is generated. Reads the file lazily during phase-2 detection.
+
+```go
+filtered, err := f.Filter("db/models.go")
+if err != nil {
+    log.Fatal(err)
+}
+if filtered {
+    fmt.Println("skipping generated file")
+}
+```
+
+### `FilterDetailed(filePath string) (FilterResult, error)`
+
+Like `Filter` but returns a `FilterResult` with the detection reason and trace.
+
+```go
+result, err := f.FilterDetailed("db/models.go")
+if err != nil {
+    log.Fatal(err)
+}
+if result.Filtered {
+    fmt.Printf("filtered: reason=%s\n", result.Reason)
+}
+```
+
+### `FilterDetailedAndContent(filePath string) (FilterResult, []byte, error)`
+
+Like `FilterDetailed` but also returns the file content if it was read during
+phase-2 detection. Content is `nil` when no read occurred (filename match,
+disabled filter, pattern match, or no content-check detectors enabled).
+
+When non-nil, the content was read exactly once and can be reused without a
+double-read — ideal for tools that need the content for post-detection logic.
+
+```go
+result, content, err := f.FilterDetailedAndContent("repository.go")
+if err != nil {
+    log.Fatal(err)
+}
+if result.Filtered {
+    fmt.Printf("filtered: reason=%s\n", result.Reason)
+}
+// content is non-nil when phase-2 read the file
+```
+
+## Pre-read Content Variants
+
+### `FilterWithContent(filePath string, content []byte) (bool, error)`
+
+Like `Filter` but accepts pre-read file content. Avoids redundant I/O for
+analyzers that already have the content (e.g., from AST parsing).
+
+### `FilterDetailedWithContent(filePath string, content []byte) (FilterResult, error)`
+
+Like `FilterDetailed` but accepts pre-read file content.
+
+## Batch Operations
+
+### `FilterPaths(paths []string) ([]bool, error)`
+
+Filters multiple files at once. Returns partial results on error.
+
+### `FilterPathsDetailed(paths []string) ([]FilterResult, error)`
+
+Batch variant of `FilterDetailed`.
+
+## Choosing a Method
+
+| Method | Returns | Reads File? | Use When |
+|--------|---------|-------------|----------|
+| `Filter` | `(bool, error)` | Lazily | Simple skip/no-skip decision |
+| `FilterDetailed` | `(FilterResult, error)` | Lazily | Need the detection reason |
+| `FilterDetailedAndContent` | `(FilterResult, []byte, error)` | Lazily + returns content | Need content for further analysis |
+| `FilterWithContent` | `(bool, error)` | No (you provide) | Already have content from AST |
+| `FilterDetailedWithContent` | `(FilterResult, error)` | No (you provide) | Already have content + need reason |

@@ -1,5 +1,10 @@
 # Status Report — Lint Cleanup & Documentation Pass
 
+<!-- RESOLVED: 2026-08-10 — Core work complete. All false-positive fixes (sqlc filename patterns, oapi-codegen, headerContent), config-aware SQLC detection, branded error system (FileReadError), lint cleanup, and test coverage (98.4%) are DONE and committed. Remaining OPEN items are aspirational v4 features (AST detection, custom detector registration, golangci-lint plugin) tracked in TODO_LIST.md and ROADMAP.md. See docs/planning/2026-08-10_16-45_pareto-execution-plan.md for the comprehensive plan. Key closed items: BuildFlow pre-commit hook fixed (--language go --circuit-breaker-action skip), GitHub Actions pinned to SHAs, Lighthouse CI advisory-only, makezero reverted, formatMarkdownTable tested, BDD specs for content-return APIs added, pre-release checklist in RELEASING.md, stale CHANGELOG claims annotated. -->
+
+<!-- ANNOTATION_DATE: 2026-08-10 -->
+
+
 **Date**: 2026-08-10 14:19
 **Branch**: `master` @ `d91906f` (pushed, HEAD == origin/master)
 **Working tree**: clean

@@ -291,3 +291,48 @@ func BenchmarkFilterSQLCDerivedConfigCached(b *testing.B) {
 		_ = filter.sqlcDerivedConfig()
 	}
 }
+
+// BenchmarkFilterDetailedAndContent measures the cost of FilterDetailedAndContent
+// including file reading and content return, for both filename-match (no content
+// read) and content-match (content read and returned) paths.
+func BenchmarkFilterDetailedAndContent(b *testing.B) {
+	fsys := fstest.MapFS{
+		"db/query.sql.go": &fstest.MapFile{Data: []byte(sqlcGeneratedContent)},
+		"repository.go":   &fstest.MapFile{Data: []byte(genericGeneratedContent)},
+		"main.go":         &fstest.MapFile{Data: []byte("package main\nfunc main() {}\n")},
+	}
+
+	opts, err := WithFilterOptions(FilterAll)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	filter, err := NewFilter(opts, WithFS(fsys))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.Run("filename_match_no_content", func(b *testing.B) {
+		b.ResetTimer()
+
+		for b.Loop() {
+			_, _, _ = filter.FilterDetailedAndContent("db/query.sql.go")
+		}
+	})
+
+	b.Run("content_match_returns_content", func(b *testing.B) {
+		b.ResetTimer()
+
+		for b.Loop() {
+			_, _, _ = filter.FilterDetailedAndContent("repository.go")
+		}
+	})
+
+	b.Run("not_filtered_reads_content", func(b *testing.B) {
+		b.ResetTimer()
+
+		for b.Loop() {
+			_, _, _ = filter.FilterDetailedAndContent("main.go")
+		}
+	})
+}

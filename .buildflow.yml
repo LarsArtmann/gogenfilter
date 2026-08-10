@@ -24,9 +24,11 @@ exclude:
   - dist
   - "*.pb.go"
   - "*.gen.go"
+  - website
   - website/dist
   - website/node_modules
   - testdata
+  - docs
 
 # Auto-fix settings
 auto_fix: false

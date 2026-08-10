@@ -1,7 +1,11 @@
-# NOTE: This workflow requires the Lighthouse CI GitHub App to be installed
-# and the LHCI_GITHUB_APP_TOKEN secret to be configured for status checks.
-# Without it, the workflow runs but produces no actionable GitHub status checks.
-# See: https://github.com/apps/lighthouse-ci
+# Lighthouse CI — Advisory Monitor (not a gate)
+#
+# All assertions are set to "warn" level. This workflow collects Lighthouse
+# metrics and uploads results as artifacts for manual review. It never fails
+# the build. To upgrade to gating status checks:
+#   1. Install the Lighthouse CI GitHub App: https://github.com/apps/lighthouse-ci
+#   2. Add the LHCI_GITHUB_APP_TOKEN secret
+#   3. Upgrade desired assertions from "warn" to "error" in lighthouserc.json
 name: Lighthouse CI
 
 on:

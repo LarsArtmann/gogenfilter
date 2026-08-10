@@ -383,7 +383,7 @@ func TestFormatMarkdownTable(t *testing.T) {
 		{
 			name: "two column alignment with different widths",
 			rows: [][]string{
-				{"Tool", "Detection"},
+				{headerTool, headerDetection},
 				{"sqlc", "*.sql.go"},
 				{"wire", "wire_gen.go"},
 			},

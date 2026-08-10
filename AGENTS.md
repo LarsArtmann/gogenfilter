@@ -200,8 +200,8 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 ### CI Known Issues (2026-06-01)
 
 - **Website CI**: `PRIVATE_REPO_TOKEN` secret optional — md-go-validator checkout has `continue-on-error: true`, doc validation is skipped gracefully when unavailable
-- **Lighthouse CI**: Accessibility assertions fail on live site — `color-contrast`, `label-content-name-mismatch` on root page; `redirects` on `/docs`
-- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks skipped (documented in `lighthouse.yml` header comment)
+- **Lighthouse CI**: Advisory-only monitor — all assertions set to `warn` level. The workflow collects metrics and uploads artifacts but never fails the build. To upgrade to gating: install LHCI GitHub App, add `LHCI_GITHUB_APP_TOKEN`, upgrade assertions to `error` in `lighthouserc.json`.
+- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks not produced. Workflow runs as advisory-only with all assertions at `warn` level.
 
 ## Key API Patterns
 

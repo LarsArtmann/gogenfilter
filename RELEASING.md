@@ -8,6 +8,24 @@ This runbook covers cutting a new release end-to-end. Every step is verifiable.
 - All CI checks are green on the commit you plan to release.
 - Nix is available (this project uses `flake.nix` for all build automation).
 
+## 0. Pre-release checklist
+
+Before starting the release process, verify ALL of the following:
+
+- [ ] **CI is green** — All 4 Go CI jobs pass (test, vulncheck, lint, docs) on the latest master commit.
+- [ ] **`nix flake check` passes** — No vendorHash mismatches, no test failures.
+- [ ] **`nix run .#lint` passes** — Zero golangci-lint issues.
+- [ ] **`nix run .#test` passes** — All tests pass with race detector.
+- [ ] **Docs are fresh** — `go generate ./... && git diff --exit-code` shows no changes.
+- [ ] **CHANGELOG is complete** — All changes since the last release are documented under `[Unreleased]`.
+- [ ] **No uncommitted changes** — `git status` is clean (BuildFlow auto-commits may create unexpected commits; verify the log).
+- [ ] **Commit message convention** — The release commit will use `release: vX.Y.Z` format.
+- [ ] **Website builds** — `cd website && npm run build` succeeds (if website files changed).
+
+> **BuildFlow note**: BuildFlow runs continuously and may auto-commit changes mid-session.
+> Check `git log --oneline -5` and `git status` before tagging to ensure the working tree
+> reflects your intended release state.
+
 ## 1. Run the full quality gate
 
 ```sh

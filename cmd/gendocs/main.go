@@ -27,6 +27,8 @@ import (
 const (
 	logoGeneric        = "/logos/generic.svg"
 	displayContent     = "content only"
+	headerDetection    = "Detection"
+	headerTool         = "Tool"
 	readmeReadmePath   = "README.md"
 	docGoPath          = "doc.go"
 	generatorsJSONPath = "website/src/data/generators.json"
@@ -203,7 +205,7 @@ func generateReadme(docs []gogenfilter.DetectorDoc) error {
 // generateReadmeGeneratorsTable produces the "Supported Generators" table.
 func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 	rows := make([][]string, 0, 1+len(docs))
-	rows = append(rows, []string{"Tool", "Detection"})
+	rows = append(rows, []string{"Tool", headerDetection})
 
 	for _, doc := range docs {
 		name := displayName(string(doc.Reason))
@@ -222,7 +224,7 @@ func generateReadmeGeneratorsTable(docs []gogenfilter.DetectorDoc) string {
 // generateReadmeFilterOptionsTable produces the "Filter Options" table.
 func generateReadmeFilterOptionsTable(docs []gogenfilter.DetectorDoc) string {
 	rows := make([][]string, 0, 1+len(docs)+1)
-	rows = append(rows, []string{"Option", "Detection"})
+	rows = append(rows, []string{"Option", headerDetection})
 
 	for _, doc := range docs {
 		optionConst := optionToConstName(string(doc.Option))
@@ -442,10 +444,7 @@ func formatMarkdownTable(rows [][]string) string {
 		builder.WriteString(markdownRow(cells))
 
 		if rowIdx == 0 {
-			sep := make(
-				[]string,
-				len(widths),
-			)
+			sep := make([]string, len(widths)) //nolint:makezero // accessed by index, never appended
 			for i, w := range widths {
 				sep[i] = strings.Repeat("-", w)
 			}
