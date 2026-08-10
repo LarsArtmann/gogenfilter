@@ -112,7 +112,8 @@ type Filter struct {
 //
 //	filter, err = NewFilter() // disabled, always returns (false, nil)
 func NewFilter(configs ...FilterConfig) (*Filter, error) {
-	filter := &Filter{ //nolint:exhaustruct // sqlcDerived is atomic.Pointer, zero-valued by design
+	//nolint:exhaustruct // sqlcDerived is atomic.Pointer, zero-valued by design
+	filter := &Filter{
 		options:         make(map[FilterOption]struct{}),
 		includePatterns: make([]string, 0),
 		excludePatterns: make([]string, 0),
@@ -491,7 +492,12 @@ func (f *Filter) configOrFilenameResult(filePath string) (FilterResult, bool) {
 		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, true
 	}
 
-	return FilterResult{Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: ""}, false
+	return FilterResult{
+		Filtered: false,
+		Reason:   ReasonNotFiltered,
+		Path:     filePath,
+		Trace:    "",
+	}, false
 }
 
 func (f *Filter) shouldFilterByContent(filePath string, content []byte) (bool, error) {

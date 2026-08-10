@@ -1,5 +1,7 @@
 # Feedback: Content-Based False Positives — `strings.Contains` Without Context
 
+> **RESOLVED** — Commits `ca7ed14` (header-only scanning), `6816645` (sqlc filename narrowing), and `91cc17c` (config-aware phase 1.5). All three root causes addressed: header-only scanning eliminates import/string/code false positives; sqlc filename patterns narrowed to `.sql.go` suffix only; config-aware detection classifies fixed filenames (models.go, db.go, etc.) as sqlc-generated iff they live in a declared output dir. See `docs/status/2026-08-10_13-05_config-aware-sqlc-detection.md` for details.
+
 ## Summary
 
 gogenfilter's two-phase detection misclassifies hand-written Go files as generated

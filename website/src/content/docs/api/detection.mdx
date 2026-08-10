@@ -27,7 +27,7 @@ reason, err := gogenfilter.DetectReasonReader("file.go", r, opts...)
 
 ### `DetectReasonFile(filePath string, opts ...FilterOption) (FilterReason, error)`
 
-Checks if a file is auto-generated using two-phase detection in a single call. Phase 1 checks filename patterns (zero I/O). Phase 2 reads the file for content-based detection only if needed. Uses the OS filesystem (`os.DirFS(".")`).
+Checks if a file is auto-generated using filename and content detection in a single call. Phase 1 checks filename patterns (zero I/O). Phase 2 reads the file for content-based detection only if needed. Uses the OS filesystem (`os.DirFS(".")`). Note: config-aware sqlc detection (phase 1.5) is only available via `Filter`, not the standalone `DetectReasonFile` functions.
 
 ```go
 reason, err := gogenfilter.DetectReasonFile("db/models.go",
@@ -85,5 +85,5 @@ Each generator has dedicated `Is*Generated(filePath, content string) bool` funct
 
 > **Note:** Some generators use filename patterns (e.g., `wire_gen.go`, `_moq.go`, `zz_generated.*`)
 > as a first pass, but the standalone `Is*Generated` functions check both filename and content
-> where applicable. For the full two-phase detection pipeline with all generators at once,
-> use `Filter` or `DetectReason`.
+> where applicable. For the full three-phase detection pipeline (filename, config-aware sqlc, content)
+> with all generators at once, use `Filter` or `DetectReason`.

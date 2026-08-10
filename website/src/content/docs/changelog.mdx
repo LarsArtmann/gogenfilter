@@ -5,7 +5,25 @@ description: All notable changes to gogenfilter.
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+
+- **Config-aware sqlc detection (phase 1.5)** — `Filter` now lazily parses all reachable `sqlc.yaml`/`sqlc.yml` configs and classifies `models.go`, `db.go`, `querier.go`, `batch.go`, and `copyfrom.go` as sqlc-generated **iff** they live in a declared output directory — even without a header comment. Honors custom `output_*_file_name` config values. `query.sql.go` files remain detected everywhere via the filename suffix. The derived config is cached for the filter's lifetime via `atomic.Pointer`. Eliminates false positives on hand-written files with common names (e.g., `pkg/batch.go`) outside configured output dirs.
+- **SQLC exclusion pattern** — `ReasonSQLC.ExclusionPattern()` now returns `\.sql\.go$` (was `false`). `ScanProject` derives a fixed regex exclusion for sqlc files instead of falling back to directory-based patterns.
+- **Header-only content scanning** — Content-based detection (`headerContent`) now searches only the header (content before the `package` clause), per the Go generated-code spec. Prevents false positives from markers appearing in imports, string literals, or code after the package clause.
+- **Test coverage for config-aware detection** — Test suite covering config-derived filenames, derived config building, config-aware reason classification, Filter-level integration (7 scenarios), config parse error recovery (Filter falls back to headerContent), headerContent edge cases (empty, CRLF, "package" in comments, multiple header lines), and SQLC scan exclusion pattern derivation.
+- **Tagliatelle configured for snake_case yaml** — `.golangci.yaml` now accepts snake_case yaml struct tags (matching sqlc's real config format) instead of requiring camelCase.
+
+### Changed
+
+- **`sqlcDefaultFileNames` refactored** — Extracted typed constants (`sqlcFileDB`, `sqlcFileModels`, etc.) and split `configuredSQLCFileNames` complexity via `sqlcCustomFileName` helper. Single canonical source for default filenames.
+- **`FilterDetailedAndContent` refactored** — Extracted `configOrFilenameResult` shared helper, reducing function length and eliminating duplicated config-aware + filename detection logic across `FilterDetailedAndContent` and `shouldFilterDetailedByContent`.
+- **Test lint exclusions expanded** — `goconst`, `gocyclo`, and `maintidx` added to `_test.go` exclusions (test fixture strings and table-driven test complexity are expected). `varnamelen` now ignores `tc` and `f` (standard Go test variable names). Removed 5 now-unused `//nolint` directives.
+
+### Removed
+
+- **Dead code: `sqlcOutputDirSetFS`** — Unused wrapper function removed from `sqlc.go`.
+- **Orphaned comment: `configSQLGo`** — Stale doc comment with no corresponding function removed from `sqlc.go`.
+- **Stale scan.go comments** — Updated SQLC references in exclusion pattern docs (SQLC now has a fixed pattern, not directory-based).
 
 ## [v3.4.0] — 2026-08-05
 

@@ -26,7 +26,8 @@ func TestConfiguredSQLCFileNames(t *testing.T) {
 	t.Run("defaults when no custom names", func(t *testing.T) {
 		t.Parallel()
 
-		names := configuredSQLCFileNames(&sqlcGoConfig{Out: "db"}) //nolint:exhaustruct // only Out matters
+		//nolint:exhaustruct // only Out matters
+		names := configuredSQLCFileNames(&sqlcGoConfig{Out: "db"})
 
 		want := []string{"db.go", "models.go", "querier.go", "batch.go", "copyfrom.go"}
 		if len(names) != len(want) {
@@ -43,7 +44,8 @@ func TestConfiguredSQLCFileNames(t *testing.T) {
 	t.Run("honors custom names", func(t *testing.T) {
 		t.Parallel()
 
-		names := configuredSQLCFileNames(&sqlcGoConfig{ //nolint:exhaustruct // only Out + custom names matter
+		//nolint:exhaustruct // only Out + custom names matter
+		names := configuredSQLCFileNames(&sqlcGoConfig{
 			Out:                   "db",
 			OutputModelsFileName:  "custom_models.go",
 			OutputQuerierFileName: "custom_querier.go",

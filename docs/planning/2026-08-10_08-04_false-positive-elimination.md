@@ -1,8 +1,27 @@
 # Plan: Content-Based False Positive Elimination
 
 **Date**: 2026-08-10
-**Status**: IMPLEMENTED & VERIFIED
+**Status**: IMPLEMENTED & VERIFIED (phases 1-3), CONFIG-AWARE PHASE 1.5 ADDED
 **Feedback source**: `docs/feedback/new/content-based-false-positives.md`
+**Follow-up**: `docs/status/2026-08-10_13-05_config-aware-sqlc-detection.md` (config-aware phase)
+
+---
+
+## Phase 1.5: Config-Aware sqlc Detection (added after initial implementation)
+
+The initial fix (header-only scanning + filename narrowing) eliminated false positives
+but also made detection LESS sensitive: a real sqlc `db/models.go` without a header
+comment was no longer detected. The user correctly identified that the real fix for
+sqlc false positives is **parsing `sqlc.yaml`**, not just header-only scanning.
+
+**Implementation** (`91cc17c`):
+- `Filter` now lazily parses all reachable `sqlc.yaml`/`sqlc.yml` configs
+- Builds `sqlcDerivedConfig`: output dir → accepted filenames (defaults + custom names)
+- `db/models.go` in a project with `sqlc.yaml` → `out: db` is sqlc-generated (no header needed)
+- `pkg/batch.go` (outside configured dir) is NOT sqlc-generated (the false-positive fix)
+- `query.sql.go` still detected anywhere via filename suffix
+- Header content still catches sqlc header comments even without config
+- Config is cached via `atomic.Pointer` for filter lifetime
 
 ---
 

@@ -5,7 +5,7 @@ description: Performance characteristics and benchmark results for all hot paths
 
 ## Philosophy
 
-gogenfilter is designed for linters and static analysis tools where detection overhead must be negligible. The two-phase architecture (filename first, content only when needed) ensures most checks complete with zero I/O.
+gogenfilter is designed for linters and static analysis tools where detection overhead must be negligible. The three-phase architecture (filename first, config-aware sqlc parsing once and cached, content only when needed) ensures most checks complete with zero I/O.
 
 ## Results
 

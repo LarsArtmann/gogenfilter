@@ -21,7 +21,7 @@ A Go library for detecting and filtering auto-generated code files. Built for **
 
 Your linter shouldn't waste time on files it didn't write. Generated code from sqlc, protobuf, templ, mockgen, and friends clutters `golangci-lint` output, slows down analysis, and creates false positives.
 
-**gogenfilter solves this** with a two-phase detection engine that catches generated files fast — filename first (zero I/O), content second (reads the file). No regex hacking. No `.golangci.yml` tuning. Just clean separation.
+**gogenfilter solves this** with a three-phase detection engine that catches generated files fast — filename first (zero I/O), then config-aware parsing for sqlc (parses `sqlc.yaml`), content last (reads the file). No regex hacking. No `.golangci.yml` tuning. Just clean separation.
 
 ## Supported Generators
 
@@ -295,7 +295,7 @@ for _, excl := range result.Exclusions {
 
 ## Design Decisions
 
-- **Two-phase detection** — Filename checks are free. Content checks only run when filename patterns don't match. Fast by default.
+- **Three-phase detection** — Filename checks are free. Config-aware sqlc parsing (one-time walk, cached). Content checks only run when earlier phases don't match. Fast by default.
 - **Table-driven detectors** — All 18 generators are defined in a single `[]detector` table. Adding a new generator is one struct literal.
 - **Immutable Filter** — `NewFilter` returns a fully constructed, thread-safe Filter. No mutating methods.
 - **`fs.FS` abstraction** — Test with `fstest.MapFS`, run with `os.DirFS`. No filesystem coupling.
