@@ -327,16 +327,47 @@ func parseV1AsV2(data []byte, configPath string) (*sqlcConfig, *SQLCConfigError)
 	return config, nil
 }
 
-// sqlcDefaultFileNames are the fixed output filenames sqlc writes into each
-// configured output directory (see sqlc gen.go). They are configurable via the
-// corresponding output_*_file_name config keys; the defaults listed here apply
-// when the key is absent.
+// Fixed output filenames sqlc writes into each configured output directory
+// (see sqlc gen.go). They are configurable via the corresponding
+// output_*_file_name config keys; the defaults listed here apply when the key
+// is absent.
+const (
+	sqlcFileDB       = "db.go"
+	sqlcFileModels   = "models.go"
+	sqlcFileQuerier  = "querier.go"
+	sqlcFileBatch    = "batch.go"
+	sqlcFileCopyfrom = "copyfrom.go"
+)
+
+// sqlcDefaultFileNames is the ordered list of fixed output filenames. Order
+// matters for test assertions.
+//
+//nolint:gochecknoglobals // immutable lookup table, not configurable state
 var sqlcDefaultFileNames = []string{
-	"db.go",
-	"models.go",
-	"querier.go",
-	"batch.go",
-	"copyfrom.go",
+	sqlcFileDB,
+	sqlcFileModels,
+	sqlcFileQuerier,
+	sqlcFileBatch,
+	sqlcFileCopyfrom,
+}
+
+// sqlcCustomFileName returns the config-customized filename for the given
+// default name, or empty if not customized.
+func sqlcCustomFileName(defaultName string, goCfg *sqlcGoConfig) string {
+	switch defaultName {
+	case sqlcFileDB:
+		return goCfg.OutputDBFileName
+	case sqlcFileModels:
+		return goCfg.OutputModelsFileName
+	case sqlcFileQuerier:
+		return goCfg.OutputQuerierFileName
+	case sqlcFileBatch:
+		return goCfg.OutputBatchFileName
+	case sqlcFileCopyfrom:
+		return goCfg.OutputCopyfromFileName
+	default:
+		return ""
+	}
 }
 
 // configuredSQLCFileNames returns the Go output filenames sqlc writes into a
@@ -351,31 +382,11 @@ func configuredSQLCFileNames(goCfg *sqlcGoConfig) []string {
 	names := make([]string, 0, len(sqlcDefaultFileNames))
 
 	for _, def := range sqlcDefaultFileNames {
-		name := filepath.Base(def)
-		switch def {
-		case "db.go":
-			if goCfg.OutputDBFileName != "" {
-				name = goCfg.OutputDBFileName
-			}
-		case "models.go":
-			if goCfg.OutputModelsFileName != "" {
-				name = goCfg.OutputModelsFileName
-			}
-		case "querier.go":
-			if goCfg.OutputQuerierFileName != "" {
-				name = goCfg.OutputQuerierFileName
-			}
-		case "batch.go":
-			if goCfg.OutputBatchFileName != "" {
-				name = goCfg.OutputBatchFileName
-			}
-		case "copyfrom.go":
-			if goCfg.OutputCopyfromFileName != "" {
-				name = goCfg.OutputCopyfromFileName
-			}
+		if custom := sqlcCustomFileName(def, goCfg); custom != "" {
+			names = append(names, custom)
+		} else {
+			names = append(names, filepath.Base(def))
 		}
-
-		names = append(names, name)
 	}
 
 	return names
@@ -433,8 +444,6 @@ func GetSQLOutputDirs(paths []string) ([]string, *SQLCConfigError) {
 
 	return outputDirs, nil
 }
-
-// configSQLGo returns the first Go generation config in the sqlc config, or nil.
 
 // sqlcDerivedConfig is the distilled, detection-relevant view of all sqlc
 // config(s) in a project. It maps each declared output directory (cleaned,
@@ -499,25 +508,6 @@ func mergeSQLCConfig(derived *sqlcDerivedConfig, config *sqlcConfig) {
 			names[filepath.Base(name)] = true
 		}
 	}
-}
-
-// sqlcOutputDirSetFS returns the set of sqlc output directories declared in the
-// sqlc config(s) reachable from the given filesystem. The map value is true.
-// This is the zero-cost (lazy) ground truth for config-aware sqlc detection:
-// a file in one of these directories is sqlc-generated even when its name is a
-// common hand-written one (e.g. models.go, batch.go).
-func sqlcOutputDirSetFS(fsys fs.FS, paths []string) (map[string]bool, *SQLCConfigError) {
-	derived, err := sqlcDerivedConfigForFS(fsys, paths)
-	if err != nil {
-		return nil, err
-	}
-
-	set := make(map[string]bool, len(derived.dirFiles))
-	for dir := range derived.dirFiles {
-		set[dir] = true
-	}
-
-	return set, nil
 }
 
 // FindSQLCConfigsFS searches for sqlc.yaml or sqlc.yml files using the provided filesystem.

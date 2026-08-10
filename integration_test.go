@@ -159,7 +159,7 @@ func TestIntegrationSpecificFilterOnlyMatchesOwnGenerator(t *testing.T) {
 		}
 	}
 
-	for _, tc := range cases { //nolint:varnamelen // tc is standard table-driven test variable
+	for _, tc := range cases {
 		t.Run(tc.path+"/"+string(tc.option), func(t *testing.T) {
 			t.Parallel()
 

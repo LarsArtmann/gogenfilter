@@ -143,6 +143,10 @@ linters:
     exhaustruct:
       exclude:
         - .*/fstest\.MapFile
+    tagliatelle:
+      case:
+        rules:
+          yaml: snake
     ginkgolinter:
       forbid-focus-container: true
       forbid-spec-pollution: true
@@ -176,6 +180,8 @@ linters:
         - err
         - ok
         - tt
+        - tc
+        - f
         - fn
         - t
         - i
@@ -193,6 +199,9 @@ linters:
           - cyclop
           - funlen
           - gocognit
+          - goconst
+          - gocyclo
+          - maintidx
           - revive
           - testpackage
       - path: _test\.go

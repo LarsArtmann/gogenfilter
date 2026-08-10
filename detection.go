@@ -641,6 +641,8 @@ func getContentBasedReasonWithTrace(path string,
 	return ReasonNotFiltered, ""
 }
 
+const sqlcConfigTrace = "detected as sqlc via configured output directory"
+
 // detectReasonFSWithConfig is detectReasonFSWithTrace with an additional
 // config-aware sqlc pre-check (phase 1.5): if the file's name is one of the
 // fixed sqlc default/custom output names AND its directory is a declared sqlc
@@ -661,7 +663,7 @@ func detectReasonFSWithConfig(
 				Filtered: true,
 				Reason:   reason,
 				Path:     filePath,
-				Trace:    "detected as sqlc via configured output directory",
+				Trace:    sqlcConfigTrace,
 			}, nil
 		}
 	}

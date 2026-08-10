@@ -273,7 +273,6 @@ func TestReplaceSectionInlineNoMarkers(t *testing.T) {
 func TestOptionToConstName(t *testing.T) {
 	t.Parallel()
 
-	//nolint:goconst // test data, not production constants
 	tests := []struct {
 		option string
 		want   string

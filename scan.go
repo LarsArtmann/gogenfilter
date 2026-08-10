@@ -55,7 +55,7 @@ const (
 
 // exclusionPatterns maps FilterReason values to fixed regex patterns for generators
 // with consistent filename conventions. Used by ExclusionPattern() and deriveExclusions().
-// Generators not in this map need directory-based derivation (sqlc, oapi-codegen, generic, etc.).
+// Generators not in this map need directory-based derivation (oapi-codegen, generic, etc.).
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
 var exclusionPatterns = map[FilterReason]string{
@@ -75,7 +75,7 @@ var exclusionPatterns = map[FilterReason]string{
 
 // ExclusionPattern returns a fixed regex pattern for generators that have
 // consistent filename conventions. Returns ("", false) for generators
-// that need directory-based derivation (sqlc, oapi-codegen, generic).
+// that need directory-based derivation (oapi-codegen, ent, gqlgen, generic).
 func (r FilterReason) ExclusionPattern() (string, bool) {
 	p, ok := exclusionPatterns[r]
 
@@ -196,7 +196,7 @@ func shouldSkipScanDir(name string) bool {
 
 // deriveExclusions converts detected files into exclusion patterns.
 // Generators with fixed filename patterns use ExclusionPattern().
-// Others (sqlc, oapi-codegen, generic) use directory-based patterns.
+// Others (oapi-codegen, ent, gqlgen, generic) use directory-based patterns.
 func deriveExclusions(byGenerator map[string][]string) []Exclusion {
 	// Count total possible entries for preallocation.
 	maxExclusions := 0

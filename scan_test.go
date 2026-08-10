@@ -455,6 +455,78 @@ func TestExclusionDerivation(t *testing.T) {
 	})
 }
 
+func TestScanSQLCExclusion(t *testing.T) {
+	t.Parallel()
+
+	t.Run("query.sql.go produces .sql.go exclusion pattern", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"db/query.sql.go": &fstest.MapFile{
+				Data: []byte("package db\n\nfunc GetUser() {}\n"),
+			},
+		}
+
+		result, err := ScanProject(fsys)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if len(result.Files) != 1 {
+			t.Fatalf("expected 1 sqlc file, got %d", len(result.Files))
+		}
+
+		if result.Files[0].Reason != ReasonSQLC {
+			t.Errorf("expected ReasonSQLC, got %s", result.Files[0].Reason)
+		}
+
+		patterns := ExclusionPaths(result.Exclusions)
+		foundSQLCSuffix := false
+
+		for _, p := range patterns {
+			if strings.Contains(p, `sql\.go`) {
+				foundSQLCSuffix = true
+
+				break
+			}
+		}
+
+		if !foundSQLCSuffix {
+			t.Errorf("expected \\.sql\\.go$ exclusion pattern, got %v", patterns)
+		}
+	})
+
+	t.Run("sqlc exclusion is not directory-based", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"db/query.sql.go": &fstest.MapFile{
+				Data: []byte("package db\n\nfunc GetUser() {}\n"),
+			},
+		}
+
+		result, err := ScanProject(fsys)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		for _, exc := range result.Exclusions {
+			if exc.Reason == "sqlc generated database code" {
+				if !strings.Contains(exc.Pattern, `sql`) || !strings.Contains(exc.Pattern, `go`) {
+					t.Errorf(
+						"sqlc exclusion should use .sql.go pattern, got %q",
+						exc.Pattern,
+					)
+				}
+
+				return
+			}
+		}
+
+		t.Errorf("expected sqlc exclusion in %v", result.Exclusions)
+	})
+}
+
 func TestExclusionPatternRegexCompiles(t *testing.T) {
 	t.Parallel()
 

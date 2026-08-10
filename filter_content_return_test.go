@@ -74,7 +74,7 @@ func TestFilterDetailedAndContent(t *testing.T) {
 		},
 	}
 
-	for _, tc := range nilContentCases { //nolint:varnamelen // tc is standard table-driven test variable
+	for _, tc := range nilContentCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -137,7 +137,7 @@ func TestFilterDetailedAndContent(t *testing.T) {
 		},
 	}
 
-	for _, tc := range contentCases { //nolint:varnamelen // tc is standard table-driven test variable
+	for _, tc := range contentCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
