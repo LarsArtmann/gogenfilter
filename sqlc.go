@@ -374,6 +374,7 @@ func configuredSQLCFileNames(goCfg *sqlcGoConfig) []string {
 				name = goCfg.OutputCopyfromFileName
 			}
 		}
+
 		names = append(names, name)
 	}
 
@@ -480,12 +481,14 @@ func mergeSQLCConfig(derived *sqlcDerivedConfig, config *sqlcConfig) {
 
 	for i := range config.SQL {
 		engine := &config.SQL[i]
+
 		goCfg := engine.Gen.Go
 		if goCfg == nil || goCfg.Out == "" {
 			continue
 		}
 
 		outDir := filepath.ToSlash(filepath.Clean(goCfg.Out))
+
 		names := derived.dirFiles[outDir]
 		if names == nil {
 			names = make(map[string]bool)

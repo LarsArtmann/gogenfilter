@@ -434,7 +434,6 @@ func (f *Filter) shouldFilterByPattern(
 	return f.shouldFilterByDetection(filePath)
 }
 
-//nolint:dupl // mirrors shouldFilterDetailedByDetection exactly
 func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
 	result, err := detectReasonFSWithConfig(f.fsys, filePath, f.options, f.sqlcDerivedConfig())
 	if err != nil {
