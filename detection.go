@@ -224,7 +224,7 @@ func checkProtobufContent(_, content string) bool {
 // matchesSQLCFilenamePattern checks if a base filename matches sqlc.dev naming patterns.
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
-var sqlcFilenamePatterns = []string{"models.go", "querier.go", "query.sql.go", "batch.go"}
+var sqlcFilenamePatterns = []string{"query.sql.go"}
 
 func matchesSQLCFilenamePattern(filename string) bool {
 	return slices.Contains(sqlcFilenamePatterns, filename) || strings.HasSuffix(filename, ".sql.go")
@@ -289,11 +289,11 @@ var (
 	protobufFilenameSuffixes = []string{".pb.go", "_grpc.pb.go"}
 
 	sqlcCodePatternMarkers = []string{
-		"sqlc.Arg",
-		"sqlc.NamedArg",
-		"sqlc.Literal",
-		"sqlc.SliceArg",
-		"sqlc.Narg",
+		"sqlc.Arg(",
+		"sqlc.NamedArg(",
+		"sqlc.Literal(",
+		"sqlc.SliceArg(",
+		"sqlc.Narg(",
 		".query(ctx",
 	}
 )
