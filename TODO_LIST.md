@@ -1,6 +1,6 @@
 # TODO List
 
-**Updated:** 2026-08-05
+**Updated:** 2026-08-10
 **Current version:** v3.4.0
 
 > Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
@@ -20,11 +20,6 @@
       Replace with idiomatic `make([]T, n)` + `//nolint:makezero`.
       _Priority: MEDIUM | Effort: 10 min_
       _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §b)_
-- [ ] **Untrack `gendocs` binary from git** — A 3.5MB compiled binary (`gendocs`) is tracked in git.
-      The `//go:generate` directive runs `go run ./cmd/gendocs`, so the binary is never needed at
-      runtime. Add `gendocs` to `.gitignore` and `git rm --cached gendocs`.
-      _Priority: MEDIUM | Effort: 5 min_
-      _(Source: `docs/status/2026-07-26_17-14_gendocs-table-alignment-fix.md` §d.2)_
 - [ ] **Update AGENTS.md with `formatMarkdownTable` design decision** — Document the centralized table
       formatter, removal of 3 hardcoded width constants, and the dynamic column-width approach. The
       gendocs section in AGENTS.md still describes the old architecture.
@@ -66,6 +61,26 @@
       _Priority: LOW | Effort: 30 min | Needs: gcloud auth_
 - [ ] **Migrate to Go 1.27** — Drops `GOEXPERIMENT=jsonv2` requirement. Assess toolchain impact
       (CI matrix, Nix `go_1_26` pin) before bumping. _Priority: LOW | Effort: 2 hr_
+
+## API Polish
+
+- [ ] **Add `FilterDetailedAndContent` to `doc.go` Quick Start** — The package-level godoc
+      (visible on pkg.go.dev) only shows `Filter` and `DetectReason`. The content-return API is
+      invisible to godoc users. _Priority: MEDIUM | Effort: 10 min_
+      _(Source: `docs/status/2026-08-05_10-35_v3.4.0-release-and-branch-protection-deprioritization.md` §c.3)_
+- [ ] **Add BDD spec for `FilterDetailedAndContent`** — The ~120 Ginkgo specs cover the main API
+      surface but not the content-return variants (`FilterWithContent`, `FilterDetailedWithContent`,
+      `FilterDetailedAndContent`). _Priority: LOW | Effort: 30 min_
+      _(Source: `docs/status/2026-08-05_10-35_v3.4.0-release-and-branch-protection-deprioritization.md` §c.2)_
+- [ ] **Fix `flake.nix` `mainProgram`** — `mainProgram = "gogenfilter"` but gogenfilter is a library
+      with no root `main` package. `nix run .#gogenfilter` would fail. Only binary is `cmd/gendocs`.
+      Should be removed or changed to `gendocs`.
+      _Priority: LOW | Effort: 5 min_
+      _(Source: `docs/status/2026-08-05_07-45_post-v3.3.2-diff-review.md` §c.8)_
+- [ ] **Establish `docs/feedback/` lifecycle** — `docs/feedback/new/` has 2 implemented feedback
+      files with no archival convention. Create `docs/feedback/processed/` and move implemented
+      feedback there. _Priority: LOW | Effort: 10 min_
+      _(Source: `docs/status/2026-08-05_08-43_filter-detailed-and-content-implementation.md` §c.4)_
 
 ## Documentation
 

@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`sqlcDefaultFileNames` refactored** — Extracted typed constants (`sqlcFileDB`, `sqlcFileModels`, etc.) and split `configuredSQLCFileNames` complexity via `sqlcCustomFileName` helper. Single canonical source for default filenames.
 - **`FilterDetailedAndContent` refactored** — Extracted `configOrFilenameResult` shared helper, reducing function length and eliminating duplicated config-aware + filename detection logic across `FilterDetailedAndContent` and `shouldFilterDetailedByContent`.
 - **Test lint exclusions expanded** — `goconst`, `gocyclo`, and `maintidx` added to `_test.go` exclusions (test fixture strings and table-driven test complexity are expected). `varnamelen` now ignores `tc` and `f` (standard Go test variable names). Removed 5 now-unused `//nolint` directives.
+- **`FileReadError` branded error type** — All file I/O failures during detection return `*FileReadError` (code `file_read`, sentinel `ErrFileRead`) instead of raw `fmt.Errorf`. The `readFile` helper is the single branding point. `DetectReasonReader` also returns `FileReadError` for `io.ReadAll` failures. `NewFilter` wraps `errors.Join` in `FilterConfigError` so the top-level error is always branded. Ensures every error from the public API carries the `[gogenfilter:...]` prefix and supports `errors.Is`/`errors.AsType`.
 
 ### Removed
 
@@ -75,7 +76,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Stale md-go-validator `vendorHash`** — Updated in `flake.nix` to match current `go.sum`.
 - **Gendocs README table alignment** — Tables were unaligned (cells not padded to column width); `formatMarkdownTable` dynamically calculates column widths from the widest cell in each column.
 - **Dependents page GitHub API 401** — Added 401 to rate-limit handling branch (was only catching 403); unauthenticated builds now degrade gracefully.
-- **`errorCodeMatches` refactor** — Three `Is()` methods in `errors.go` now share an `errorCodeMatches(code, target)` helper that matches via the `ErrorCoder` interface, replacing three concrete type assertions.
 - **Committed gendocs build binary untracked** — The 3.5 MB compiled `gendocs` binary was accidentally committed to git; untracked and added to `.gitignore`.
 
 ### Changed
@@ -85,6 +85,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Lighthouse CI assertions** — Correctness checks (errors-in-console, redirects, inspector-issues, viewport, image-aspect-ratio) upgraded from `warn` to `error`.
 - **AGENTS.md policies revised** — Removed "keep only 3 most recent reports" rule in favor of relevance/age-based pruning guidance; added 6 new Gotchas (Nix quality gates, sandbox testing, vendorHash maintenance, theme split-brain, astro-og-canvas param, BuildFlow auto-commit behavior).
 - **Markdown link checker wired into CI** — New "Check internal markdown links" step in `.github/workflows/ci.yml`.
+- **`errorCodeMatches` refactor** — Three `Is()` methods in `errors.go` now share an `errorCodeMatches(code, target)` helper that matches via the `ErrorCoder` interface, replacing three concrete type assertions.
 
 ## [v3.3.1] — 2026-07-24
 
@@ -338,71 +339,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [Pre-release] — Session 1-4
+## [0.1.0] — 2026-04-04
 
 ### Added
 
-- **Error system** — centralized, branded, user-friendly error architecture:
-  - `ErrorCode` string type with `String()` via direct `string(c)` conversion
-  - 7 error code constants: `CodeProjectRootNotFound`, `CodeProjectRootInvalidPath`, `CodeSQLCConfigRead`, `CodeSQLCConfigParse`, `CodeSQLCConfigWalk`, `CodeSQLCConfigCollect`, `CodeSQLCConfigFind`
-  - `AllErrorCodes()` function returning all defined error codes
-  - `CodeHelp(code)` function returning user-friendly guidance for each error code
-  - Branded `[gogenfilter:<code>]` prefix in every `Error()` message for library identification
-  - 7 sentinel errors for use with `errors.Is`: `ErrProjectRootNotFound`, `ErrProjectRootInvalidPath`, `ErrSQLCConfigRead`, `ErrSQLCConfigParse`, `ErrSQLCConfigWalk`, `ErrSQLCConfigCollect`, `ErrSQLCConfigFind`
-  - `ErrorCoder` interface for programmatic error code access
-  - `Helper` interface for user-friendly guidance
-  - `Causable` interface for errors that wrap an underlying cause _(later removed as unused)_
-  - `CodeEqual[T]` generic function consolidating `Is()` comparison logic
-  - `ProjectRootError` struct with `Code`, `StartPath`, `Markers`, `Cause` fields
-  - `SQLCConfigError` struct with `Code`, `ConfigPath`, `Operation`, `Message`, `Cause` fields
-  - Both error types implement `Error()`, `Unwrap()`, `Is()`, `ErrorCode()`, `Help()`
-- **Phantom types** — type-safe wrappers at API boundaries:
-  - `StartPath` for project root search starting point
-  - `ConfigPath` for sqlc config file paths
-  - `Operation` for error operation descriptions
-  - `ErrorMessage` for error message text
-  - `TotalFilesChecked` for metrics counter
-- Each phantom and string-based type implements `String()` directly via `string()` conversion
-- `validatable` interface for internal types with `IsValid()` (unexported)
-- `newSQLCConfigError(code, ConfigPath, Operation, ErrorMessage, error)` constructor with phantom types — all internal callers now use phantom types directly
-- `sqlcFindError` and `sqlcWalkError` helper constructors
-- `unmarshalSQLCConfig` extracted from `parseSQLCConfig`/`parseSQLCConfigFS` for shared YAML parsing
-- `walkDirForSQLCConfigs` extracted walk callback shared between OS and FS variants
-- `isGeneratedBy` and `matchAnyContentPattern` extracted from detection logic
-- Comprehensive `errors_test.go` with generic test helpers (`assertErrorType[T]`, `assertBrandedErrorMessage`, `testErrorCodeReturnsCode`, `assertErrorsIs`, `testCrossTypeMismatch`)
-- `sqlc_test.go` error code verification tests
-- `TestFindProjectRootErrorCode` in `project_test.go`
-- `FilterOption.Reason()` — derives the corresponding `FilterReason` from any `FilterOption` via type conversion
-- `FilterOption.IsValid()` — reports whether a `FilterOption` is a recognized value
-- `Filter.IsEnabled()` — reports whether the filter is enabled without accessing internal fields
-- `FilterStats.FilteredBy(reason)` — accessor for per-reason counts without exposing the internal map
-- `DetectReason(path, content, options)` — public zero-I/O API that accepts content as a parameter
-- Comprehensive test coverage for `ShouldFilterWithIncludes`, `IsTemplGenerated` Render path, `HasSQLCContent` versions block, `GetStats` nil metrics branch, `?` wildcard in `MatchPattern`, and `FilterOption.Reason()`
-- `fmt.Stringer` compile-time compliance test for `ErrorCode`
-- Unwrap chain integration tests verifying `errors.Is` traverses nested error layers for both `ProjectRootError` and `SQLCConfigError`
-- Benchmarks for error construction, `Error()` formatting, and `errors.Is` matching
-
-### Changed
-
-- **Breaking**: `DetectGenerated` replaced by `DetectReason` (public, zero-I/O) and `detectReason` (internal, disk I/O)
-- **Breaking**: `Metrics.Record()` unexported to `record()` — not part of public API
-- **Breaking**: `GetMetrics()` removed from `Filter` — use `GetStats()` instead
-- **Breaking**: `FilteredByReason` map unexported to `filteredByReason` — use `FilteredBy(reason)` accessor
-- **Breaking**: `ParseSQLCConfig` unexported to `parseSQLCConfig` along with `SQLCConfig`/`SQLCVersion` types
-- `detector` struct unified from separate `contentCheck`/`filenameCheck` types into single type with optional fields
-- Table lookup functions converted to package-level `var` for zero-allocation lookup
-- `matchesAnySuffix`/`matchesAnyContains` consolidated into `anyMatch`
-- `filepath.Walk` replaced with `filepath.WalkDir` for better performance
-- `fileExists` simplified from 7 lines to `return err == nil`
-- `go.mod` toolchain downgraded from `1.26.1` to `1.26.0` for local compatibility
-
-### Fixed
-
-- `matchesMockgenFilename` false positive: `"mock_"` now uses prefix check instead of `Contains`, preventing matches like `remove_mock_data.go`
-
-### Removed
-
-- `Reasons()` method from `FilterStats` — unused and untested
+- Initial release
+- Two-phase detection: filename-based (zero I/O) then content-based
+- 11 generator detectors: sqlc, templ, go-enum, protobuf, oapi-codegen, deepcopy-gen, wire, moq, mockgen, stringer, generic
+- Functional options API: `WithFilterOptions()`, `WithFS()`, `WithIncludePatterns()`, `WithExcludePatterns()`
+- `fs.FS` abstraction for testing
+- SQLC config discovery
+- Glob pattern matching with `**` support
+- Branded error types with sentinel errors
 
 ---
 

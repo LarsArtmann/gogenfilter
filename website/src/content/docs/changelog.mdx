@@ -18,6 +18,7 @@ description: All notable changes to gogenfilter.
 - **`sqlcDefaultFileNames` refactored** — Extracted typed constants (`sqlcFileDB`, `sqlcFileModels`, etc.) and split `configuredSQLCFileNames` complexity via `sqlcCustomFileName` helper. Single canonical source for default filenames.
 - **`FilterDetailedAndContent` refactored** — Extracted `configOrFilenameResult` shared helper, reducing function length and eliminating duplicated config-aware + filename detection logic across `FilterDetailedAndContent` and `shouldFilterDetailedByContent`.
 - **Test lint exclusions expanded** — `goconst`, `gocyclo`, and `maintidx` added to `_test.go` exclusions (test fixture strings and table-driven test complexity are expected). `varnamelen` now ignores `tc` and `f` (standard Go test variable names). Removed 5 now-unused `//nolint` directives.
+- **`FileReadError` branded error type** — All file I/O failures during detection return `*FileReadError` (code `file_read`, sentinel `ErrFileRead`) instead of raw `fmt.Errorf`. The `readFile` helper is the single branding point. `DetectReasonReader` also returns `FileReadError` for `io.ReadAll` failures. `NewFilter` wraps `errors.Join` in `FilterConfigError` so the top-level error is always branded. Ensures every error from the public API carries the `[gogenfilter:...]` prefix and supports `errors.Is`/`errors.AsType`.
 
 ### Removed
 
@@ -84,6 +85,7 @@ description: All notable changes to gogenfilter.
 - **Lighthouse CI assertions** — Correctness checks (errors-in-console, redirects, inspector-issues, viewport, image-aspect-ratio) upgraded from `warn` to `error`.
 - **AGENTS.md policies revised** — Removed "keep only 3 most recent reports" rule in favor of relevance/age-based pruning guidance; added 6 new Gotchas (Nix quality gates, sandbox testing, vendorHash maintenance, theme split-brain, astro-og-canvas param, BuildFlow auto-commit behavior).
 - **Markdown link checker wired into CI** — New "Check internal markdown links" step in `.github/workflows/ci.yml`.
+- **`errorCodeMatches` refactor** — Three `Is()` methods in `errors.go` now share an `errorCodeMatches(code, target)` helper that matches via the `ErrorCoder` interface, replacing three concrete type assertions.
 
 ## [v3.3.1] — 2026-07-24
 
