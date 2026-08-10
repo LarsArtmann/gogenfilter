@@ -453,6 +453,62 @@ func TestExclusionDerivation(t *testing.T) {
 			t.Errorf("expected msgp-specific reason in exclusions, got %v", result.Exclusions)
 		}
 	})
+
+	t.Run("sqlc deriveExclusions returns fixed .sql.go pattern", func(t *testing.T) {
+		t.Parallel()
+
+		// Direct deriveExclusions test: SQLC has a fixed exclusion pattern,
+		// so it should NOT use directory-based derivation.
+		byGenerator := map[string][]string{
+			string(ReasonSQLC): {
+				"db/query.sql.go",
+				"db/models.go",
+				"db/user.sql.go",
+			},
+		}
+
+		exclusions := deriveExclusions(byGenerator)
+		if len(exclusions) != 1 {
+			t.Fatalf("expected 1 exclusion for sqlc, got %d: %v", len(exclusions), exclusions)
+		}
+
+		exc := exclusions[0]
+		assertEqual(t, "Pattern", exc.Pattern, `\.sql\.go$`)
+		assertEqual(t, "Reason", exc.Reason, "sqlc generated database code")
+	})
+
+	t.Run("sqlc mixed with directory-based generator uses both patterns", func(t *testing.T) {
+		t.Parallel()
+
+		byGenerator := map[string][]string{
+			string(ReasonSQLC):   {"db/query.sql.go"},
+			string(ReasonGqlgen): {"graph/generated.go"},
+		}
+
+		exclusions := deriveExclusions(byGenerator)
+		patterns := ExclusionPaths(exclusions)
+
+		foundSQLCPattern := false
+		foundDirPattern := false
+
+		for _, p := range patterns {
+			if p == `\.sql\.go$` {
+				foundSQLCPattern = true
+			}
+
+			if strings.Contains(p, "graph") {
+				foundDirPattern = true
+			}
+		}
+
+		if !foundSQLCPattern {
+			t.Errorf("expected .sql.go$ pattern for sqlc, got %v", patterns)
+		}
+
+		if !foundDirPattern {
+			t.Errorf("expected directory-based pattern for gqlgen, got %v", patterns)
+		}
+	})
 }
 
 func TestScanSQLCExclusion(t *testing.T) {

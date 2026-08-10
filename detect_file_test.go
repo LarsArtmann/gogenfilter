@@ -210,3 +210,139 @@ func TestDetectReasonFileFS(t *testing.T) {
 		}
 	})
 }
+
+// TestDetectReasonFileFSNoConfigAwareDetection documents and verifies that
+// standalone DetectReasonFileFS does NOT use config-aware SQLC detection.
+// Only Filter methods (FilterDetailed, FilterWithContent, etc.) have access to
+// the project's sqlc config via the lazily-built sqlcDerivedConfig. Standalone
+// functions detect purely via filename patterns and content markers.
+func TestDetectReasonFileFSNoConfigAwareDetection(t *testing.T) {
+	t.Parallel()
+
+	t.Run("DetectReasonFileFS does not use config for models.go", func(t *testing.T) {
+		t.Parallel()
+
+		// A sqlc.yaml config declares "db" as the output dir. A models.go in
+		// that dir without a sqlc header should be detected by Filter (config)
+		// but NOT by DetectReasonFileFS (no config).
+		fsys := &fstest.MapFS{
+			"sqlc.yaml": {
+				Data: []byte(`version: "2"
+sql:
+  - engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "db"
+`),
+			},
+			"db/models.go": {Data: []byte("package db\ntype User struct{}\n")},
+		}
+
+		// Standalone function: filename doesn't match .sql.go, content has
+		// no sqlc header → not detected.
+		reason, err := DetectReasonFileFS(fsys, "db/models.go", FilterSQLC)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if reason != ReasonNotFiltered {
+			t.Errorf(
+				"DetectReasonFileFS should NOT use config-aware detection, got reason=%s",
+				reason,
+			)
+		}
+	})
+
+	t.Run("Filter.FilterDetailed DOES use config for same file", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := &fstest.MapFS{
+			"sqlc.yaml": {
+				Data: []byte(`version: "2"
+sql:
+  - engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "db"
+`),
+			},
+			"db/models.go": {Data: []byte("package db\ntype User struct{}\n")},
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := filter.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !result.Filtered || result.Reason != ReasonSQLC {
+			t.Errorf(
+				"Filter.FilterDetailed SHOULD use config-aware detection, got filtered=%v reason=%s",
+				result.Filtered,
+				result.Reason,
+			)
+		}
+	})
+
+	t.Run("DetectReason (no I/O) also does not use config", func(t *testing.T) {
+		t.Parallel()
+
+		// DetectReason is the pure content+filename function — no FS, no config.
+		content := "package db\ntype User struct{}\n"
+		reason := DetectReason("db/models.go", content, FilterSQLC)
+
+		if reason != ReasonNotFiltered {
+			t.Errorf(
+				"DetectReason should NOT use config-aware detection, got reason=%s",
+				reason,
+			)
+		}
+	})
+
+	t.Run("DetectReasonFileFS still detects via content header", func(t *testing.T) {
+		t.Parallel()
+
+		// Even without config, a sqlc header comment triggers content detection.
+		fsys := &fstest.MapFS{
+			"db/models.go": {Data: []byte(sqlcGeneratedContentTest)},
+		}
+
+		reason, err := DetectReasonFileFS(fsys, "db/models.go", FilterSQLC)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if reason != ReasonSQLC {
+			t.Errorf("expected ReasonSQLC via content detection, got %s", reason)
+		}
+	})
+
+	t.Run("DetectReasonFileFS still detects via .sql.go filename", func(t *testing.T) {
+		t.Parallel()
+
+		// Filename-based detection (phase 1) works in standalone mode.
+		fsys := &fstest.MapFS{
+			"db/query.sql.go": {Data: []byte("package db\n")},
+		}
+
+		reason, err := DetectReasonFileFS(fsys, "db/query.sql.go", FilterSQLC)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if reason != ReasonSQLC {
+			t.Errorf("expected ReasonSQLC via filename detection, got %s", reason)
+		}
+	})
+}

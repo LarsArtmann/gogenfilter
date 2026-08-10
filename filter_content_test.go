@@ -154,6 +154,73 @@ func TestFilterWithContent(t *testing.T) {
 			t.Error("expected filtered=true for outside include scope")
 		}
 	})
+
+	t.Run("config-aware sqlc detection filters without reading content", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":    newMapFile(sqlcConfigV2YAML()),
+			"db/models.go": newMapFile("package db\ntype User struct{}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// models.go in a configured sqlc output dir is detected via config,
+		// even though the provided content has no sqlc header comment.
+		filtered, err := filter.FilterWithContent(
+			"db/models.go",
+			[]byte("package db\ntype User struct{}\n"),
+		)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if !filtered {
+			t.Error("expected filtered=true for config-aware sqlc detection")
+		}
+	})
+
+	t.Run("config-aware sqlc detection ignores file outside output dir", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":     newMapFile(sqlcConfigV2YAML()),
+			"pkg/models.go": newMapFile("package pkg\ntype Foo struct{}\n"),
+			"db/models.go":  newMapFile("package db\ntype User struct{}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		filter, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// models.go outside the configured output dir is NOT config-detected.
+		// It falls through to content detection, which also fails (no header).
+		filtered, err := filter.FilterWithContent(
+			"pkg/models.go",
+			[]byte("package pkg\ntype Foo struct{}\n"),
+		)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if filtered {
+			t.Error("expected filtered=false for file outside sqlc output dir without sqlc content")
+		}
+	})
 }
 
 func TestFilterDetailedWithContent(t *testing.T) {

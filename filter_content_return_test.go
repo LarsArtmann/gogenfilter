@@ -72,6 +72,21 @@ func TestFilterDetailedAndContent(t *testing.T) {
 			filtered: false,
 			reason:   ReasonNotFiltered,
 		},
+		{
+			name: "config-aware sqlc detection returns nil content",
+			// A models.go inside a configured sqlc output dir is caught by
+			// phase 1.5 (configOrFilenameResult) — no file is read.
+			filter: mustNewFilter(t,
+				mustFilterOptions(t, FilterSQLC),
+				WithFS(fstest.MapFS{
+					"sqlc.yaml":    newMapFile(sqlcConfigV2YAML()),
+					"db/models.go": newMapFile("package db\ntype User struct{}\n"),
+				}),
+			),
+			path:     "db/models.go",
+			filtered: true,
+			reason:   ReasonSQLC,
+		},
 	}
 
 	for _, tc := range nilContentCases {
@@ -163,6 +178,30 @@ func TestFilterDetailedAndContent(t *testing.T) {
 			t.Fatal("expected error for nonexistent file")
 		}
 
+		assertNilContent(t, content)
+	})
+
+	t.Run("config-aware sqlc detection returns nil content and config trace", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":    newMapFile(sqlcConfigV2YAML()),
+			"db/models.go": newMapFile("package db\ntype User struct{}\n"),
+		}
+
+		filter := mustNewFilter(t,
+			mustFilterOptions(t, FilterSQLC),
+			WithFS(fsys),
+		)
+
+		result, content, err := filter.FilterDetailedAndContent("db/models.go")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		assertEqual(t, "Filtered", result.Filtered, true)
+		assertEqual(t, "Reason", result.Reason, ReasonSQLC)
+		assertEqual(t, "Trace", result.Trace, sqlcConfigTrace)
 		assertNilContent(t, content)
 	})
 

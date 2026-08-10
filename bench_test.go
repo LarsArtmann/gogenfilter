@@ -1,7 +1,9 @@
 package gogenfilter
 
 import (
+	"fmt"
 	"io"
+	"maps"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -218,4 +220,74 @@ func BenchmarkDetectReasonFileFS(b *testing.B) {
 			_, _ = DetectReasonFileFS(fsys, mainGo, FilterAll)
 		}
 	})
+}
+
+// BenchmarkSQLCDerivedConfigForFS measures the cost of lazily discovering and
+// parsing sqlc configs by walking a large filesystem with many directories.
+// The "no_config" variant walks a large FS with zero sqlc.yaml files.
+// The "with_config" variant includes a single sqlc.yaml at the root.
+func BenchmarkSQLCDerivedConfigForFS(b *testing.B) {
+	const numDirs = 200
+
+	// Build a large MapFS with many directories and .go files, no sqlc config.
+	largeFS := make(fstest.MapFS, numDirs*2+5)
+
+	for i := range numDirs {
+		dir := fmt.Sprintf("pkg/depth%d/file.go", i)
+		largeFS[dir] = &fstest.MapFile{Data: []byte("package pkg\n")}
+	}
+
+	// Variant with a sqlc config at root.
+	configFS := make(fstest.MapFS, len(largeFS)+1)
+	maps.Copy(configFS, largeFS)
+
+	configFS["sqlc.yaml"] = &fstest.MapFile{Data: []byte(sqlcConfigV2YAML())}
+
+	b.Run("no_config_large_fs", func(b *testing.B) {
+		for b.Loop() {
+			_, _ = sqlcDerivedConfigForFS(largeFS, []string{"."})
+		}
+	})
+
+	b.Run("with_config_large_fs", func(b *testing.B) {
+		for b.Loop() {
+			_, _ = sqlcDerivedConfigForFS(configFS, []string{"."})
+		}
+	})
+
+	b.Run("empty_fs", func(b *testing.B) {
+		emptyFS := fstest.MapFS{}
+		for b.Loop() {
+			_, _ = sqlcDerivedConfigForFS(emptyFS, []string{"."})
+		}
+	})
+}
+
+// BenchmarkFilterSQLCDerivedConfigCached measures the cost of the cached
+// derived config lookup (second+ call should be O(1) via atomic.Pointer.Load).
+func BenchmarkFilterSQLCDerivedConfigCached(b *testing.B) {
+	fsys := fstest.MapFS{
+		"sqlc.yaml":    &fstest.MapFile{Data: []byte(sqlcConfigV2YAML())},
+		"db/models.go": &fstest.MapFile{Data: []byte("package db\n")},
+	}
+
+	opts, err := WithFilterOptions(FilterSQLC)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	filter, err := NewFilter(opts, WithFS(fsys))
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	// Prime the cache with one call.
+	result, _, _ := filter.FilterDetailedAndContent("db/models.go")
+	_ = result
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		_ = filter.sqlcDerivedConfig()
+	}
 }
