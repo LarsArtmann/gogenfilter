@@ -237,7 +237,7 @@ func TestExclusionPattern(t *testing.T) {
 		{ReasonEnt, false},
 		{ReasonGqlgen, false},
 		{ReasonGoSwagger, false},
-		{ReasonSQLC, false},
+		{ReasonSQLC, true},
 		{ReasonOapi, false},
 		{ReasonGeneric, false},
 		{ReasonNotFiltered, false},

@@ -59,6 +59,7 @@ const (
 //
 //nolint:gochecknoglobals // immutable lookup table, never mutated
 var exclusionPatterns = map[FilterReason]string{
+	ReasonSQLC:          `\.sql\.go$`,
 	ReasonTempl:         templExclusionPattern,
 	ReasonProtobuf:      `\.pb\.go$`,
 	ReasonGoEnum:        `_enum\.go$`,
@@ -246,8 +247,6 @@ func exclusionsForGenerator(generator string, files []string) []Exclusion {
 	}
 
 	switch generator {
-	case string(FilterSQLC):
-		return dirBasedExclusions(files, generatorExclusionReasons()[string(FilterSQLC)])
 	case string(FilterOapi):
 		return oapiExclusions(files)
 	case string(FilterEnt), string(FilterGqlgen), string(FilterGoSwagger), string(FilterGeneric):

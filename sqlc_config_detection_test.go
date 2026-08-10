@@ -1,0 +1,455 @@
+package gogenfilter
+
+import (
+	"slices"
+	"testing"
+	"testing/fstest"
+)
+
+// sqlcConfigV2YAML returns a minimal v2 sqlc config with the given output dir.
+func sqlcConfigV2YAML(outDir string) string {
+	return `version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "schema.sql"
+    queries: "query.sql"
+    gen:
+      go:
+        package: "db"
+        out: "` + outDir + `"
+`
+}
+
+func TestConfiguredSQLCFileNames(t *testing.T) {
+	t.Parallel()
+
+	t.Run("defaults when no custom names", func(t *testing.T) {
+		t.Parallel()
+
+		names := configuredSQLCFileNames(&sqlcGoConfig{Out: "db"})
+
+		want := []string{"db.go", "models.go", "querier.go", "batch.go", "copyfrom.go"}
+		if len(names) != len(want) {
+			t.Fatalf("expected %d names, got %d: %v", len(want), len(names), names)
+		}
+
+		for i, w := range want {
+			if names[i] != w {
+				t.Errorf("names[%d] = %q, want %q", i, names[i], w)
+			}
+		}
+	})
+
+	t.Run("honors custom names", func(t *testing.T) {
+		t.Parallel()
+
+		names := configuredSQLCFileNames(&sqlcGoConfig{
+			Out:                   "db",
+			OutputModelsFileName:  "custom_models.go",
+			OutputQuerierFileName: "custom_querier.go",
+		})
+
+		if !slices.Contains(names, "custom_models.go") {
+			t.Errorf("expected custom_models.go in %v", names)
+		}
+
+		if !slices.Contains(names, "custom_querier.go") {
+			t.Errorf("expected custom_querier.go in %v", names)
+		}
+
+		if slices.Contains(names, "models.go") {
+			t.Errorf("custom models name should replace default, got %v", names)
+		}
+
+		if slices.Contains(names, "querier.go") {
+			t.Errorf("custom querier name should replace default, got %v", names)
+		}
+
+		// Uncustomized names keep defaults.
+		if !slices.Contains(names, "db.go") || !slices.Contains(names, "batch.go") {
+			t.Errorf("uncustomized names should keep defaults, got %v", names)
+		}
+	})
+}
+
+func TestSQLCDerivedConfigForFS(t *testing.T) {
+	t.Parallel()
+
+	t.Run("no config yields empty derived", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{}
+
+		derived, err := sqlcDerivedConfigForFS(fsys, []string{"."})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if derived == nil || len(derived.dirFiles) != 0 {
+			t.Errorf("expected empty derived config, got %v", derived)
+		}
+	})
+
+	t.Run("v2 config output dir with default names", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml": newMapFile(sqlcConfigV2YAML("db")),
+		}
+
+		derived, err := sqlcDerivedConfigForFS(fsys, []string{"."})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		names, ok := derived.dirFiles["db"]
+		if !ok {
+			t.Fatal("expected derived config to contain output dir 'db'")
+		}
+
+		for _, want := range []string{"db.go", "models.go", "querier.go", "batch.go", "copyfrom.go"} {
+			if !names[want] {
+				t.Errorf("expected %q in output dir names: %v", want, names)
+			}
+		}
+	})
+
+	t.Run("v1 config converts output dir and names", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml": newMapFile(`version: "1"
+packages:
+  - name: "db"
+    path: "internal/db"
+    queries: "./sql/query/"
+    schema: "./sql/schema/"
+    engine: "postgresql"
+    output_models_file_name: "tables.go"
+`),
+		}
+
+		derived, err := sqlcDerivedConfigForFS(fsys, []string{"."})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		names, ok := derived.dirFiles["internal/db"]
+		if !ok {
+			t.Fatalf(
+				"expected derived config to contain output dir 'internal/db', got %v",
+				derived.dirFiles,
+			)
+		}
+
+		if !names["tables.go"] {
+			t.Errorf("expected custom tables.go in names: %v", names)
+		}
+
+		if names["models.go"] {
+			t.Errorf("custom models name should replace default, got %v", names)
+		}
+	})
+}
+
+func TestConfigAwareSQLCReason(t *testing.T) {
+	t.Parallel()
+
+	t.Run("file in configured output dir is sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		derived := &sqlcDerivedConfig{
+			dirFiles: map[string]map[string]bool{
+				"db": {
+					"models.go": true,
+					"batch.go":  true,
+				},
+			},
+		}
+
+		reason, ok := configAwareSQLCReason("db/models.go", derived)
+		if !ok || reason != ReasonSQLC {
+			t.Errorf("expected ReasonSQLC, got %v ok=%v", reason, ok)
+		}
+	})
+
+	t.Run("file not in configured output dir is not sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		derived := &sqlcDerivedConfig{
+			dirFiles: map[string]map[string]bool{
+				"db": {"models.go": true},
+			},
+		}
+
+		reason, ok := configAwareSQLCReason("pkg/batch.go", derived)
+		if ok || reason != ReasonNotFiltered {
+			t.Errorf("expected not filtered, got %v ok=%v", reason, ok)
+		}
+	})
+
+	t.Run("empty derived config is not sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		derived := &sqlcDerivedConfig{dirFiles: map[string]map[string]bool{}}
+
+		reason, ok := configAwareSQLCReason("db/models.go", derived)
+		if ok || reason != ReasonNotFiltered {
+			t.Errorf("expected not filtered, got %v ok=%v", reason, ok)
+		}
+	})
+
+	t.Run("nil derived config is not sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		reason, ok := configAwareSQLCReason("db/models.go", nil)
+		if ok || reason != ReasonNotFiltered {
+			t.Errorf("expected not filtered, got %v ok=%v", reason, ok)
+		}
+	})
+}
+
+func TestFilterSQLCConfigAwareDetection(t *testing.T) {
+	t.Parallel()
+
+	t.Run("models.go in configured dir with no header is sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":    newMapFile(sqlcConfigV2YAML("db")),
+			"db/models.go": newMapFile("package db\n\ntype User struct{}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := f.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !result.Filtered {
+			t.Fatal("expected models.go in configured sqlc output dir to be filtered")
+		}
+
+		assertEqual(t, "Reason", result.Reason, ReasonSQLC)
+	})
+
+	t.Run("models.go without config is NOT sqlc (false-positive regression)", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"db/models.go": newMapFile("package db\n\ntype User struct{}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := f.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if result.Filtered {
+			t.Fatal("models.go without sqlc config must not be classified as sqlc")
+		}
+
+		assertEqual(t, "Reason", result.Reason, ReasonNotFiltered)
+	})
+
+	t.Run("batch.go outside output dir is NOT sqlc", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":    newMapFile(sqlcConfigV2YAML("db")),
+			"pkg/batch.go": newMapFile("package pkg\n\nfunc ProcessBatch() {}\n"),
+			"db/batch.go":  newMapFile("package db\n\nfunc Batch() {}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		outside, err := f.FilterDetailed("pkg/batch.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if outside.Filtered {
+			t.Fatal("batch.go outside configured output dir must not be sqlc")
+		}
+
+		inside, err := f.FilterDetailed("db/batch.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !inside.Filtered {
+			t.Fatal("batch.go in configured output dir should be sqlc")
+		}
+	})
+
+	t.Run("custom output filenames honored", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml": newMapFile(`version: "2"
+sql:
+  - engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "db"
+        output_models_file_name: "custom_models.go"
+`),
+			"db/custom_models.go": newMapFile("package db\n\ntype User struct{}\n"),
+			"db/models.go":        newMapFile("package db\n\ntype User struct{}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		custom, err := f.FilterDetailed("db/custom_models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !custom.Filtered {
+			t.Fatal("custom models filename should be classified as sqlc in output dir")
+		}
+
+		def, err := f.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if def.Filtered {
+			t.Fatal("default models.go should NOT be sqlc when custom name configured")
+		}
+	})
+
+	t.Run("header content fallback without config", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"misc/generated.go": newMapFile(
+				"// Code generated by sqlc. DO NOT EDIT.\n\npackage misc\n",
+			),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := f.FilterDetailed("misc/generated.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !result.Filtered {
+			t.Fatal("sqlc header comment must be detected without a config")
+		}
+
+		assertEqual(t, "Reason", result.Reason, ReasonSQLC)
+	})
+
+	t.Run("query.sql.go always sqlc regardless of config", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"db/query.sql.go": newMapFile("package db\n\nfunc GetUser() {}\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		result, err := f.FilterDetailed("db/query.sql.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !result.Filtered {
+			t.Fatal("query.sql.go must always be sqlc via filename suffix")
+		}
+
+		assertEqual(t, "Reason", result.Reason, ReasonSQLC)
+	})
+
+	t.Run("derived config cached across calls", func(t *testing.T) {
+		t.Parallel()
+
+		fsys := fstest.MapFS{
+			"sqlc.yaml":    newMapFile(sqlcConfigV2YAML("db")),
+			"db/models.go": newMapFile("package db\n"),
+		}
+
+		opts, err := WithFilterOptions(FilterSQLC)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		f, err := NewFilter(opts, WithFS(fsys))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		r1, err := f.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !r1.Filtered {
+			t.Fatal("first call should detect sqlc via config")
+		}
+
+		// Second call must not error and use the cached derived config.
+		r2, err := f.FilterDetailed("db/models.go")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if !r2.Filtered {
+			t.Fatal("second call should still detect sqlc via cached config")
+		}
+	})
+}

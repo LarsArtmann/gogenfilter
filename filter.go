@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"sync/atomic"
 )
 
 // FilterConfig is a functional option for configuring a Filter.
@@ -83,6 +84,12 @@ type Filter struct {
 	includePatterns []string
 	excludePatterns []string
 	fsys            fs.FS
+
+	// sqlcDerived lazily holds the distilled sqlc configuration (output dirs +
+	// accepted filenames) for the project. It is computed once (see
+	// sqlcDerivedConfigForFS) and cached for the filter's lifetime.
+	// A nil pointer means "not yet computed".
+	sqlcDerived atomic.Pointer[sqlcDerivedConfig]
 }
 
 // NewFilter creates a new filter configured with the given functional options.
@@ -130,6 +137,26 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	}
 
 	return filter, nil
+}
+
+// sqlcDerivedConfig lazily returns the distilled sqlc config, or an empty
+// derived config (never nil) if no sqlc config exists or it can't be parsed.
+// The result is cached after the first computation.
+func (f *Filter) sqlcDerivedConfig() *sqlcDerivedConfig {
+	if cached := f.sqlcDerived.Load(); cached != nil {
+		return cached
+	}
+
+	derived, err := sqlcDerivedConfigForFS(f.fsys, []string{"."})
+	if err != nil {
+		derived = &sqlcDerivedConfig{dirFiles: make(map[string]map[string]bool)}
+	}
+
+	// Best-effort: cache whatever we computed; a parse error just voids the
+	// config signal (falls back to header-content detection).
+	f.sqlcDerived.CompareAndSwap(nil, derived)
+
+	return derived
 }
 
 // IsEnabled returns whether the filter is active.
@@ -280,6 +307,17 @@ func (f *Filter) FilterDetailedAndContent(filePath string) (FilterResult, []byte
 		}, nil, nil
 	}
 
+	if reason, ok := configAwareSQLCReason(
+		filePath,
+		f.sqlcDerivedConfig(),
+	); ok &&
+		f.isOptionEnabled(FilterSQLC) {
+		return FilterResult{
+			Filtered: true, Reason: reason, Path: filePath,
+			Trace: "detected as sqlc via configured output directory",
+		}, nil, nil
+	}
+
 	reason, trace := getFilenameBasedReasonWithTrace(filePath, f.options)
 	if reason != ReasonNotFiltered {
 		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil, nil
@@ -364,6 +402,13 @@ func (f *Filter) matchesAnyPattern(filePath string, patterns []string) bool {
 	return anyMatch(filePath, patterns, MatchPattern)
 }
 
+// isOptionEnabled reports whether the given filter option is enabled.
+func (f *Filter) isOptionEnabled(opt FilterOption) bool {
+	_, enabled := f.options[opt]
+
+	return enabled
+}
+
 func (f *Filter) shouldFilterWithIncludes(filePath string) (bool, error) {
 	return f.shouldFilterByPattern(
 		filePath,
@@ -389,13 +434,14 @@ func (f *Filter) shouldFilterByPattern(
 	return f.shouldFilterByDetection(filePath)
 }
 
+//nolint:dupl // mirrors shouldFilterDetailedByDetection exactly
 func (f *Filter) shouldFilterByDetection(filePath string) (bool, error) {
-	reason, err := detectReasonFS(f.fsys, filePath, f.options)
+	result, err := detectReasonFSWithConfig(f.fsys, filePath, f.options, f.sqlcDerivedConfig())
 	if err != nil {
 		return false, err
 	}
 
-	return reason != ReasonNotFiltered, nil
+	return result.Filtered, nil
 }
 
 func (f *Filter) shouldFilterDetailedWithIncludes(filePath string) (FilterResult, error) {
@@ -435,10 +481,18 @@ func (f *Filter) shouldFilterDetailedByPattern(
 }
 
 func (f *Filter) shouldFilterDetailedByDetection(filePath string) (FilterResult, error) {
-	return detectReasonFSWithTrace(f.fsys, filePath, f.options)
+	return detectReasonFSWithConfig(f.fsys, filePath, f.options, f.sqlcDerivedConfig())
 }
 
 func (f *Filter) shouldFilterByContent(filePath string, content []byte) (bool, error) {
+	if reason, ok := configAwareSQLCReason(
+		filePath,
+		f.sqlcDerivedConfig(),
+	); ok &&
+		f.isOptionEnabled(FilterSQLC) {
+		return reason != ReasonNotFiltered, nil
+	}
+
 	reason := detectReasonFromMap(filePath, string(content), f.options)
 
 	return reason != ReasonNotFiltered, nil
@@ -448,6 +502,17 @@ func (f *Filter) shouldFilterDetailedByContent(
 	filePath string,
 	content []byte,
 ) (FilterResult, error) {
+	if reason, ok := configAwareSQLCReason(
+		filePath,
+		f.sqlcDerivedConfig(),
+	); ok &&
+		f.isOptionEnabled(FilterSQLC) {
+		return FilterResult{
+			Filtered: true, Reason: reason, Path: filePath,
+			Trace: "detected as sqlc via configured output directory",
+		}, nil
+	}
+
 	reason, trace := getFilenameBasedReasonWithTrace(filePath, f.options)
 	if reason != ReasonNotFiltered {
 		return FilterResult{Filtered: true, Reason: reason, Path: filePath, Trace: trace}, nil
