@@ -82,13 +82,14 @@
             meta = with pkgs.lib; {
               description = "Go library for detecting and filtering auto-generated code files";
               license = licenses.mit;
+              homepage = "https://gogenfilter.lars.software";
+              platforms = platforms.unix ++ platforms.windows;
               maintainers = [
                 {
                   name = "Lars Artmann";
                   github = "LarsArtmann";
                 }
               ];
-              mainProgram = "gogenfilter";
             };
           };
 

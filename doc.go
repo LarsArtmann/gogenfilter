@@ -53,4 +53,15 @@
 //	    gogenfilter.FilterSQLC,
 //	    gogenfilter.FilterGeneric,
 //	)
+//
+// Get the detection result and file content in one call (avoids double I/O):
+//
+//	result, content, err := f.FilterDetailedAndContent("db/models.go")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	if result.Filtered {
+//	    fmt.Printf("skipping %s-generated file\n", result.Reason)
+//	}
+//	// content is non-nil when phase-2 read the file; reuse it for further analysis
 package gogenfilter

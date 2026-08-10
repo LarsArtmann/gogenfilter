@@ -120,8 +120,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Documentation generation pipeline (`cmd/gendocs`)** — A Go binary that reads the `detectors` table from `detection.go` and generates `generators.json`, README tables, `generators.mdx` detection table + tool count, `detection.mdx` per-generator function table, and `doc.go` generator list. Run via `go generate ./...`. CI enforces freshness with `git diff --exit-code`.
 - **CI docs freshness job** — Fails when generated docs are stale. Runs `go generate ./...` and checks `git diff --exit-code` on all generated files.
 - **`websiteMetadata` validation** — gendocs fails at build time if a detector lacks website presentation data, making drift impossible when adding new generators.
-- **Website Scan API reference page** — Documents 9 previously undocumented exported symbols.
-- **Website API docs for `DetectReasonFile`/`DetectReasonFileFS`**, `FilterWithContent`/`FilterDetailedWithContent`, `FilterResult`, `SQLCOperation`.
+- **Website Scan API reference page** — Documents 9 previously undocumented exported symbols. *(Note: these hand-written API pages were later removed in favor of pkg.go.dev auto-generated reference.)*
+- **Website API docs for `DetectReasonFile`/`DetectReasonFileFS`**, `FilterWithContent`/`FilterDetailedWithContent`, `FilterResult`, `SQLCOperation`. *(Note: later removed; see pkg.go.dev for current API reference.)*
 - **Missing `doc.go` in 3 testdata directories** (handwritten, wire, templ).
 
 ### Fixed

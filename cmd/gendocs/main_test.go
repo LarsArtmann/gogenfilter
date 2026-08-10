@@ -359,6 +359,77 @@ func TestReplaceSectionInlineIsIdempotent(t *testing.T) {
 	}
 }
 
+func TestFormatMarkdownTable(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name string
+		rows [][]string
+		want string
+	}{
+		{
+			name: "empty input returns empty string",
+			rows: [][]string{},
+			want: "",
+		},
+		{
+			name: "single column basic alignment",
+			rows: [][]string{
+				{"Header"},
+				{"x"},
+			},
+			want: "| Header |\n| ------ |\n| x      |\n",
+		},
+		{
+			name: "two column alignment with different widths",
+			rows: [][]string{
+				{"Tool", "Detection"},
+				{"sqlc", "*.sql.go"},
+				{"wire", "wire_gen.go"},
+			},
+			want: "| Tool | Detection   |\n| ---- | ----------- |\n| sqlc | *.sql.go    |\n| wire | wire_gen.go |\n",
+		},
+		{
+			name: "separator row has dashes matching column widths",
+			rows: [][]string{
+				{"ABC", "D"},
+				{"x", "y"},
+			},
+			want: "| ABC | D |\n| --- | - |\n| x   | y |\n",
+		},
+		{
+			name: "pipe characters in cells are escaped (width based on raw cell)",
+			rows: [][]string{
+				{"Col"},
+				{"a|b"},
+			},
+			want: "| Col |\n| --- |\n| a\\|b |\n",
+		},
+		{
+			name: "ragged rows padded with spaces for missing cells",
+			rows: [][]string{
+				{"A", "B", "C"},
+				{"only-first"},
+			},
+			want: "| A          | B | C |\n| ---------- | - | - |\n| only-first |   |   |\n",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := formatMarkdownTable(tc.rows)
+			if got != tc.want {
+				t.Errorf(
+					"formatMarkdownTable()\n--- got ---\n%q\n--- want ---\n%q",
+					got, tc.want,
+				)
+			}
+		})
+	}
+}
+
 func TestGeneratedTablesHaveNoPhantomColumns(t *testing.T) {
 	t.Parallel()
 

@@ -417,10 +417,7 @@ func formatMarkdownTable(rows [][]string) string {
 
 	numCols := len(rows[0])
 
-	widths := make([]int, 0, numCols)
-	for range numCols {
-		widths = append(widths, 0)
-	}
+	widths := make([]int, numCols) //nolint:makezero // accessed by index, never appended
 
 	for _, row := range rows {
 		for i, cell := range row {
@@ -433,21 +430,24 @@ func formatMarkdownTable(rows [][]string) string {
 	var builder strings.Builder
 
 	for rowIdx, row := range rows {
-		cells := make([]string, 0, numCols)
+		cells := make([]string, numCols) //nolint:makezero // accessed by index, never appended
 		for i := range numCols {
 			if i < len(row) {
-				cells = append(cells, padRight(row[i], widths[i]))
+				cells[i] = padRight(row[i], widths[i])
 			} else {
-				cells = append(cells, strings.Repeat(" ", widths[i]))
+				cells[i] = strings.Repeat(" ", widths[i])
 			}
 		}
 
 		builder.WriteString(markdownRow(cells))
 
 		if rowIdx == 0 {
-			sep := make([]string, 0, numCols)
-			for _, w := range widths {
-				sep = append(sep, strings.Repeat("-", w))
+			sep := make(
+				[]string,
+				len(widths),
+			)
+			for i, w := range widths {
+				sep[i] = strings.Repeat("-", w)
 			}
 
 			builder.WriteString(markdownRow(sep))
