@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Header-only content scanning** — Content-based detection (`headerContent`) now searches only the header (content before the `package` clause), per the Go generated-code spec. Prevents false positives from markers appearing in imports, string literals, or code after the package clause.
 - **Test coverage for config-aware detection** — Test suite covering config-derived filenames, derived config building, config-aware reason classification, Filter-level integration (7 scenarios), config parse error recovery (Filter falls back to headerContent), headerContent edge cases (empty, CRLF, "package" in comments, multiple header lines), and SQLC scan exclusion pattern derivation.
 - **Tagliatelle configured for snake_case yaml** — `.golangci.yaml` now accepts snake_case yaml struct tags (matching sqlc's real config format) instead of requiring camelCase.
+- **BDD specs for content-return APIs** — 8 new Ginkgo specs covering `FilterWithContent`, `FilterDetailedWithContent`, and `FilterDetailedAndContent` (filename-match, content-match, not-filtered paths).
+- **`BenchmarkFilterDetailedAndContent`** — Dedicated benchmark measuring all three FilterDetailedAndContent paths (filename match, content match, not-filtered).
+- **`api/filter.mdx`** — Website API reference page for Filter type methods, with method-selection table and code examples.
+- **ADR 003: FilterDetailedAndContent** — Architecture decision record documenting the lazy-read-with-content-return design.
+- **`CODE_OF_CONDUCT.md`** — Contributor Covenant v2.0 community health file.
+- **Pre-release checklist in `RELEASING.md`** — Comprehensive checklist (CI green, nix flake check, lint, test, docs fresh, CHANGELOG complete, website builds) with BuildFlow auto-commit interaction note.
 
 ### Changed
 
@@ -20,6 +26,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`FilterDetailedAndContent` refactored** — Extracted `configOrFilenameResult` shared helper, reducing function length and eliminating duplicated config-aware + filename detection logic across `FilterDetailedAndContent` and `shouldFilterDetailedByContent`.
 - **Test lint exclusions expanded** — `goconst`, `gocyclo`, and `maintidx` added to `_test.go` exclusions (test fixture strings and table-driven test complexity are expected). `varnamelen` now ignores `tc` and `f` (standard Go test variable names). Removed 5 now-unused `//nolint` directives.
 - **`FileReadError` branded error type** — All file I/O failures during detection return `*FileReadError` (code `file_read`, sentinel `ErrFileRead`) instead of raw `fmt.Errorf`. The `readFile` helper is the single branding point. `DetectReasonReader` also returns `FileReadError` for `io.ReadAll` failures. `NewFilter` wraps `errors.Join` in `FilterConfigError` so the top-level error is always branded. Ensures every error from the public API carries the `[gogenfilter:...]` prefix and supports `errors.Is`/`errors.AsType`.
+- **`makezero` reverted in `formatMarkdownTable`** — Three slice constructions (`widths`, `cells`, `sep`) changed from `make([]T, 0, n) + append` to idiomatic `make([]T, n)` with `//nolint:makezero`. The code accesses by index, never appends.
+- **`formatMarkdownTable` unit tests added** — 6 table-driven subtests covering empty input, single column, multi-column alignment, separator row, pipe escaping, and ragged rows.
+- **GitHub Actions pinned to SHA hashes** — All 29 `uses:` statements across 5 workflows pinned to commit SHAs with `# vN` comments for Dependabot tracking.
+- **Lighthouse CI advisory-only** — All assertions downgraded from `error` to `warn`. Workflow header documents the advisory policy and upgrade path (install LHCI GitHub App, add token, upgrade assertions).
+- **`flake.nix` meta attributes** — Removed incorrect `mainProgram = "gogenfilter"` (library has no root binary), added `homepage` and `platforms` attributes.
+- **`doc.go` Quick Start** — Added `FilterDetailedAndContent` code example for pkg.go.dev visibility.
+- **ROADMAP.md updated for v4** — Strategic direction: golangci-lint module plugin is the north star. Documented plugin architecture, value proposition comparison table, and v4 module structure proposal.
+- **BuildFlow pre-commit hook fixed** — Hook now uses `--language go --circuit-breaker-action skip` to avoid tailwind-build failure (tailwindcss not in Go devShell). Commits work without `--no-verify`.
+- **Stale CHANGELOG claims annotated** — v3.2.0 entries about "Website API docs" now note those pages were replaced by pkg.go.dev.
 
 ### Removed
 
