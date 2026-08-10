@@ -233,13 +233,13 @@ func TestFilterWithIncludes(t *testing.T) {
 
 		filter, err := NewFilter(
 			opts,
-			WithIncludePatterns("models.go"),
+			WithIncludePatterns("*.sql.go"),
 		)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if !mustFilter(t, filter, "models.go") {
+		if !mustFilter(t, filter, "query.sql.go") {
 			t.Error("expected generated file matching include pattern to still be filtered")
 		}
 	})
