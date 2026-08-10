@@ -134,7 +134,10 @@ func NewFilter(configs ...FilterConfig) (*Filter, error) {
 	}
 
 	if len(errs) > 0 {
-		return nil, errors.Join(errs...)
+		return nil, &FilterConfigError{ //nolint:exhaustruct
+			Code: CodeInvalidFilterOption,
+			Err:  errors.Join(errs...),
+		}
 	}
 
 	return filter, nil
@@ -325,7 +328,7 @@ func (f *Filter) FilterDetailedAndContent(filePath string) (FilterResult, []byte
 	if err != nil {
 		return FilterResult{
 			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
-		}, nil, fmt.Errorf("read file %q: %w", filePath, err)
+		}, nil, err
 	}
 
 	reason, trace := getContentBasedReasonWithTrace(filePath, string(content), f.options)

@@ -328,7 +328,8 @@ var _ = ginkgo.Describe("gogenfilter", func() {
 					gogenfilter.FilterAll,
 				)
 				gomega.Expect(err).To(gomega.HaveOccurred())
-				gomega.Expect(err.Error()).To(gomega.ContainSubstring("read content"))
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("failed to read"))
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("[gogenfilter:file_read]"))
 			})
 		})
 	})

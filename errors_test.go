@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"testing/fstest"
 )
 
 func assertBrandedErrorMessage(t *testing.T, msg, errorCode, path, message string) {
@@ -132,6 +133,7 @@ func TestErrorCode(t *testing.T) {
 			{CodeProjectRootNotFound, "project_root_not_found"},
 			{CodeProjectRootInvalidPath, "project_root_invalid_path"},
 			{CodeInvalidFilterOption, "invalid_filter_option"},
+			{CodeFileRead, "file_read"},
 			{CodeSQLCConfigRead, "sqlc_config_read"},
 			{CodeSQLCConfigParse, "sqlc_config_parse"},
 			{CodeSQLCConfigWalk, "sqlc_config_walk"},
@@ -348,4 +350,313 @@ func TestSQLCConfigError_Unwrap(t *testing.T) {
 	}
 
 	assertUnwrapSentinel(t, err)
+}
+
+func TestFileReadErrorMessaging(t *testing.T) {
+	t.Parallel()
+
+	t.Run("branded error message with cause", func(t *testing.T) {
+		t.Parallel()
+
+		err := &FileReadError{
+			Code: CodeFileRead,
+			Path: dbModelsGo,
+			Err:  os.ErrNotExist,
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(t, msg, "file_read", dbModelsGo, "")
+	})
+
+	t.Run("branded error message without cause", func(t *testing.T) {
+		t.Parallel()
+
+		err := &FileReadError{ //nolint:exhaustruct
+			Code: CodeFileRead,
+			Path: mainGo,
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(t, msg, "file_read", mainGo, "")
+	})
+}
+
+func TestFileReadErrorIs_Sentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &FileReadError{ //nolint:exhaustruct
+		Code: CodeFileRead,
+		Path: dbModelsGo,
+	}
+
+	if !errors.Is(err, ErrFileRead) {
+		t.Error("errors.Is should match sentinel with same code")
+	}
+}
+
+func TestFileReadErrorIs_WrongSentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &FileReadError{ //nolint:exhaustruct
+		Code: CodeFileRead,
+		Path: dbModelsGo,
+	}
+
+	if errors.Is(err, ErrInvalidFilterOption) {
+		t.Error("errors.Is should not match sentinel with different type")
+	}
+}
+
+func TestFileReadErrorIs_CrossType(t *testing.T) {
+	t.Parallel()
+
+	err := &FileReadError{ //nolint:exhaustruct
+		Code: CodeFileRead,
+		Path: dbModelsGo,
+	}
+
+	target := &ProjectRootError{ //nolint:exhaustruct
+		Code: CodeProjectRootNotFound,
+	}
+
+	if errors.Is(err, target) {
+		t.Error("errors.Is should not match across different error types")
+	}
+}
+
+func TestFileReadError_Unwrap(t *testing.T) {
+	t.Parallel()
+
+	err := &FileReadError{
+		Code: CodeFileRead,
+		Path: dbModelsGo,
+		Err:  os.ErrPermission,
+	}
+
+	assertUnwrapSentinel(t, err)
+}
+
+func TestFileReadError_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	err := &FileReadError{ //nolint:exhaustruct
+		Code: CodeFileRead,
+		Path: dbModelsGo,
+	}
+
+	testErrorCodeReturnsCode(t, err, CodeFileRead)
+}
+
+func TestFilterConfigErrorMessaging_EmptyOption(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with cause and no option", func(t *testing.T) {
+		t.Parallel()
+
+		err := &FilterConfigError{ //nolint:exhaustruct
+			Code: CodeInvalidFilterOption,
+			Err:  errors.New("multiple config errors"), //nolint:err113
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(
+			t,
+			msg,
+			"invalid_filter_option",
+			"",
+			"invalid filter configuration",
+		)
+	})
+
+	t.Run("without cause or option", func(t *testing.T) {
+		t.Parallel()
+
+		err := &FilterConfigError{ //nolint:exhaustruct
+			Code: CodeInvalidFilterOption,
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(
+			t,
+			msg,
+			"invalid_filter_option",
+			"",
+			"invalid filter configuration",
+		)
+	})
+}
+
+func TestNewFilterBrandsJoinedErrors(t *testing.T) {
+	t.Parallel()
+
+	t.Run("multiple failing configs return branded FilterConfigError", func(t *testing.T) {
+		t.Parallel()
+
+		errCfg1 := func(_ *Filter) error {
+			return &FilterConfigError{ //nolint:exhaustruct
+				Code: CodeInvalidFilterOption, Option: FilterOption("bad1"),
+			}
+		}
+		errCfg2 := func(_ *Filter) error {
+			return &FilterConfigError{ //nolint:exhaustruct
+				Code: CodeInvalidFilterOption, Option: FilterOption("bad2"),
+			}
+		}
+
+		_, err := NewFilter(errCfg1, errCfg2)
+		if err == nil {
+			t.Fatal("expected error for failing configs")
+		}
+
+		assertErrorHasBrandedPrefix(t, err)
+
+		if !errors.Is(err, ErrInvalidFilterOption) {
+			t.Error("errors.Is should match ErrInvalidFilterOption through branded wrapper")
+		}
+
+		configErr := assertErrorType[*FilterConfigError](t, err)
+
+		testErrorCodeReturnsCode(t, configErr, CodeInvalidFilterOption)
+	})
+
+	t.Run("single failing config returns branded FilterConfigError", func(t *testing.T) {
+		t.Parallel()
+
+		errCfg := func(_ *Filter) error {
+			return &FilterConfigError{ //nolint:exhaustruct
+				Code: CodeInvalidFilterOption, Option: FilterOption("terrible"),
+			}
+		}
+
+		_, err := NewFilter(errCfg)
+		if err == nil {
+			t.Fatal("expected error for failing config")
+		}
+
+		configErr := assertErrorType[*FilterConfigError](t, err)
+
+		testErrorCodeReturnsCode(t, configErr, CodeInvalidFilterOption)
+	})
+}
+
+func TestDetectReasonFileFS_ReturnsBrandedFileReadError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	reason, err := DetectReasonFileFS(fsys, "nonexistent.go", FilterAll)
+
+	if reason != ReasonNotFiltered {
+		t.Errorf("reason = %q, want %q", reason, ReasonNotFiltered)
+	}
+
+	if err == nil {
+		t.Fatal("expected error for non-existent file")
+	}
+
+	readErr := assertErrorType[*FileReadError](t, err)
+
+	testErrorCodeReturnsCode(t, readErr, CodeFileRead)
+
+	if readErr.Path != "nonexistent.go" {
+		t.Errorf("Path = %q, want %q", readErr.Path, "nonexistent.go")
+	}
+
+	if !errors.Is(err, ErrFileRead) {
+		t.Error("errors.Is should match ErrFileRead sentinel")
+	}
+
+	assertErrorHasBrandedPrefix(t, err)
+}
+
+func TestFilterDetailedAndContent_ReturnsBrandedFileReadError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	opts, _ := WithFilterOptions(FilterSQLC)
+
+	filter, filterErr := NewFilter(opts, WithFS(fsys))
+	if filterErr != nil {
+		t.Fatalf("NewFilter failed: %v", filterErr)
+	}
+
+	_, _, err := filter.FilterDetailedAndContent("nonexistent.go")
+	if err == nil {
+		t.Fatal("expected error for non-existent file")
+	}
+
+	readErr := assertErrorType[*FileReadError](t, err)
+
+	testErrorCodeReturnsCode(t, readErr, CodeFileRead)
+
+	if readErr.Path != "nonexistent.go" {
+		t.Errorf("Path = %q, want %q", readErr.Path, "nonexistent.go")
+	}
+
+	if !errors.Is(err, ErrFileRead) {
+		t.Error("errors.Is should match ErrFileRead sentinel")
+	}
+
+	assertErrorHasBrandedPrefix(t, err)
+}
+
+func TestDetectReasonReader_ReturnsBrandedFileReadError(t *testing.T) {
+	t.Parallel()
+
+	reader := &failingReader{err: os.ErrPermission}
+
+	_, err := DetectReasonReader("stream.go", reader, FilterSQLC)
+	if err == nil {
+		t.Fatal("expected error from failing reader")
+	}
+
+	readErr := assertErrorType[*FileReadError](t, err)
+
+	testErrorCodeReturnsCode(t, readErr, CodeFileRead)
+
+	if readErr.Path != "stream.go" {
+		t.Errorf("Path = %q, want %q", readErr.Path, "stream.go")
+	}
+
+	if !errors.Is(err, os.ErrPermission) {
+		t.Error("Unwrap should expose inner os.ErrPermission")
+	}
+
+	assertErrorHasBrandedPrefix(t, err)
+}
+
+type failingReader struct{ err error }
+
+func (r *failingReader) Read(_ []byte) (int, error) { return 0, r.err }
+
+func TestErrorCodeIncludesFileRead(t *testing.T) {
+	t.Parallel()
+
+	if CodeFileRead.String() != "file_read" {
+		t.Errorf("CodeFileRead.String() = %q, want %q", CodeFileRead.String(), "file_read")
+	}
+}
+
+func TestFileReadErrorFsPathError(t *testing.T) {
+	t.Parallel()
+
+	fsys := fstest.MapFS{}
+
+	_, err := readFile(fsys, "missing.go")
+	if err == nil {
+		t.Fatal("expected error from readFile with missing file")
+	}
+
+	readErr := assertErrorType[*FileReadError](t, err)
+
+	testErrorCodeReturnsCode(t, readErr, CodeFileRead)
+
+	if !strings.Contains(readErr.Error(), "missing.go") {
+		t.Errorf("Error() should contain path: %q", readErr.Error())
+	}
 }

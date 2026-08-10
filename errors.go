@@ -35,6 +35,7 @@ const (
 	CodeProjectRootNotFound    ErrorCode = "project_root_not_found"    // project root not found from start path
 	CodeProjectRootInvalidPath ErrorCode = "project_root_invalid_path" // start path could not be resolved
 	CodeInvalidFilterOption    ErrorCode = "invalid_filter_option"     // filter option is not valid
+	CodeFileRead               ErrorCode = "file_read"                 // file could not be read during detection
 	CodeSQLCConfigRead         ErrorCode = "sqlc_config_read"          // sqlc config file could not be read
 	CodeSQLCConfigParse        ErrorCode = "sqlc_config_parse"         // sqlc config file has invalid YAML
 	CodeSQLCConfigWalk         ErrorCode = "sqlc_config_walk"          // directory walk for sqlc configs failed
@@ -60,6 +61,9 @@ var (
 
 	// ErrInvalidFilterOption is returned when an unrecognized FilterOption is passed.
 	ErrInvalidFilterOption = &FilterConfigError{Code: CodeInvalidFilterOption}
+
+	// ErrFileRead is returned when a file cannot be read during detection.
+	ErrFileRead = &FileReadError{Code: CodeFileRead}
 
 	// ErrSQLCConfigRead is returned when a sqlc config file cannot be read.
 	ErrSQLCConfigRead = &SQLCConfigError{Code: CodeSQLCConfigRead}
@@ -118,15 +122,23 @@ type FilterConfigError struct {
 
 func (e *FilterConfigError) Error() string {
 	if e.Err != nil {
-		return fmt.Sprintf(
-			errorPrefixFmt+"invalid filter option %q: %v",
-			e.Code,
-			e.Option,
-			e.Err,
-		)
+		if e.Option != "" {
+			return fmt.Sprintf(
+				errorPrefixFmt+"invalid filter option %q: %v",
+				e.Code,
+				e.Option,
+				e.Err,
+			)
+		}
+
+		return fmt.Sprintf(errorPrefixFmt+"invalid filter configuration: %v", e.Code, e.Err)
 	}
 
-	return fmt.Sprintf(errorPrefixFmt+"invalid filter option %q", e.Code, e.Option)
+	if e.Option != "" {
+		return fmt.Sprintf(errorPrefixFmt+"invalid filter option %q", e.Code, e.Option)
+	}
+
+	return fmt.Sprintf(errorPrefixFmt+"invalid filter configuration", e.Code)
 }
 
 func (e *FilterConfigError) Unwrap() error { return e.Err }
@@ -138,6 +150,31 @@ func (e *FilterConfigError) Is(target error) bool {
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *FilterConfigError) ErrorCode() ErrorCode { return e.Code }
+
+// FileReadError is returned when a file cannot be read during content-based detection.
+type FileReadError struct {
+	Code ErrorCode // classifies the failure (always CodeFileRead)
+	Path string    // path of the file that could not be read
+	Err  error     // underlying I/O error
+}
+
+func (e *FileReadError) Error() string {
+	if e.Err != nil {
+		return fmt.Sprintf(errorPrefixFmt+"failed to read %q: %v", e.Code, e.Path, e.Err)
+	}
+
+	return fmt.Sprintf(errorPrefixFmt+"failed to read %q", e.Code, e.Path)
+}
+
+func (e *FileReadError) Unwrap() error { return e.Err }
+
+// Is supports errors.Is by comparing error codes with sentinel errors.
+func (e *FileReadError) Is(target error) bool {
+	return errorCodeMatches(e.Code, target)
+}
+
+// ErrorCode returns the error code for programmatic matching.
+func (e *FileReadError) ErrorCode() ErrorCode { return e.Code }
 
 // SQLCConfigError is returned when a sqlc configuration file cannot be processed.
 type SQLCConfigError struct {

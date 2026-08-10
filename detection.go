@@ -492,7 +492,7 @@ func detectReasonFileFS(fsys fs.FS, filePath string, opts ...FilterOption) (Filt
 
 	content, err := readFile(fsys, filePath)
 	if err != nil {
-		return ReasonNotFiltered, fmt.Errorf("read file %q: %w", filePath, err)
+		return ReasonNotFiltered, err
 	}
 
 	return detectReasonFromMap(filePath, string(content), options), nil
@@ -505,7 +505,9 @@ func detectReasonFileFS(fsys fs.FS, filePath string, opts ...FilterOption) (Filt
 func DetectReasonReader(filePath string, r io.Reader, opts ...FilterOption) (FilterReason, error) {
 	content, err := io.ReadAll(r)
 	if err != nil {
-		return ReasonNotFiltered, fmt.Errorf("read content from %q: %w", filePath, err)
+		return ReasonNotFiltered, &FileReadError{
+			Code: CodeFileRead, Path: filePath, Err: err,
+		}
 	}
 
 	return DetectReason(filePath, string(content), opts...), nil
@@ -714,15 +716,11 @@ func detectReasonFSWithTrace(
 	content, err := readFile(fsys, filePath)
 	if err != nil {
 		return FilterResult{
-				Filtered: false,
-				Reason:   ReasonNotFiltered,
-				Path:     filePath,
-				Trace:    "",
-			}, fmt.Errorf(
-				"read file %q: %w",
-				filePath,
-				err,
-			)
+			Filtered: false,
+			Reason:   ReasonNotFiltered,
+			Path:     filePath,
+			Trace:    "",
+		}, err
 	}
 
 	reason, trace = getContentBasedReasonWithTrace(filePath, string(content), options)
@@ -813,6 +811,7 @@ func AllDetectorDocs() []DetectorDoc {
 
 // readFile reads file content, falling back to os.ReadFile for absolute paths
 // when fs.ReadFile fails (os.DirFS rejects absolute paths).
+// Returns a branded FileReadError on failure.
 func readFile(fsys fs.FS, filePath string) ([]byte, error) {
 	content, err := fs.ReadFile(fsys, filePath)
 	if err == nil {
@@ -821,8 +820,17 @@ func readFile(fsys fs.FS, filePath string) ([]byte, error) {
 
 	if filepath.IsAbs(filePath) {
 		//nolint:gosec // G304: filePath is user-provided by design — library reads from fs.FS
-		return os.ReadFile(filePath) //nolint:wrapcheck // caller wraps with context
+		content, readErr := os.ReadFile(filePath)
+		if readErr != nil {
+			return nil, &FileReadError{
+				Code: CodeFileRead, Path: filePath, Err: readErr,
+			}
+		}
+
+		return content, nil
 	}
 
-	return nil, fmt.Errorf("read file from fs: %w", err)
+	return nil, &FileReadError{
+		Code: CodeFileRead, Path: filePath, Err: err,
+	}
 }
