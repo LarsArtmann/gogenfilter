@@ -2,31 +2,44 @@ const themeToggle = document.getElementById("theme-toggle");
 if (themeToggle) {
   const lightIcon = themeToggle.querySelector(".theme-icon-light");
   const darkIcon = themeToggle.querySelector(".theme-icon-dark");
+  const autoIcon = themeToggle.querySelector(".theme-icon-auto");
   const themeColorMetas = document.querySelectorAll('meta[name="theme-color"]');
+  const themes = ["light", "dark", "auto"];
+
+  function getStoredTheme() {
+    return localStorage.getItem("starlight-theme") || localStorage.getItem("theme") || "auto";
+  }
+
+  function resolveVisualTheme(stored) {
+    if (stored === "light" || stored === "dark") return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
 
   function applyTheme() {
-    const isLight = document.documentElement.dataset.theme === "light";
-    if (lightIcon) lightIcon.classList.toggle("hidden", !isLight);
-    if (darkIcon) darkIcon.classList.toggle("hidden", isLight);
-    themeToggle.setAttribute("aria-pressed", String(isLight));
-    const color = isLight ? "#fafaf9" : "#0c0a09";
+    const stored = getStoredTheme();
+    const visual = resolveVisualTheme(stored);
+    if (lightIcon) lightIcon.classList.toggle("hidden", stored !== "light");
+    if (darkIcon) darkIcon.classList.toggle("hidden", stored !== "dark");
+    if (autoIcon) autoIcon.classList.toggle("hidden", stored !== "auto");
+    themeToggle.setAttribute("aria-label", "Current: " + stored + " (click to cycle)");
+    const color = visual === "light" ? "#fafaf9" : "#0c0a09";
     themeColorMetas.forEach((m) => m.setAttribute("content", color));
   }
 
   applyTheme();
 
   themeToggle.addEventListener("click", () => {
-    const isLight = document.documentElement.dataset.theme !== "light";
-    document.documentElement.dataset.theme = isLight ? "light" : "dark";
-    localStorage.setItem("starlight-theme", isLight ? "light" : "dark");
+    const current = getStoredTheme();
+    const next = themes[(themes.indexOf(current) + 1) % themes.length];
+    localStorage.setItem("starlight-theme", next);
+    document.documentElement.dataset.theme = resolveVisualTheme(next);
     applyTheme();
   });
 
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    var stored = localStorage.getItem("starlight-theme") || localStorage.getItem("theme");
-    if (!stored || stored === "auto") {
-      const isLight = !e.matches;
-      document.documentElement.dataset.theme = isLight ? "light" : "dark";
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    const stored = getStoredTheme();
+    if (stored === "auto" || !stored) {
+      document.documentElement.dataset.theme = resolveVisualTheme(stored);
       applyTheme();
     }
   });

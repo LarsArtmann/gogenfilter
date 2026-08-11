@@ -16,9 +16,10 @@ import { siteConfig } from '../data/config';
       <span class="close-icon hidden"><Icon name="close" size={24} /></span>
     </button>
     <div class="nav-links flex items-center gap-7 max-sm:hidden max-sm:absolute max-sm:top-[4.5rem] max-sm:inset-x-0 max-sm:flex-col max-sm:p-6 max-sm:gap-4 max-sm:bg-bg-primary max-sm:backdrop-blur-[40px] max-sm:border-b max-sm:border-border [&.open]:max-sm:flex" id="nav-links">
-      <button id="theme-toggle" class="bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors" aria-label="Toggle light/dark mode">
-        <span class="theme-icon-light"><Icon name="sun" size={18} /></span>
-        <span class="theme-icon-dark hidden"><Icon name="moon" size={18} /></span>
+      <button id="theme-toggle" class="bg-transparent border-none text-text-muted cursor-pointer p-1 hover:text-text-primary transition-colors" aria-label="Cycle light/dark/auto theme">
+        <span class="theme-icon-light hidden"><Icon name="sun" size={18} /></span>
+        <span class="theme-icon-dark"><Icon name="moon" size={18} /></span>
+        <span class="theme-icon-auto hidden"><Icon name="monitor" size={18} /></span>
       </button>
       <a href="/getting-started/installation/" data-astro-prefetch class="text-base font-medium text-text-secondary hover:text-text-primary transition-colors duration-150">Docs</a>
       <a href="/generators/" data-astro-prefetch class="text-base font-medium text-text-secondary hover:text-text-primary transition-colors duration-150">Generators</a>
