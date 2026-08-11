@@ -124,6 +124,7 @@ func (p *gogenfilterPlugin) run(pass *analysis.Pass) (any, error) {
 
 	for _, file := range pass.Files {
 		pos := pass.Fset.Position(file.Pos())
+
 		filename := pos.Filename
 		if filename == "" {
 			continue

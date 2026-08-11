@@ -154,6 +154,7 @@ func TestBuildFilterOptions(t *testing.T) {
 		t.Parallel()
 
 		p := &gogenfilterPlugin{}
+
 		_, err := p.buildFilterOptions()
 		if err != nil {
 			t.Fatalf("buildFilterOptions() error: %v", err)
@@ -165,9 +166,13 @@ func TestBuildFilterOptions(t *testing.T) {
 
 		p := &gogenfilterPlugin{
 			settings: Settings{
-				Generators: []string{string(gogenfilter.FilterSQLC), string(gogenfilter.FilterTempl)},
+				Generators: []string{
+					string(gogenfilter.FilterSQLC),
+					string(gogenfilter.FilterTempl),
+				},
 			},
 		}
+
 		_, err := p.buildFilterOptions()
 		if err != nil {
 			t.Fatalf("buildFilterOptions() error: %v", err)

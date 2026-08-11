@@ -4,8 +4,8 @@ go 1.26.5
 
 require (
 	github.com/LarsArtmann/gogenfilter/v3 v3.5.0
-	github.com/golangci/plugin-module-register v0.1.1
-	golang.org/x/tools v0.46.0
+	github.com/golangci/plugin-module-register v0.1.2
+	golang.org/x/tools v0.48.0
 )
 
 require (
