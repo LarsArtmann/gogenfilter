@@ -1,0 +1,20 @@
+# Example .custom-gcl.yml for building a custom golangci-lint binary
+# with the gogenfilter plugin baked in.
+#
+# Usage:
+#   golangci-lint custom -v    # builds ./custom-gcl
+#   ./custom-gcl run ./...
+#
+# For local development, use a path-based plugin reference:
+#
+#   plugins:
+#     - module: 'github.com/LarsArtmann/gogenfilter/plugin'
+#       import: 'github.com/LarsArtmann/gogenfilter/plugin'
+#       path: ./plugin
+
+version: v2.4.0
+
+plugins:
+  - module: 'github.com/LarsArtmann/gogenfilter/plugin'
+    import: 'github.com/LarsArtmann/gogenfilter/plugin'
+    version: v0.1.0

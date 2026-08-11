@@ -3,6 +3,7 @@ package gogenfilter
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"strings"
 	"testing"
@@ -139,6 +140,8 @@ func TestErrorCode(t *testing.T) {
 			{CodeSQLCConfigWalk, "sqlc_config_walk"},
 			{CodeSQLCConfigCollect, "sqlc_config_collect"},
 			{CodeSQLCConfigFind, "sqlc_config_find"},
+			{CodeScanConfig, "scan_config"},
+			{CodeScanWalk, "scan_walk"},
 		}
 
 		for _, testCase := range cases {
@@ -659,4 +662,139 @@ func TestFileReadErrorFsPathError(t *testing.T) {
 	if !strings.Contains(readErr.Error(), "missing.go") {
 		t.Errorf("Error() should contain path: %q", readErr.Error())
 	}
+}
+
+func TestScanErrorMessaging(t *testing.T) {
+	t.Parallel()
+
+	t.Run("branded error message with phase and cause", func(t *testing.T) {
+		t.Parallel()
+
+		err := &ScanError{
+			Code:  CodeScanWalk,
+			Phase: "collect",
+			Err:   os.ErrPermission,
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(t, msg, "scan_walk", "", "")
+	})
+
+	t.Run("branded error message with phase without cause", func(t *testing.T) {
+		t.Parallel()
+
+		err := &ScanError{ //nolint:exhaustruct
+			Code:  CodeScanConfig,
+			Phase: "configure",
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(t, msg, "scan_config", "", "")
+	})
+
+	t.Run("branded error message without phase or cause", func(t *testing.T) {
+		t.Parallel()
+
+		err := &ScanError{ //nolint:exhaustruct
+			Code: CodeScanWalk,
+		}
+
+		msg := err.Error()
+
+		assertBrandedErrorMessage(t, msg, "scan_walk", "", "")
+	})
+}
+
+func TestScanErrorIs_Sentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &ScanError{ //nolint:exhaustruct
+		Code:  CodeScanWalk,
+		Phase: "walk",
+	}
+
+	if !errors.Is(err, ErrScanWalk) {
+		t.Error("errors.Is should match sentinel with same code")
+	}
+}
+
+func TestScanErrorIs_WrongSentinel(t *testing.T) {
+	t.Parallel()
+
+	err := &ScanError{ //nolint:exhaustruct
+		Code: CodeScanWalk,
+	}
+
+	if errors.Is(err, ErrScanConfig) {
+		t.Error("errors.Is should not match sentinel with different code")
+	}
+}
+
+func TestScanErrorIs_CrossType(t *testing.T) {
+	t.Parallel()
+
+	err := &ScanError{ //nolint:exhaustruct
+		Code: CodeScanWalk,
+	}
+
+	target := &FileReadError{ //nolint:exhaustruct
+		Code: CodeFileRead,
+	}
+
+	if errors.Is(err, target) {
+		t.Error("errors.Is should not match across different error types")
+	}
+}
+
+func TestScanError_Unwrap(t *testing.T) {
+	t.Parallel()
+
+	err := &ScanError{
+		Code:  CodeScanWalk,
+		Phase: "walk",
+		Err:   os.ErrPermission,
+	}
+
+	assertUnwrapSentinel(t, err)
+}
+
+func TestScanError_ErrorCode(t *testing.T) {
+	t.Parallel()
+
+	err := &ScanError{ //nolint:exhaustruct
+		Code:  CodeScanConfig,
+		Phase: "configure",
+	}
+
+	testErrorCodeReturnsCode(t, err, CodeScanConfig)
+}
+
+func TestScanProject_ReturnsBrandedScanError(t *testing.T) {
+	t.Parallel()
+
+	fsys := &errorFS{}
+
+	_, err := ScanProject(fsys)
+	if err == nil {
+		t.Fatal("expected error from ScanProject with failing filesystem")
+	}
+
+	scanErr := assertErrorType[*ScanError](t, err)
+
+	testErrorCodeReturnsCode(t, scanErr, CodeScanWalk)
+
+	if !errors.Is(err, ErrScanWalk) {
+		t.Error("errors.Is should match ErrScanWalk sentinel")
+	}
+
+	assertErrorHasBrandedPrefix(t, err)
+}
+
+// errorFS is a test fs.FS that always returns an error.
+type errorFS struct{}
+
+func (errorFS) Open(_ string) (fs.File, error) {
+	return nil, fs.ErrNotExist
 }

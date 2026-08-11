@@ -1,7 +1,7 @@
 # TODO List
 
 **Updated:** 2026-08-10
-**Current version:** v3.4.0
+**Current version:** v3.5.0
 **Strategic direction:** v4 — golangci-lint plugin (see [ROADMAP.md](ROADMAP.md))
 
 > Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
@@ -9,10 +9,16 @@
 
 ## v4 — golangci-lint Plugin
 
-- [ ] **Implement golangci-lint module plugin** — Create `plugin/` package implementing
-      `register.LinterPlugin` interface. Bridge gogenfilter's file-level detection to go/analysis's
-      package-level model via `pass.Files`. Provide configurable behavior (warn, auto-exclude, report).
-      _Priority: HIGH | Effort: 1-2 days_
+- [ ] **Publish plugin module** — Tag `plugin/` as `v0.1.0`. Remove the `replace` directive from
+      `plugin/go.mod` before tagging. Verify `golangci-lint custom` builds successfully with the
+      published version.
+      _Priority: HIGH | Effort: 1 hr | Needs: v3.5.0 tagged first_
+- [ ] **Add plugin CI job** — Verify `plugin/` compiles and tests pass in CI. Add a job to
+      `.github/workflows/ci.yml` that runs `cd plugin && GOWORK=off go test ./...`.
+      _Priority: HIGH | Effort: 1 hr_
+- [ ] **Integration test with real golangci-lint** — Build a custom golangci-lint binary with the
+      plugin and run it against a test project containing generated files. Verify diagnostics appear.
+      _Priority: MEDIUM | Effort: 2 hr_
 - [ ] **Design custom detector registration API** — `RegisterDetector(...)` for proprietary code
       generators. Must be thread-safe, work with the existing table-driven system, and not break
       derived lists. Part of v4 breaking-change scope.

@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **golangci-lint v2 module plugin** — New `plugin/` package implementing `register.LinterPlugin` for golangci-lint v2. Detects auto-generated Go files using gogenfilter and reports diagnostics naming the detected generator. Supports `generators` and `exclude-paths` configuration. Separate Go module (`github.com/LarsArtmann/gogenfilter/plugin`) to isolate golangci-lint dependencies from the main library. See `plugin/README.md` and ADR 004 for details.
+- **ADR 004** — Architecture decision record for the golangci-lint module plugin design.
+
+## [v3.5.0] — 2026-08-10
+
+### Added
+
 - **Config-aware sqlc detection (phase 1.5)** — `Filter` now lazily parses all reachable `sqlc.yaml`/`sqlc.yml` configs and classifies `models.go`, `db.go`, `querier.go`, `batch.go`, and `copyfrom.go` as sqlc-generated **iff** they live in a declared output directory — even without a header comment. Honors custom `output_*_file_name` config values. `query.sql.go` files remain detected everywhere via the filename suffix. The derived config is cached for the filter's lifetime via `atomic.Pointer`. Eliminates false positives on hand-written files with common names (e.g., `pkg/batch.go`) outside configured output dirs.
 - **SQLC exclusion pattern** — `ReasonSQLC.ExclusionPattern()` now returns `\.sql\.go$` (was `false`). `ScanProject` derives a fixed regex exclusion for sqlc files instead of falling back to directory-based patterns.
 - **Header-only content scanning** — Content-based detection (`headerContent`) now searches only the header (content before the `package` clause), per the Go generated-code spec. Prevents false positives from markers appearing in imports, string literals, or code after the package clause.
@@ -17,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`BenchmarkFilterDetailedAndContent`** — Dedicated benchmark measuring all three FilterDetailedAndContent paths (filename match, content match, not-filtered).
 - **`api/filter.mdx`** — Website API reference page for Filter type methods, with method-selection table and code examples.
 - **ADR 003: FilterDetailedAndContent** — Architecture decision record documenting the lazy-read-with-content-return design.
+- **`ScanError` branded error type** — All `ScanProject` failures now return `*ScanError` (codes `scan_config`, `scan_walk`, sentinels `ErrScanConfig`/`ErrScanWalk`) instead of raw `fmt.Errorf`. The top-level error from `ScanProject` is always branded with `[gogenfilter:...]` prefix and supports `errors.Is`/`errors.AsType`.
 - **`CODE_OF_CONDUCT.md`** — Contributor Covenant v2.0 community health file.
 - **Pre-release checklist in `RELEASING.md`** — Comprehensive checklist (CI green, nix flake check, lint, test, docs fresh, CHANGELOG complete, website builds) with BuildFlow auto-commit interaction note.
 
@@ -369,7 +377,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-[Unreleased]: https://github.com/LarsArtmann/gogenfilter/compare/v3.4.0...HEAD
+[Unreleased]: https://github.com/LarsArtmann/gogenfilter/compare/v3.5.0...HEAD
+[v3.5.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.4.0...v3.5.0
 [v3.4.0]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.3...v3.4.0
 [v3.3.3]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.2...v3.3.3
 [v3.3.2]: https://github.com/LarsArtmann/gogenfilter/compare/v3.3.1...v3.3.2

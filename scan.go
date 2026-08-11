@@ -46,6 +46,14 @@ func (e Exclusion) String() string {
 	return e.Pattern + " # " + e.Reason
 }
 
+// Scan phase identifiers used in ScanError.Phase for diagnostic reporting.
+const (
+	scanPhaseConfigure    = "configure"
+	scanPhaseCreateFilter = "create_filter"
+	scanPhaseCollect      = "collect"
+	scanPhaseWalk         = "walk"
+)
+
 // Generator exclusion pattern literals. Extracted to constants so the same
 // pattern is reused for the lookup table and the reason string.
 const (
@@ -96,7 +104,7 @@ func ScanProject(fsys fs.FS, configs ...FilterConfig) (*ScanResult, error) {
 	if len(configs) == 0 {
 		opts, err := WithFilterOptions(FilterAll)
 		if err != nil {
-			return nil, fmt.Errorf("configure default options: %w", err)
+			return nil, &ScanError{Code: CodeScanConfig, Phase: scanPhaseConfigure, Err: err}
 		}
 
 		configs = []FilterConfig{opts}
@@ -106,12 +114,12 @@ func ScanProject(fsys fs.FS, configs ...FilterConfig) (*ScanResult, error) {
 
 	filter, err := NewFilter(configs...)
 	if err != nil {
-		return nil, fmt.Errorf("create filter: %w", err)
+		return nil, &ScanError{Code: CodeScanConfig, Phase: scanPhaseCreateFilter, Err: err}
 	}
 
 	goFiles, err := collectGoFiles(fsys)
 	if err != nil {
-		return nil, fmt.Errorf("collect Go files: %w", err)
+		return nil, &ScanError{Code: CodeScanWalk, Phase: scanPhaseCollect, Err: err}
 	}
 
 	byGenerator := make(map[string][]string)
@@ -180,7 +188,7 @@ func collectGoFiles(fsys fs.FS) ([]string, error) {
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("walk filesystem: %w", err)
+		return nil, &ScanError{Code: CodeScanWalk, Phase: scanPhaseWalk, Err: err}
 	}
 
 	return goFiles, nil

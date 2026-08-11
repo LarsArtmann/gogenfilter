@@ -1,7 +1,7 @@
 # Roadmap
 
 **Updated:** 2026-08-10
-**Current version:** v3.4.0
+**Current version:** v3.5.0
 **Strategic direction:** v4 — golangci-lint plugin
 
 ## v3 — Complete & Stable

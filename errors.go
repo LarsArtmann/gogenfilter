@@ -41,6 +41,8 @@ const (
 	CodeSQLCConfigWalk         ErrorCode = "sqlc_config_walk"          // directory walk for sqlc configs failed
 	CodeSQLCConfigCollect      ErrorCode = "sqlc_config_collect"       // collecting output dirs from sqlc configs failed
 	CodeSQLCConfigFind         ErrorCode = "sqlc_config_find"          // finding sqlc config files failed
+	CodeScanConfig             ErrorCode = "scan_config"               // scan filter configuration failed
+	CodeScanWalk               ErrorCode = "scan_walk"                 // filesystem walk during scan failed
 )
 
 // ErrorCoder is implemented by all gogenfilter errors for programmatic code access.
@@ -79,6 +81,12 @@ var (
 
 	// ErrSQLCConfigFind is returned when finding sqlc config files fails.
 	ErrSQLCConfigFind = &SQLCConfigError{Code: CodeSQLCConfigFind}
+
+	// ErrScanConfig is returned when scan filter configuration fails.
+	ErrScanConfig = &ScanError{Code: CodeScanConfig}
+
+	// ErrScanWalk is returned when the filesystem walk during scanning fails.
+	ErrScanWalk = &ScanError{Code: CodeScanWalk}
 )
 
 // ProjectRootError is returned when the project root cannot be found.
@@ -229,6 +237,39 @@ func (e *SQLCConfigError) Is(target error) bool {
 
 // ErrorCode returns the error code for programmatic matching.
 func (e *SQLCConfigError) ErrorCode() ErrorCode { return e.Code }
+
+// ScanError is returned when scanning a project for generated files fails.
+type ScanError struct {
+	Code  ErrorCode // classifies the failure (e.g., CodeScanConfig, CodeScanWalk)
+	Phase string    // what scan phase failed (e.g., "configure", "walk", "collect")
+	Err   error     // underlying error
+}
+
+func (e *ScanError) Error() string {
+	if e.Phase != "" && e.Err != nil {
+		return fmt.Sprintf(errorPrefixFmt+"scan %s failed: %v", e.Code, e.Phase, e.Err)
+	}
+
+	if e.Phase != "" {
+		return fmt.Sprintf(errorPrefixFmt+"scan %s failed", e.Code, e.Phase)
+	}
+
+	if e.Err != nil {
+		return fmt.Sprintf(errorPrefixFmt+"scan failed: %v", e.Code, e.Err)
+	}
+
+	return fmt.Sprintf(errorPrefixFmt+"scan failed", e.Code)
+}
+
+func (e *ScanError) Unwrap() error { return e.Err }
+
+// Is supports errors.Is by comparing error codes with sentinel errors.
+func (e *ScanError) Is(target error) bool {
+	return errorCodeMatches(e.Code, target)
+}
+
+// ErrorCode returns the error code for programmatic matching.
+func (e *ScanError) ErrorCode() ErrorCode { return e.Code }
 
 func errorCodeMatches(code ErrorCode, target error) bool {
 	targetError, ok := target.(ErrorCoder)

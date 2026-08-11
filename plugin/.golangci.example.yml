@@ -1,0 +1,35 @@
+# Example .golangci.yml configuration for the gogenfilter plugin.
+#
+# After building the custom binary (`golangci-lint custom -v`),
+# use this configuration to enable and configure the linter.
+
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - gogenfilter
+  settings:
+    custom:
+      gogenfilter:
+        type: module
+        description: "Detect auto-generated Go files (sqlc, templ, protobuf, mockgen, etc.)"
+        original-url: github.com/LarsArtmann/gogenfilter/plugin
+        settings:
+          # Restrict detection to specific generators (default: all)
+          # generators:
+          #   - sqlc
+          #   - templ
+
+          # Exclude paths from detection (glob patterns)
+          # exclude-paths:
+          #   - vendor/**
+          #   - "**/testdata/**"
+
+issues:
+  # Suppress gogenfilter diagnostics for files you've already excluded
+  # in other linters, or use this to acknowledge known generated files.
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gogenfilter

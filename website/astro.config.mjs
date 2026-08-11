@@ -79,6 +79,7 @@ export default defineConfig({
         {
           label: "API Reference",
           items: [
+            { label: "Filter", slug: "api/filter" },
             { label: "Detection", slug: "api/detection" },
             {
               label: "Full API on pkg.go.dev",
