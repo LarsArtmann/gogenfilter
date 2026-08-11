@@ -37,7 +37,7 @@
   color-scheme: dark;
 }
 
-:root.light {
+:root[data-theme="light"] {
   color-scheme: light;
   --color-bg-primary: #fafaf9;
   --color-bg-raised: #f3f2f0;

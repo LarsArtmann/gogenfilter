@@ -61,10 +61,16 @@
 
 ## Documentation
 
-- [ ] **Investigate unifying theme systems** — Landing page uses `.light` class on `<html>`;
-      Starlight docs use `data-theme` attribute (documented as accepted trade-off in AGENTS.md).
-      Revisit whether a unified theme system is worth the migration cost.
-      _Priority: LOW | Effort: Research | Status: Accepted trade-off, revisit if pain grows_
-- [ ] **Audit npm overrides** (`website/package.json`) — `brace-expansion`, `devalue`, `vite`,
-      `yaml` overrides were added for Dependabot alerts. Re-evaluate whether each is still needed
-      when bumping Astro/Starlight. _Priority: LOW | Effort: 10 min_
+- [x] **Unify theme systems** — Landing page now uses `data-theme` attribute on `<html>` (matching
+      Starlight's convention) instead of the `.light` class. Both landing page and docs pages share
+      the `localStorage["starlight-theme"]` key, so theme preference persists across navigation.
+      Backward-compatible: old `localStorage["theme"]` key is read as fallback. Changed: `global.css`
+      (`:root.light` → `:root[data-theme="light"]`), `theme-init.js`, `header.js`.
+      _Priority: LOW | Effort: 30 min | Status: DONE (needs `npm run build` verification before deploy)_
+- [x] **Audit npm overrides** (`website/package.json`) — Audited all 4 overrides against the
+      dependency tree. **`brace-expansion`**: zero references in lockfile — completely dead, safe to
+      remove. **`devalue`**: only `astro@^5.8.1` requires it; range already guarantees >=5.8.1, exact
+      pin blocks patches. **`vite`**: `astro@^8.0.13` forces vite 8; pin only blocks patches.
+      **`yaml`**: `yaml-language-server` pins 2.8.3 exact + `@astrojs/yaml2ts@^2.8.3` — already safe.
+      All 4 are redundant. Action: remove all overrides + run `npm install` to regenerate lockfile
+      (cannot do in current env — no npm). _Priority: LOW | Effort: 10 min | Status: AUDITED_

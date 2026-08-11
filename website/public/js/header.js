@@ -5,7 +5,7 @@ if (themeToggle) {
   const themeColorMetas = document.querySelectorAll('meta[name="theme-color"]');
 
   function applyTheme() {
-    const isLight = document.documentElement.classList.contains("light");
+    const isLight = document.documentElement.dataset.theme === "light";
     if (lightIcon) lightIcon.classList.toggle("hidden", !isLight);
     if (darkIcon) darkIcon.classList.toggle("hidden", isLight);
     themeToggle.setAttribute("aria-pressed", String(isLight));
@@ -16,15 +16,17 @@ if (themeToggle) {
   applyTheme();
 
   themeToggle.addEventListener("click", () => {
-    const isLight = document.documentElement.classList.toggle("light");
-    localStorage.setItem("theme", isLight ? "light" : "dark");
+    const isLight = document.documentElement.dataset.theme !== "light";
+    document.documentElement.dataset.theme = isLight ? "light" : "dark";
+    localStorage.setItem("starlight-theme", isLight ? "light" : "dark");
     applyTheme();
   });
 
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    if (!localStorage.getItem("theme")) {
+    var stored = localStorage.getItem("starlight-theme") || localStorage.getItem("theme");
+    if (!stored || stored === "auto") {
       const isLight = !e.matches;
-      document.documentElement.classList.toggle("light", isLight);
+      document.documentElement.dataset.theme = isLight ? "light" : "dark";
       applyTheme();
     }
   });
