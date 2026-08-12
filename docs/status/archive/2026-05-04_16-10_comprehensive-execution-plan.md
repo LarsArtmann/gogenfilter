@@ -33,7 +33,7 @@
 | **Lighthouse audit**                 | CI config exists, run it to get actual scores    | 10min  |
 | **Firebase CSP header**              | Security posture                                 | 10min  |
 | **Add `pkg.go.dev` badge to README** | Discoverability for Go users                     | 5min   |
-| **npm + Go security audit**          | Verify no known vulnerabilities                  | 10min  |
+| **pnpm + Go security audit**          | Verify no known vulnerabilities                  | 10min  |
 
 ---
 
@@ -51,7 +51,7 @@ Sorted by importance/impact/effort/customer-value.
 | A6  | Run Lighthouse audit, fix top 3 issues                                  | Perf/A11y       | HIGH   | 60min  | Real performance data         |
 | A7  | Firebase CSP header                                                     | Security        | MEDIUM | 15min  | Prevents XSS                  |
 | A8  | Add `pkg.go.dev` badge + Go module docs link to README                  | Discoverability | HIGH   | 15min  | Users find the library        |
-| A9  | npm security audit (`npm audit`)                                        | Security        | MEDIUM | 15min  | Known vulnerability status    |
+| A9  | pnpm security audit (`pnpm audit`)                                        | Security        | MEDIUM | 15min  | Known vulnerability status    |
 | A10 | Go security audit (`govulncheck ./...`)                                 | Security        | MEDIUM | 15min  | Known vulnerability status    |
 | A11 | Add skip-to-content link for a11y                                       | A11y            | MEDIUM | 15min  | Keyboard/screen reader users  |
 | A12 | Keyboard navigation verification + fix                                  | A11y            | MEDIUM | 30min  | WCAG compliance               |
@@ -89,7 +89,7 @@ Sorted by importance/impact/effort/customer-value.
 | 6   | Delete all 6 files in `docs/planning/`                                       | A1     | 2min   | —          |
 | 7   | Verify no files reference deleted paths (grep for status/planning filenames) | A1     | 5min   | 1–6        |
 | 8   | Run `go test -race ./...` to confirm nothing broke                           | A1     | 2min   | 1–7        |
-| 9   | Run `npm run build` to confirm website still builds                          | A1     | 2min   | 1–7        |
+| 9   | Run `pnpm run build` to confirm website still builds                          | A1     | 2min   | 1–7        |
 | 10  | Run `golangci-lint run` to confirm lint clean                                | A1     | 2min   | —          |
 | 11  | Bump CI coverage threshold from 95% to 98% in `.github/workflows/ci.yml`     | A3     | 2min   | —          |
 | 12  | Verify CI threshold change doesn't break (coverage is 99.6%)                 | A3     | 3min   | 11         |
@@ -107,7 +107,7 @@ Sorted by importance/impact/effort/customer-value.
 | 19  | Remove items from "Resolved" that were listed as "Not Started"                       | A2     | 5min   | 14         |
 | 20  | Update project tags: v0.1.0, v0.2.0, v2.1.0, v3.0.0                                  | A2     | 1min   | 14         |
 | 21  | Verify consolidated report accuracy against actual code                              | A2     | 10min  | 14–20      |
-| 22  | Run `npm run build` to confirm status page renders                                   | A2     | 2min   | 21         |
+| 22  | Run `pnpm run build` to confirm status page renders                                   | A2     | 2min   | 21         |
 
 ### B3: Security (Tasks 23–32)
 
@@ -117,8 +117,8 @@ Sorted by importance/impact/effort/customer-value.
 | 24  | Verify CSP doesn't break site (check Plausible, fonts, inline scripts)    | A7     | 5min   | 23         |
 | 25  | Run `govulncheck ./...` on Go library                                     | A10    | 5min   | —          |
 | 26  | Fix any vulnerabilities found by govulncheck                              | A10    | 10min  | 25         |
-| 27  | Run `npm audit` in website directory                                      | A9     | 5min   | —          |
-| 28  | Fix or acknowledge npm vulnerabilities (jscpd transitive deps)            | A9     | 10min  | 27         |
+| 27  | Run `pnpm audit` in website directory                                      | A9     | 5min   | —          |
+| 28  | Fix or acknowledge pnpm vulnerabilities (jscpd transitive deps)            | A9     | 10min  | 27         |
 | 29  | Add GitHub branch protection: require PR reviews, no force push to master | A26    | 5min   | —          |
 | 30  | Add GitHub branch protection: require CI status checks                    | A26    | 5min   | 29         |
 | 31  | Add GitHub branch protection: require up-to-date branch                   | A26    | 3min   | 29         |
@@ -132,7 +132,7 @@ Sorted by importance/impact/effort/customer-value.
 | 34  | Add Go Reference link to website docs sidebar                     | A8     | 5min   | —          |
 | 35  | Verify CHANGELOG.md is up to date with v3.0.0                     | A2     | 5min   | —          |
 | 36  | Tighten Icon.astro Props: `name` to `IconName` union type         | A14    | 10min  | —          |
-| 37  | Run `npx astro check` to verify type changes                      | A14    | 3min   | 36         |
+| 37  | Run `pnpm dlx astro check` to verify type changes                      | A14    | 3min   | 36         |
 | 38  | Create custom Starlight 404 page content                          | A13    | 15min  | —          |
 | 39  | Verify 404 page renders correctly                                 | A13    | 5min   | 38         |
 | 40  | Add web app manifest (`manifest.json`)                            | A25    | 10min  | —          |
@@ -156,7 +156,7 @@ Sorted by importance/impact/effort/customer-value.
 
 | #   | Task                                                              | Parent | Effort | Depends On |
 | --- | ----------------------------------------------------------------- | ------ | ------ | ---------- |
-| 51  | Start local dev server (`npm run preview`)                        | A5     | 2min   | —          |
+| 51  | Start local dev server (`pnpm run preview`)                        | A5     | 2min   | —          |
 | 52  | Visual QA: desktop Chrome — check all sections, animations, links | A5     | 10min  | 51         |
 | 53  | Visual QA: mobile viewport (375px iPhone) — nav, grid, spacing    | A5     | 10min  | 51         |
 | 54  | Visual QA: dark/light mode toggle works                           | A5     | 5min   | 51         |
@@ -237,7 +237,7 @@ graph TD
     subgraph "Phase 2: Security"
         B1[Add CSP header]
         B2[Run govulncheck]
-        B3[Run npm audit]
+        B3[Run pnpm audit]
         B4[Branch protection]
     end
 
@@ -301,8 +301,8 @@ graph TD
 | `go test -race ./...` | ✅ PASS (99.6% coverage)              |
 | `golangci-lint run`   | ✅ 0 issues                           |
 | `go vet ./...`        | ✅ CLEAN                              |
-| `npm run build`       | ✅ 19 pages, 2.70s                    |
-| `npx astro check`     | ✅ 0 errors, 0 warnings, 0 hints      |
+| `pnpm run build`       | ✅ 19 pages, 2.70s                    |
+| `pnpm dlx astro check`     | ✅ 0 errors, 0 warnings, 0 hints      |
 | Git working tree      | ✅ CLEAN                              |
 | Git tags              | v0.1.0, v0.2.0, v2.1.0, v3.0.0        |
 | CI workflows          | 4: ci, website, benchmark, lighthouse |

@@ -20,7 +20,7 @@ Running `jscpd "src/**/*.astro"` should detect and analyze Astro files for code 
 jscpd ignores `.astro` files entirely, even when passed directly as paths:
 
 ```
-$ npx jscpd "src/**/*.astro" --reporters console
+$ pnpm dlx jscpd "src/**/*.astro" --reporters console
 Clones: 0
 ```
 
@@ -37,7 +37,7 @@ find src -name "*.astro" | while read -r f; do
   mkdir -p "$WORKDIR/$dir"
   cp "$f" "$WORKDIR/$dir/${base}.html"
 done
-npx jscpd "$WORKDIR/src/" ...
+pnpm dlx jscpd "$WORKDIR/src/" ...
 ```
 
 ### Root Cause
@@ -74,7 +74,7 @@ Option C: Add a `--language` / `--format` override that forces files with specif
 
 ```
 node: v22.x
-npm: 10.x
+pnpm: 10.x
 jscpd: 4.0.9
 astro: 6.2.1
 @astrojs/starlight: 0.38.4

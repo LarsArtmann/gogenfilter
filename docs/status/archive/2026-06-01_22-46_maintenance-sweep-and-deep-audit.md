@@ -141,7 +141,7 @@ Same as previous report — 7 source files, 99.8% coverage, 160 tests, race dete
 | Update DOMAIN_LANGUAGE.md           | MEDIUM   | 30 min  | Add 9 missing exported symbols                                   |
 | Extract `SQLCOperation` type        | MEDIUM   | 15 min  | Type the magic strings in `sqlc.go` error construction           |
 | Cache `IsValid()` lookup            | LOW      | 10 min  | Package-level `validOptions` map instead of per-call allocation  |
-| Resolve 4 npm Dependabot alerts     | LOW      | 10 min  | `npm audit fix` or overrides in `package.json`                   |
+| Resolve 4 pnpm Dependabot alerts     | LOW      | 10 min  | `pnpm audit fix` or overrides in `package.json`                   |
 | Lighthouse accessibility fixes      | MEDIUM   | 1-2 hrs | color-contrast and label issues on root page                     |
 | Website performance audit           | MEDIUM   | 1 hr    | Establish Lighthouse baselines                                   |
 | Test dependents page with real data | LOW      | 30 min  | Verify table renders when GitHub returns results                 |
@@ -155,7 +155,7 @@ Nothing is broken. The core library is pristine.
 **Annoyances remaining:**
 
 - Lighthouse CI still dead weight (but now documented)
-- 4 npm Dependabot alerts — noise, no production impact
+- 4 pnpm Dependabot alerts — noise, no production impact
 - `SQLCConfigError.Operation` uses untyped magic strings
 - `IsValid()` allocates on every call (library hot path)
 - 9 exported symbols missing from DOMAIN_LANGUAGE.md
@@ -173,7 +173,7 @@ Nothing is broken. The core library is pristine.
 
 ### Short-term (this week)
 
-5. **Resolve npm Dependabot alerts** — `npm audit fix` or overrides
+5. **Resolve pnpm Dependabot alerts** — `pnpm audit fix` or overrides
 6. **Lighthouse accessibility fixes** — Fix color-contrast and label issues
 7. **Website performance audit** — Establish baselines
 8. **Test dependents page with real data** — Verify rendering
@@ -196,7 +196,7 @@ Nothing is broken. The core library is pristine.
 | 2   | Extract `SQLCOperation` typed constants              | Medium | 15 min | Stronger types, prevent typos            |
 | 3   | Cache `IsValid()` lookups                            | Low    | 10 min | Library hot path optimization            |
 | 4   | Update DOMAIN_LANGUAGE.md (9 missing exports)        | Medium | 30 min | Documentation completeness               |
-| 5   | Resolve npm Dependabot alerts                        | Low    | 10 min | Reduce alert noise                       |
+| 5   | Resolve pnpm Dependabot alerts                        | Low    | 10 min | Reduce alert noise                       |
 
 ### Tier 2: Short-term (this week)
 

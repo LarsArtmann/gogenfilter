@@ -56,7 +56,7 @@ The metrics system has been killed. 989 lines deleted in one commit. The API is 
 ### CI/CD Pipeline
 
 - **4 GitHub Actions workflows** — Go CI, Benchmark, Website, Lighthouse
-- **Dependabot** — weekly updates (Go, npm, Actions)
+- **Dependabot** — weekly updates (Go, pnpm, Actions)
 
 ### Website
 

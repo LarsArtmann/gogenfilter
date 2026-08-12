@@ -46,7 +46,7 @@
 
 2. **CI workflow not tested end-to-end** — The new `website.yml` uses Nix but hasn't been pushed/triggered. The Nix approach works locally but CI environment (Ubuntu) may have different behavior.
 
-3. **Root flake `website-build` app** — Created but untested (requires `npm ci` which needs `package-lock.json`).
+3. **Root flake `website-build` app** — Created but untested (requires `pnpm install --frozen-lockfile` which needs `package-lock.json`).
 
 ---
 
@@ -94,8 +94,8 @@ Nothing. All changes are verified and working. No broken state.
 | 11  | Pin Nixpkgs via `flake.lock` and set up Dependabot for Nix inputs                               | MEDIUM   |
 | 12  | Add a `nix develop` section to the Contributing docs                                            | MEDIUM   |
 | 13  | Consider `treefmt-nix` for formatting (Go + Nix + Markdown)                                     | MEDIUM   |
-| 14  | Add a root-level `just`/flake task to run `npm run dedup` in website                            | MEDIUM   |
-| 15  | Review `contributing.mdx` — mentions `npm run validate:docs` but should mention Nix path        | MEDIUM   |
+| 14  | Add a root-level `just`/flake task to run `pnpm run dedup` in website                            | MEDIUM   |
+| 15  | Review `contributing.mdx` — mentions `pnpm run validate:docs` but should mention Nix path        | MEDIUM   |
 | 16  | Update `related-tools.mdx` with correct GitHub URLs (case: `LarsArtmann` vs `larsartmann`)      | MEDIUM   |
 | 17  | Verify all doc code examples compile (md-go-validator catches syntax, but not semantic errors)  | MEDIUM   |
 | 18  | Consider adding `md-go-validator` as a `flake-checks` target (run in `nix flake check`)         | LOW      |

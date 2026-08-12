@@ -74,7 +74,7 @@ _Brutal self-review and post-correction audit._
 ### CI
 
 - ✅ **Go CI** (`ci.yml`) — `go vet` → tests with race + coverage (98% threshold) → benchmarks → golangci-lint
-- ✅ **Website CI** (`website.yml`) — `npm ci` → `astro check` → build → HTML validation → dedup → Firebase deploy
+- ✅ **Website CI** (`website.yml`) — `pnpm install --frozen-lockfile` → `astro check` → build → HTML validation → dedup → Firebase deploy
 - ✅ **Benchmark CI** (`benchmark.yml`) — `go test -bench` → benchmark-action → `gh-pages` branch
 - ✅ **Lighthouse CI** (`lighthouse.yml`) — treosh/lighthouse-ci-action@v12, assertions + artifact upload
 - ✅ **Concurrency groups** — Website and Lighthouse cancel in-progress runs

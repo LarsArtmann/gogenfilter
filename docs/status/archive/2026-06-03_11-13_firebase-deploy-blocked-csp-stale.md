@@ -92,7 +92,7 @@ The gogenfilter Go library is **production-ready and stable** (99.8% coverage, 0
 | `flake.nix` (root)       | ✅ Go 1.26.3 dev environment                                            |
 | `flake.nix` (website)    | ✅ Node 24 dev environment                                              |
 | `.buildflow.yml`         | ✅ Project-specific excludes configured                                 |
-| `.github/dependabot.yml` | ✅ Weekly: Go modules, npm, GitHub Actions                              |
+| `.github/dependabot.yml` | ✅ Weekly: Go modules, pnpm, GitHub Actions                              |
 | Dependabot overrides     | ✅ `brace-expansion@5.0.6`, `devalue@5.8.1`, `yaml@2.8.3`, `vite@7.3.2` |
 
 ---
@@ -101,7 +101,7 @@ The gogenfilter Go library is **production-ready and stable** (99.8% coverage, 0
 
 ### Firebase Deploy — Blocked Since 2026-06-02
 
-- **Build pipeline**: ✅ Works perfectly — `npm run build` runs `astro build && node scripts/fix-csp.mjs`
+- **Build pipeline**: ✅ Works perfectly — `pnpm run build` runs `astro build && node scripts/fix-csp.mjs`
 - **Deploy pipeline**: ❌ `Failed to authenticate, have you run firebase login?`
 - **Root cause**: `GOOGLE_APPLICATION_CREDENTIALS` service account key expired
 - **Impact**: Last 6 commits (all CSP fixes) never deployed. Live site has broken CSP.

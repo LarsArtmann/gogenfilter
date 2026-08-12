@@ -44,7 +44,7 @@
 
 - `flake.nix` — fileset-based src, govulncheck in devShell, treefmt
 - `website/flake.nix` — Node.js environment
-- Dependabot — weekly updates (Go, npm, GitHub Actions)
+- Dependabot — weekly updates (Go, pnpm, GitHub Actions)
 - Code of Conduct added
 
 ### Documentation
@@ -62,7 +62,7 @@
 | ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Lighthouse CI          | Config only | `LHCI_GITHUB_APP_TOKEN` secret not set → GitHub status checks skipped. Accessibility assertions still fail on live site (`color-contrast`, `label-content-name-mismatch`). |
 | Lint (`golangci-lint`) | 1 issue     | `goconst` flagging a 3x-repeated SQLC codegen string literal in `example_test.go:200`. Non-blocking but should be fixed.                                                   |
-| Dependabot alerts      | 1 open      | `devalue` npm package (Svelte transitive dep) — high severity DoS via sparse array. Override exists at 5.8.1 but alert may persist.                                        |
+| Dependabot alerts      | 1 open      | `devalue` pnpm package (Svelte transitive dep) — high severity DoS via sparse array. Override exists at 5.8.1 but alert may persist.                                        |
 
 ---
 
@@ -87,7 +87,7 @@
 | **`goconst` lint failure**    | LOW         | `example_test.go:200` — SQLC codegen comment string repeated 3x. One-liner fix: extract to constant or use `//nolint:goconst`.                   |
 | **Dependabot devalue alert**  | LOW         | Svelte `devalue` transitive dep. Override pinned at 5.8.1 in `package.json`. Alert may be stale or on a different dep path.                      |
 | **Lighthouse CI token**       | MEDIUM      | Without `LHCI_GITHUB_APP_TOKEN`, the entire Lighthouse workflow is a no-op. Nobody has configured the GitHub App.                                |
-| **Website `npm` not in PATH** | OPERATIONAL | Local nix dev environment doesn't expose `npm` globally — must use `nix develop` or `nix run .#website-dev`. Not a bug, just an env setup issue. |
+| **Website `pnpm` not in PATH** | OPERATIONAL | Local nix dev environment doesn't expose `pnpm` globally — must use `nix develop` or `nix run .#website-dev`. Not a bug, just an env setup issue. |
 | **5 days since last commit**  | OBSERVATION | No activity since 2026-05-27. Project appears stable but dormant.                                                                                |
 
 ---
@@ -110,7 +110,7 @@
 
 ### Low Impact / Polish
 
-9. **`art-dupl` in CI** — Uses `npm install` override for broken v4 `formats-exts`. Could pin a fixed version or contribute upstream.
+9. **`art-dupl` in CI** — Uses `pnpm install` override for broken v4 `formats-exts`. Could pin a fixed version or contribute upstream.
 10. **Website `og/[...slug].ts`** — OG image endpoint exists but may not work without Svelte runtime.
 11. **Release automation** — Tag-based release workflow exists but version bumping is manual.
 
@@ -187,7 +187,7 @@ This fundamentally changes the priority of everything above. If "done," tasks 1-
 | Benchmarks        | All pass                 | GREEN     |
 | `go vet`          | Clean                    | GREEN     |
 | `golangci-lint`   | 1 issue (`goconst`)      | YELLOW    |
-| Dependabot alerts | 1 open (npm transitive)  | LOW RISK  |
+| Dependabot alerts | 1 open (pnpm transitive)  | LOW RISK  |
 | Open issues       | 0                        | —         |
 | Open PRs          | 0                        | —         |
 | Last commit       | 5 days ago               | STABLE    |

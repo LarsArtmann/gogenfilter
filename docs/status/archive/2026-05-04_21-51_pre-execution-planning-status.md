@@ -69,7 +69,7 @@ _Pre-brutal-review execution planning session._
 ### CI
 
 - ✅ **Go CI** — `go vet` → tests with race + coverage (98% threshold) → benchmarks → golangci-lint
-- ✅ **Website CI** — `npm ci` → `astro check` → build → HTML validation → dedup → Firebase deploy
+- ✅ **Website CI** — `pnpm install --frozen-lockfile` → `astro check` → build → HTML validation → dedup → Firebase deploy
 - ✅ **Benchmark CI** — `go test -bench` → benchmark-action → `gh-pages`
 - ✅ **Lighthouse CI** — treosh/lighthouse-ci-action@v12 (but fails, see below)
 

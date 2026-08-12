@@ -43,7 +43,7 @@ Confirmed via Python hash computation: the Newsletter `<script>` body produces `
 
 ### 8. P2: Wired `GITHUB_TOKEN` into website CI + improved 401 handling
 
-- `.github/workflows/website.yml`: The `npm run build` step now passes `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` (auto-available in all GitHub Actions runs — no secret configuration needed). The dependents page will now make authenticated GitHub API calls during CI builds, getting 30 req/min instead of 10 req/min unauthenticated.
+- `.github/workflows/website.yml`: The `pnpm run build` step now passes `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` (auto-available in all GitHub Actions runs — no secret configuration needed). The dependents page will now make authenticated GitHub API calls during CI builds, getting 30 req/min instead of 10 req/min unauthenticated.
 - `website/src/pages/dependents.astro`: Added 401 to the rate-limit handling branch (was only catching 403). Unauthenticated builds now degrade gracefully with a clear console error.
 
 ### 9. P2: Added gendocs end-to-end integration test
@@ -261,7 +261,7 @@ A reviewer looking at `git log` sees 9 generic commits with no clear narrative. 
 | --- | -------- | ---------------------------------------------------------------------- | ------------ |
 | 22  | P2       | **Resolve `art-dupl` v0.3.0 upstream breakage** (pinned to v0.1.0)     | Dependencies |
 | 23  | P3       | **Prune orphaned GCP service account keys** — needs gcloud auth        | Security     |
-| 24  | P3       | **Audit npm overrides** (`brace-expansion`, `devalue`, `vite`, `yaml`) | Dependencies |
+| 24  | P3       | **Audit pnpm overrides** (`brace-expansion`, `devalue`, `vite`, `yaml`) | Dependencies |
 | 25  | P3       | **Migrate to Go 1.27** (drops GOEXPERIMENT=jsonv2)                     | Dependencies |
 
 ### Documentation
@@ -279,7 +279,7 @@ A reviewer looking at `git log` sees 9 generic commits with no clear narrative. 
 | #   | Priority | Task                                                             | Area         |
 | --- | -------- | ---------------------------------------------------------------- | ------------ |
 | 31  | P2       | **Add tests for `LandingLayout.astro` SEO meta tags**            | Testing      |
-| 32  | P3       | **Add NixOS-compatible jscpd wrapper** for `npm run dedup`       | DX           |
+| 32  | P3       | **Add NixOS-compatible jscpd wrapper** for `pnpm run dedup`       | DX           |
 | 33  | P3       | **Consider extracting website design tokens** to a separate file | Code quality |
 | 34  | P3       | **Add `ExclusionPaths` test coverage**                           | Testing      |
 

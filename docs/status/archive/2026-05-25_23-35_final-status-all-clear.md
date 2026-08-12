@@ -47,7 +47,7 @@
 
 ### Session 3 — Dependabot PR Resolution (6 commits, 9 PRs closed)
 
-- Merged 5 npm Dependabot PRs (#6 fast-uri, #7 html-validate, #8 tailwindcss, #9 astro, #10 starlight)
+- Merged 5 pnpm Dependabot PRs (#6 fast-uri, #7 html-validate, #8 tailwindcss, #9 astro, #10 starlight)
 - Updated release.yml to match all other workflows (checkout v6, setup-go v6, golangci-lint v9, gh-release v3)
 - Closed 4 superseded CI action PRs (#11, #12, #14, #16)
 - Dependabot alerts reduced from 4 → 1
@@ -69,9 +69,9 @@
 
 | Alert | Severity | Package         | Patched | Status                                          |
 | ----- | -------- | --------------- | ------- | ----------------------------------------------- |
-| #3    | high     | `devalue` (npm) | 5.8.1   | OPEN — transitive dep of Astro/Svelte, at 5.8.0 |
+| #3    | high     | `devalue` (pnpm) | 5.8.1   | OPEN — transitive dep of Astro/Svelte, at 5.8.0 |
 
-This is an Astro transitive dependency. Cannot fix without local `npm` (not in Nix PATH). Dependabot should auto-create a PR on next Monday run. Alternatively: `cd website && npm update devalue`.
+This is an Astro transitive dependency. Cannot fix without local `pnpm` (not in Nix PATH). Dependabot should auto-create a PR on next Monday run. Alternatively: `cd website && pnpm update devalue`.
 
 ### Lighthouse CI
 
@@ -87,7 +87,7 @@ This is an Astro transitive dependency. Cannot fix without local `npm` (not in N
 
 1. Fix Lighthouse accessibility failures (color-contrast on root page)
 2. Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret
-3. Fix `devalue` 5.8.0 → 5.8.1 (needs npm or next Dependabot run)
+3. Fix `devalue` 5.8.0 → 5.8.1 (needs pnpm or next Dependabot run)
 4. Add Node.js to Nix devShell for local website dev
 5. Add broken link checker to Website CI
 6. Automate CHANGELOG derivation (CI check exists, not automation)
@@ -130,7 +130,7 @@ All 4 GitHub Actions in `release.yml` were outdated (checkout v4, setup-go v5, g
 
 ### Medium Impact
 
-4. **Add Node.js to Nix devShell** — Enables local website build/preview and npm dependency management
+4. **Add Node.js to Nix devShell** — Enables local website build/preview and pnpm dependency management
 5. **Automate CHANGELOG derivation** — CI check catches drift but doesn't prevent it
 6. **Add broken link checker** — Catch 404s before deploy
 7. **Pin all CI action versions consistently** — Consider a shared workflow or reusable config
@@ -149,7 +149,7 @@ All 4 GitHub Actions in `release.yml` were outdated (checkout v4, setup-go v5, g
 | --- | -------- | ------------------------------------------------------------------- | ------ |
 | 1   | P0       | Fix Lighthouse accessibility (color-contrast on root page)          | 1 hr   |
 | 2   | P0       | Configure `LHCI_GITHUB_APP_TOKEN` secret                            | 10 min |
-| 3   | P0       | Fix devalue 5.8.0 → 5.8.1 (npm update or wait for Dependabot)       | 10 min |
+| 3   | P0       | Fix devalue 5.8.0 → 5.8.1 (pnpm update or wait for Dependabot)       | 10 min |
 | 4   | P1       | Add Node.js to Nix devShell                                         | 30 min |
 | 5   | P1       | Add broken link checker to Website CI                               | 30 min |
 | 6   | P1       | Automate CHANGELOG derivation or add sync script                    | 1 hr   |
@@ -186,7 +186,7 @@ I can see from the Lighthouse CI logs that `color-contrast` and `label-content-n
 3. **The CSS variables system** (`--text-primary`, `--text-muted`, `--accent`, etc.) may be fine in one theme but fail in the other (dark vs light mode)
 4. **`label-content-name-mismatch`** typically means an interactive element has a visible label that doesn't match its accessible name — but I can't tell which element without the Lighthouse HTML selector output
 
-**Action needed:** Either run `npx lighthouse https://gogenfilter.web.app --output html` locally with Node.js, or install the Lighthouse CI GitHub App and check the detailed failure report in the CI artifacts.
+**Action needed:** Either run `pnpm dlx lighthouse https://gogenfilter.web.app --output html` locally with Node.js, or install the Lighthouse CI GitHub App and check the detailed failure report in the CI artifacts.
 
 ---
 
@@ -198,7 +198,7 @@ I can see from the Lighthouse CI logs that `color-contrast` and `label-content-n
 | Total commits (all sessions) | 28                                                           |
 | Production code changes      | 0                                                            |
 | Dependabot PRs closed        | 9 (5 merged, 4 superseded)                                   |
-| Dependabot alerts remaining  | 1 (devalue, npm transitive)                                  |
+| Dependabot alerts remaining  | 1 (devalue, pnpm transitive)                                  |
 | CI workflows healthy         | 2/3 (Go CI + Website CI pass; Lighthouse fails pre-existing) |
 | Open issues                  | 0                                                            |
 | Open PRs                     | 0                                                            |

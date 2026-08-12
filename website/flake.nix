@@ -51,21 +51,23 @@
         in
         {
           apps = {
-            dev = mkApp "dev" [ pkgs.nodejs ] "npm run dev";
-            build = mkApp "build" [ pkgs.nodejs ] "npm run build";
-            preview = mkApp "preview" [ pkgs.nodejs ] "npm run preview";
+            dev = mkApp "dev" [ pkgs.nodejs pkgs.pnpm ] "pnpm run dev";
+            build = mkApp "build" [ pkgs.nodejs pkgs.pnpm ] "pnpm run build";
+            preview = mkApp "preview" [ pkgs.nodejs pkgs.pnpm ] "pnpm run preview";
             deploy =
               mkApp "deploy"
                 [
                   pkgs.nodejs
+                  pkgs.pnpm
                   pkgs.firebase-tools
                 ]
                 ''
-                  npm run build
+                  pnpm run build
                   firebase deploy --only hosting
                 '';
             validate-docs = mkApp "validate-docs" [
               pkgs.nodejs
+              pkgs.pnpm
               mdgo
             ] "md-go-validator -f table src/content/docs/";
           };
@@ -73,6 +75,7 @@
           devShells.default = pkgs.mkShellNoCC {
             packages = [
               pkgs.nodejs
+              pkgs.pnpm
               pkgs.firebase-tools
               mdgo
             ];

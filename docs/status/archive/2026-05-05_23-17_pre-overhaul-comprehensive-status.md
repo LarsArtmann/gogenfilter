@@ -68,7 +68,7 @@ The core detection engine is **excellent** — table-driven, two-phase (filename
 - **Benchmark CI** — push to master → `gh-pages` branch with benchmark data
 - **Website CI** — typecheck → build → doc validation → HTML validation → dedup → Firebase deploy
 - **Lighthouse CI** — configured but needs `LHCI_GITHUB_APP_TOKEN` secret
-- **Dependabot** — weekly automated updates (Go, npm, Actions)
+- **Dependabot** — weekly automated updates (Go, pnpm, Actions)
 
 ### Website
 

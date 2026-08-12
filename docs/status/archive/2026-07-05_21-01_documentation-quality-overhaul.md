@@ -84,7 +84,7 @@ These are improvements identified during the audit but outside this session's sc
 
 1. **`golangci-lint` `gomodguard_v2` migration** — config referenced in AGENTS.md but not verified
 2. **Lighthouse CI accessibility fixes** — `color-contrast` on landing page elements
-3. **Dependabot alerts** — 4 npm ecosystem alerts (website transitive deps), 0 Go production deps
+3. **Dependabot alerts** — 4 pnpm ecosystem alerts (website transitive deps), 0 Go production deps
 4. **Website `errors.mdx` pseudocode** — `maybeReturnProjectRootError()` in example is not a real function
 5. **Empty `testdata/templ/` directory** — `doc.go` added but dir is otherwise empty (detection tests use inline content)
 
@@ -122,7 +122,7 @@ Nothing. No regressions, no broken builds, no data loss. All changes verified wi
 | 5   | Investigate `testdata/templ/` — empty or add real fixture                  | Low    | Tiny   | Cleanup      |
 | 6   | Add `go vet -all` or `revive` check for missing doc comments in CI         | Medium | Small  | Process      |
 | 7   | Consider `doc.go` convention enforcement in linting                        | Low    | Small  | Process      |
-| 8   | Fix Dependabot alerts (npm overrides)                                      | Medium | Small  | Security     |
+| 8   | Fix Dependabot alerts (pnpm overrides)                                      | Medium | Small  | Security     |
 | 9   | Add integration test that runs `ScanProject` on the repo itself            | Medium | Small  | Testing      |
 | 10  | Generate API reference from `go doc -all` output                           | Medium | Large  | Process      |
 | 11  | Add `CHANGELOG.md` → `changelog.mdx` sync check to CI                      | Medium | Small  | Process      |
@@ -182,7 +182,7 @@ d0fc9ea fix: correct documentation errors across Go source, website, and README
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | §g "Top #1 Question" — 7 files to touch per detector | **SOLVED**: `cmd/gendocs` now derives `generators.json`, README tables, `generators.mdx` (table + count), `detection.mdx` (function table), and `doc.go` generator list from the `detectors` table. CI enforces freshness (`go generate ./... && git diff --exit-code`). See `2026-07-09_09-07_documentation-generation-pipeline.md`. |
 | §c.2 Lighthouse CI accessibility                     | STILL OPEN — `color-contrast` / `label-content-name-mismatch` on root page (tracked in TODO_LIST)                                                                                                                                                                                                                                     |
-| §c.3 Dependabot alerts (npm)                         | PARTIALLY: overrides added; alerts are website transitive deps only                                                                                                                                                                                                                                                                   |
+| §c.3 Dependabot alerts (pnpm)                         | PARTIALLY: overrides added; alerts are website transitive deps only                                                                                                                                                                                                                                                                   |
 | §c.4 `errors.mdx` pseudocode                         | MOOT — `errors.mdx` was deleted in favor of pkg.go.dev                                                                                                                                                                                                                                                                                |
 | §c.5 empty `testdata/templ/`                         | DONE: `page_templ.go` fixture restored (`b1ae4dd`)                                                                                                                                                                                                                                                                                    |
 | §f.2 CI test: website API docs match Go symbols      | SUPERSEDED: API MDX pages deleted → pkg.go.dev is now the API reference                                                                                                                                                                                                                                                               |

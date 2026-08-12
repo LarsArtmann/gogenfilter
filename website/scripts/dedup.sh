@@ -18,7 +18,7 @@ find src \( -name "*.ts" -o -name "*.css" \) | while read -r f; do
   cp "$f" "$WORKDIR/$dir/$base"
 done
 
-npx jscpd "$WORKDIR/src/" \
+pnpm dlx jscpd "$WORKDIR/src/" \
   --min-lines 3 \
   --min-tokens 40 \
   --reporters consoleFull \

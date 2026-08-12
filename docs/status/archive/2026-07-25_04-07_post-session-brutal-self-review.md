@@ -249,7 +249,7 @@ The file `docs/status/2026-07-25_00-26_docs-health-and-historical-annotation-pas
 | --- | -------- | ----------------------------------------------------------------------- | ------------ |
 | 27  | P2       | Resolve `art-dupl` v0.3.0 upstream breakage (pinned to v0.1.0)          | Dependencies |
 | 28  | P3       | Prune orphaned GCP service account keys (up to 4 remain) — needs gcloud | Security     |
-| 29  | P3       | Audit npm overrides (`brace-expansion`, `devalue`, `vite`, `yaml`)      | Dependencies |
+| 29  | P3       | Audit pnpm overrides (`brace-expansion`, `devalue`, `vite`, `yaml`)      | Dependencies |
 | 30  | P3       | Migrate to Go 1.27 (drops GOEXPERIMENT=jsonv2 requirement)              | Dependencies |
 
 ### Documentation
@@ -266,7 +266,7 @@ The file `docs/status/2026-07-25_00-26_docs-health-and-historical-annotation-pas
 
 | #   | Priority | Task                                                         | Area         |
 | --- | -------- | ------------------------------------------------------------ | ------------ |
-| 36  | P3       | Add NixOS-compatible jscpd wrapper for `npm run dedup`       | DX           |
+| 36  | P3       | Add NixOS-compatible jscpd wrapper for `pnpm run dedup`       | DX           |
 | 37  | P3       | Consider extracting website design tokens to a separate file | Code quality |
 | 38  | P3       | Add tests for `LandingLayout.astro` SEO meta tags            | Testing      |
 

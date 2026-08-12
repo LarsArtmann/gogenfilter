@@ -307,8 +307,8 @@ Any of these could be inaccurately reported in the status reports and I would ha
 30. **Resolve `art-dupl` upstream breakage** — Fix v0.3.0 or replace dedup tool
 31. **Prune orphaned GCP service account keys** — Needs `gcloud iam` + auth
 32. **Migrate to Go 1.27** — Drops `GOEXPERIMENT=jsonv2` requirement
-33. **Audit npm overrides** — Re-evaluate `brace-expansion`, `devalue`, `vite`, `yaml`
-34. **Run `npm audit`** for website transitive deps
+33. **Audit pnpm overrides** — Re-evaluate `brace-expansion`, `devalue`, `vite`, `yaml`
+34. **Run `pnpm audit`** for website transitive deps
 
 ### Gendocs improvements
 

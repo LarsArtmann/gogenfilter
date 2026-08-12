@@ -85,10 +85,10 @@
 
 ## b) PARTIALLY DONE
 
-### npm overrides audit (M12)
+### pnpm overrides audit (M12)
 - Listed the 4 overrides (`brace-expansion`, `devalue`, `vite`, `yaml`)
 - Did NOT actually check whether each is still needed against latest Dependabot alerts
-- The overrides were left as-is; this is a 10-minute task that requires checking `npm audit` output
+- The overrides were left as-is; this is a 10-minute task that requires checking `pnpm audit` output
 
 ### vendorHash extraction (M15)
 - BuildFlow flagged vendorHash being inlined in `flake.nix` (7 nix-checker findings)
@@ -149,7 +149,7 @@ BuildFlow committed work with a generic message (`11c8656 docs+lint: archive sta
 - Both were fixed immediately but required understanding the code more deeply before writing expectations
 
 ### 5. Did not verify website builds
-- Created `api/filter.mdx` but did NOT run `cd website && npm run build` to verify it compiles
+- Created `api/filter.mdx` but did NOT run `cd website && pnpm run build` to verify it compiles
 - The mdx file may have issues (invalid frontmatter, bad imports, etc.)
 - CI will catch this on push, but it should have been verified locally
 
@@ -165,7 +165,7 @@ BuildFlow committed work with a generic message (`11c8656 docs+lint: archive sta
 
 3. **Run `nix flake check` before declaring done** — The makezero nolint comment length issue was caught by `nix flake check` (via treefmt/golines), not by `go test` or `go build`. The Nix sandbox catches formatting issues that local tools miss.
 
-4. **Verify website changes locally** — Created `api/filter.mdx` without running `npm run build`. Should have at minimum run `npx astro check`.
+4. **Verify website changes locally** — Created `api/filter.mdx` without running `pnpm run build`. Should have at minimum run `pnpm dlx astro check`.
 
 5. **Commit strategically, not let BuildFlow batch everything** — BuildFlow committed most of the session's work into one mega-commit. Should have committed after each Sprint boundary (M2-M4, M5-M9, M10-M20).
 
@@ -229,11 +229,11 @@ BuildFlow committed work with a generic message (`11c8656 docs+lint: archive sta
 ### Website
 
 30. **Visually verify the site** — No session has ever rendered a pixel. This is the #1 blind spot.
-31. **Run `cd website && npm run build`** — Verify `api/filter.mdx` compiles and all pages build
-32. **Run `cd website && npx astro check`** — Typecheck the website
+31. **Run `cd website && pnpm run build`** — Verify `api/filter.mdx` compiles and all pages build
+32. **Run `cd website && pnpm dlx astro check`** — Typecheck the website
 33. **Test on real browsers** — Chrome, Firefox, Safari cross-browser verification
 34. **Website performance audit** — Establish Lighthouse baselines on deployed site
-35. **Audit npm overrides** — Check if `brace-expansion`, `devalue`, `vite`, `yaml` overrides still needed
+35. **Audit pnpm overrides** — Check if `brace-expansion`, `devalue`, `vite`, `yaml` overrides still needed
 36. **Add `api/filter.mdx` to website sidebar config** — May need astro.config.mjs update
 37. **Verify OG image generation for `api/filter.mdx`** — New page needs OG image
 
@@ -281,7 +281,7 @@ The file currently uses `lars@example.com` as a placeholder. I cannot determine 
 | Tasks planned | 27 medium + 63 fine (from Pareto plan) |
 | Tasks executed | 20 medium tasks (M2-M20) |
 | Tasks fully done | 17 (M2-M5, M7-M20) |
-| Tasks partially done | 3 (M12 npm audit, M14 gomod-check, M15 vendorHash) |
+| Tasks partially done | 3 (M12 pnpm audit, M14 gomod-check, M15 vendorHash) |
 | Tasks not started (blocked) | 9 (external/blocked) |
 | Files created | 4 (`CODE_OF_CONDUCT.md`, `api/filter.mdx`, `ADR 003`, `docs/feedback/processed/`) |
 | Files modified | ~20 (CHANGELOG, TODO_LIST, ROADMAP, RELEASING, AGENTS, 5 workflows, flake.nix, doc.go, etc.) |

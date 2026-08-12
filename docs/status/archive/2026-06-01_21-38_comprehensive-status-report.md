@@ -59,7 +59,7 @@ gogenfilter v3 is a mature, production-ready Go library for detecting and filter
 | Workflow                      | Status  | Details                                                                                                                                         |
 | ----------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Go CI (`ci.yml`)              | DONE    | vet → test (race + 98% threshold) → lint (golangci-lint v2) → govulncheck → art-dupl                                                            |
-| Website CI (`website.yml`)    | DONE    | npm ci → astro check → build → doc validation → HTML validation → dedup → /v3 import check → stale ref check → CHANGELOG sync → Firebase deploy |
+| Website CI (`website.yml`)    | DONE    | pnpm install --frozen-lockfile → astro check → build → doc validation → HTML validation → dedup → /v3 import check → stale ref check → CHANGELOG sync → Firebase deploy |
 | Benchmarks (`benchmark.yml`)  | DONE    | Go benchmarks → github-action-benchmark → gh-pages                                                                                              |
 | Release (`release.yml`)       | DONE    | Tag-triggered, auto pre-release detection                                                                                                       |
 | Lighthouse (`lighthouse.yml`) | PARTIAL | Config done, token not configured (see section b)                                                                                               |
@@ -70,7 +70,7 @@ gogenfilter v3 is a mature, production-ready Go library for detecting and filter
 | ---------------- | ------ | ------------------------------------------------ |
 | `flake.nix`      | DONE   | Go 1.26.3, test/lint/bench apps, devShell        |
 | `golangci.yaml`  | DONE   | v2, gomodguard_v2, comprehensive rules           |
-| Dependabot       | DONE   | Weekly updates (Go modules, npm, GitHub Actions) |
+| Dependabot       | DONE   | Weekly updates (Go modules, pnpm, GitHub Actions) |
 | `.buildflow.yml` | DONE   | Project-specific excludes                        |
 
 ---
@@ -92,7 +92,7 @@ gogenfilter v3 is a mature, production-ready Go library for detecting and filter
 | Item                                    | Priority  | Notes                                                             |
 | --------------------------------------- | --------- | ----------------------------------------------------------------- |
 | Fix `goconst` lint warning              | LOW       | 3x repeated string in `example_test.go`. 2-min fix.               |
-| Resolve Dependabot npm alerts (4)       | LOW       | All in website transitive deps, not Go production code            |
+| Resolve Dependabot pnpm alerts (4)       | LOW       | All in website transitive deps, not Go production code            |
 | Lighthouse accessibility fixes          | MEDIUM    | color-contrast and label-content-name-mismatch on root page       |
 | Create `TODO_LIST.md`                   | MEDIUM    | Repeatedly identified as gap                                      |
 | Create `ROADMAP.md`                     | MEDIUM    | Strategic direction document                                      |
@@ -110,7 +110,7 @@ Nothing is broken. The project is in excellent shape.
 
 - `art-dupl` false positive on `sqlc.go` — permanently excluded via `--exclude-pattern`, not actually a problem
 - Lighthouse CI is dead weight without the GitHub App token — it runs but doesn't report status checks
-- 4 npm Dependabot alerts in website transitive deps — no production impact, but noise in the alerts feed
+- 4 pnpm Dependabot alerts in website transitive deps — no production impact, but noise in the alerts feed
 - `docs/status/archive/` has 8 historical status reports that could confuse someone looking for current state
 - Previous status report was dated 2026-06-01 13:27 (this session, earlier today) — essentially unchanged project state
 
@@ -124,7 +124,7 @@ Nothing is broken. The project is in excellent shape.
 2. **Create `TODO_LIST.md`** — consolidate known gaps into actionable list
 3. **Create `ROADMAP.md`** — even a minimal one establishes direction
 4. **Configure or remove Lighthouse CI** — dead CI workflow is worse than no CI workflow
-5. **Resolve npm Dependabot alerts** — `npm audit fix` or overrides
+5. **Resolve pnpm Dependabot alerts** — `pnpm audit fix` or overrides
 6. **Add `dependents.astro` to CI path filters** — ensure website CI runs when this page changes
 
 ### Medium-term (1-2 sessions)
@@ -153,7 +153,7 @@ Nothing is broken. The project is in excellent shape.
 | 2   | Fix `goconst` lint in `example_test.go`                         | Low    | 2 min  |
 | 3   | Create `TODO_LIST.md`                                           | Medium | 30 min |
 | 4   | Create `ROADMAP.md`                                             | Medium | 30 min |
-| 5   | Resolve 4 npm Dependabot alerts                                 | Low    | 10 min |
+| 5   | Resolve 4 pnpm Dependabot alerts                                 | Low    | 10 min |
 | 6   | Configure `LHCI_GITHUB_APP_TOKEN` or remove Lighthouse workflow | Medium | 15 min |
 
 ### Tier 2: Short-term (this week)
@@ -224,5 +224,5 @@ Everything from Tier 3-4 depends on this answer. Without it, we're polishing a p
 | CI workflows          | 5                                                                  |
 | Open issues           | 0                                                                  |
 | Open PRs              | 0                                                                  |
-| Dependabot alerts     | 4 (npm transitive only)                                            |
+| Dependabot alerts     | 4 (pnpm transitive only)                                            |
 | Lint issues           | 1 (`goconst` in example_test.go)                                   |

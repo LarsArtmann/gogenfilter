@@ -161,7 +161,7 @@ Nothing. Clean session. 10 commits, all pushed, no reverts, no breakage.
 | 12  | Clean up `docs/planning/` — 3 historical planning docs               | Low    | Low    |
 | 13  | Verify `website/.node-version` matches CI and is current             | Low    | Low    |
 | 14  | Check if `testhelpers` package needs tests (currently no test files) | Low    | Low    |
-| 15  | Run `npm run validate:docs` on website code blocks (needs Node.js)   | Medium | Low    |
+| 15  | Run `pnpm run validate:docs` on website code blocks (needs Node.js)   | Medium | Low    |
 
 ### Tier 4: Medium Impact, Medium Effort (Someday)
 

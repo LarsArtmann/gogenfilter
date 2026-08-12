@@ -224,7 +224,7 @@ entire purpose is eliminating drift.
 | 3   | P1       | Run `nix run .#test` to verify via Nix toolchain                                | Quality gate |
 | 4   | P1       | Review the 5 BuildFlow auto-commits — verify content is correct                 | Git hygiene  |
 | 5   | P2       | Update AGENTS.md: revise "keep 3 reports" policy; fix coverage 98.3%→98.4%      | Docs         |
-| 6   | P2       | Run `cd website && npx astro check` — verify changelog.mdx renders              | Website      |
+| 6   | P2       | Run `cd website && pnpm dlx astro check` — verify changelog.mdx renders              | Website      |
 
 ### Website (carried from prior sessions, still open)
 
@@ -278,7 +278,7 @@ entire purpose is eliminating drift.
 | 32  | P3       | Refactor gendocs to use `markdownRow(cells []string)` helper (structurally prevent `\|\|`) | Code quality |
 | 33  | P3       | Add pre-commit hook for `go generate ./... && git diff --exit-code`                        | Process      |
 | 34  | P3       | Extract `vendorHash` from `flake.nix` to `vendorHash.nix` (3 locations)                    | Nix          |
-| 35  | P3       | Add NixOS-compatible jscpd wrapper for `npm run dedup`                                     | DX           |
+| 35  | P3       | Add NixOS-compatible jscpd wrapper for `pnpm run dedup`                                     | DX           |
 
 ### Strategic (requires decision)
 

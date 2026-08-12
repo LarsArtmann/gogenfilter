@@ -291,8 +291,8 @@ AGENTS.md states "Nix quality gates are mandatory." Only ran raw `go test` and
 26. **Update website version references.**
 27. **Verify Firebase deploy succeeds.**
 28. **Run Lighthouse audit** on deployed site.
-29. **Run website typecheck**: `cd website && npx astro check`.
-30. **Run website build**: `cd website && npm run build`.
+29. **Run website typecheck**: `cd website && pnpm dlx astro check`.
+30. **Run website build**: `cd website && pnpm run build`.
 
 ### P4 — Documentation
 

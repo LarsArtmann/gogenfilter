@@ -54,8 +54,8 @@
 
 ### Dependabot Alert #3 (devalue)
 
-- `package.json` override added → npm will install 5.8.1+ on next install
-- Lockfile still shows 5.8.0 (needs `npm update devalue` or Dependabot PR)
+- `package.json` override added → pnpm will install 5.8.1+ on next install
+- Lockfile still shows 5.8.0 (needs `pnpm update devalue` or Dependabot PR)
 - GitHub still reports 1 high vulnerability (override not yet reflected in Dependabot scan)
 
 ### Lighthouse CI
@@ -70,7 +70,7 @@
 ## c) NOT STARTED
 
 1. Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret (needs user action)
-2. Fix `devalue` lockfile (needs `npm update devalue` or Dependabot PR)
+2. Fix `devalue` lockfile (needs `pnpm update devalue` or Dependabot PR)
 3. Add Node.js to Nix devShell (enables local website/test tool usage)
 4. Add broken link checker to Website CI
 5. Automate CHANGELOG derivation
@@ -97,8 +97,8 @@ Still showing `getFilenameBasedReason` as undefined in `bench_test.go` and `dete
 ## e) WHAT WE SHOULD IMPROVE
 
 1. **Configure LHCI app token** — Only user can install the GitHub App
-2. **Add `npm update devalue` step to CI** — Or wait for Dependabot to catch the override
-3. **Make devalue resolution automated** — CI step to run `npm audit` and fail on high vulns
+2. **Add `pnpm update devalue` step to CI** — Or wait for Dependabot to catch the override
+3. **Make devalue resolution automated** — CI step to run `pnpm audit` and fail on high vulns
 4. **Extract error prefix constant** from `errors.go` — requires touching test files, significant churn
 5. **Review `cmp.Or` opportunities** — Verdict: none in current code
 
@@ -109,8 +109,8 @@ Still showing `getFilenameBasedReason` as undefined in `bench_test.go` and `dete
 | #   | Priority | Task                                                  | Effort |
 | --- | -------- | ----------------------------------------------------- | ------ |
 | 1   | P0       | Configure LHCI_GITHUB_APP_TOKEN secret                | 10 min |
-| 2   | P0       | Fix devalue lockfile (npm update devalue)             | 5 min  |
-| 3   | P1       | Add npm audit to Website CI                           | 15 min |
+| 2   | P0       | Fix devalue lockfile (pnpm update devalue)             | 5 min  |
+| 3   | P1       | Add pnpm audit to Website CI                           | 15 min |
 | 4   | P1       | Add Node.js to Nix devShell                           | 30 min |
 | 5   | P1       | Verify Lighthouse CI passes after accessibility fixes | 10 min |
 | 6   | P1       | Add broken link checker to Website CI                 | 30 min |

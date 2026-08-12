@@ -15,13 +15,13 @@ updates:
     auto-rebase:
       enabled: true
 
-  - package-ecosystem: npm
+  - package-ecosystem: pnpm
     directory: /website
     schedule:
       interval: weekly
       day: monday
     commit-message:
-      prefix: deps(npm)
+      prefix: deps(pnpm)
     labels:
       - dependencies
       - website

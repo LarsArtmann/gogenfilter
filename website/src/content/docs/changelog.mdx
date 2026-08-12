@@ -104,7 +104,7 @@ description: All notable changes to gogenfilter.
 ### Changed
 
 - **Gendocs: all 4 table generators refactored** to use `formatMarkdownTable` (README generators table, README filter options table, detection.mdx per-generator table, generators.mdx detection table).
-- **GITHUB_TOKEN wired into website CI** — `npm run build` step passes `GITHUB_TOKEN` for authenticated GitHub API calls on the dependents page (30 req/min vs 10 unauthenticated).
+- **GITHUB_TOKEN wired into website CI** — `pnpm run build` step passes `GITHUB_TOKEN` for authenticated GitHub API calls on the dependents page (30 req/min vs 10 unauthenticated).
 - **Lighthouse CI assertions** — Correctness checks (errors-in-console, redirects, inspector-issues, viewport, image-aspect-ratio) upgraded from `warn` to `error`.
 - **AGENTS.md policies revised** — Removed "keep only 3 most recent reports" rule in favor of relevance/age-based pruning guidance; added 6 new Gotchas (Nix quality gates, sandbox testing, vendorHash maintenance, theme split-brain, astro-og-canvas param, BuildFlow auto-commit behavior).
 - **Markdown link checker wired into CI** — New "Check internal markdown links" step in `.github/workflows/ci.yml`.

@@ -39,7 +39,7 @@ Investigated `.gitignore`-aware file filtering feature request. After thorough a
 | Website CI            | ✅     | astro check → build → HTML validation → doc validation → dedup check                                            |
 | Benchmark CI          | ✅     | Auto-push to `gh-pages` on master, regression alerts                                                            |
 | Release workflow      | ✅     | Tag-based GitHub release with automated tests + lint                                                            |
-| Dependabot            | ✅     | Weekly updates for gomod, npm, github-actions                                                                   |
+| Dependabot            | ✅     | Weekly updates for gomod, pnpm, github-actions                                                                   |
 | Nix flake             | ✅     | Root + website, devShell with tools                                                                             |
 
 ## b) PARTIALLY DONE
@@ -54,7 +54,7 @@ Investigated `.gitignore`-aware file filtering feature request. After thorough a
 | Item                            | Priority | Notes                                                                                                |
 | ------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
 | Pre-existing goconst lint issue | Low      | `example_test.go:200` — sqlc content string repeated 3x. Not blocking (existed before this session). |
-| Website typecheck               | Unknown  | `npx astro check` not run — npx not in PATH in current shell. CI validates on push.                  |
+| Website typecheck               | Unknown  | `pnpm dlx astro check` not run — pnpm dlx not in PATH in current shell. CI validates on push.                  |
 | v3.0.3 release                  | Medium   | Multiple improvements since v3.0.2 but no release cut.                                               |
 
 ## d) TOTALLY FUCKED UP
@@ -72,7 +72,7 @@ The only pre-existing issue is the single `goconst` warning in `example_test.go`
 | 3   | Lighthouse CI          | Unusable without secret                                                    | Configure `LHCI_GITHUB_APP_TOKEN` and fix accessibility failures on root page                            |
 | 4   | `go.work` interference | Parent `/home/lars/projects/go.work` breaks `go test ./...` in gogenfilter | Either add gogenfilter to go.work, or use `GOWORK=off` in all scripts/memory                             |
 | 5   | CHANGELOG website sync | CI validates CHANGELOG sections match between root and website             | Root CHANGELOG not updated for this session's docs-only changes (no API changes, so arguably not needed) |
-| 6   | Website local dev      | `npx` not available in current nix shell                                   | Add node/npm to root flake.nix devShell or document `cd website && npx ...` pattern                      |
+| 6   | Website local dev      | `pnpm dlx` not available in current nix shell                                   | Add node/npm to root flake.nix devShell or document `cd website && pnpm dlx ...` pattern                      |
 | 7   | Dependency count       | 50 total modules (including indirect)                                      | Minimal for a library. Production deps are just `doublestar/v4` and `go-faster/yaml`. Healthy.           |
 | 8   | Coverage               | 99.8%                                                                      | Only untestable `filepath.Abs` error path in `FindProjectRoot` remains. Essentially maxed out.           |
 
@@ -93,7 +93,7 @@ The only pre-existing issue is the single `goconst` warning in `example_test.go`
 | #   | Task                                                                                                                      | Effort | Impact                                       |
 | --- | ------------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------- |
 | 6   | **Add gogenfilter to parent go.work** or document `GOWORK=off` requirement                                                | 15min  | DX: no more `GOWORK=off` hacks               |
-| 7   | **Add node/npm to root flake.nix devShell** — enables `npx` from project root                                             | 1h     | DX: website dev from anywhere                |
+| 7   | **Add node/npm to root flake.nix devShell** — enables `pnpm dlx` from project root                                             | 1h     | DX: website dev from anywhere                |
 | 8   | **README.md refresh** — verify README reflects v3 API, all examples current                                               | 1h     | First impression for new users               |
 | 9   | **Website: add "Why gogenfilter?" comparison page** — vs manual filtering, vs golangci-lint exclude rules                 | 2-3h   | Conversion / adoption                        |
 | 10  | **Add `FilterPathsWithFS` convenience method** — avoids `NewFilter + WithFS` boilerplate for one-shot filtering           | 1h     | API ergonomics                               |

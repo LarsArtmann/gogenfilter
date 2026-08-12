@@ -151,7 +151,7 @@ Comprehensive audit of types, tests, dependencies, linters, accessibility, and D
 | Fix 3 a11y issues                             | HIGH     | 5 min   | aria-hidden, table caption, star header |
 | Extract `SQLCOperation` typed constants       | MEDIUM   | 15 min  | Magic strings in sqlc.go                |
 | Update DOMAIN_LANGUAGE.md (9 missing exports) | MEDIUM   | 30 min  | Completeness                            |
-| Resolve 4 npm Dependabot alerts               | LOW      | 10 min  | Transitive website deps only            |
+| Resolve 4 pnpm Dependabot alerts               | LOW      | 10 min  | Transitive website deps only            |
 | Lighthouse accessibility fixes                | MEDIUM   | 1-2 hrs | color-contrast, label issues            |
 | Configure or remove Lighthouse CI             | MEDIUM   | 15 min  | Token or removal                        |
 | Website performance audit                     | MEDIUM   | 1 hr    | Establish baselines                     |
@@ -169,7 +169,7 @@ Comprehensive audit of types, tests, dependencies, linters, accessibility, and D
 **Annoyances remaining:**
 
 - Lighthouse CI dead weight (documented but not actionable without token)
-- 4 npm Dependabot alerts (transitive deps, no production impact)
+- 4 pnpm Dependabot alerts (transitive deps, no production impact)
 - `SQLCConfigError.Operation` uses untyped magic strings
 - `IsValid()` allocates on every call
 - Firebase deploy action uses deprecated Node.js 20
@@ -192,7 +192,7 @@ The first CSP "fix" (`0aef07d`) was incomplete. It addressed the symptom (4 cust
 
 ### Short-term (this week)
 
-5. **Resolve npm Dependabot alerts** — `npm audit fix` or overrides
+5. **Resolve pnpm Dependabot alerts** — `pnpm audit fix` or overrides
 6. **Lighthouse accessibility fixes** — Fix color-contrast and label issues
 7. **Configure or remove Lighthouse CI** — Install GitHub App or delete workflow
 8. **Website performance audit** — Establish Lighthouse baselines
@@ -216,7 +216,7 @@ The first CSP "fix" (`0aef07d`) was incomplete. It addressed the symptom (4 cust
 | 2   | Fix Firebase Node.js 20 deprecation warning          | Medium | 10 min |
 | 3   | Extract `SQLCOperation` typed constants              | Medium | 15 min |
 | 4   | Update DOMAIN_LANGUAGE.md (9 missing exports)        | Medium | 30 min |
-| 5   | Resolve npm Dependabot alerts                        | Low    | 10 min |
+| 5   | Resolve pnpm Dependabot alerts                        | Low    | 10 min |
 
 ### Tier 2: Short-term (this week)
 

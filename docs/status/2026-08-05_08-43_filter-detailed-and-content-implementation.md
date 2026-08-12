@@ -154,10 +154,10 @@ Nothing. All gates pass. No regressions introduced.
 11. Create `website/src/content/docs/api/filter.mdx` — API reference for all `Filter` methods
 12. Fix stale changelog claim about "Website API docs for FilterWithContent" (v3.2.0 entry)
 13. Add "Lazy Content Return" to the website features/landing page if it lists API methods
-14. Run `cd website && npx astro check` to verify website type-checking still passes
-15. Run `cd website && npm run build` to verify website builds with the new quick-start section
-16. Run `cd website && npx html-validate 'dist/**/*.html'` on the quick-start page
-17. Run website dedup check: `cd website && npm run dedup` — new code block might duplicate
+14. Run `cd website && pnpm dlx astro check` to verify website type-checking still passes
+15. Run `cd website && pnpm run build` to verify website builds with the new quick-start section
+16. Run `cd website && pnpm dlx html-validate 'dist/**/*.html'` on the quick-start page
+17. Run website dedup check: `cd website && pnpm run dedup` — new code block might duplicate
 
 ### Test quality
 

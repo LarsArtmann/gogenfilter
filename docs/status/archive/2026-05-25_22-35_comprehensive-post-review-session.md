@@ -120,7 +120,7 @@ gogenfilter v3.0.2 is released, healthy, and production-ready. The session cover
 
 ### Website Doc Code Block Validation
 
-- `npm run validate:docs` exists but couldn't run (no Node.js)
+- `pnpm run validate:docs` exists but couldn't run (no Node.js)
 - All code examples in website docs were manually reviewed but not mechanically validated
 
 ---
@@ -171,7 +171,7 @@ Nothing. Clean session. No breakage, no reverted commits, no failed attempts.
 | 6   | Fix Lighthouse CI accessibility failures (color-contrast, label-content-name-mismatch) | Medium | Medium | Website  |
 | 7   | Configure `LHCI_GITHUB_APP_TOKEN` secret for Lighthouse CI                             | Medium | Low    | CI       |
 | 8   | Single-source CHANGELOG — derive website changelog from root CHANGELOG.md              | High   | Medium | Docs     |
-| 9   | Validate website code blocks with `npm run validate:docs` (needs Node.js)              | Medium | Low    | Docs     |
+| 9   | Validate website code blocks with `pnpm run validate:docs` (needs Node.js)              | Medium | Low    | Docs     |
 | 10  | Audit `go.sum` transitive deps for CVEs with `govulncheck`                             | High   | Medium | Security |
 
 ### Tier 3: Medium Impact, Low Effort (Quick Wins)

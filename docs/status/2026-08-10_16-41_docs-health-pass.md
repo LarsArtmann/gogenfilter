@@ -153,7 +153,7 @@ User requested a full `docs-health` skill execution on all `docs/status/2026-08-
 29. **Decide Lighthouse CI gate-vs-monitor policy** — needs `LHCI_GITHUB_APP_TOKEN`.
 30. **Pin GitHub Actions to SHA hashes** — 30 unpinned `uses:` statements.
 31. **Fix BuildFlow pre-commit hook** — exclude JS/TS tools not in nix devShell.
-32. **Resolve Dependabot alerts** — npm ecosystem transitive deps.
+32. **Resolve Dependabot alerts** — pnpm ecosystem transitive deps.
 33. **Resolve `art-dupl` upstream breakage** — v0.3.0 doesn't compile.
 
 ### Website
@@ -162,7 +162,7 @@ User requested a full `docs-health` skill execution on all `docs/status/2026-08-
 35. **Create `api/filter.mdx`** — pre-existing gap, Filter methods have no dedicated website page.
 36. **Test on real browsers** (Chrome, Firefox, Safari).
 37. **Website performance audit** — establish Lighthouse baselines.
-38. **Audit npm overrides** — re-evaluate brace-expansion, devalue, vite, yaml.
+38. **Audit pnpm overrides** — re-evaluate brace-expansion, devalue, vite, yaml.
 
 ### Strategic
 

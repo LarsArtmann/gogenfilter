@@ -189,7 +189,7 @@ Carried over from the prior session's list, minus the 7 items completed in secti
 | 27  | P3  | Update CONTRIBUTING.md with `GOEXPERIMENT=jsonv2` requirement                           | Documentation    |
 | 28  | P3  | Consider extracting `vendorHash` to `vendorHash.nix`                                    | Nix              |
 | 29  | P3  | Review and prune `docs/status/archive/` — keep only last 3 reports                      | Doc hygiene      |
-| 30  | P3  | Run `npm audit` fix for website transitive deps (4 Dependabot alerts)                   | Security         |
+| 30  | P3  | Run `pnpm audit` fix for website transitive deps (4 Dependabot alerts)                   | Security         |
 | 31  | P3  | Consider adding `website/` to `.buildflow.yml` excludes review                          | BuildFlow config |
 | 32  | P3  | Validate `firebase.json` redirect rules (301 vs 302)                                    | Website routing  |
 | 33  | P3  | Add `.nvmrc` or verify `.node-version` is current (Node 24)                             | Website tooling  |
@@ -202,7 +202,7 @@ Carried over from the prior session's list, minus the 7 items completed in secti
 | 40  | P3  | Document `GOEXPERIMENT=jsonv2` → Go 1.27 migration path in ROADMAP.md                   | Planning         |
 | 41  | P3  | Review website `scripts/fix-csp.mjs` for new inline scripts                             | Website CSP      |
 | 42  | P3  | Add Firebase deploy success/failure notification (status check or Slack)                | Observability    |
-| 43  | P3  | Consider caching `firebase-tools` npm install in CI                                     | CI speed         |
+| 43  | P3  | Consider caching `firebase-tools` pnpm add in CI                                     | CI speed         |
 | 44  | P3  | Review whether `website/` path filter in Go CI workflow is needed                       | CI correctness   |
 | 45  | P3  | Add pre-commit hook that runs `go generate ./... && git diff --exit-code`               | Process          |
 | 46  | P3  | Document service account key generation process in a runbook                            | Documentation    |

@@ -18,7 +18,7 @@ All 5 planned tasks completed successfully. Go tests pass (99.8% coverage), lint
 | 2   | **Firebase Node 20 deprecation fix**                                    | `.github/workflows/website.yml`                                                                             | Removed `FirebaseExtended/action-hosting-deploy@v0`, replaced with direct `firebase-tools` CLI under Node 24                                                                      |
 | 3   | **`SQLCOperation` typed constants**                                     | `errors.go`, `sqlc.go`, `bdd_test.go`, `bdd_extended_test.go`, `errors_test.go`, `testhelpers/constants.go` | `go test -race ./...` pass, `golangci-lint run` clean                                                                                                                             |
 | 4   | **DOMAIN_LANGUAGE.md update** (9 missing exports)                       | `docs/DOMAIN_LANGUAGE.md`                                                                                   | Added: `SQLCOperation`, `ErrorCoder`, `ProjectRootError`, `FilterConfigError`, `SQLCConfigError`, `DetectReasonReader`, `FindSQLCConfigsFS`, `GetSQLOutputDirsFS`, `MatchPattern` |
-| 5   | **npm Dependabot alerts resolved**                                      | `website/package.json`                                                                                      | Added `brace-expansion@5.0.6` and `yaml@2.8.3` overrides                                                                                                                          |
+| 5   | **pnpm Dependabot alerts resolved**                                      | `website/package.json`                                                                                      | Added `brace-expansion@5.0.6` and `yaml@2.8.3` overrides                                                                                                                          |
 
 ### Detailed Changes
 
@@ -32,7 +32,7 @@ All 5 planned tasks completed successfully. Go tests pass (99.8% coverage), lint
 
 - Removed `FirebaseExtended/action-hosting-deploy@v0` (Node 20 runtime, deprecated warning)
 - Added `actions/setup-node@v6` with Node 24 to deploy job
-- Deploy now runs `npm install -g firebase-tools && firebase deploy --only hosting:gogenfilter --project lars-software`
+- Deploy now runs `pnpm add -g firebase-tools && firebase deploy --only hosting:gogenfilter --project lars-software`
 - Auth via `GOOGLE_APPLICATION_CREDENTIALS` pointing to service account key
 - Removed `checks: write` and `id-token: write` permissions (only needed by the Firebase action)
 
@@ -49,7 +49,7 @@ All 5 planned tasks completed successfully. Go tests pass (99.8% coverage), lint
 - Added 6 Entity rows: `SQLCOperation`, `ErrorCoder`, `ProjectRootError`, `FilterConfigError`, `SQLCConfigError`
 - Added 4 Command rows: `DetectReasonReader`, `FindSQLCConfigsFS`, `GetSQLOutputDirsFS`, `MatchPattern`
 
-#### 5. npm Dependabot Alerts
+#### 5. pnpm Dependabot Alerts
 
 - Added `brace-expansion@5.0.6` override (CVE-2026-45149, medium severity)
 - Added `yaml@2.8.3` override (CVE-2026-33532, medium severity)
@@ -65,7 +65,7 @@ All 5 planned tasks completed successfully. Go tests pass (99.8% coverage), lint
 | **Lighthouse CI configuration**       | Not started | `LHCI_GITHUB_APP_TOKEN` secret still not configured                                                                                  |
 | **Lighthouse accessibility failures** | Not started | `color-contrast`, `label-content-name-mismatch` on root page; `redirects` on `/docs`                                                 |
 | **Website performance baseline**      | Not started | No Lighthouse scores established yet                                                                                                 |
-| **Dependabot npm PRs**                | 5 open PRs  | #17 jscpd, #18 astro, #19 @tailwindcss/vite, #20 html-validate, #21 @astrojs/sitemap — all passing Website CI, failing Lighthouse CI |
+| **Dependabot pnpm PRs**                | 5 open PRs  | #17 jscpd, #18 astro, #19 @tailwindcss/vite, #20 html-validate, #21 @astrojs/sitemap — all passing Website CI, failing Lighthouse CI |
 
 ---
 
@@ -102,7 +102,7 @@ Nothing broken. All clean:
 
 1. **No local Node.js** — The nix devshell is Go-only. Cannot build/test website locally. Should add Node.js to `flake.nix` devShell or at least have a `nix develop` command for website work.
 2. **Lighthouse CI is dead weight** — 5 Dependabot PRs all fail Lighthouse because the token isn't configured. Either configure it or remove the workflow.
-3. **Dependabot PR staleness** — 5 open npm dep PRs that pass Website CI but fail Lighthouse. Need to decide: merge without Lighthouse, or fix Lighthouse first.
+3. **Dependabot PR staleness** — 5 open pnpm dep PRs that pass Website CI but fail Lighthouse. Need to decide: merge without Lighthouse, or fix Lighthouse first.
 4. **Domain language incomplete** — DOMAIN_LANGUAGE.md still doesn't list individual `Is*Generated` functions, `AllFilterOptions`, `AllGeneratorOptions`, `AllFilterReasons`, sentinel error variables, or `FilterOption`/`FilterReason` methods. It captures types and commands well but misses enumeration helpers.
 5. **No `docs/status/archive/` rotation** — `docs/status/` has 5 active reports now (limit is 3 per AGENTS.md). Should archive the 2 oldest from 2026-06-01.
 
@@ -115,7 +115,7 @@ Nothing broken. All clean:
 | #   | Task                                                         | Impact | Effort |
 | --- | ------------------------------------------------------------ | ------ | ------ |
 | 1   | Configure or remove Lighthouse CI workflow                   | HIGH   | 15 min |
-| 2   | Merge or close 5 open Dependabot npm PRs                     | MEDIUM | 10 min |
+| 2   | Merge or close 5 open Dependabot pnpm PRs                     | MEDIUM | 10 min |
 | 3   | Archive oldest 2 status reports to keep 3 in `docs/status/`  | LOW    | 2 min  |
 | 4   | Add Node.js to `flake.nix` devShell for local website builds | MEDIUM | 15 min |
 | 5   | Add dependents page CTA link to landing page HeroSection     | LOW    | 15 min |
@@ -174,7 +174,7 @@ Lighthouse CI has been running and failing on every Dependabot PR for weeks. The
 2. **Configure it** — Install the GitHub App, add the token, fix the assertions, establish real baselines
 3. **Make it non-blocking** — Change Lighthouse CI to `continue-on-error` for now, so it reports but doesn't fail PRs
 
-This affects whether the 5 Dependabot PRs can be merged and whether future npm updates are blocked. I can't decide because it's a product/maintenance priority call.
+This affects whether the 5 Dependabot PRs can be merged and whether future pnpm updates are blocked. I can't decide because it's a product/maintenance priority call.
 
 ---
 
@@ -186,7 +186,7 @@ This affects whether the 5 Dependabot PRs can be merged and whether future npm u
 | Total Go LOC               | 8,452 lines                                  |
 | Linter issues              | 0                                            |
 | Open Dependabot alerts     | 4 (2 fixed, 2 auto_dismissed with overrides) |
-| Open PRs                   | 5 (all Dependabot npm)                       |
+| Open PRs                   | 5 (all Dependabot pnpm)                       |
 | Files changed this session | 11                                           |
 | Lines added/removed        | +68 / -33                                    |
 

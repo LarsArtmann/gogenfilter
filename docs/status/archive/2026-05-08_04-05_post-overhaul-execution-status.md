@@ -46,7 +46,7 @@ The API overhaul is complete. 8 commits this session deleted ~530 net lines of o
 ### CI/CD Pipeline
 
 - **4 GitHub Actions workflows** — Go CI, Benchmark, Website, Lighthouse
-- **Dependabot** — weekly updates (Go, npm, Actions)
+- **Dependabot** — weekly updates (Go, pnpm, Actions)
 
 ### Documentation
 

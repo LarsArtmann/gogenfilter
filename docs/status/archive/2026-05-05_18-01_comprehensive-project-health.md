@@ -68,7 +68,7 @@ The library is in **excellent technical shape** — tests pass (98.2% coverage),
 | Benchmark  | ✅ Configured   | `*.go`, `go.mod`, `go.sum`                            | push master + dispatch    |
 | Website    | ✅ Configured   | `website/**`                                          | push/PR master + dispatch |
 | Lighthouse | ✅ Configured   | `website/**`, `lighthouserc.json`                     | push/PR master + dispatch |
-| Dependabot | ✅ 3 ecosystems | gomod, npm, github-actions                            | Weekly Monday             |
+| Dependabot | ✅ 3 ecosystems | gomod, pnpm, github-actions                            | Weekly Monday             |
 
 ### Module Versioning
 
@@ -275,7 +275,7 @@ Sorted by impact/effort ratio (highest first):
 | 21  | Consider `FilterResult` enrichment (FilePath, DetectionPhase, DetectorName)                                                                       | Low      | Medium | Code     |
 | 22  | Add OpenAPI/schema for website API docs                                                                                                           | Low      | Medium | Website  |
 | 23  | Add `QUICK_START.md` or `MIGRATION.md` at repo root                                                                                               | Low      | Low    | Docs     |
-| 24  | Pin npm dependencies with lockfile validation in CI                                                                                               | Low      | Low    | CI       |
+| 24  | Pin pnpm dependencies with lockfile validation in CI                                                                                               | Low      | Low    | CI       |
 | 25  | Add `CODEOWNERS` file for review requirements                                                                                                     | Low      | Low    | Process  |
 
 ---

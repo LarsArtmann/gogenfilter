@@ -95,7 +95,7 @@ These are assertion configuration issues, not site-breaking. The assertions are 
 
 1. **Website CI was completely broken for ~20+ commits** — every push since the Starlight migration failed silently. Root cause: `PRIVATE_REPO_TOKEN` secret unavailable → `md-go-validator` checkout hard-failed → entire pipeline blocked. **Fixed with `continue-on-error: true`.**
 
-2. **Node version mismatch** — `package-lock.json` generated with npm 11 (Node 24) but CI ran Node 22 (npm 10). `npm ci` failed with "Missing: typescript@5.9.3 from lock file". **Fixed by syncing to Node 24.**
+2. **Node version mismatch** — `package-lock.json` generated with pnpm 11 (Node 24) but CI ran Node 22 (pnpm 10). `pnpm install --frozen-lockfile` failed with "Missing: typescript@5.9.3 from lock file". **Fixed by syncing to Node 24.**
 
 3. **Benchmark `contents: write` on PRs** — `benchmark.yml` granted write permission on fork PRs. **Fixed by removing `pull_request` trigger.**
 

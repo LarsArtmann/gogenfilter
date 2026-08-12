@@ -1,11 +1,11 @@
-# Theme Unification + npm Overrides Audit
+# Theme Unification + pnpm Overrides Audit
 
 _Date: 2026-08-10_
 
 ## Summary
 
 Resolved both Documentation TODO items: unified the landing page theme system with Starlight's
-`data-theme` convention, and audited all 4 npm overrides finding all redundant.
+`data-theme` convention, and audited all 4 pnpm overrides finding all redundant.
 
 ## a. Theme System Unification (DONE)
 
@@ -40,12 +40,12 @@ Migrated the landing page to use Starlight's `data-theme` convention:
 
 ### Verification
 
-- Cannot run `npm run build` in current environment (no npm available)
+- Cannot run `pnpm run build` in current environment (no pnpm available)
 - Verified via code review: CSS selectors correct, JS logic traced through all states, backward
   compatibility maintained via fallback key read
 - Website CI (`website.yml`) will catch issues on next push to master
 
-## b. npm Overrides Audit (AUDITED — action deferred)
+## b. pnpm Overrides Audit (AUDITED — action deferred)
 
 ### Findings
 
@@ -63,20 +63,20 @@ sufficient to resolve safe versions.
 
 ### Why Not Removed
 
-Removing overrides from `package.json` requires running `npm install` to regenerate
-`package-lock.json`. npm is not available in the current development environment. Editing
-`package.json` without regenerating the lockfile would break `npm ci` in CI.
+Removing overrides from `package.json` requires running `pnpm install` to regenerate
+`package-lock.json`. pnpm is not available in the current development environment. Editing
+`package.json` without regenerating the lockfile would break `pnpm install --frozen-lockfile` in CI.
 
 ### Recommended Action
 
 ```sh
 cd website
 # Remove all 4 entries from "overrides" in package.json
-npm install          # regenerate lockfile
-npm audit            # verify no new vulnerabilities
-npm run build        # verify build still works
+pnpm install          # regenerate lockfile
+pnpm audit            # verify no new vulnerabilities
+pnpm run build        # verify build still works
 git add package.json package-lock.json
-git commit -m "chore(website): remove redundant npm overrides after Astro v7 bump"
+git commit -m "chore(website): remove redundant pnpm overrides after Astro v7 bump"
 ```
 
 ## c. Files Changed
@@ -86,7 +86,7 @@ git commit -m "chore(website): remove redundant npm overrides after Astro v7 bum
 | `website/src/styles/global.css` | `:root.light` → `:root[data-theme="light"]` |
 | `website/public/js/theme-init.js` | Migrated to `data-theme` + `starlight-theme` key |
 | `website/public/js/header.js` | Migrated toggle to `data-theme` + `starlight-theme` key |
-| `AGENTS.md` | Updated theme system entry, theme split-brain entry, npm overrides entry |
+| `AGENTS.md` | Updated theme system entry, theme split-brain entry, pnpm overrides entry |
 | `TODO_LIST.md` | Marked both items done/audited with findings |
 
 ## d. Context From Prior Session

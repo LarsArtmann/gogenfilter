@@ -213,7 +213,7 @@ The `onsubmit="window.open(...)"` inline handler may be blocked by our strict CS
 
 ### 3. What's the deploy pipeline — will `fix-csp.mjs` definitely run?
 
-The syntax highlighting bug existed on the live site despite `fix-csp.mjs` being in `npm run build`. Either the live deploy is stale (predates a fix), or there's a deploy path that skips `npm run build`. **When you deploy, does CI run `npm run build` (which includes fix-csp), or is there a manual/custom deploy step that might bypass it?** This determines whether my CSP fix will actually reach production or if I need to make the CSP robustness more defensive.
+The syntax highlighting bug existed on the live site despite `fix-csp.mjs` being in `pnpm run build`. Either the live deploy is stale (predates a fix), or there's a deploy path that skips `pnpm run build`. **When you deploy, does CI run `pnpm run build` (which includes fix-csp), or is there a manual/custom deploy step that might bypass it?** This determines whether my CSP fix will actually reach production or if I need to make the CSP robustness more defensive.
 
 ---
 
@@ -241,4 +241,4 @@ The syntax highlighting bug existed on the live site despite `fix-csp.mjs` being
 | §D.1 "still never rendered a pixel"          | STILL OPEN — no session has screenshot-verified the site                                                                                         |
 | WCAG contrast (amber/success light mode)     | EXTENDED: full AA audit in `2026-07-21_02-17` (`8d63d43`); `--color-on-accent` token added                                                       |
 | §A messaging rewrite (M1-M6)                 | DONE — hero, before/after, eyebrows, who-for all shipped                                                                                         |
-| §G.3 deploy pipeline runs `fix-csp.mjs`      | CONFIRMED: Website CI runs `npm run build` (includes `fix-csp.mjs`) before Firebase deploy                                                       |
+| §G.3 deploy pipeline runs `fix-csp.mjs`      | CONFIRMED: Website CI runs `pnpm run build` (includes `fix-csp.mjs`) before Firebase deploy                                                       |

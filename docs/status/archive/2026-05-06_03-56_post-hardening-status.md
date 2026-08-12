@@ -96,7 +96,7 @@
 ### Website `.astro/data-store.json` — Stale Cache
 
 - Gitignored (`/website/.astro/`) but contains cached stale API docs
-- Will regenerate on next `npm run build` — not urgent
+- Will regenerate on next `pnpm run build` — not urgent
 
 ---
 
@@ -162,9 +162,9 @@ Sorted by **impact × effort** (highest first):
 | 2   | Configure `LHCI_GITHUB_APP_TOKEN` GitHub secret                                                  | High   | Tiny   | CI        |
 | 3   | Remove `website/docs/planning/` from website content dir                                         | Medium | Tiny   | Website   |
 | 4   | Delete `git-town.toml` if not actively used                                                      | Low    | Tiny   | Cleanup   |
-| 5   | Verify website builds clean: `cd website && npm run build`                                       | Medium | Small  | Website   |
-| 6   | Run `cd website && npx astro check` for type errors                                              | Medium | Small  | Website   |
-| 7   | Run `cd website && npx html-validate 'dist/**/*.html'` after build                               | Medium | Small  | Website   |
+| 5   | Verify website builds clean: `cd website && pnpm run build`                                       | Medium | Small  | Website   |
+| 6   | Run `cd website && pnpm dlx astro check` for type errors                                              | Medium | Small  | Website   |
+| 7   | Run `cd website && pnpm dlx html-validate 'dist/**/*.html'` after build                               | Medium | Small  | Website   |
 | 8   | Add `.Node` version to `.nix` flake if using Nix                                                 | Low    | Small  | Tooling   |
 | 9   | Audit `website/src/content/docs/guides/` for stale pages                                         | Low    | Small  | Website   |
 | 10  | Link review docs from AGENTS.md or move to `docs/archive/`                                       | Low    | Tiny   | Docs      |

@@ -25,7 +25,7 @@
 | Detectors             | 11 generators, table-driven                                  |
 | Dependencies          | 2 runtime, 2 test-only                                       |
 | Open issues           | 0                                                            |
-| Zero production vulns | Yes (all Dependabot alerts are npm)                          |
+| Zero production vulns | Yes (all Dependabot alerts are pnpm)                          |
 
 ### Session 1 (Architecture Review + Docs Audit) — 12 commits
 
@@ -61,7 +61,7 @@
 
 ## b) PARTIALLY DONE
 
-### Dependabot npm vulnerabilities
+### Dependabot pnpm vulnerabilities
 
 | Alert                            | Severity | Status | Fix                                     |
 | -------------------------------- | -------- | ------ | --------------------------------------- |
@@ -69,7 +69,7 @@
 | `fast-uri` (host confusion)      | high     | OPEN   | PR #6 available: bump to 3.1.2          |
 
 - PR #6 (`fast-uri` 3.1.1 → 3.1.2) is open and ready to merge — patches 1 of 2 high vulns
-- `devalue` is a transitive dep of Astro/Svelte — no direct Dependabot PR yet, needs `npm update` in website
+- `devalue` is a transitive dep of Astro/Svelte — no direct Dependabot PR yet, needs `pnpm update` in website
 
 ### CI Pipeline Health
 
@@ -106,7 +106,7 @@ PRs #11, #14, #16 are likely auto-closable since the versions are already in use
 1. **Merge Dependabot PRs** — 9 open, including fast-uri security fix (#6)
 2. **Lighthouse CI accessibility fixes** — `color-contrast`, `label-content-name-mismatch` on root page
 3. **Configure `LHCI_GITHUB_APP_TOKEN`** — Lighthouse CI can't post status checks without it
-4. **Fix `devalue` vulnerability** — Needs `npm update` in website (no Dependabot PR yet)
+4. **Fix `devalue` vulnerability** — Needs `pnpm update` in website (no Dependabot PR yet)
 5. **Single-source CHANGELOG** — Website `changelog.mdx` still manually synced (CI check exists but not automation)
 6. **Add Node.js to Nix devShell** — Can't build/preview website locally
 7. **Add website broken link checker** — No CI step to verify internal links after build
@@ -167,7 +167,7 @@ The commit `bae7fba` switched `gomodguard` → `gomodguard_v2` in `.golangci.yam
 | 2   | P0       | Merge Dependabot PR #6 (fast-uri security fix)               | 5 min  | Patches high CVE                 |
 | 3   | P0       | Merge Dependabot PRs #11, #14, #16 (already in-use versions) | 5 min  | Cleanup                          |
 | 4   | P1       | Review & merge Dependabot PRs #7, #8, #9, #10, #12           | 30 min | Keeps deps fresh                 |
-| 5   | P1       | Fix `devalue` vulnerability (npm update in website)          | 10 min | Patches high CVE                 |
+| 5   | P1       | Fix `devalue` vulnerability (pnpm update in website)          | 10 min | Patches high CVE                 |
 | 6   | P1       | Configure `LHCI_GITHUB_APP_TOKEN` secret                     | 10 min | Enables Lighthouse status checks |
 | 7   | P1       | Fix Lighthouse accessibility (color-contrast)                | 1 hr   | User-facing quality              |
 | 8   | P2       | Add Node.js to Nix devShell                                  | 30 min | Local website dev                |
@@ -199,7 +199,7 @@ I can see the PRs and their diffs, but I cannot:
 
 1. **Run the Website CI locally** — No Node.js in Nix PATH, so I can't verify that `astro 6.2.2 → 6.3.1` or `starlight 0.38.4 → 0.39.2` don't break the build
 2. **Verify `softprops/action-gh-release` 2 → 3** — Don't know if there are breaking changes in the release workflow
-3. **Test the `fast-uri` fix end-to-end** — Can't run `npm audit` locally to confirm the CVE is patched
+3. **Test the `fast-uri` fix end-to-end** — Can't run `pnpm audit` locally to confirm the CVE is patched
 
 **Recommendation:** Merge the safe ones first (#6, #7, #8, #11, #14, #16 — all minor patches or already-in-use versions). Then review #9, #10, #12 individually for breaking changes after the Website CI run completes.
 
@@ -216,7 +216,7 @@ I can see the PRs and their diffs, but I cannot:
 | New CI steps                 | 4 (govulncheck, import path validation, stale ref check, changelog sync) |
 | Files cleaned up             | 19 (15 status reports archived, 4 old diagrams removed)                  |
 | Website fixes                | 15 (import paths, naming, wording, config)                               |
-| Open Dependabot PRs          | 9 (2 high-severity, 4 npm bumps, 3 CI action bumps)                      |
+| Open Dependabot PRs          | 9 (2 high-severity, 4 pnpm bumps, 3 CI action bumps)                      |
 | Open issues                  | 0                                                                        |
 | Working tree                 | CLEAN                                                                    |
 | Unpushed commits             | 0                                                                        |

@@ -33,8 +33,8 @@ Posted a review on every single open PR with a clear verdict (Approve / Close) a
 
 | Fix                                         | Root cause                                                                                                                                                                          | Resolution                                                                                 |
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **vite override 7.3.2 → 8.1.5**             | Astro 7.0.3 requires `vite ^8.0.13`; old override pinned vite 7.x, causing `npm ERESOLVE` peer-dep conflict                                                                         | Bumped override in `website/package.json`                                                  |
-| **Regenerated `package-lock.json`**         | Commit `1c084f4a` (2026-06-25) bumped package.json but never regenerated the lockfile                                                                                               | Fresh `npm install` (457 packages, 0 vulnerabilities)                                      |
+| **vite override 7.3.2 → 8.1.5**             | Astro 7.0.3 requires `vite ^8.0.13`; old override pinned vite 7.x, causing `pnpm ERESOLVE` peer-dep conflict                                                                         | Bumped override in `website/package.json`                                                  |
+| **Regenerated `package-lock.json`**         | Commit `1c084f4a` (2026-06-25) bumped package.json but never regenerated the lockfile                                                                                               | Fresh `pnpm install` (457 packages, 0 vulnerabilities)                                      |
 | **Regenerated Go docs**                     | Stale `README.md`, `detection.mdx`, `generators.mdx` (wrong mockery/counterfeiter patterns)                                                                                         | `GOEXPERIMENT=jsonv2 go generate ./...` (needed 2 passes to converge)                      |
 | **`scan.go` makezero lint fix**             | `make([]T, len(x))` flagged by makezero linter                                                                                                                                      | Changed to `make([]T, 0, len(x))` at lines 292, 305                                        |
 | **Restored `testdata/templ/page_templ.go`** | Commit `bf7c2b7` (earlier today) wrongly deleted it; 3 integration tests + ~10 BDD specs referenced it. Also `.gitignore` line 76 `*_templ.go` hid the file even after disk restore | Restored file from git history + added `!testdata/templ/page_templ.go` gitignore exception |
@@ -42,10 +42,10 @@ Posted a review on every single open PR with a clear verdict (Approve / Close) a
 
 ### 3. Verified locally before merging
 
-- `npm run typecheck` — 0 errors, 0 warnings, 0 hints (34 files)
-- `npm run build` — 17 pages built, CSP patched 17/17 files
-- `npm run dedup` (jscpd v5 Rust rewrite) — **0 duplicates**, existing `scripts/dedup.sh` works unchanged
-- `npx html-validate 'dist/**/*.html'` (v11) — exit 0
+- `pnpm run typecheck` — 0 errors, 0 warnings, 0 hints (34 files)
+- `pnpm run build` — 17 pages built, CSP patched 17/17 files
+- `pnpm run dedup` (jscpd v5 Rust rewrite) — **0 duplicates**, existing `scripts/dedup.sh` works unchanged
+- `pnpm dlx html-validate 'dist/**/*.html'` (v11) — exit 0
 - `GOEXPERIMENT=jsonv2 go test ./...` — all pass (170 BDD specs + integration)
 - `golangci-lint run` — 0 issues
 
@@ -55,7 +55,7 @@ Posted a review on every single open PR with a clear verdict (Approve / Close) a
 | -------------------------------------------------------------------------- | ---------------------- | ---------------------------------------- |
 | **CI** (Test, Lint, Vulncheck, Code Duplication, Generated Docs Freshness) | ❌ 4 of 5 jobs failing | ✅ **SUCCESS**                           |
 | **Benchmark**                                                              | ❌                     | ✅ **SUCCESS**                           |
-| **Website Build**                                                          | ❌ (npm ERESOLVE)      | ✅ **SUCCESS**                           |
+| **Website Build**                                                          | ❌ (pnpm ERESOLVE)      | ✅ **SUCCESS**                           |
 | **Website Deploy**                                                         | ❌                     | ❌ (pre-existing — Firebase auth secret) |
 | **Lighthouse CI**                                                          | ❌                     | ❌ (pre-existing — a11y on live site)    |
 
@@ -73,7 +73,7 @@ Posted a review on every single open PR with a clear verdict (Approve / Close) a
 
 ### 3. Nix dev shell integration for jscpd v5
 
-- jscpd v5 ships a prebuilt Rust binary that doesn't work on NixOS without an FHS env. I validated it via `buildFHSEnv` workaround, but did NOT update the flake or `scripts/dedup.sh` to make this reproducible for local dev. Currently `npm run dedup` only works out-of-the-box on non-NixOS.
+- jscpd v5 ships a prebuilt Rust binary that doesn't work on NixOS without an FHS env. I validated it via `buildFHSEnv` workaround, but did NOT update the flake or `scripts/dedup.sh` to make this reproducible for local dev. Currently `pnpm run dedup` only works out-of-the-box on non-NixOS.
 
 ---
 
@@ -160,7 +160,7 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 7. **Visually verify the website** after Astro 7 migration — run `astro preview`, check whitespace-sensitive inline content.
 8. **Update CHANGELOG** — entries for CI unblock, dep bumps, action bumps.
 9. **Update AGENTS.md** — record the 5 non-obvious facts learned this session (see #13 above).
-10. **Add NixOS-compatible jscpd wrapper** — so `npm run dedup` works locally without manual FHS setup.
+10. **Add NixOS-compatible jscpd wrapper** — so `pnpm run dedup` works locally without manual FHS setup.
 
 #### Technical debt
 
@@ -172,8 +172,8 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 
 #### Follow-up on merged PRs
 
-16. **Verify Dependabot doesn't reopen the closed npm PRs** — versions are satisfied, but monitor.
-17. **Check for NEW Dependabot PRs** created after the merges (npm group may regenerate).
+16. **Verify Dependabot doesn't reopen the closed pnpm PRs** — versions are satisfied, but monitor.
+17. **Check for NEW Dependabot PRs** created after the merges (pnpm group may regenerate).
 18. **Verify the `actions/checkout@v7` fork-PR hardening** doesn't break any existing workflow (v7 blocks `pull_request_target` fork checkouts).
 
 #### Testing
@@ -191,7 +191,7 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 
 #### DevEx
 
-26. **Add a `justfile`/flake target** for "regenerate everything" — runs gendocs to convergence + npm install + lockfile sync.
+26. **Add a `justfile`/flake target** for "regenerate everything" — runs gendocs to convergence + pnpm install + lockfile sync.
 27. **Add a pre-push hook** that verifies lockfile freshness — prevents the package.json/package-lock.json desync from recurring.
 28. **Document the Firebase deploy setup** in AGENTS.md — what secret is needed, how to refresh it.
 
@@ -212,14 +212,14 @@ I verified it **builds** (17 pages, CSP patched) but never actually **looked at 
 
 36. **Migrate `scripts/dedup.sh` to jscpd v5 native CLI** — drop the `.astro → .html` temp-dir copy if v5 handles `.astro` natively.
 37. **Investigate `compressHTML: 'jsx'` impact** — run a visual diff of built HTML before/after Astro 7.
-38. **Consider `pnpm` or `bun`** — npm install took 38s; faster package managers exist.
+38. **Consider `pnpm` or `bun`** — pnpm add took 38s; faster package managers exist.
 39. **Add a bundle-size budget** to Lighthouse CI — catches bloat from Astro 7 / Vite 8.
 40. **Evaluate removing the `html-validate` major bump** if v11 rules are too strict — was it necessary?
 41. **Check if `@astrojs/starlight@0.41.x` has breaking changes** vs 0.39.x — major version jump in a 0.x lib.
 42. **Verify `astro-og-canvas@0.12.0` works with Astro 7** — was bumped alongside.
 43. **Test the newsletter signup** added in `bf7c2b7` — does it render and submit correctly after Astro 7?
 44. **Audit the CSP `fix-csp.mjs` script** — does it still produce valid hashes with Vite 8?
-45. **Run `npm audit` on the new lockfile** — 0 vulnerabilities reported, but reconfirm after any transitive changes.
+45. **Run `pnpm audit` on the new lockfile** — 0 vulnerabilities reported, but reconfirm after any transitive changes.
 46. **Check the `sitemap-index.xml`** output — does it still list all 17 pages correctly?
 47. **Verify Pagefind search index** — 17 HTML files indexed; confirm search works post-build.
 48. **Review the `dependents.astro` a11y fixes** mentioned in AGENTS.md — still valid after Astro 7?

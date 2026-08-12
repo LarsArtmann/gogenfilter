@@ -20,7 +20,7 @@ Before starting the release process, verify ALL of the following:
 - [ ] **CHANGELOG is complete** — All changes since the last release are documented under `[Unreleased]`.
 - [ ] **No uncommitted changes** — `git status` is clean (BuildFlow auto-commits may create unexpected commits; verify the log).
 - [ ] **Commit message convention** — The release commit will use `release: vX.Y.Z` format.
-- [ ] **Website builds** — `cd website && npm run build` succeeds (if website files changed).
+- [ ] **Website builds** — `cd website && pnpm run build` succeeds (if website files changed).
 
 > **BuildFlow note**: BuildFlow runs continuously and may auto-commit changes mid-session.
 > Check `git log --oneline -5` and `git status` before tagging to ensure the working tree

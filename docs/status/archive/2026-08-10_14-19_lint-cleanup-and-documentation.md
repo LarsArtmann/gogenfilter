@@ -96,7 +96,7 @@ error recovery.
 
 ## b) PARTIALLY DONE ⚠️
 
-1. **Website typecheck/build not verified** — Updated `.mdx` files and `changelog.mdx` but did not run `cd website && npx astro check` or `npm run build` to verify the website compiles. The changes are text-only prose (no code/components), so risk is low, but unverified.
+1. **Website typecheck/build not verified** — Updated `.mdx` files and `changelog.mdx` but did not run `cd website && pnpm dlx astro check` or `pnpm run build` to verify the website compiles. The changes are text-only prose (no code/components), so risk is low, but unverified.
 
 2. **`TestExclusionDerivation` still has no dedicated SQLC case** — I added `TestScanSQLCExclusion` as a separate test function (which tests `ScanProject` end-to-end), but the existing `TestExclusionDerivation` function doesn't have a SQLC subtest alongside its oapi-codegen/ent/gqlgen/go-swagger/generic cases. This is a different test that tests `deriveExclusions` directly. The exclusion IS tested (via `TestExclusionPattern` table and `TestScanSQLCExclusion`), just not inside `TestExclusionDerivation`.
 
@@ -154,8 +154,8 @@ error recovery.
 ### P0 — Release blockers
 1. **Decide version**: v3.5.0 (behavioral change — new detection phase) — tag and release.
 2. **Move CHANGELOG `[Unreleased]` → version section** after version decision.
-3. **Run website typecheck**: `cd website && npx astro check` — verify updated `.mdx` files compile.
-4. **Run website build**: `cd website && npm run build` — verify no broken references.
+3. **Run website typecheck**: `cd website && pnpm dlx astro check` — verify updated `.mdx` files compile.
+4. **Run website build**: `cd website && pnpm run build` — verify no broken references.
 
 ### P1 — Correctness & coverage
 5. Add `FilterDetailedAndContent` config-aware test (assert `content == nil` when config hits).
@@ -236,5 +236,5 @@ error recovery.
 | `go generate ./...` | ✅ docs fresh (no diffs) |
 | `nix run .#lint` | ✅ **0 issues** (was 46) |
 | `nix flake check` | ✅ all checks passed |
-| `cd website && npx astro check` | ⬜ NOT RUN |
-| `cd website && npm run build` | ⬜ NOT RUN |
+| `cd website && pnpm dlx astro check` | ⬜ NOT RUN |
+| `cd website && pnpm run build` | ⬜ NOT RUN |

@@ -22,8 +22,8 @@ Removed all Plausible analytics from the website and tightened the Content Secur
 | **Go library (core)**       | ✓ Complete   | 34 source files, 25 test files, 9,766 lines, 98.2% coverage                                                  |
 | **Tests**                   | ✓ Passing    | `go test -race ./...` — all pass, race detector clean                                                        |
 | **Linter**                  | ✓ Clean      | `golangci-lint run` — 0 issues                                                                               |
-| **Website build**           | ✓ Passing    | `npm run build` — 19 pages built, PageFind index created                                                     |
-| **Website typecheck**       | ✓ Clean      | `npx astro check` — 0 errors, 0 warnings, 0 hints (27 files)                                                 |
+| **Website build**           | ✓ Passing    | `pnpm run build` — 19 pages built, PageFind index created                                                     |
+| **Website typecheck**       | ✓ Clean      | `pnpm dlx astro check` — 0 errors, 0 warnings, 0 hints (27 files)                                                 |
 | **Error system**            | ✓ Complete   | Branded errors `[gogenfilter:<code>]`, sentinel errors, `errors.AsType[T]` migration done                    |
 | **Phantom types**           | ✓ Complete   | Type-safe API boundaries                                                                                     |
 | **BDD test suite**          | ✓ Complete   | 175 ginkgo specs (`bdd_test.go` + `bdd_extended_test.go`)                                                    |

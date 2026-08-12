@@ -81,7 +81,7 @@
 | P3.10 | **Pre-commit hook** (golangci-lint on staged files) | 10 min | Medium | CI          | 🔲     |
 | P3.11 | **Starlight version check**                         | 3 min  | Low    | Maintenance | 🔲     |
 | P3.12 | **Astro version check**                             | 3 min  | Low    | Maintenance | 🔲     |
-| P3.13 | **npm security audit**                              | 5 min  | Medium | Security    | 🔲     |
+| P3.13 | **pnpm security audit**                              | 5 min  | Medium | Security    | 🔲     |
 | P3.14 | **Go security audit**                               | 5 min  | Medium | Security    | 🔲     |
 | P3.15 | **GitHub release workflow**                         | 15 min | Low    | DX          | 🔲     |
 | P3.16 | **Dependabot merge automation**                     | 5 min  | Low    | CI          | 🔲     |

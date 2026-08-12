@@ -92,7 +92,7 @@ This is a gap. The function is the single point of failure for all 4 table outpu
 ### Website build verification
 
 The MDX files changed (`generators.mdx`, `detection.mdx`). I did NOT run
-`cd website && npm run build` or `astro check` to verify the website still builds.
+`cd website && pnpm run build` or `astro check` to verify the website still builds.
 The changes are table-content-only (alignment whitespace), so risk is low — but
 unverified.
 
@@ -138,7 +138,7 @@ centralized table formatter.
    `git rm --cached gendocs`. The `//go:generate` directive already runs
    `go run ./cmd/gendocs`, so the binary is never needed at runtime.
 
-4. **Run the website build** — `cd website && npm run build` to confirm the
+4. **Run the website build** — `cd website && pnpm run build` to confirm the
    MDX changes don't break anything.
 
 ### Systemic (beyond this session)
@@ -172,7 +172,7 @@ Ordered by impact (highest first):
 1. Revert `makezero` cargo-cult on 3 lines in `formatMarkdownTable` → use `//nolint:makezero`
 2. Add unit tests for `formatMarkdownTable` (alignment, separator, empty, escaping)
 3. Untrack `gendocs` binary from git (`git rm --cached`, add to `.gitignore`)
-4. Run `cd website && npm run build` to verify MDX changes are safe
+4. Run `cd website && pnpm run build` to verify MDX changes are safe
 5. Run `cd website && astro check` for typecheck
 6. Investigate root cause: how did unaligned output pass CI in commit `1985cb4`?
 7. Add a CI assertion that checks markdown table alignment explicitly (not just idempotency)
@@ -200,7 +200,7 @@ Ordered by impact (highest first):
 
 21. Verify Starlight renders the aligned tables correctly
 22. Check if `html-validate` passes on the built website pages
-23. Run the dedup check: `cd website && npm run dedup`
+23. Run the dedup check: `cd website && pnpm run dedup`
 24. Verify `generators.mdx` count marker (`{/* gendocs:count:start */}18{/* ... */}`) is still correct
 25. Check if README.md renders correctly on GitHub (aligned tables in source view)
 

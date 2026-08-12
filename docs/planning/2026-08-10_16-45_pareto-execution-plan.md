@@ -58,7 +58,7 @@ Everything else is polish, infrastructure, or external:
 | 14 | Design custom detector registration API | LOW | 60 min | Depends on v4 decision |
 | 15 | Resolve art-dupl upstream breakage | LOW | 60 min+ | External repo |
 | 16 | Migrate to Go 1.27 | LOW | 120 min | Toolchain assessment |
-| 17 | Audit npm overrides | LOW | 10 min | None |
+| 17 | Audit pnpm overrides | LOW | 10 min | None |
 | 18 | Lighthouse CI gate-vs-monitor policy | MEDIUM | 30 min | Needs GitHub App token |
 | 19 | Prune GCP service account keys | LOW | 30 min | Needs gcloud auth |
 | 20 | Create api/filter.mdx website page | LOW | 45 min | None |
@@ -91,7 +91,7 @@ Sorted by importance / impact / effort / customer-value.
 | M9 | **Add pre-release checklist to RELEASING.md** — CI-green-at-tag + commit convention check | 20% | MEDIUM | 30 min | No | None |
 | M10 | **BDD specs for content-return APIs** — FilterWithContent, FilterDetailedWithContent, FilterDetailedAndContent | 20% | MEDIUM | 30 min | No | None |
 | M11 | **Annotate + harvest 7 Aug-10 status reports** — inline strikethrough + TODO_LIST extraction | 20% | MEDIUM | 45 min | No | None |
-| M12 | **Audit npm overrides** — check if brace-expansion, devalue, vite, yaml overrides still needed | 80% | LOW | 10 min | No | None |
+| M12 | **Audit pnpm overrides** — check if brace-expansion, devalue, vite, yaml overrides still needed | 80% | LOW | 10 min | No | None |
 | M13 | **Verify pkg.go.dev + go install v3.4.0** — post-release verification | 80% | LOW | 15 min | Network | None |
 | M14 | **Fix gomod-check + flake.nix meta** — direct/indirect mixed + homepage/platforms attrs | 80% | LOW | 15 min | No | None |
 | M15 | **Extract vendorHash to vendorHash.nix** — cleaner diffs for dep updates | 80% | LOW | 15 min | No | None |
@@ -159,7 +159,7 @@ Each medium task decomposed into subtasks that fit in a single focused sprint.
 | # | Subtask | Effort |
 |---|---------|--------|
 | F16 | Read `.github/workflows/lighthouse.yml` and `lighthouserc.json` | 5 min |
-| F17 | Run Lighthouse locally on the website (`cd website && npm run build && npx lighthouse ...`) | 12 min |
+| F17 | Run Lighthouse locally on the website (`cd website && pnpm run build && pnpm dlx lighthouse ...`) | 12 min |
 | F18 | Identify specific a11y failures: `color-contrast`, `label-content-name-mismatch`, `redirects` | 10 min |
 | F19 | If fixable: fix CSS/component issues in website source | 12 min |
 | F20 | If not fixable now: downgrade assertions from `error` to `warn` in `lighthouserc.json` | 5 min |
@@ -171,7 +171,7 @@ Each medium task decomposed into subtasks that fit in a single focused sprint.
 
 | # | Subtask | Effort |
 |---|---------|--------|
-| F24 | `cd website && npm run dev` — start local dev server | 5 min |
+| F24 | `cd website && pnpm run dev` — start local dev server | 5 min |
 | F25 | Screenshot landing page: dark theme, light theme, mobile viewport | 10 min |
 | F26 | Screenshot docs pages: generators, detection, quick-start, changelog | 12 min |
 | F27 | Check colors, gradients, syntax highlighting (dracula theme), OG images, logo | 12 min |
@@ -224,7 +224,7 @@ Each medium task decomposed into subtasks that fit in a single focused sprint.
 
 | # | Subtask | Effort |
 |---|---------|--------|
-| F47 | M12: Audit npm overrides — check each against latest Dependabot alerts | 10 min |
+| F47 | M12: Audit pnpm overrides — check each against latest Dependabot alerts | 10 min |
 | F48 | M13: Verify pkg.go.dev shows v3.4.0 + test `go install` | 12 min |
 | F49 | M14: Fix gomod-check (split direct/indirect in go.mod) + add flake.nix meta attrs | 12 min |
 | F50 | M15: Extract vendorHash to `vendorHash.nix` files (root + website) | 12 min |
@@ -279,7 +279,7 @@ graph TD
     end
 
     subgraph P80["Remaining 20% — Polish & Infrastructure"]
-        M12[M12: Audit npm overrides]
+        M12[M12: Audit pnpm overrides]
         M13[M13: Verify pkg.go.dev + go install]
         M14[M14: Fix gomod-check + flake.nix meta]
         M15[M15: Extract vendorHash.nix]

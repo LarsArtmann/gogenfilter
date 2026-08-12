@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-26 04:52
 **Branch:** master
-**Head:** `bee1640` fix(ci): correct art-dupl module path, use npm install for override
+**Head:** `bee1640` fix(ci): correct art-dupl module path, use pnpm add for override
 **Tests:** PASS (99.8% coverage, race detector clean)
 **Lint:** 0 issues
 **Working tree:** CLEAN, pushed
@@ -18,9 +18,9 @@
 | `15ca9e0` | govulncheck added to root flake.nix devShell + app                |
 | `4129114` | Inlined filteredResult/notFilteredResult helpers + .gitignore fix |
 | `6a31bc6` | Extracted errorPrefixFmt constant from 8 format strings           |
-| `fd2a2dc` | npm audit --audit-level=high added to Website CI                  |
+| `fd2a2dc` | pnpm audit --audit-level=high added to Website CI                  |
 | `878cd01` | art-dupl code duplication check added to Go CI                    |
-| `bee1640` | Fixed art-dupl module path, npm ci → npm install for override     |
+| `bee1640` | Fixed art-dupl module path, pnpm install --frozen-lockfile → pnpm add for override     |
 
 ### All Sessions Combined (40+ commits across 5 sessions)
 
@@ -34,7 +34,7 @@
 | Error system             | Double-wrap bug fixed, prefix constant extracted                                     |
 | Detection code           | 13 magic strings → named constants, helpers inlined                                  |
 | Dependabot PRs           | 9 resolved (5 merged, 4 superseded)                                                  |
-| CI hardening             | govulncheck, art-dupl, npm audit, import path check, stale ref check, CHANGELOG sync |
+| CI hardening             | govulncheck, art-dupl, pnpm audit, import path check, stale ref check, CHANGELOG sync |
 | Release workflow         | All 4 actions updated to current versions                                            |
 | Infrastructure           | Root + website flake.nix with Node.js + govulncheck                                  |
 | Cleanup                  | 15 stale status reports archived, 4 old diagrams removed                             |
@@ -45,10 +45,10 @@
 
 ### devalue CVE (Dependabot alert #3)
 
-- `package.json` override added → npm will install 5.8.1+
-- `npm ci` changed to `npm install` so override takes effect in CI
-- npm audit step added as `continue-on-error` until lockfile is regenerated
-- **Lockfile still shows 5.8.0** — needs `cd website && npm install` locally, then commit lockfile
+- `package.json` override added → pnpm will install 5.8.1+
+- `pnpm install --frozen-lockfile` changed to `pnpm install` so override takes effect in CI
+- pnpm audit step added as `continue-on-error` until lockfile is regenerated
+- **Lockfile still shows 5.8.0** — needs `cd website && pnpm install` locally, then commit lockfile
 
 ### Lighthouse CI
 
@@ -60,8 +60,8 @@
 ## c) NOT STARTED
 
 1. Configure `LHCI_GITHUB_APP_TOKEN` secret (needs user action)
-2. Fix devalue lockfile (needs local npm install + commit)
-3. Verify CI passes after art-dupl + npm install fixes
+2. Fix devalue lockfile (needs local pnpm install + commit)
+3. Verify CI passes after art-dupl + pnpm add fixes
 4. Broken link checker for Website CI
 5. CHANGELOG automation (CI check exists, not derivation)
 6. Migration guide v2 → v3
@@ -78,9 +78,9 @@
 
 Used `github.com/goreleaser/art-dupl` — wrong path. The actual module is `github.com/LarsArtmann/art-dupl/cmd/art-dupl`. Fixed in `bee1640`.
 
-### npm ci vs override Conflict (fd2a2dc)
+### pnpm install --frozen-lockfile vs override Conflict (fd2a2dc)
 
-Added devalue override to package.json but didn't update lockfile. `npm ci` strictly validates lockfile → failed. Fixed by switching to `npm install` which resolves overrides. The better fix would be to run `npm install` locally and commit the updated lockfile.
+Added devalue override to package.json but didn't update lockfile. `pnpm install --frozen-lockfile` strictly validates lockfile → failed. Fixed by switching to `pnpm install` which resolves overrides. The better fix would be to run `pnpm install` locally and commit the updated lockfile.
 
 ### go-structure-linter False Positives
 
@@ -92,8 +92,8 @@ This linter doesn't understand standard Go library layout (root-level .go files)
 
 ### CI Pipeline
 
-1. Verify art-dupl + npm install fixes pass in the current CI run
-2. Commit updated lockfile after npm install resolves devalue override
+1. Verify art-dupl + pnpm add fixes pass in the current CI run
+2. Commit updated lockfile after pnpm add resolves devalue override
 
 ### Still Missing
 
@@ -107,9 +107,9 @@ This linter doesn't understand standard Go library layout (root-level .go files)
 
 | #     | Priority | Task                                           | Effort |
 | ----- | -------- | ---------------------------------------------- | ------ |
-| 1     | P0       | Verify CI passes (art-dupl + npm install)      | 5 min  |
+| 1     | P0       | Verify CI passes (art-dupl + pnpm install)      | 5 min  |
 | 2     | P0       | Configure LHCI_GITHUB_APP_TOKEN                | 10 min |
-| 3     | P0       | Commit updated npm lockfile with devalue 5.8.1 | 5 min  |
+| 3     | P0       | Commit updated pnpm lockfile with devalue 5.8.1 | 5 min  |
 | 4     | P1       | Add broken link checker to Website CI          | 30 min |
 | 5     | P1       | Add fuzz testing target to CI                  | 30 min |
 | 6     | P2       | Create migration guide v2 → v3                 | 30 min |
@@ -130,7 +130,7 @@ This linter doesn't understand standard Go library layout (root-level .go files)
 
 **No more blockers I can't resolve.**
 
-The only remaining items require user action (LHCI app token, local npm install for lockfile). Everything else is either done or prioritized. CI is re-running now to verify the fixes.
+The only remaining items require user action (LHCI app token, local pnpm add for lockfile). Everything else is either done or prioritized. CI is re-running now to verify the fixes.
 
 ---
 
@@ -141,7 +141,7 @@ The only remaining items require user action (LHCI app token, local npm install 
 | Test coverage       | 99.8%                                        |
 | Lint issues         | 0                                            |
 | Go production vulns | 0                                            |
-| npm high vulns      | 1 (devalue, override pending lockfile)       |
+| pnpm high vulns      | 1 (devalue, override pending lockfile)       |
 | Open PRs            | 0                                            |
 | Open issues         | 0                                            |
 | CI jobs             | 4 (test, vulncheck, lint, dedup)             |

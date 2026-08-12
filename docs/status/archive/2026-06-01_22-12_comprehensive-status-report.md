@@ -103,7 +103,7 @@ Same as previous report — all 7 source files stable, 99.8% coverage, 160 tests
 | Item                                      | Priority | Notes                                                  |
 | ----------------------------------------- | -------- | ------------------------------------------------------ |
 | Fix `goconst` lint warning                | LOW      | 3x repeated string in `example_test.go`. 2-min fix.    |
-| Resolve Dependabot npm alerts (4)         | LOW      | All in website transitive deps, not Go production code |
+| Resolve Dependabot pnpm alerts (4)         | LOW      | All in website transitive deps, not Go production code |
 | Lighthouse accessibility fixes            | MEDIUM   | color-contrast and label issues on root page           |
 | Create `TODO_LIST.md`                     | MEDIUM   | Third report identifying this gap                      |
 | Create `ROADMAP.md`                       | MEDIUM   | Third report identifying this gap                      |
@@ -122,7 +122,7 @@ Nothing is broken. This session eliminated the one active issue (CSP violations)
 **Annoyances remaining:**
 
 - Lighthouse CI dead weight — runs but produces no actionable status checks
-- 4 npm Dependabot alerts — noise, no production impact
+- 4 pnpm Dependabot alerts — noise, no production impact
 - `TODO_LIST.md` and `ROADMAP.md` still don't exist after being flagged in 3 consecutive status reports
 - `goconst` lint warning — 2 minutes to fix, still outstanding
 - 12 archived status reports in `docs/status/` — could benefit from a "current only" convention
@@ -137,7 +137,7 @@ Nothing is broken. This session eliminated the one active issue (CSP violations)
 2. **Create `TODO_LIST.md`** — stop identifying this as a gap and actually do it
 3. **Create `ROADMAP.md`** — even a minimal "maintenance mode vs v4" decision would be valuable
 4. **Configure or remove Lighthouse CI** — dead CI is worse than no CI
-5. **Resolve npm Dependabot alerts** — `npm audit fix` or add override
+5. **Resolve pnpm Dependabot alerts** — `pnpm audit fix` or add override
 
 ### Short-term (this week)
 
@@ -172,7 +172,7 @@ Nothing is broken. This session eliminated the one active issue (CSP violations)
 | 1   | Create `TODO_LIST.md`             | High   | 30 min | Flagged 3 times, just do it        |
 | 2   | Create `ROADMAP.md`               | High   | 30 min | Flagged 3 times, strategic clarity |
 | 3   | Fix `goconst` lint                | Low    | 2 min  | Persistent warning                 |
-| 4   | Resolve npm Dependabot alerts     | Low    | 10 min | Alert noise reduction              |
+| 4   | Resolve pnpm Dependabot alerts     | Low    | 10 min | Alert noise reduction              |
 | 5   | Configure or remove Lighthouse CI | Medium | 15 min | Dead CI cleanup                    |
 
 ### Tier 2: Short-term (this week)
@@ -246,5 +246,5 @@ The `TODO_LIST.md` and `ROADMAP.md` we keep flagging but not creating would lite
 | CI workflows          | 5                     | —                         |
 | Open issues           | 0                     | —                         |
 | Open PRs              | 0                     | —                         |
-| Dependabot alerts     | 4 (npm transitive)    | —                         |
+| Dependabot alerts     | 4 (pnpm transitive)    | —                         |
 | Lint issues           | 1 (`goconst`)         | —                         |

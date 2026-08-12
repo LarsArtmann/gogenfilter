@@ -54,7 +54,7 @@ Fixed ALL Content Security Policy (CSP) violations on the website through a comb
 
 ### Firebase Deploy
 
-- **Build** works correctly (`npm run build` runs `astro build && node scripts/fix-csp.mjs`)
+- **Build** works correctly (`pnpm run build` runs `astro build && node scripts/fix-csp.mjs`)
 - **Deploy** fails with authentication error: `Failed to authenticate, have you run firebase login?`
 - The `GOOGLE_APPLICATION_CREDENTIALS` service account key is likely expired
 - **Needs:** Rotation of the Firebase service account key in GitHub secrets
@@ -115,7 +115,7 @@ The `INLINE_SCRIPT_RE` regex matches `<script type="application/ld+json">` block
 
 5. **Upgrade Astro** — Dependabot PR #21 bumps astro 6.3.1 → 6.4.2. May fix CSP hashing gaps natively
 6. **Lighthouse a11y fixes** — `color-contrast` on root page, `redirects` on `/docs`
-7. **Merge Dependabot PRs** — 5 open PRs for npm dependency bumps, all pass Website CI
+7. **Merge Dependabot PRs** — 5 open PRs for pnpm dependency bumps, all pass Website CI
 
 ### Architecture
 
