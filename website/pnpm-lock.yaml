@@ -31,8 +31,8 @@ importers:
         specifier: ^0.9.9
         version: 0.9.10(prettier@3.9.6)(typescript@6.0.3)
       html-validate:
-        specifier: ^11.5.3
-        version: 11.6.2
+        specifier: ^11.9.0
+        version: 11.9.0
       jscpd:
         specifier: ^5.0.11
         version: 5.0.14
@@ -1448,8 +1448,8 @@ packages:
   html-escaper@3.0.3:
     resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
 
-  html-validate@11.6.2:
-    resolution: {integrity: sha512-dlAAEeWOOdv9ya/n3pdSFTzzzGlrw+ZI43J/39zBgCSqzSg24lyqrouuBP9MEkSFAtXVZm64F35mlL7m43jCNA==}
+  html-validate@11.9.0:
+    resolution: {integrity: sha512-1Cb59pOtvIUSkV+os+YNqYyhueSYrErkABIAWObjSNv5V84TlRLLOSQrCc9y8A93zqtMcOCxZ/MdFqo63nx14w==}
     engines: {node: ^22.22.0 || >= 24.8.0}
     hasBin: true
     peerDependencies:
@@ -4139,7 +4139,7 @@ snapshots:
 
   html-escaper@3.0.3: {}
 
-  html-validate@11.6.2:
+  html-validate@11.9.0:
     dependencies:
       '@html-validate/stylish': 6.0.0
       '@sidvind/better-ajv-errors': 7.0.0(ajv@8.20.0)
