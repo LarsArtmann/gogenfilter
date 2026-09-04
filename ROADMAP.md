@@ -53,13 +53,13 @@ Ongoing maintenance tasks — see [TODO_LIST.md](TODO_LIST.md) for the tracked i
 golangci-lint is the most widely used Go linter (>50k GitHub stars, de facto standard). Its built-in
 generated file detection is limited:
 
-| Feature | golangci-lint built-in | gogenfilter |
-|---------|----------------------|-------------|
-| `// Code generated` comment | lax + strict mode | yes (header-only, Go-spec compliant) |
-| Filename patterns (*.sql.go, *_templ.go) | no | yes (18 generators) |
-| Config-aware (sqlc.yaml output dirs) | no | yes |
-| Custom detector registration | no | planned (v4) |
-| Exclusion pattern derivation | no | yes (ScanProject → regex patterns) |
+| Feature                                  | golangci-lint built-in | gogenfilter                          |
+| ---------------------------------------- | ---------------------- | ------------------------------------ |
+| `// Code generated` comment              | lax + strict mode      | yes (header-only, Go-spec compliant) |
+| Filename patterns (*.sql.go, *_templ.go) | no                     | yes (18 generators)                  |
+| Config-aware (sqlc.yaml output dirs)     | no                     | yes                                  |
+| Custom detector registration             | no                     | planned (v4)                         |
+| Exclusion pattern derivation             | no                     | yes (ScanProject → regex patterns)   |
 
 gogenfilter fills a real gap: it detects files golangci-lint misses.
 
@@ -69,6 +69,7 @@ golangci-lint v2 supports **module plugins** — compile-time embedding via `.cu
 This avoids the platform-restricted Go `plugin` package.
 
 The plugin will:
+
 1. Implement the `register.LinterPlugin` interface (`BuildAnalyzers()`, `GetLoadMode()`)
 2. Use `go/analysis` to inspect `pass.Files` — bridging gogenfilter's file-level detection to the
    `go/analysis` package-level model
