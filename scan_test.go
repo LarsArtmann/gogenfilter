@@ -232,13 +232,13 @@ func TestExclusionPattern(t *testing.T) {
 		{ReasonStringer, true},
 		{ReasonMockery, true},
 		{ReasonEasyjson, true},
-		{ReasonMsgp, false},
+		{ReasonMsgp, true},
 		{ReasonCounterfeiter, true},
 		{ReasonEnt, false},
 		{ReasonGqlgen, false},
 		{ReasonGoSwagger, false},
 		{ReasonSQLC, true},
-		{ReasonOapi, false},
+		{ReasonOapi, true},
 		{ReasonGeneric, false},
 		{ReasonNotFiltered, false},
 		{ReasonOutsideScope, false},
@@ -281,13 +281,13 @@ func TestExclusionDerivation(t *testing.T) {
 		foundGenGo := false
 
 		for _, p := range patterns {
-			if strings.Contains(p, ".gen.go") {
+			if p == `\.gen\.go$` {
 				foundGenGo = true
 			}
 		}
 
 		if !foundGenGo {
-			t.Errorf("expected .gen.go exclusion pattern for oapi-codegen, got %v", patterns)
+			t.Errorf("expected escaped .gen.go exclusion pattern for oapi-codegen, got %v", patterns)
 		}
 	})
 

@@ -223,14 +223,14 @@ func deriveExclusions(byGenerator map[string][]string, allGoFiles []string) []Ex
 	exclusions := make([]Exclusion, 0, len(detectedAll))
 
 	for generator, files := range byGenerator {
-		for _, e := range exclusionsForGenerator(generator, files, allGoFiles, detectedAll) {
-			if _, dup := seen[e.Pattern]; dup {
+		for _, exclusion := range exclusionsForGenerator(generator, files, allGoFiles, detectedAll) {
+			if _, dup := seen[exclusion.Pattern]; dup {
 				continue
 			}
 
-			seen[e.Pattern] = struct{}{}
+			seen[exclusion.Pattern] = struct{}{}
 
-			exclusions = append(exclusions, e)
+			exclusions = append(exclusions, exclusion)
 		}
 	}
 
@@ -374,14 +374,18 @@ func allFilesMatch(files []string, pattern string) bool {
 		return false
 	}
 
+	matched := true
+
 	for _, f := range files {
-		matched, matchErr := regexp.MatchString(pattern, f)
-		if matchErr != nil || !matched {
-			return false
+		fileMatched, matchErr := regexp.MatchString(pattern, f)
+		if matchErr != nil || !fileMatched {
+			matched = false
+
+			break
 		}
 	}
 
-	return true
+	return matched
 }
 
 // ExclusionPaths extracts just the pattern strings from a slice of Exclusions.
