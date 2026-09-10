@@ -569,13 +569,13 @@ func TestExclusionDerivation(t *testing.T) {
 
 		found := false
 
-		for _, p := range patterns {
-			if p == `^ent/generated/` {
+		for _, pattern := range patterns {
+			if pattern == `^ent/generated/` {
 				found = true
 			}
 
-			if p == `^ent/generated/predicate/` {
-				t.Errorf("redundant child dir pattern %s alongside parent, got %v", p, patterns)
+			if pattern == `^ent/generated/predicate/` {
+				t.Errorf("redundant child dir pattern %s alongside parent, got %v", pattern, patterns)
 			}
 		}
 

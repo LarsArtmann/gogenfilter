@@ -294,6 +294,7 @@ func scopedExclusions(
 	reason string,
 ) []Exclusion {
 	byDir := make(map[string][]string)
+
 	for _, f := range files {
 		dir := filepath.Dir(f)
 		byDir[dir] = append(byDir[dir], f)
