@@ -65,7 +65,7 @@ type websiteMeta struct {
 // If a detector exists without an entry here, gendocs exits with an error,
 // ensuring new detectors get website data before they can drift.
 //
-//nolint:gochecknoglobals // immutable lookup table; generator names are keys, not constants
+//nolint:gochecknoglobals,goconst // immutable lookup table; generator names are keys, not constants
 var websiteMetadata = map[string]websiteMeta{
 	"sqlc":          {logo: "/logos/sqlc.png", displayFile: "*.sql.go"},
 	"templ":         {logo: "/logos/templ.svg", displayFile: "_templ.go"},
