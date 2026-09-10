@@ -6,10 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v3.6.0] — 2026-09-10
+
 ### Added
 
 - **golangci-lint v2 module plugin** — New `plugin/` package implementing `register.LinterPlugin` for golangci-lint v2. Detects auto-generated Go files using gogenfilter and reports diagnostics naming the detected generator. Supports `generators` and `exclude-paths` configuration. Separate Go module (`github.com/LarsArtmann/gogenfilter/plugin`) to isolate golangci-lint dependencies from the main library. See `plugin/README.md` and ADR 004 for details.
 - **ADR 004** — Architecture decision record for the golangci-lint module plugin design.
+- **Regression specs for the scoped derivation policy**: mixed-directory per-file fallback, fully-generated directory pattern, nested-directory parent-only emission, root-level per-file handling, partial and full preset coverage.
+
+### Fixed
+
+- **Scoped exclusion derivation closes the blanket-directory-exclusion trap.** A single detected generated file in a directory with hand-written neighbors no longer excludes the whole directory. Directory patterns (`^dir/`) are emitted only when EVERY `.go` file under the directory (recursively) is detected as generated; mixed directories get precise per-file patterns (`^path$`) instead. Directory and per-file patterns are now `^`-anchored, so a fully-generated `ent/` no longer matches unrelated `client/ent/` paths. Nested fully-generated directories emit only the parent pattern (no redundant child entries). Root-level generated files always use per-file patterns.
+
+### Changed
+
+- **Filename-convention presets now require full coverage.** A generator's fixed exclusion pattern is emitted only when it matches every detected file of that generator (previously: emitted unconditionally, potentially matching none of the detected files). Content-detected files that don't follow the filename convention (e.g. old-style sqlc `models.go` without `.sql.go` suffix) fall to scoped per-file/dir derivation instead of being silently uncovered.
+- **msgp and oapi-codegen now have fixed exclusion patterns.** `ReasonMsgp.ExclusionPattern()` returns `_gen\.go$`, `ReasonOapi.ExclusionPattern()` returns `\.gen\.go$` (replacing the ad-hoc `.gen.go$` derivation, which was missing the escaped literal dot and could match unintended files like `xgen.go`). msgp and oapi files therefore no longer derive directory-based patterns in the common case.
+- **go directive normalized to minor-only** (`go 1.26`, was `go 1.26.5`) per the toolchain policy: patch pins break `GOTOOLCHAIN=local` builds when the installed toolchain lags.
 
 ## [v3.5.0] — 2026-08-10
 
