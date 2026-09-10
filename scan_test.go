@@ -419,7 +419,7 @@ func TestExclusionDerivation(t *testing.T) {
 		}
 	})
 
-	t.Run("msgp uses directory-based exclusion with specific reason", func(t *testing.T) {
+	t.Run("msgp uses fixed _gen.go pattern with specific reason", func(t *testing.T) {
 		t.Parallel()
 
 		fsys := fstest.MapFS{
@@ -454,11 +454,12 @@ func TestExclusionDerivation(t *testing.T) {
 		}
 	})
 
-	t.Run("sqlc deriveExclusions returns fixed .sql.go pattern", func(t *testing.T) {
+	t.Run("sqlc with partially matching filenames uses scoped directory pattern", func(t *testing.T) {
 		t.Parallel()
 
-		// Direct deriveExclusions test: SQLC has a fixed exclusion pattern,
-		// so it should NOT use directory-based derivation.
+		// Old-style sqlc output (models.go) has no .sql.go suffix, so the fixed
+		// pattern does not fully cover the detected files. The db/ directory is
+		// fully generated, so a scoped directory pattern covers everything.
 		byGenerator := map[string][]string{
 			string(ReasonSQLC): {
 				"db/query.sql.go",
@@ -466,8 +467,27 @@ func TestExclusionDerivation(t *testing.T) {
 				"db/user.sql.go",
 			},
 		}
+		allGoFiles := []string{"db/query.sql.go", "db/models.go", "db/user.sql.go"}
 
-		exclusions := deriveExclusions(byGenerator)
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
+		if len(exclusions) != 1 {
+			t.Fatalf("expected 1 exclusion for sqlc, got %d: %v", len(exclusions), exclusions)
+		}
+
+		exc := exclusions[0]
+		assertEqual(t, "Pattern", exc.Pattern, `^db/`)
+		assertEqual(t, "Reason", exc.Reason, "sqlc generated database code")
+	})
+
+	t.Run("sqlc with fully matching filenames uses fixed pattern", func(t *testing.T) {
+		t.Parallel()
+
+		byGenerator := map[string][]string{
+			string(ReasonSQLC): {"db/query.sql.go", "other/user.sql.go"},
+		}
+		allGoFiles := []string{"db/query.sql.go", "other/user.sql.go", "main.go"}
+
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
 		if len(exclusions) != 1 {
 			t.Fatalf("expected 1 exclusion for sqlc, got %d: %v", len(exclusions), exclusions)
 		}
@@ -477,6 +497,110 @@ func TestExclusionDerivation(t *testing.T) {
 		assertEqual(t, "Reason", exc.Reason, "sqlc generated database code")
 	})
 
+	t.Run("mixed directory never gets a directory pattern", func(t *testing.T) {
+		t.Parallel()
+
+		// ent/client.go is detected, but hand-written schema/user.go shares the
+		// directory tree. A directory pattern would blanket-exclude the hand-written
+		// file, so per-file patterns are required.
+		byGenerator := map[string][]string{
+			string(ReasonEnt): {"ent/client.go", "ent/mutation.go"},
+		}
+		allGoFiles := []string{"ent/client.go", "ent/mutation.go", "ent/schema/user.go"}
+
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
+		patterns := ExclusionPaths(exclusions)
+
+		for _, p := range patterns {
+			if strings.HasSuffix(p, "/") {
+				t.Errorf("mixed directory must not produce a directory pattern, got %v", patterns)
+			}
+		}
+
+		expected := map[string]bool{
+			`^ent/client\.go$`:   false,
+			`^ent/mutation\.go$`: false,
+		}
+
+		for _, p := range patterns {
+			if _, ok := expected[p]; ok {
+				expected[p] = true
+			}
+		}
+
+		for p, found := range expected {
+			if !found {
+				t.Errorf("expected per-file pattern %s, got %v", p, patterns)
+			}
+		}
+	})
+
+	t.Run("fully generated directory uses anchored directory pattern", func(t *testing.T) {
+		t.Parallel()
+
+		byGenerator := map[string][]string{
+			string(ReasonGqlgen): {"graph/generated.go", "graph/models.go"},
+		}
+		allGoFiles := []string{"graph/generated.go", "graph/models.go", "main.go"}
+
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
+		if len(exclusions) != 1 {
+			t.Fatalf("expected 1 exclusion for gqlgen, got %d: %v", len(exclusions), exclusions)
+		}
+
+		exc := exclusions[0]
+		assertEqual(t, "Pattern", exc.Pattern, `^graph/`)
+	})
+
+	t.Run("nested generated directories emit only the parent pattern", func(t *testing.T) {
+		t.Parallel()
+
+		byGenerator := map[string][]string{
+			string(ReasonEnt): {"ent/generated/client.go", "ent/generated/predicate/predicate.go"},
+		}
+		allGoFiles := []string{
+			"ent/generated/client.go",
+			"ent/generated/predicate/predicate.go",
+			"ent/schema/user.go",
+		}
+
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
+		patterns := ExclusionPaths(exclusions)
+
+		found := false
+
+		for _, p := range patterns {
+			if p == `^ent/generated/` {
+				found = true
+			}
+
+			if p == `^ent/generated/predicate/` {
+				t.Errorf("redundant child dir pattern %s alongside parent, got %v", p, patterns)
+			}
+		}
+
+		if !found {
+			t.Errorf("expected parent dir pattern ^ent/generated/, got %v", patterns)
+		}
+	})
+
+	t.Run("root-level generated files use per-file patterns", func(t *testing.T) {
+		t.Parallel()
+
+		byGenerator := map[string][]string{
+			string(ReasonGeneric): {"zz_generated.deepcopy.go"},
+		}
+		allGoFiles := []string{"main.go", "zz_generated.deepcopy.go"}
+
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
+		if len(exclusions) != 1 {
+			t.Fatalf("expected 1 exclusion, got %d: %v", len(exclusions), exclusions)
+		}
+
+		exc := exclusions[0]
+		assertEqual(t, "Pattern", exc.Pattern, `^zz_generated\.deepcopy\.go$`)
+	})
+
 	t.Run("sqlc mixed with directory-based generator uses both patterns", func(t *testing.T) {
 		t.Parallel()
 
@@ -484,8 +608,9 @@ func TestExclusionDerivation(t *testing.T) {
 			string(ReasonSQLC):   {"db/query.sql.go"},
 			string(ReasonGqlgen): {"graph/generated.go"},
 		}
+		allGoFiles := []string{"db/query.sql.go", "graph/generated.go"}
 
-		exclusions := deriveExclusions(byGenerator)
+		exclusions := deriveExclusions(byGenerator, allGoFiles)
 		patterns := ExclusionPaths(exclusions)
 
 		foundSQLCPattern := false
@@ -496,7 +621,7 @@ func TestExclusionDerivation(t *testing.T) {
 				foundSQLCPattern = true
 			}
 
-			if strings.Contains(p, "graph") {
+			if p == `^graph/` {
 				foundDirPattern = true
 			}
 		}
@@ -506,7 +631,7 @@ func TestExclusionDerivation(t *testing.T) {
 		}
 
 		if !foundDirPattern {
-			t.Errorf("expected directory-based pattern for gqlgen, got %v", patterns)
+			t.Errorf("expected anchored directory pattern for gqlgen, got %v", patterns)
 		}
 	})
 }

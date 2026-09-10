@@ -78,7 +78,9 @@ var exclusionPatterns = map[FilterReason]string{
 	ReasonStringer:      `_string\.go$`,
 	ReasonMockery:       `mock_.*\.go$`,
 	ReasonEasyjson:      `_easyjson\.go$`,
+	ReasonMsgp:          `_gen\.go$`,
 	ReasonCounterfeiter: `fake_.*\.go$`,
+	ReasonOapi:          `\.gen\.go$`,
 }
 
 // ExclusionPattern returns a fixed regex pattern for generators that have
@@ -152,7 +154,7 @@ func ScanProject(fsys fs.FS, configs ...FilterConfig) (*ScanResult, error) {
 
 	sort.Strings(generators)
 
-	exclusions := deriveExclusions(byGenerator)
+	exclusions := deriveExclusions(byGenerator, goFiles)
 
 	return &ScanResult{
 		Files:        files,
@@ -203,19 +205,33 @@ func shouldSkipScanDir(name string) bool {
 }
 
 // deriveExclusions converts detected files into exclusion patterns.
-// Generators with fixed filename patterns use ExclusionPattern().
-// Others (oapi-codegen, ent, gqlgen, generic) use directory-based patterns.
-func deriveExclusions(byGenerator map[string][]string) []Exclusion {
-	// Count total possible entries for preallocation.
-	maxExclusions := 0
+// Generators with fixed filename conventions use ExclusionPattern(), but only
+// when the pattern matches every detected file of that generator. Others use
+// scoped derivation: a directory pattern when the directory is fully generated,
+// precise per-file patterns otherwise.
+func deriveExclusions(byGenerator map[string][]string, allGoFiles []string) []Exclusion {
+	detectedAll := make(map[string]struct{})
+
 	for _, files := range byGenerator {
-		maxExclusions += len(files)
+		for _, f := range files {
+			detectedAll[f] = struct{}{}
+		}
 	}
 
-	exclusions := make([]Exclusion, 0, maxExclusions)
+	seen := make(map[string]struct{})
+
+	exclusions := make([]Exclusion, 0, len(detectedAll))
 
 	for generator, files := range byGenerator {
-		exclusions = append(exclusions, exclusionsForGenerator(generator, files)...)
+		for _, e := range exclusionsForGenerator(generator, files, allGoFiles, detectedAll) {
+			if _, dup := seen[e.Pattern]; dup {
+				continue
+			}
+
+			seen[e.Pattern] = struct{}{}
+
+			exclusions = append(exclusions, e)
+		}
 	}
 
 	sort.Slice(exclusions, func(i, j int) bool {
@@ -247,64 +263,125 @@ func generatorExclusionReasons() map[string]string {
 	}
 }
 
-func exclusionsForGenerator(generator string, files []string) []Exclusion {
-	if pattern, ok := FilterReason(generator).ExclusionPattern(); ok {
-		reason := generatorExclusionReasons()[generator]
+func exclusionsForGenerator(
+	generator string,
+	files []string,
+	allGoFiles []string,
+	detectedAll map[string]struct{},
+) []Exclusion {
+	reason := generatorExclusionReasons()[generator]
+	if reason == "" {
+		reason = "auto-generated code"
+	}
 
+	if pattern, ok := FilterReason(generator).ExclusionPattern(); ok && allFilesMatch(files, pattern) {
 		return []Exclusion{{Pattern: pattern, Reason: reason}}
 	}
 
-	switch generator {
-	case string(FilterOapi):
-		return oapiExclusions(files)
-	case string(FilterEnt), string(FilterGqlgen), string(FilterGoSwagger), string(FilterGeneric):
-		return dirBasedExclusions(files, generatorExclusionReasons()[generator])
-	default:
-		reason, ok := generatorExclusionReasons()[generator]
-		if !ok {
-			reason = "auto-generated code"
-		}
-
-		return dirBasedExclusions(files, reason)
-	}
+	return scopedExclusions(files, allGoFiles, detectedAll, reason)
 }
 
-// oapiExclusions generates exclusion patterns for oapi-codegen files.
-func oapiExclusions(files []string) []Exclusion {
+// scopedExclusions derives exclusion patterns for generators without a fixed
+// filename convention covering all their detected files. A directory pattern
+// is emitted only when every .go file under the directory (recursively) is
+// detected as generated; mixed directories get one precise per-file pattern
+// per detected file instead, so a single detected file can never blanket-exclude
+// hand-written neighbors.
+func scopedExclusions(
+	files []string,
+	allGoFiles []string,
+	detectedAll map[string]struct{},
+	reason string,
+) []Exclusion {
+	byDir := make(map[string][]string)
 	for _, f := range files {
-		if strings.HasSuffix(f, ".gen.go") {
-			return []Exclusion{
-				{Pattern: `.gen.go$`, Reason: generatorExclusionReasons()[string(FilterOapi)]},
-			}
-		}
+		dir := filepath.Dir(f)
+		byDir[dir] = append(byDir[dir], f)
 	}
 
-	return dirBasedExclusions(files, generatorExclusionReasons()["oapi-codegen"])
-}
-
-// dirBasedExclusions generates one exclusion per unique parent directory.
-func dirBasedExclusions(files []string, reason string) []Exclusion {
-	dirSet := make(map[string]struct{})
-	for _, f := range files {
-		dirSet[filepath.Dir(f)] = struct{}{}
-	}
-
-	dirs := make([]string, 0, len(dirSet))
-	for dir := range dirSet {
+	dirs := make([]string, 0, len(byDir))
+	for dir := range byDir {
 		dirs = append(dirs, dir)
 	}
 
 	sort.Strings(dirs)
 
-	exclusions := make([]Exclusion, 0, len(dirs))
+	var emittedDirs []string
+
+	exclusions := make([]Exclusion, 0, len(files))
+
 	for _, dir := range dirs {
-		exclusions = append(exclusions, Exclusion{
-			Pattern: regexp.QuoteMeta(dir) + "/",
-			Reason:  reason,
-		})
+		if hasEmittedAncestor(dir, emittedDirs) {
+			continue
+		}
+
+		if dir != "." && dirFullyGenerated(dir, allGoFiles, detectedAll) {
+			emittedDirs = append(emittedDirs, dir)
+
+			exclusions = append(exclusions, Exclusion{
+				Pattern: "^" + regexp.QuoteMeta(dir) + "/",
+				Reason:  reason,
+			})
+
+			continue
+		}
+
+		dirFiles := byDir[dir]
+		sort.Strings(dirFiles)
+
+		for _, f := range dirFiles {
+			exclusions = append(exclusions, Exclusion{
+				Pattern: "^" + regexp.QuoteMeta(f) + "$",
+				Reason:  reason,
+			})
+		}
 	}
 
 	return exclusions
+}
+
+// hasEmittedAncestor reports whether an already-emitted directory pattern
+// covers dir as a subdirectory.
+func hasEmittedAncestor(dir string, emittedDirs []string) bool {
+	for _, emitted := range emittedDirs {
+		if strings.HasPrefix(dir, emitted+"/") {
+			return true
+		}
+	}
+
+	return false
+}
+
+// dirFullyGenerated reports whether every .go file under dir (recursively)
+// is in the detected-generated set.
+func dirFullyGenerated(dir string, allGoFiles []string, detectedAll map[string]struct{}) bool {
+	prefix := dir + "/"
+
+	for _, f := range allGoFiles {
+		if strings.HasPrefix(f, prefix) {
+			if _, ok := detectedAll[f]; !ok {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+// allFilesMatch reports whether pattern matches every given file path.
+func allFilesMatch(files []string, pattern string) bool {
+	if len(files) == 0 {
+		return false
+	}
+
+	for _, f := range files {
+		matched, matchErr := regexp.MatchString(pattern, f)
+		if matchErr != nil || !matched {
+			return false
+		}
+	}
+
+	return true
 }
 
 // ExclusionPaths extracts just the pattern strings from a slice of Exclusions.
