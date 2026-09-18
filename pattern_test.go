@@ -208,3 +208,36 @@ func TestMatchPattern_AbsolutePathWithStarSlash(t *testing.T) {
 		t.Error("absolute path with *.go pattern should match via base name fallback")
 	}
 }
+
+// TestMatchPatternWindowsAbsolutePath pins the Windows drive-path fix: a
+// drive-prefixed absolute path (C:/...) must be treated as absolute so
+// depth-anchored relative patterns still match. Before the fix the
+// leading-slash-only absolute check made every Windows exclusion silently
+// dead (art-dupl CI, 2026-09-18).
+func TestMatchPatternWindowsAbsolutePath(t *testing.T) {
+	t.Parallel()
+
+	const pattern = "pkg2/*"
+
+	tests := []struct {
+		name string
+		path string
+		want bool
+	}{
+		{name: "windows drive path", path: "C:/Users/x/proj/pkg2/discard1.go", want: true},
+		{name: "windows drive path lowercase drive", path: "c:/users/x/proj/pkg2/discard1.go", want: true},
+		{name: "unix absolute path", path: "/tmp/x/proj/pkg2/discard1.go", want: true},
+		{name: "relative path", path: "pkg2/discard1.go", want: true},
+		{name: "different package", path: "/tmp/x/proj/pkg1/keep1.go", want: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := MatchPattern(tt.path, pattern); got != tt.want {
+				t.Errorf("MatchPattern(%q, %q) = %v, want %v", tt.path, pattern, got, tt.want)
+			}
+		})
+	}
+}
