@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [v3.6.1] — 2026-09-18
+
+### Fixed
+
+- **Windows drive paths are treated as absolute in `MatchPattern`.** The absolute-path check only recognized a leading `/`, so a drive-prefixed path (`C:/Users/x/proj/...`) was classified as relative and depth-anchored patterns failed to match — every derived exclusion was silently dead on Windows. `MatchPattern` now recognizes drive-letter prefixes, restoring pattern matching for Windows consumers (first observed via art-dupl's release CI on 2026-09-18). Pinned by `TestMatchPatternWindowsAbsolutePath`.
+
 ## [v3.6.0] — 2026-09-10
 
 ### Added
