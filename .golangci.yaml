@@ -1,7 +1,7 @@
 version: "2"
 run:
   timeout: 5m
-  go: 1.26.4
+  go: 1.26.7
   build-tags:
     - goexperiment.arenas
     - goexperiment.goroutineleakprofile
@@ -140,21 +140,51 @@ linters:
             - github.com/LarsArtmann/gogenfilter
             - github.com/onsi/ginkgo/v2
             - github.com/onsi/gomega
+    errcheck:
+      check-type-assertions: true
+      exclude-functions:
+        - (*os.File).Close
+        - (io.Closer).Close
+        - (*sql.DB).Close
+        - (*sql.Rows).Close
+        - (*sql.Stmt).Close
+        - (net.Conn).Close
+        - (*net.TCPConn).Close
+        - (*net.UDPConn).Close
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Print
+        - fmt.Printf
+        - fmt.Println
+        - (*strings.Builder).WriteString
+        - (*bytes.Buffer).WriteString
     exhaustruct:
       exclude:
         - .*/fstest\.MapFile
-    tagliatelle:
-      case:
-        rules:
-          yaml: snake
+    funlen:
+      lines: 200
+      statements: 100
     ginkgolinter:
       forbid-focus-container: true
       forbid-spec-pollution: true
+    gocognit:
+      min-complexity: 25
+    goconst:
+      ignore-tests: true
+      min-len: 4
+      min-occurrences: 5
     gocritic:
       disabled-checks:
         - ifElseChain
+    gocyclo:
+      min-complexity: 20
     gomoddirectives:
       replace-local: true
+    gosec:
+      excludes:
+        - G304
+        - G115
     ireturn:
       allow:
         - error
@@ -164,12 +194,32 @@ linters:
         - generic
     makezero:
       always: true
+    mnd:
+      ignored-files:
+        - _test\.go
+    nestif:
+      min-complexity: 6
     revive:
       rules:
         - disabled: true
           name: exported
         - disabled: true
           name: package-comments
+    tagalign:
+      align: false
+      order:
+        - binding
+        - json
+        - yaml
+        - xml
+        - toml
+        - validate
+        - mapstructure
+      sort: true
+    tagliatelle:
+      case:
+        rules:
+          yaml: snake
     testifylint:
       disable:
         - go-require
@@ -191,6 +241,34 @@ linters:
         - b
         - v
       ignore-type-assert-ok: true
+    wrapcheck:
+      ignore-sig-regexps:
+        - encoding/json
+        - fmt\.
+        - errors\.
+        - slices\.
+        - maps\.
+        - sort\.
+        - time\.
+        - net/http
+        - os\.
+        - io\.
+        - strings\.
+        - strconv\.
+        - path\.
+        - filepath\.
+        - compress/gzip
+        - \(context\.Context\)\.Err
+      ignore-sigs:
+        - .Errorf(
+        - errors.New(
+        - errors.Unwrap(
+        - errors.Join(
+        - .Wrap(
+        - .Wrapf(
+        - .WithMessage(
+        - .WithMessagef(
+        - .WithStack(
   exclusions:
     generated: lax
     rules:
@@ -204,6 +282,16 @@ linters:
           - maintidx
           - revive
           - testpackage
+          - exhaustruct
+          - gochecknoglobals
+          - forcetypeassert
+          - gosec
+          - errcheck
+          - wrapcheck
+          - ireturn
+          - recvcheck
+          - contextcheck
+          - exhaustive
       - path: _test\.go
         text: unused
         linters:
@@ -211,11 +299,19 @@ linters:
     paths:
       - \.gen\.go$
       - \.pb\.go$
+      - ^testdata/ent/client\.go$
+      - ^testdata/go-swagger/user\.go$
+      - ^testdata/gqlgen/generated\.go$
+      - ^testdata/sqlc/
+      - _easyjson\.go$
       - _enum\.go$
+      - _gen\.go$
       - _mock\.go$
       - _moq\.go$
       - _string\.go$
       - _templ\.go$
+      - fake_.*\.go$
+      - mock_.*\.go$
       - testdata/counterfeiter/
       - testdata/easyjson/
       - testdata/ent/
@@ -242,11 +338,19 @@ formatters:
     paths:
       - \.gen\.go$
       - \.pb\.go$
+      - ^testdata/ent/client\.go$
+      - ^testdata/go-swagger/user\.go$
+      - ^testdata/gqlgen/generated\.go$
+      - ^testdata/sqlc/
+      - _easyjson\.go$
       - _enum\.go$
+      - _gen\.go$
       - _mock\.go$
       - _moq\.go$
       - _string\.go$
       - _templ\.go$
+      - fake_.*\.go$
+      - mock_.*\.go$
       - testdata/counterfeiter/
       - testdata/easyjson/
       - testdata/ent/

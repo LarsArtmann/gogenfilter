@@ -3,9 +3,9 @@ module github.com/LarsArtmann/gogenfilter/plugin
 go 1.26.5
 
 require (
-	github.com/LarsArtmann/gogenfilter/v3 v3.5.0
+	github.com/LarsArtmann/gogenfilter/v3 v3.6.1
 	github.com/golangci/plugin-module-register v0.1.2
-	golang.org/x/tools v0.48.0
+	golang.org/x/tools v0.50.0
 )
 
 require (
@@ -15,7 +15,7 @@ require (
 	github.com/go-faster/yaml v0.4.6 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
 )
 
 replace github.com/LarsArtmann/gogenfilter/v3 => ../
