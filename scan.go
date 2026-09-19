@@ -274,7 +274,10 @@ func exclusionsForGenerator(
 		reason = "auto-generated code"
 	}
 
-	if pattern, ok := FilterReason(generator).ExclusionPattern(); ok && allFilesMatch(files, pattern) {
+	if pattern, ok := FilterReason(
+		generator,
+	).ExclusionPattern(); ok &&
+		allFilesMatch(files, pattern) {
 		return []Exclusion{{Pattern: pattern, Reason: reason}}
 	}
 

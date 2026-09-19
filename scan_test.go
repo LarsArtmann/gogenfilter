@@ -287,7 +287,10 @@ func TestExclusionDerivation(t *testing.T) {
 		}
 
 		if !foundGenGo {
-			t.Errorf("expected escaped .gen.go exclusion pattern for oapi-codegen, got %v", patterns)
+			t.Errorf(
+				"expected escaped .gen.go exclusion pattern for oapi-codegen, got %v",
+				patterns,
+			)
 		}
 	})
 
@@ -454,30 +457,33 @@ func TestExclusionDerivation(t *testing.T) {
 		}
 	})
 
-	t.Run("sqlc with partially matching filenames uses scoped directory pattern", func(t *testing.T) {
-		t.Parallel()
+	t.Run(
+		"sqlc with partially matching filenames uses scoped directory pattern",
+		func(t *testing.T) {
+			t.Parallel()
 
-		// Old-style sqlc output (models.go) has no .sql.go suffix, so the fixed
-		// pattern does not fully cover the detected files. The db/ directory is
-		// fully generated, so a scoped directory pattern covers everything.
-		byGenerator := map[string][]string{
-			string(ReasonSQLC): {
-				"db/query.sql.go",
-				"db/models.go",
-				"db/user.sql.go",
-			},
-		}
-		allGoFiles := []string{"db/query.sql.go", "db/models.go", "db/user.sql.go"}
+			// Old-style sqlc output (models.go) has no .sql.go suffix, so the fixed
+			// pattern does not fully cover the detected files. The db/ directory is
+			// fully generated, so a scoped directory pattern covers everything.
+			byGenerator := map[string][]string{
+				string(ReasonSQLC): {
+					"db/query.sql.go",
+					"db/models.go",
+					"db/user.sql.go",
+				},
+			}
+			allGoFiles := []string{"db/query.sql.go", "db/models.go", "db/user.sql.go"}
 
-		exclusions := deriveExclusions(byGenerator, allGoFiles)
-		if len(exclusions) != 1 {
-			t.Fatalf("expected 1 exclusion for sqlc, got %d: %v", len(exclusions), exclusions)
-		}
+			exclusions := deriveExclusions(byGenerator, allGoFiles)
+			if len(exclusions) != 1 {
+				t.Fatalf("expected 1 exclusion for sqlc, got %d: %v", len(exclusions), exclusions)
+			}
 
-		exc := exclusions[0]
-		assertEqual(t, "Pattern", exc.Pattern, `^db/`)
-		assertEqual(t, "Reason", exc.Reason, "sqlc generated database code")
-	})
+			exc := exclusions[0]
+			assertEqual(t, "Pattern", exc.Pattern, `^db/`)
+			assertEqual(t, "Reason", exc.Reason, "sqlc generated database code")
+		},
+	)
 
 	t.Run("sqlc with fully matching filenames uses fixed pattern", func(t *testing.T) {
 		t.Parallel()
@@ -575,7 +581,11 @@ func TestExclusionDerivation(t *testing.T) {
 			}
 
 			if pattern == `^ent/generated/predicate/` {
-				t.Errorf("redundant child dir pattern %s alongside parent, got %v", pattern, patterns)
+				t.Errorf(
+					"redundant child dir pattern %s alongside parent, got %v",
+					pattern,
+					patterns,
+				)
 			}
 		}
 

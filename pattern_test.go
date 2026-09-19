@@ -225,7 +225,11 @@ func TestMatchPatternWindowsAbsolutePath(t *testing.T) {
 		want bool
 	}{
 		{name: "windows drive path", path: "C:/Users/x/proj/pkg2/discard1.go", want: true},
-		{name: "windows drive path lowercase drive", path: "c:/users/x/proj/pkg2/discard1.go", want: true},
+		{
+			name: "windows drive path lowercase drive",
+			path: "c:/users/x/proj/pkg2/discard1.go",
+			want: true,
+		},
 		{name: "unix absolute path", path: "/tmp/x/proj/pkg2/discard1.go", want: true},
 		{name: "relative path", path: "pkg2/discard1.go", want: true},
 		{name: "different package", path: "/tmp/x/proj/pkg1/keep1.go", want: false},
