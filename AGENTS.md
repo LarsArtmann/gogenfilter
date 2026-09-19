@@ -217,6 +217,7 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 
 ## Gotchas
 
+- **Website build (pnpm 11): build-script approvals live in `website/pnpm-workspace.yaml` under `allowBuilds:`** (`esbuild: true`) — pnpm v11 ignores `pnpm.*` in `package.json` and silently skips unapproved postinstall scripts, so `astro build` then fails on a missing esbuild binary. A placeholder value (e.g. `esbuild: set this to true or false`) silently disables the whole key (cmdguard incident, fixed 2026-09-19).
 - **`/v3` import path** — Module is `github.com/LarsArtmann/gogenfilter/v3`. All docs, website source, and README must reference `/v3`. CI validates this.
 - **`.gitignore` filtering is out of scope** — Rejected (2026-05-27): would require alpha dependency (`go-git/v6`) and blur the library's identity from "generated code detector" to "general file filterer". Use `WithExcludePatterns("vendor/**", "**/testdata/**")` for common exclusions, or pre-filter with any gitignore library before passing to gogenfilter. Documented in `website/src/content/docs/guides/gitignore-pre-filtering.mdx`.
 - **BuildFlow `todo-check`** — Detects `note:` as a `NOTE:` comment marker. Use `hint` instead of `note` for TypeScript property names to avoid false positives.
