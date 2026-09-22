@@ -11,38 +11,38 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC="$ROOT/website/src"
 if [ ! -d "$SRC" ]; then
-  echo "a11y-guard: no website/src under $ROOT" >&2
-  exit 2
+	echo "a11y-guard: no website/src under $ROOT" >&2
+	exit 2
 fi
 
 has_token=0
 grep -q -- '--color-on-accent' "$SRC/styles/global.css" 2>/dev/null && has_token=1
 fail=0
 while IFS= read -r hit; do
-  [ -z "$hit" ] && continue
-  echo "FAIL $hit"
-  fail=$((fail + 1))
+	[ -z "$hit" ] && continue
+	echo "FAIL $hit"
+	fail=$((fail + 1))
 done <<EOF
 $(grep -rnE '<th[^>]*>\s*</th>|<th[^>]*/>' "$SRC" --include='*.astro' |
-    sed "s|^$SRC/||; s|^|a) empty th: |")
+	sed "s|^$SRC/||; s|^|a) empty th: |")
 $(grep -rnE '<(pre|code)[^>]*overflow-[xy]-auto' "$SRC" --include='*.astro' |
-    grep -v 'tabindex="0"' |
-    sed "s|^$SRC/||; s|^|b) scrollable w/o tabindex: |")
+		grep -v 'tabindex="0"' |
+		sed "s|^$SRC/||; s|^|b) scrollable w/o tabindex: |")
 $(if [ "$has_token" = 0 ]; then
-    grep -rln 'text-on-accent' "$SRC" --include='*.astro' |
-      sed "s|^$SRC/||; s|^|c) text-on-accent class, token undefined: |"
-  fi)
+		grep -rln 'text-on-accent' "$SRC" --include='*.astro' |
+			sed "s|^$SRC/||; s|^|c) text-on-accent class, token undefined: |"
+	fi)
 EOF
 info=0
 while IFS= read -r hit; do
-  [ -z "$hit" ] && continue
-  echo "INFO $hit"
-  info=$((info + 1))
+	[ -z "$hit" ] && continue
+	echo "INFO $hit"
+	info=$((info + 1))
 done <<EOF
 $(if [ "$has_token" = 0 ]; then
-    grep -rlnE 'bg-accent[^/]' "$SRC" --include='*.astro' |
-      sed "s|^$SRC/||; s|^|c-info) bg-accent CTA, no token scheme: |"
-  fi)
+	grep -rlnE 'bg-accent[^/]' "$SRC" --include='*.astro' |
+		sed "s|^$SRC/||; s|^|c-info) bg-accent CTA, no token scheme: |"
+fi)
 EOF
 echo "a11y-guard: $fail FAIL finding(s), $info info"
 [ "$fail" = 0 ]

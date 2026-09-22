@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - website/**
+      - scripts/a11y-guard.sh
       - .github/workflows/website.yml
       - .github/workflows/lighthouse.yml
       - lighthouserc.json
@@ -14,6 +15,7 @@ on:
     branches: [master]
     paths:
       - website/**
+      - scripts/a11y-guard.sh
       - .github/workflows/website.yml
       - .github/workflows/lighthouse.yml
       - lighthouserc.json
