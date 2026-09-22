@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/gogenfilter/v3
 
-go 1.27
+go 1.27.1
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.10.0
