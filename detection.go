@@ -206,7 +206,7 @@ func detectorOptions(includeGeneric bool) []FilterOption {
 // See AGENTS.md "Content-only detection" for the design rationale.
 
 func checkSQLCContent(_, content string) bool {
-	return hasSQLCContent(content)
+	return strings.Contains(content, sqlcGenerateComment)
 }
 
 func checkTemplContent(_, content string) bool {
@@ -241,7 +241,7 @@ func IsSQLCGenerated(filePath, content string) bool {
 		return false
 	}
 
-	return hasSQLCContent(content)
+	return strings.Contains(content, sqlcGenerateComment)
 }
 
 // matchesSuffixPattern returns a function that matches filenames ending with the given suffix.
@@ -310,7 +310,7 @@ func matchesMockgenFilename(filename string) bool {
 
 // matchesSQLCFilename checks if filename matches sqlc.dev naming patterns.
 func matchesSQLCFilename(filePath string) bool {
-	return matchesSQLCFilenamePattern(filepath.Base(filePath))
+	return strings.HasSuffix(filepath.Base(filePath), ".sql.go")
 }
 
 // hasSQLCContent checks if content contains the sqlc generation comment.
