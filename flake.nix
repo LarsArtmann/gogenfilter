@@ -90,7 +90,7 @@
           "aarch64-linux"
         ];
         src = packageSrc;
-        vendorHash = "sha256-inF/pSxHfBudhrumYuKJTEPdG0oQhv4mdr1A9asuqKs=";
+        vendorHash = "sha256-cf2KvkrLsfTHaqdmzBZ4YB28uGwWiQVLPfgprlGP/1c=";
         # Match the hand-rolled build: vendoring via the module proxy.
         proxyVendor = true;
         enableTestCheck = true;
