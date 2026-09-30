@@ -530,7 +530,7 @@ func TestNoSelfDetection(t *testing.T) {
 		t.Run(file, func(t *testing.T) {
 			t.Parallel()
 
-			content, err := os.ReadFile(file) //nolint:gosec // test fixture path
+			content, err := os.ReadFile(file)
 			if err != nil {
 				t.Skipf("cannot read %s: %v", file, err)
 

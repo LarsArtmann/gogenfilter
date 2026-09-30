@@ -73,7 +73,7 @@ func TestGoGenerateEndToEnd(t *testing.T) {
 	}
 
 	for _, check := range checks {
-		//nolint:gosec // G204: check.path is a hardcoded test constant
+
 		read := exec.CommandContext(ctx, "cat", check.path)
 		read.Dir = repoRoot
 
@@ -99,7 +99,7 @@ func TestGoGenerateEndToEnd(t *testing.T) {
 	}
 
 	args := append([]string{"diff", "--exit-code", "--"}, outputFiles...)
-	//nolint:gosec // G204: args are hardcoded test constants
+
 	diff := exec.CommandContext(ctx, "git", args...)
 	diff.Dir = repoRoot
 

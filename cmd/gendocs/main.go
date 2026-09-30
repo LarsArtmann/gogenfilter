@@ -14,14 +14,13 @@
 package main
 
 import (
+	"encoding/json/jsontext"
 	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
-
-	"encoding/json/jsontext"
 
 	"github.com/LarsArtmann/gogenfilter/v3"
 )

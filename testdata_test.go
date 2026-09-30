@@ -1,6 +1,5 @@
 package gogenfilter
 
-//nolint:gochecknoglobals
 var generatedTestCases = []generatorTestCase{
 	{
 		name: testNameSQLC,
