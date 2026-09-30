@@ -16,15 +16,15 @@ linters:
         description: "Detect auto-generated Go files (sqlc, templ, protobuf, mockgen, etc.)"
         original-url: github.com/LarsArtmann/gogenfilter/plugin
         settings:
-          # Restrict detection to specific generators (default: all)
-          # generators:
-          #   - sqlc
-          #   - templ
+# Restrict detection to specific generators (default: all)
+# generators:
+#   - sqlc
+#   - templ
 
-          # Exclude paths from detection (glob patterns)
-          # exclude-paths:
-          #   - vendor/**
-          #   - "**/testdata/**"
+# Exclude paths from detection (glob patterns)
+# exclude-paths:
+#   - vendor/**
+#   - "**/testdata/**"
 
 issues:
   # Suppress gogenfilter diagnostics for files you've already excluded

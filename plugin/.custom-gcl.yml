@@ -15,6 +15,6 @@
 version: v2.4.0
 
 plugins:
-  - module: 'github.com/LarsArtmann/gogenfilter/plugin'
-    import: 'github.com/LarsArtmann/gogenfilter/plugin'
+  - module: "github.com/LarsArtmann/gogenfilter/plugin"
+    import: "github.com/LarsArtmann/gogenfilter/plugin"
     version: v0.1.0

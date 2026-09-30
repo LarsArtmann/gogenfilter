@@ -38,7 +38,6 @@
         {
           config,
           pkgs,
-          system,
           ...
         }:
         let
@@ -76,7 +75,7 @@
             pname = "gogenfilter";
             version = self.rev or self.dirtyRev or "dev";
             inherit src;
-            vendorHash = "sha256-aUel3XlGBoV44pFnY5HMc55Yn0/PyRUCLzmRfxEsaWo=";
+            vendorHash = "sha256-inF/pSxHfBudhrumYuKJTEPdG0oQhv4mdr1A9asuqKs=";
             proxyVendor = true;
             meta = with pkgs.lib; {
               description = "Go library for detecting and filtering auto-generated code files";

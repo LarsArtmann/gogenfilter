@@ -19,8 +19,8 @@ This fills a gap in golangci-lint's built-in generated-file handling, which reli
 ```yaml
 version: v2.4.0
 plugins:
-  - module: 'github.com/LarsArtmann/gogenfilter/plugin'
-    import: 'github.com/LarsArtmann/gogenfilter/plugin'
+  - module: "github.com/LarsArtmann/gogenfilter/plugin"
+    import: "github.com/LarsArtmann/gogenfilter/plugin"
     version: v0.1.0
 ```
 
@@ -60,10 +60,10 @@ linters:
 
 ## Configuration
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `generators` | `[]string` | all | Restrict detection to specific generators (e.g., `sqlc`, `templ`, `protobuf`) |
-| `exclude-paths` | `[]string` | none | Glob patterns to exclude from detection |
+| Setting         | Type       | Default | Description                                                                   |
+| --------------- | ---------- | ------- | ----------------------------------------------------------------------------- |
+| `generators`    | `[]string` | all     | Restrict detection to specific generators (e.g., `sqlc`, `templ`, `protobuf`) |
+| `exclude-paths` | `[]string` | none    | Glob patterns to exclude from detection                                       |
 
 ## Diagnostic
 
