@@ -36,7 +36,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GOEXPERIMENT: jsonv2
+  GOTOOLCHAIN: local
 
 jobs:
   test:
@@ -47,7 +47,7 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.26"
+          go-version: "1.27"
 
       - run: go mod download
 
@@ -78,7 +78,7 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.26"
+          go-version: "1.27"
 
       - run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
@@ -92,11 +92,11 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.26"
+          go-version: "1.27"
 
       - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
         with:
-          version: v2.12.2
+          version: v2.14.0
 
   dedup:
     name: Code Duplication
@@ -106,7 +106,7 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.26"
+          go-version: "1.27"
 
       - run: go install github.com/LarsArtmann/art-dupl/cmd/art-dupl@v0.1.0
 
@@ -124,7 +124,7 @@ jobs:
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
-          go-version: "1.26"
+          go-version: "1.27"
 
       - name: Regenerate docs from Go source
         run: go generate ./...

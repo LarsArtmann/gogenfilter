@@ -54,8 +54,18 @@
 - [ ] **Prune orphaned GCP service account keys** — Deploy attempts accumulated keys; 1 pruned, up
       to 4 may remain. Needs `gcloud iam` + auth. Add a max-2-active-keys policy.
       _Priority: LOW | Effort: 30 min | Needs: gcloud auth_
-- [ ] **Migrate to Go 1.27** — Drops `GOEXPERIMENT=jsonv2` requirement. Assess toolchain impact
-      (CI matrix, Nix `go_1_26` pin) before bumping. _Priority: LOW | Effort: 2 hr_
+- [x] **Migrate to Go 1.27** — Drops `GOEXPERIMENT=jsonv2` requirement (env removed from CI; json v2
+      is default in 1.27). Flake uses `buildGo127Module` + `pkgs.go_1_27`; CI/benchmark workflows
+      pin `go-version: "1.27"` with `GOTOOLCHAIN: local`; golangci-lint action bumped to v2.14.0
+      (matches nixpkgs). Verified: `nix flake check`, `nix run .#test`, `.#test-race`, `.#lint`,
+      `.#validate-docs`, plugin tests all green.
+      _Priority: LOW | Effort: 2 hr | Status: DONE (2026-09-30)_
+- [ ] **Fix md-go-validator upstream build** — Its flake pins `pkgs.go_1_26` while its go.mod
+      requires ≥ 1.27, and its `package.nix` src fileset omits `testdata/` so in-store checks fail.
+      This repo now builds `mdgo` locally via `buildGo127Module` (`flake.nix`) as a workaround;
+      fix `LarsArtmann/md-go-validator` upstream (use `buildGoLatestModule`, add testdata to src)
+      and revert to consuming its flake package.
+      _Priority: LOW | Effort: 30 min | Needs: external repo_
 - [ ] **Update art-dupl consumer** — Migrate `shouldIncludeFile` to `FilterDetailedAndContent` in
       the art-dupl repo. _Priority: LOW | Effort: 1 hr | Needs: external repo_
 
