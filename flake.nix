@@ -43,7 +43,7 @@
         }:
         let
           inherit (pkgs) lib;
-          goPkg = pkgs.go_1_26;
+          goPkg = pkgs.go_1_27;
 
           goFiles = lib.fileset.fileFilter (file: file.hasExt "go") ./.;
           src = lib.fileset.toSource {
