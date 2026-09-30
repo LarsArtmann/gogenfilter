@@ -39,6 +39,7 @@
           config,
           pkgs,
           system,
+          inputs,
           ...
         }:
         let
@@ -92,9 +93,30 @@
             };
           };
 
-          mdgo = md-go-validator.packages.${system}.default.overrideAttrs (_: {
-            vendorHash = "sha256-oNZTI5SywT9C4guLdULUwvSlJ9KhNHurg7fqhyxDB7k=";
-          });
+          # md-go-validator's own flake still builds with go 1.26 while its
+          # go.mod requires >= 1.27, so we build it here with the go 1.27
+          # module builder against the pinned input source.
+          mdgo =
+            let
+              mdgoVersion = inputs.md-go-validator.shortRev or "dev";
+            in
+            pkgs.buildGo127Module {
+              pname = "md-go-validator";
+              version = mdgoVersion;
+              src = inputs.md-go-validator.outPath or inputs.md-go-validator;
+              vendorHash = "sha256-oNZTI5SywT9C4guLdULUwvSlJ9KhNHurg7fqhyxDB7k=";
+              proxyVendor = true;
+              GOEXPERIMENT = "jsonv2";
+              ldflags = [
+                "-s"
+                "-w"
+                "-X main.version=${mdgoVersion}"
+              ];
+              meta = {
+                description = "Validate code blocks embedded in Markdown and MDX documentation files";
+                mainProgram = "md-go-validator";
+              };
+            };
         in
         {
           treefmt = {
@@ -107,7 +129,10 @@
             };
           };
 
-          checks.format = config.treefmt.build.check self;
+          checks.format = (config.treefmt.build.check self).overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ goPkg ];
+            GOTOOLCHAIN = "local";
+          });
           devShells.default = pkgs.mkShell {
             packages = [
               goPkg

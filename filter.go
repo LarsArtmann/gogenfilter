@@ -22,7 +22,8 @@ func WithFilterOptions(opts ...FilterOption) (FilterConfig, error) {
 	for _, opt := range opts {
 		if !opt.IsValid() {
 			return nil, &FilterConfigError{ //nolint:exhaustruct_v5 // wrapped error, only Code + Option set
-				Code: CodeInvalidFilterOption, Option: opt,
+				Code:   CodeInvalidFilterOption,
+				Option: opt,
 			}
 		}
 	}
