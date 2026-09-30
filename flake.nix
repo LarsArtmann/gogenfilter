@@ -39,7 +39,6 @@
           config,
           pkgs,
           system,
-          inputs,
           ...
         }:
         let
@@ -98,12 +97,12 @@
           # module builder against the pinned input source.
           mdgo =
             let
-              mdgoVersion = inputs.md-go-validator.shortRev or "dev";
+              mdgoVersion = md-go-validator.shortRev or "dev";
             in
             pkgs.buildGo127Module {
               pname = "md-go-validator";
               version = mdgoVersion;
-              src = inputs.md-go-validator.outPath or inputs.md-go-validator;
+              src = md-go-validator.outPath or md-go-validator;
               vendorHash = "sha256-oNZTI5SywT9C4guLdULUwvSlJ9KhNHurg7fqhyxDB7k=";
               proxyVendor = true;
               GOEXPERIMENT = "jsonv2";
@@ -120,6 +119,7 @@
         in
         {
           treefmt = {
+            flakeCheck = false;
             projectRootFile = "go.mod";
             programs = {
               gofumpt.enable = true;
