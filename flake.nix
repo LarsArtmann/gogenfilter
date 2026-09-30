@@ -72,11 +72,10 @@
               meta.description = description;
             };
 
-          pkg = pkgs.buildGoModule {
+          pkg = pkgs.buildGo127Module {
             pname = "gogenfilter";
             version = self.rev or self.dirtyRev or "dev";
             inherit src;
-            go = goPkg;
             vendorHash = "sha256-x4cy+Lyr68u7CrLuUq/fHP/qOmj8j43BD/drOkY8g50=";
             proxyVendor = true;
             meta = with pkgs.lib; {
