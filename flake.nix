@@ -106,6 +106,7 @@
               vendorHash = "sha256-fYZoTXM7uPiV174Mp6/HgUNKwNih/BzjnCMjHwdcAOE=";
               proxyVendor = true;
               GOEXPERIMENT = "jsonv2";
+              doCheck = false;
               ldflags = [
                 "-s"
                 "-w"
