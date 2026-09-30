@@ -45,7 +45,7 @@
           inherit (pkgs) lib;
           goPkg = pkgs.go_1_27;
 
-          goFiles = lib.fileset.fileFilter (file: file.hasExt "go") ./.;
+          goFiles = lib.fileset.difference (lib.fileset.fileFilter (file: file.hasExt "go") ./.) ./plugin;
           src = lib.fileset.toSource {
             root = ./.;
             fileset = lib.fileset.unions [
@@ -76,7 +76,7 @@
             pname = "gogenfilter";
             version = self.rev or self.dirtyRev or "dev";
             inherit src;
-            vendorHash = "sha256-x4cy+Lyr68u7CrLuUq/fHP/qOmj8j43BD/drOkY8g50=";
+            vendorHash = "sha256-aUel3XlGBoV44pFnY5HMc55Yn0/PyRUCLzmRfxEsaWo=";
             proxyVendor = true;
             meta = with pkgs.lib; {
               description = "Go library for detecting and filtering auto-generated code files";
