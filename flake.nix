@@ -82,6 +82,13 @@
         pname = "gogenfilter";
         description = "Go library for detecting and filtering auto-generated code files";
         goPkgAttr = "go_1_27";
+        # Linux only: the proxy-vendored go-modules FOD hashes differently on
+        # darwin (aarch64-darwin got sha256-cf2KvkrLsfTHaqdmzBZ4YB28uGwWiQVLPfgprlGP/1c=);
+        # until go-standard grows per-platform vendor hashes, restrict systems.
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
         src = packageSrc;
         vendorHash = "sha256-inF/pSxHfBudhrumYuKJTEPdG0oQhv4mdr1A9asuqKs=";
         # Match the hand-rolled build: vendoring via the module proxy.
