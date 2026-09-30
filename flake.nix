@@ -103,7 +103,7 @@
               pname = "md-go-validator";
               version = mdgoVersion;
               src = md-go-validator.outPath or md-go-validator;
-              vendorHash = "sha256-oNZTI5SywT9C4guLdULUwvSlJ9KhNHurg7fqhyxDB7k=";
+              vendorHash = "sha256-fYZoTXM7uPiV174Mp6/HgUNKwNih/BzjnCMjHwdcAOE=";
               proxyVendor = true;
               GOEXPERIMENT = "jsonv2";
               ldflags = [
