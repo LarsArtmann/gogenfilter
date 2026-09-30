@@ -53,7 +53,7 @@ type ErrorCoder interface {
 // Sentinel errors for use with errors.Is.
 // These have zero-value domain fields; matching is by ErrorCode only.
 //
-//nolint:exhaustruct
+//nolint:exhaustruct_v5
 var (
 	// ErrProjectRootNotFound is returned when no project root marker file is found.
 	ErrProjectRootNotFound = &ProjectRootError{Code: CodeProjectRootNotFound}

@@ -73,7 +73,6 @@ func TestGoGenerateEndToEnd(t *testing.T) {
 	}
 
 	for _, check := range checks {
-
 		read := exec.CommandContext(ctx, "cat", check.path)
 		read.Dir = repoRoot
 
@@ -99,7 +98,6 @@ func TestGoGenerateEndToEnd(t *testing.T) {
 	}
 
 	args := append([]string{"diff", "--exit-code", "--"}, outputFiles...)
-
 	diff := exec.CommandContext(ctx, "git", args...)
 	diff.Dir = repoRoot
 
