@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "html-validate": "^11.16.1",
+    "html-validate": "^11.16.0",
     "jscpd": "^5.3.3",
     "typescript": "^7.0.2"
   },
