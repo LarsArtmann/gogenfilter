@@ -492,6 +492,7 @@ func detectReasonFileFS(fsys fs.FS, filePath string, opts ...FilterOption) (Filt
 
 	content, err := readFile(fsys, filePath)
 	if err != nil {
+		//nolint:erraudit // context_loss FP: *FileReadError embeds filePath (Path field + branded message), prefix must stay brand-first
 		return ReasonNotFiltered, err
 	}
 
@@ -720,6 +721,7 @@ func detectReasonFSWithTrace(
 			Reason:   ReasonNotFiltered,
 			Path:     filePath,
 			Trace:    "",
+			//nolint:erraudit // context_loss FP: *FileReadError embeds filePath (Path field + branded message), prefix must stay brand-first
 		}, err
 	}
 

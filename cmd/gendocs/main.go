@@ -136,7 +136,9 @@ func main() {
 	}
 
 	msg := "gendocs: generated generators.json, README tables, generators.mdx, detection.mdx, doc.go"
-	_, _ = fmt.Fprintln(os.Stdout, msg)
+	if _, err := fmt.Fprintln(os.Stdout, msg); err != nil {
+		fmt.Fprintf(os.Stderr, "gendocs: write summary: %v\n", err)
+	}
 }
 
 // validateMetadata ensures every detector has website metadata.

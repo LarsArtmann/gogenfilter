@@ -329,6 +329,7 @@ func (f *Filter) FilterDetailedAndContent(filePath string) (FilterResult, []byte
 	if err != nil {
 		return FilterResult{
 			Filtered: false, Reason: ReasonNotFiltered, Path: filePath, Trace: "",
+			//nolint:erraudit // context_loss FP: *FileReadError embeds filePath (Path field + branded message), prefix must stay brand-first
 		}, nil, err
 	}
 
