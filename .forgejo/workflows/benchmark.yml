@@ -1,0 +1,48 @@
+# Forgejo-native benchmark job — port of `.github/workflows/benchmark.yml`,
+# part of the Forgejo-primary migration (2026-10-25, plan W12).
+#
+# Deliberate scope reduction vs the GitHub version: the benchmark-action
+# chart (gh-pages), PR comments, and the GitHub-API coupling are NOT ported.
+# Regression detection is a committed baseline + scripts/bench-threshold.sh
+# (alert at 150%, fail at 300% — the same thresholds as before). Baseline
+# updates are a deliberate `nix run .#bench-baseline`-style local commit,
+# not a silent auto-push, so a slow commit can never rewrite the bar.
+name: benchmark
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "**.go"
+      - go.mod
+      - go.sum
+      - scripts/bench-threshold.sh
+      - testdata/bench-baseline.txt
+      - .forgejo/workflows/benchmark.yml
+  workflow_dispatch:
+
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOTOOLCHAIN: local
+
+jobs:
+  benchmark:
+    name: go test -bench + threshold gate
+    runs-on: native
+    timeout-minutes: 30
+    steps:
+      # v4.2.2 — the only checkout line PROVEN on this runner (v7.0.1 dies at
+      # clone auth; see eventcatalog-hub/.forgejo/workflows/build.yml).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run benchmarks
+        run: |
+          nix shell nixpkgs#go_1_27 -c bash -c \
+            'go test -bench=. -benchmem -run="^$" -count=1 ./...' \
+            | tee benchmark-output.txt
+
+      - name: Threshold gate (alert 150% / fail 300% vs committed baseline)
+        run: bash scripts/bench-threshold.sh benchmark-output.txt testdata/bench-baseline.txt

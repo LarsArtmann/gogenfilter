@@ -1,0 +1,192 @@
+# Forgejo-native website pipeline — single-job port of
+# `.github/workflows/website.yml`, part of the Forgejo-primary migration
+# (2026-10-25, plan W5-W7).
+#
+# Single job on purpose: no upload/download-artifact dependency (the artifact
+# API on this Forgejo instance is unverified — eventcatalog-hub made the same
+# call). Build+validate+deploy run sequentially; the deploy leg is gated on
+# push-to-master and fails SOFT when FIREBASE_SERVICE_ACCOUNT is not set, so
+# the build/validation value is delivered even before the secret exists.
+#
+# Runner hazards encoded here (learned on this runner, see eventcatalog-hub):
+#   - The job workspace is NOEXEC (esbuild postinstall dies) and /var/tmp is
+#     an inode-capped private tmpfs — so pnpm installs and the astro build run
+#     from a state root on the ext4 buildcache disk, copied out of the
+#     workspace (hub run 20/22/28/31 class).
+#   - DynamicUser uid churn: every cached tree is re-permissioned a+rwX.
+#   - NixOS switches open seconds-long resolver/connect/mount windows: the
+#     state root and the deploy get bounded retries (runs 17/65/78 class).
+name: website
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - website/**
+      - scripts/a11y-guard.sh
+      - .forgejo/workflows/website.yml
+      - website/flake.nix
+      - website/flake.lock
+  pull_request:
+    branches: [master]
+    paths:
+      - website/**
+      - scripts/a11y-guard.sh
+      - .forgejo/workflows/website.yml
+      - website/flake.nix
+      - website/flake.lock
+  workflow_dispatch:
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WEB_STATE_ROOT: /mnt/buildcache/gogenfilter-web
+  PNPM_STORE: /mnt/buildcache/ci-runner-cache/pnpm-store
+
+jobs:
+  build-deploy:
+    name: build, validate, deploy
+    runs-on: native
+    timeout-minutes: 45
+    steps:
+      # v4.2.2 — the only checkout line PROVEN on this runner (v7.0.1 dies at
+      # clone auth; see eventcatalog-hub/.forgejo/workflows/build.yml).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: A11y guard (template family violation classes)
+        run: bash scripts/a11y-guard.sh
+
+      - name: Prepare exec-allowed build state (workspace is NOEXEC)
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            if [ -d "$WEB_STATE_ROOT" ] && [ -w "$WEB_STATE_ROOT" ]; then ok=1; break; fi
+            echo "build-state: attempt $attempt/6: $WEB_STATE_ROOT not ready (host NixOS switch can transiently unmount it), retrying in 10s"
+            sleep 10
+          done
+          [ "$ok" -eq 1 ] || { echo "::error::$WEB_STATE_ROOT missing or unwritable"; exit 1; }
+          mkdir -p "$WEB_STATE_ROOT"
+          chmod a+rwx "$WEB_STATE_ROOT" 2>/dev/null || true
+          site="$WEB_STATE_ROOT/site"
+          rm -rf "$site"
+          mkdir -p "$site"
+          # Copy the website sources out of the NOEXEC workspace; skip
+          # build artifacts and the store-managed node_modules.
+          tar -C website --exclude='./node_modules' --exclude='./dist' --exclude='./.astro' -cf - . | tar -C "$site" -xf -
+          echo "WEB_SITE=$site" >> "$GITHUB_ENV"
+
+      - name: Install dependencies (pnpm via nix, store on buildcache)
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        env:
+          npm_config_store_dir: ${{ env.PNPM_STORE }}
+        run: |
+          set -euo pipefail
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c bash -c '
+            node -v && pnpm --version
+            pnpm install --frozen-lockfile
+          '
+          chmod -R a+rwX "$WEB_STATE_ROOT/site/node_modules" 2>/dev/null || true
+
+      - name: pnpm audit (advisory)
+        continue-on-error: true
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        run: nix shell nixpkgs#pnpm -c pnpm audit --audit-level=high --omit=dev
+
+      - name: Typecheck (astro check)
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm exec astro check
+
+      - name: Build (astro build + CSP post-fix)
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm run build
+
+      - name: Validate documentation code blocks (md-go-validator, website flake)
+        working-directory: website
+        run: nix run .#validate-docs
+
+      - name: HTML validation
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm exec html-validate --config .htmlvalidate.json "dist/**/*.html"
+
+      - name: Code duplication check (jscpd via dedup.sh)
+        working-directory: /mnt/buildcache/gogenfilter-web/site
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm run dedup
+
+      - name: Validate import paths contain /v3
+        run: |
+          ERRORS=""
+          # Check that all import paths in docs and website source reference /v3
+          for file in $(grep -rl 'github.com/LarsArtmann/gogenfilter' --include='*.md' --include='*.mdx' --include='*.ts' --include='*.astro' README.md website/src/ website/src/content/); do
+            if grep -q 'github.com/LarsArtmann/gogenfilter/v3' "$file"; then
+              continue
+            fi
+            BAD=$(grep -n 'github.com/LarsArtmann/gogenfilter"[^/]' "$file" 2>/dev/null || true)
+            if [ -n "$BAD" ]; then
+              ERRORS="$ERRORS\n$file:\n$BAD\n"
+            fi
+          done
+          if [ -n "$ERRORS" ]; then
+            echo "::error::Import paths missing /v3 found:$ERRORS"
+            exit 1
+          fi
+          echo "All import paths correctly reference /v3"
+
+      - name: Check for stale references to deleted files
+        run: |
+          DELETED_FILES="metrics.go phantom.go errorCodeDefs"
+          ERRORS=""
+          for deleted in $DELETED_FILES; do
+            REFS=$(grep -rl "$deleted" --include='*.md' --include='*.mdx' --include='*.go' \
+              README.md CONTRIBUTING.md FEATURES.md DOMAIN_LANGUAGE.md \
+              website/src/content/docs/getting-started/ \
+              website/src/content/docs/guides/ \
+              website/src/content/docs/contributing.mdx \
+              2>/dev/null || true)
+            if [ -n "$REFS" ]; then
+              ERRORS="$ERRORS\nReferences to deleted file '$deleted' found in:\n$REFS\n"
+            fi
+          done
+          if [ -n "$ERRORS" ]; then
+            echo "::error::Stale references to deleted files:$ERRORS"
+            exit 1
+          fi
+          echo "No stale references to deleted files"
+
+      - name: Verify CHANGELOG sync
+        run: |
+          ROOT_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' CHANGELOG.md | sort)
+          WEB_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' website/src/content/docs/changelog.mdx | sort)
+          if [ "$ROOT_VERSIONS" != "$WEB_VERSIONS" ]; then
+            echo "::error::CHANGELOG.md and changelog.mdx version sections are out of sync"
+            echo "Root versions: $ROOT_VERSIONS"
+            echo "Web versions: $WEB_VERSIONS"
+            exit 1
+          fi
+          echo "CHANGELOG versions are in sync"
+
+      - name: Deploy to Firebase Hosting (master pushes only; fails soft without the secret)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::warning::FIREBASE_SERVICE_ACCOUNT secret is not set on Forgejo — skipping deploy (build/validation above still ran). Set the secret in the Forgejo web UI: Repo → Settings → Actions → Secrets, then re-run this workflow."
+            exit 0
+          fi
+          # Key lives in the per-run state root, never in the workspace build
+          # tree; reaped with the run (hub EC_LICENSE pattern).
+          key_file="$WEB_STATE_ROOT/gcp-key.json"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$key_file"
+          chmod 600 "$key_file"
+          export GOOGLE_APPLICATION_CREDENTIALS="$key_file"
+          # One retry: a NixOS switch opens seconds-long connect windows.
+          if ! nix shell nixpkgs#firebase-tools -c firebase deploy --only hosting:gogenfilter --project lars-software --noninteractive; then
+            echo "firebase deploy failed — retrying once after 15s (transient resolver/connect blip class)"
+            sleep 15
+            nix shell nixpkgs#firebase-tools -c firebase deploy --only hosting:gogenfilter --project lars-software --noninteractive
+          fi
+          rm -f "$key_file"

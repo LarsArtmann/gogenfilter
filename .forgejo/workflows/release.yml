@@ -1,0 +1,131 @@
+# Forgejo-native release pipeline — port of `.github/workflows/release.yml`,
+# part of the Forgejo-primary migration (2026-10-25, plan W8; drill = W9).
+#
+# After the flip this repo is canonical on Forgejo; tags pushed here trigger
+# this workflow. The tag reaches GitHub via the repo's outbound push mirror
+# (8h interval + sync-on-commit), which is what proxy.golang.org watches —
+# module consumers are unaffected by where the release notes live.
+#
+# Release notes are cut from CHANGELOG.md (scripts/release-notes.sh), not
+# auto-generated: the Forgejo compare/notes generation differs from GitHub's.
+# A GitHub release is ALSO created when GH_RELEASE_PAT is set (decision D2
+# default "both": users browse github.com releases). Missing PAT degrades to
+# Forgejo-only, loudly.
+#
+# RELEASE_TOKEN (optional) overrides the automatic GITHUB_TOKEN for the
+# Forgejo release API call — set it only if the instance's default Actions
+# token scope turns out read-only.
+name: release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  GOTOOLCHAIN: local
+
+jobs:
+  release:
+    name: gates + Forgejo release (+ GitHub release when GH_RELEASE_PAT set)
+    runs-on: native
+    timeout-minutes: 45
+    steps:
+      # v4.2.2 — the only checkout line PROVEN on this runner (v7.0.1 dies at
+      # clone auth; see eventcatalog-hub/.forgejo/workflows/build.yml).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Gates (same bar as ci.yml)
+        run: |
+          nix flake check
+          nix run .#lint
+          nix run .#test
+
+      - name: Extract release notes from CHANGELOG
+        run: |
+          set -euo pipefail
+          bash scripts/release-notes.sh "${{ github.ref_name }}" --require > release-notes.md
+          echo "--- release notes ---"
+          cat release-notes.md
+
+      - name: Create Forgejo release
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RELEASE_TOKEN:-${GITHUB_TOKEN:-}}"
+          [ -n "$token" ] || { echo "::error::no token available (neither RELEASE_TOKEN nor GITHUB_TOKEN)"; exit 1; }
+          api="${GITHUB_SERVER_URL%/}/api/v1"
+          prerelease=false
+          case "${{ github.ref_name }}" in
+            *alpha*|*beta*|*rc*) prerelease=true ;;
+          esac
+          payload=$(jq -n \
+            --arg tag "${{ github.ref_name }}" \
+            --arg name "${{ github.ref_name }}" \
+            --arg body "$(cat release-notes.md)" \
+            --argjson draft false \
+            --argjson prerelease "$prerelease" \
+            '{tag_name: $tag, name: $name, body: $body, draft: $draft, prerelease: $prerelease}')
+          # One retry: NixOS switches open seconds-long connect windows on the
+          # LAN host (eventcatalog-hub run 17 class).
+          code=$(curl -s -o release-response.json -w "%{http_code}" \
+            -X POST "$api/repos/${GITHUB_REPOSITORY}/releases" \
+            -H "Authorization: token $token" \
+            -H "Content-Type: application/json" \
+            -d "$payload" || echo 000)
+          if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+            echo "forgejo release create failed (HTTP $code) — retrying once after 15s"
+            sleep 15
+            code=$(curl -s -o release-response.json -w "%{http_code}" \
+              -X POST "$api/repos/${GITHUB_REPOSITORY}/releases" \
+              -H "Authorization: token $token" \
+              -H "Content-Type: application/json" \
+              -d "$payload" || echo 000)
+          fi
+          if [ "$code" != "201" ] && [ "$code" != "200" ]; then
+            echo "::error::Forgejo release creation failed twice (HTTP $code). If the error is 403, the automatic GITHUB_TOKEN is read-scoped: set a RELEASE_TOKEN secret (forgejo admin user generate-access-token --scopes write:repository) and re-run."
+            cat release-response.json || true
+            exit 1
+          fi
+          html_url=$(jq -r '.html_url // .url // "n/a"' release-response.json)
+          echo "Forgejo release created: $html_url"
+          rm -f release-response.json
+
+      - name: Mirror release to GitHub (D2: users browse github.com)
+        env:
+          GH_RELEASE_PAT: ${{ secrets.GH_RELEASE_PAT }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_RELEASE_PAT" ]; then
+            echo "::warning::GH_RELEASE_PAT secret is not set — skipping the GitHub release (the tag itself still reaches GitHub via the push mirror; proxy.golang.org is unaffected). Set the secret to also publish the GitHub release page."
+            exit 0
+          fi
+          prerelease=false
+          case "${{ github.ref_name }}" in
+            *alpha*|*beta*|*rc*) prerelease=true ;;
+          esac
+          payload=$(jq -n \
+            --arg tag "${{ github.ref_name }}" \
+            --arg name "${{ github.ref_name }}" \
+            --arg body "$(cat release-notes.md)" \
+            --argjson prerelease "$prerelease" \
+            '{tag_name: $tag, name: $name, body: $body, prerelease: $prerelease, generate_release_notes: true}')
+          code=$(curl -s -o gh-release-response.json -w "%{http_code}" \
+            -X POST "https://api.github.com/repos/LarsArtmann/gogenfilter/releases" \
+            -H "Authorization: Bearer $GH_RELEASE_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            -d "$payload" || echo 000)
+          if [ "$code" != "201" ]; then
+            echo "::warning::GitHub release creation failed (HTTP $code) — Forgejo release stands; investigate the PAT scope (needs repo scope)."
+            cat gh-release-response.json || true
+            rm -f gh-release-response.json
+            exit 0
+          fi
+          html_url=$(jq -r '.html_url' gh-release-response.json)
+          echo "GitHub release created: $html_url"
+          rm -f gh-release-response.json
