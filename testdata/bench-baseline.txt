@@ -1,0 +1,34 @@
+BenchmarkFilter/enabled-32                   	 2160758	       551.9 ns/op	     432 B/op	       7 allocs/op
+BenchmarkFilter/disabled-32                  	972268771	         1.305 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDetectGenerated-32                  	 9660268	       144.8 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIsSQLCGenerated-32                  	240316486	         5.330 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIsProtobufGenerated-32              	173633754	         6.945 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIsGenericGenerated-32               	301057006	         4.064 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMatchPattern/exact-32               	29879421	        43.18 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMatchPattern/wildcard-32            	24061306	        48.92 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMatchPattern/doublestar-32          	15607986	        78.07 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMatchPattern/question-32            	47254150	        27.11 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMatchPattern/no_match-32            	13285041	        82.96 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDetectReason/filename_only-32       	  953590	      1209 ns/op	    1787 B/op	       9 allocs/op
+BenchmarkDetectReason/content_based-32       	  743246	      1451 ns/op	    1787 B/op	       9 allocs/op
+BenchmarkDetectReason/not_filtered-32        	 1000000	      1196 ns/op	    1704 B/op	       7 allocs/op
+BenchmarkDetectReasonReader/sqlc_filename-32 	  849643	      1396 ns/op	    2509 B/op	      13 allocs/op
+BenchmarkDetectReasonReader/not_filtered-32  	  904930	      1370 ns/op	    2312 B/op	      11 allocs/op
+BenchmarkDetectReasonFileFS/filename_only-32 	 1338662	       895.7 ns/op	    1739 B/op	       8 allocs/op
+BenchmarkDetectReasonFileFS/content_based-32 	  669505	      1847 ns/op	    1980 B/op	      13 allocs/op
+BenchmarkDetectReasonFileFS/not_filtered-32  	  831889	      1457 ns/op	    1848 B/op	      11 allocs/op
+BenchmarkSQLCDerivedConfigForFS/no_config_large_fs-32         	    2425	    467757 ns/op	  100520 B/op	    1642 allocs/op
+BenchmarkSQLCDerivedConfigForFS/with_config_large_fs-32       	    2684	    448675 ns/op	  112716 B/op	    1856 allocs/op
+BenchmarkSQLCDerivedConfigForFS/empty_fs-32                   	 4451002	       274.2 ns/op	     472 B/op	      10 allocs/op
+BenchmarkFilterSQLCDerivedConfigCached-32                     	926053586	         1.335 ns/op	       0 B/op	       0 allocs/op
+BenchmarkFilterDetailedAndContent/filename_match_no_content-32         	10787655	       112.2 ns/op	      64 B/op	       2 allocs/op
+BenchmarkFilterDetailedAndContent/content_match_returns_content-32     	 1510210	       793.2 ns/op	     304 B/op	       7 allocs/op
+BenchmarkFilterDetailedAndContent/not_filtered_reads_content-32        	 2215164	       523.1 ns/op	     176 B/op	       5 allocs/op
+BenchmarkNewProjectRootError-32                                        	560305909	         2.202 ns/op	       0 B/op	       0 allocs/op
+BenchmarkNewSQLCConfigError-32                                         	899393875	         1.364 ns/op	       0 B/op	       0 allocs/op
+BenchmarkProjectRootErrorError-32                                      	 5205867	       223.3 ns/op	     144 B/op	       3 allocs/op
+BenchmarkSQLCConfigErrorError-32                                       	 4564404	       356.4 ns/op	     176 B/op	       5 allocs/op
+BenchmarkProjectRootErrorIs-32                                         	93786326	        11.47 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSQLCConfigErrorIs-32                                          	109305614	        10.95 ns/op	       0 B/op	       0 allocs/op
+ok  	github.com/LarsArtmann/gogenfilter/v3	39.052s
+ok  	github.com/LarsArtmann/gogenfilter/v3/cmd/gendocs	0.003s
