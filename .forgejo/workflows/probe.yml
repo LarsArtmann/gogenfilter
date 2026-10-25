@@ -1,0 +1,99 @@
+# Runner + environment probe for the Forgejo-native migration (plan W1).
+#
+# Answers the plan's open unknowns empirically:
+#   U1 — egress to firebase.googleapis.com / storage.googleapis.com (gates the
+#        website deploy leg), plus npm registry / api.github.com / Go module
+#        proxy / Go toolchain host as reference points.
+#   U2 — exact toolchain versions on the host-mode runner PATH.
+#
+# House runbook hazards this also asserts (eventcatalog-hub run 31 class):
+#   /tmp writability, workspace exec, buildcache mount readiness. A probe
+#   failure here is a runner-environment regression caught BEFORE it kills a
+#   real CI job.
+#
+# Trigger: its own file (runs once on the migration push) + manual dispatch
+# for re-probing. Cheap (~1 min); keep after migration as a diagnostics tool.
+name: probe
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".forgejo/workflows/probe.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: Runner environment probe
+    runs-on: native
+    timeout-minutes: 10
+    steps:
+      # v4.2.2 — the only checkout line PROVEN on this runner
+      # (v7.0.1 dies at clone auth; see eventcatalog-hub build.yml).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Toolchain versions (U2)
+        run: |
+          echo "=== host: $(hostname) — runner PATH toolchains ==="
+          go version
+          node --version
+          nix --version
+          jq --version
+          python3 --version
+          git --version
+          gcc --version | head -1
+          curl --version | head -1
+          echo "TMPDIR=${TMPDIR:-<unset — defaults to /tmp>}"
+          echo "GOCACHE=${GOCACHE:-<unset>}"
+          echo "GOMODCACHE=${GOMODCACHE:-<unset>}"
+          echo "npm_config_cache=${npm_config_cache:-<unset>}"
+          echo "HOME=$HOME (uid $(id -u))"
+
+      - name: nixpkgs toolchain resolution (what nix shell will inject)
+        run: |
+          echo "nixpkgs#go_1_27   -> $(nix eval --raw nixpkgs#go_1_27.version; echo)"
+          echo "nixpkgs#nodejs_24 -> $(nix eval --raw nixpkgs#nodejs_24.version; echo)"
+          echo "nixpkgs#pnpm      -> $(nix eval --raw nixpkgs#pnpm.version; echo)"
+          echo "nixpkgs#golangci-lint -> $(nix eval --raw nixpkgs#golangci-lint.version; echo)"
+
+      - name: Filesystem hazard checks (runbook: noexec workspace, tmpfs caps)
+        run: |
+          set -euo pipefail
+          echo "--- /tmp writable?"
+          echo ok > /tmp/probe-write && cat /tmp/probe-write && rm /tmp/probe-write
+          echo "--- workspace exec-allowed? (GitHub CI does not need exec, node does)"
+          echo 'int main(){return 0;}' > exec-probe.c
+          if gcc exec-probe.c -o exec-probe 2>/dev/null && ./exec-probe; then
+            echo "workspace exec: YES"
+          else
+            echo "workspace exec: NO (copy node builds to buildcache state root like eventcatalog-hub does)"
+          fi
+          rm -f exec-probe.c exec-probe
+          echo "--- buildcache RW mount ready?"
+          test -d "${GOCACHE:?GOCACHE unset}" && echo "GOCACHE dir ok: $GOCACHE"
+          echo "--- disk space on buildcache:"
+          df -h /mnt/buildcache/ci-runner-cache | tail -1
+
+      - name: Egress probes (U1)
+        run: |
+          set -uo pipefail
+          probe() {
+            local name="$1" url="$2"
+            # HEAD with short timeout; 000 = no egress (connection failure).
+            code=$(curl -s -o /dev/null -m 15 -w "%{http_code}" -I "$url" || echo 000)
+            printf "%-28s HTTP %s\n" "$name" "$code"
+          }
+          probe "proxy.golang.org"          "https://proxy.golang.org/"
+          probe "api.github.com"            "https://api.github.com/"
+          probe "registry.npmjs.org"        "https://registry.npmjs.org/"
+          probe "firebase.googleapis.com"   "https://firebase.googleapis.com/"
+          probe "storage.googleapis.com"    "https://storage.googleapis.com/"
+          probe "dl.google.com (toolchain)" "https://dl.google.com/go/"
+          probe "gogenfilter.lars.software" "https://gogenfilter.lars.software/"
+          echo
+          echo "Interpretation: HTTP 000 = blocked/unreachable; anything else (even 403/404) = egress works."
+          echo "Firebase deploy leg (website.yml) is safe only if firebase.googleapis.com AND storage.googleapis.com are non-000."
