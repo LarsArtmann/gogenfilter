@@ -30,26 +30,26 @@ auth=()
 response=""
 last_code=""
 for endpoint in "actions/runs" "actions/tasks"; do
-  api_url="$base/api/v1/repos/$repo/$endpoint"
-  last_code=$(curl -s -o /tmp/ci-health-response.$$ -m 30 -w "%{http_code}" "${auth[@]}" "$api_url" || echo 000)
-  if [ "$last_code" = "200" ]; then
-    response=$(cat /tmp/ci-health-response.$$)
-    break
-  fi
+	api_url="$base/api/v1/repos/$repo/$endpoint"
+	last_code=$(curl -s -o /tmp/ci-health-response.$$ -m 30 -w "%{http_code}" "${auth[@]}" "$api_url" || echo 000)
+	if [ "$last_code" = "200" ]; then
+		response=$(cat /tmp/ci-health-response.$$)
+		break
+	fi
 done
 rm -f /tmp/ci-health-response.$$
 
 if [ -z "$response" ]; then
-  echo "error: no working Actions API endpoint for $repo (last HTTP $last_code)." >&2
-  echo "hint: the repo needs the Actions unit enabled and be public (or set FORGEJO_TOKEN)." >&2
-  echo "      Pre-flip mirrors have Actions disabled — this is expected there." >&2
-  exit 2
+	echo "error: no working Actions API endpoint for $repo (last HTTP $last_code)." >&2
+	echo "hint: the repo needs the Actions unit enabled and be public (or set FORGEJO_TOKEN)." >&2
+	echo "      Pre-flip mirrors have Actions disabled — this is expected there." >&2
+	exit 2
 fi
 
 total=$(jq '.total_count // (.workflow_runs | length) // 0' <<<"$response")
 if [ "$total" -eq 0 ]; then
-  echo "No Action runs recorded for $repo yet."
-  exit 0
+	echo "No Action runs recorded for $repo yet."
+	exit 0
 fi
 
 # Normalize: status may be GitHub-style (queued/in_progress) or Forgejo-style
@@ -76,13 +76,13 @@ zombies=$(jq -r --argjson now "$now" --argjson zm "$zombie_minutes" '
 ' <<<"$response")
 
 if [ -n "$zombies" ]; then
-  echo "ZOMBIE/WEDGED RUNS detected in $repo (in flight > ${zombie_minutes}m):"
-  echo "id	name	status	url"
-  echo "$zombies"
-  echo
-  echo "Remedy: re-run or cancel them in the Forgejo UI, or delete stale rows"
-  echo "via the API — see SystemNix/docs/services/forgejo.md (zombie #14843)."
-  exit 1
+	echo "ZOMBIE/WEDGED RUNS detected in $repo (in flight > ${zombie_minutes}m):"
+	echo "id	name	status	url"
+	echo "$zombies"
+	echo
+	echo "Remedy: re-run or cancel them in the Forgejo UI, or delete stale rows"
+	echo "via the API — see SystemNix/docs/services/forgejo.md (zombie #14843)."
+	exit 1
 fi
 
 in_flight=$(jq '[.workflow_runs[] | select((.status // "") == "running" or (.status // "") == "in_progress" or (.status // "") == "queued" or (.status // "") == "waiting")] | length' <<<"$response")

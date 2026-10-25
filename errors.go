@@ -56,37 +56,37 @@ type ErrorCoder interface {
 //nolint:exhaustruct_v5
 var (
 	// ErrProjectRootNotFound is returned when no project root marker file is found.
-	ErrProjectRootNotFound = &ProjectRootError{Code: CodeProjectRootNotFound}
+	ErrProjectRootNotFound error = &ProjectRootError{Code: CodeProjectRootNotFound}
 
 	// ErrProjectRootInvalidPath is returned when the start path cannot be resolved.
-	ErrProjectRootInvalidPath = &ProjectRootError{Code: CodeProjectRootInvalidPath}
+	ErrProjectRootInvalidPath error = &ProjectRootError{Code: CodeProjectRootInvalidPath}
 
 	// ErrInvalidFilterOption is returned when an unrecognized FilterOption is passed.
-	ErrInvalidFilterOption = &FilterConfigError{Code: CodeInvalidFilterOption}
+	ErrInvalidFilterOption error = &FilterConfigError{Code: CodeInvalidFilterOption}
 
 	// ErrFileRead is returned when a file cannot be read during detection.
-	ErrFileRead = &FileReadError{Code: CodeFileRead}
+	ErrFileRead error = &FileReadError{Code: CodeFileRead}
 
 	// ErrSQLCConfigRead is returned when a sqlc config file cannot be read.
-	ErrSQLCConfigRead = &SQLCConfigError{Code: CodeSQLCConfigRead}
+	ErrSQLCConfigRead error = &SQLCConfigError{Code: CodeSQLCConfigRead}
 
 	// ErrSQLCConfigParse is returned when sqlc config YAML is invalid.
-	ErrSQLCConfigParse = &SQLCConfigError{Code: CodeSQLCConfigParse}
+	ErrSQLCConfigParse error = &SQLCConfigError{Code: CodeSQLCConfigParse}
 
 	// ErrSQLCConfigWalk is returned when walking directories for sqlc configs fails.
-	ErrSQLCConfigWalk = &SQLCConfigError{Code: CodeSQLCConfigWalk}
+	ErrSQLCConfigWalk error = &SQLCConfigError{Code: CodeSQLCConfigWalk}
 
 	// ErrSQLCConfigCollect is returned when collecting output dirs from sqlc configs fails.
-	ErrSQLCConfigCollect = &SQLCConfigError{Code: CodeSQLCConfigCollect}
+	ErrSQLCConfigCollect error = &SQLCConfigError{Code: CodeSQLCConfigCollect}
 
 	// ErrSQLCConfigFind is returned when finding sqlc config files fails.
-	ErrSQLCConfigFind = &SQLCConfigError{Code: CodeSQLCConfigFind}
+	ErrSQLCConfigFind error = &SQLCConfigError{Code: CodeSQLCConfigFind}
 
 	// ErrScanConfig is returned when scan filter configuration fails.
-	ErrScanConfig = &ScanError{Code: CodeScanConfig}
+	ErrScanConfig error = &ScanError{Code: CodeScanConfig}
 
 	// ErrScanWalk is returned when the filesystem walk during scanning fails.
-	ErrScanWalk = &ScanError{Code: CodeScanWalk}
+	ErrScanWalk error = &ScanError{Code: CodeScanWalk}
 )
 
 // ProjectRootError is returned when the project root cannot be found.

@@ -24,7 +24,6 @@
 
   outputs =
     inputs@{
-      self,
       flake-parts,
       md-go-validator,
       ...
@@ -115,7 +114,6 @@
 
       perSystem =
         {
-          config,
           pkgs,
           ...
         }:
