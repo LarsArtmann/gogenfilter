@@ -20,9 +20,9 @@ This project provides detection and filtering capabilities for auto-generated Go
 - Root-level `.go` files: Core library implementation (standard Go library convention)
 - Test files: `*_test.go` alongside source files
 - `docs/`: Planning documents and status reports
-- `.github/workflows/ci.yml`: Go CI — test, vet, lint, benchmarks (path-filtered: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`)
-- `.github/workflows/website.yml`: Website CI/CD — typecheck, build, validate docs, deploy to Firebase (path-filtered: `website/**`)
-- `.github/dependabot.yml`: Weekly automated dependency updates (Go modules, pnpm, GitHub Actions)
+- `.forgejo/workflows/`: Forgejo Actions (canonical since 2026-10-25) — `ci.yml` (consolidated nix gates), `website.yml` (build+deploy), `release.yml` (tag → Forgejo/GitHub release), `benchmark.yml`, `probe.yml` (runner diagnostics)
+- `.github/workflows/`: legacy GitHub Actions, billing-dead since 2026-09-08; deleted in the cutover commit after the Forgejo leg's burn-in (see TODO_LIST)
+- `.github/dependabot.yml`: dead on Forgejo (GitHub-only); deletion planned with the cutover; replacement decision (Renovate vs manual sweep) in TODO_LIST
 
 ### Key Source Files
 
@@ -46,7 +46,7 @@ This project provides detection and filtering capabilities for auto-generated Go
 - Landing page at `/` with hero, features, code examples
 - Starlight docs at root level with PageFind search
 - Firebase Hosting deployment (firebase.json, .firebaserc)
-- CI/CD: `.github/workflows/website.yml`
+- CI/CD: `.forgejo/workflows/website.yml` (Forgejo runner on evo-x2; deploy gated on `FIREBASE_SERVICE_ACCOUNT` secret)
 - Build: `cd website && pnpm run build`
 - Dev: `cd website && pnpm run dev`
 - Type check: `cd website && pnpm dlx astro check`
@@ -63,6 +63,8 @@ This project provides detection and filtering capabilities for auto-generated Go
 - **CSP (Content Security Policy)** — Astro v6 built-in CSP (`security.csp` in `astro.config.mjs`). CSP is NOT in Firebase headers — Firebase only sets non-CSP security headers (HSTS, X-Frame-Options, etc.). Post-build `scripts/fix-csp.mjs` handles two Astro gaps: (1) **Style hash stripping** — Astro auto-hashes inline `<style>` blocks into `style-src`, making `'unsafe-inline'` ineffective. Per the CSP spec, when a source list contains ANY hash/nonce, `'unsafe-inline'` is ignored entirely — this silently breaks **expressive-code syntax highlighting** (token spans use inline `style="--0:#color;--1:#color"`). `fix-csp.mjs` robustly strips ALL hash/nonce sources from `style-src` (any type/order) so `'unsafe-inline'` stays effective for Starlight's `style=""` attributes AND expressive-code tokens. (2) **Missing script hashes** — Starlight injects non-module inline scripts (ThemeProvider, Search modal, SidebarPersister) after Astro's hash phase. The script computes SHA-256 hashes and appends them to `script-src`. Our own source code has **zero inline styles** — all converted to Tailwind classes. No `<style>` blocks in our components. If adding new inline scripts, run `pnpm run build` and the script will auto-hash them.
 
 #### Lighthouse / Performance
+
+> **KILLED 2026-10-25 (decision D3)** — advisory-only theater (warn-only assertions, no GitHub App token, no reader). `lighthouse.yml` + `lighthouserc.json` are deleted in the Forgejo cutover commit; do not re-port them without a real consumer for the metrics. Quick manual checks: [unlighthouse.dev/tools](https://unlighthouse.dev/tools).
 
 - **Lighthouse / Performance**: Config in `lighthouserc.json` only. Assertions cover performance, accessibility, SEO, best-practices, resource sizes, and timings. Budgets not used (LHCI v12 rejects budgets+assertions together).
 - **[unlighthouse.dev/tools](https://unlighthouse.dev/tools)** — Free web tools for performance auditing: Bulk PageSpeed Test, CWV Checker, CWV History, Lighthouse Score Calculator, HAR Viewer, Page Size Checker.
@@ -157,54 +159,25 @@ This is a library project, so the main package resides at the root level. This f
 
 ## CI
 
-Four separate GitHub Actions workflows, all triggered on push to master with path filters + `workflow_dispatch` for manual triggering (CI and Website also run on PRs):
+**Forgejo-primary since 2026-10-25** (migration plan: `docs/planning/2026-10-25_17-13_forgejo-ci-migration-pareto-plan.md`). The repo is canonical on the local Forgejo (`forgejo.home.lan/lars/gogenfilter`); GitHub is an outbound push mirror (sync-on-commit, 8h interval). GitHub Actions has been billing-dead since 2026-09-08 — the GitHub workflow files are inert and get deleted in the cutover commit after the Forgejo burn-in.
 
-**Go CI** (`.github/workflows/ci.yml`):
+**Forgejo workflows** (`.forgejo/workflows/`, runner = evo-x2 host, label `native`, capacity 2):
 
-- Path filters: `*.go`, `go.mod`, `go.sum`, `testdata/**`, `.golangci.*`
-- Concurrency group cancels in-progress runs
-- `go vet` → tests with race detector and coverage (98% threshold) → benchmarks
-- govulncheck job (parallel with lint)
-- golangci-lint (separate job, parallel, uses `gomodguard_v2`)
-- Uses `actions/setup-go@v6` (Node.js 24)
+- `ci.yml` — consolidated quality gate: `nix flake check`, build+vet, `nix run .#test-race`, coverage ≥98% gate (awk — the runner has no `bc`), `nix run .#lint`, plugin-module tests (`GOWORK=off`), art-dupl v0.1.0, gendocs freshness + link check, govulncheck. Plus weekly Wednesday canary (outage heartbeat).
+- `website.yml` — single job: build state on `/mnt/buildcache/gogenfilter-web` (workspace is NOEXEC), pnpm via `nixpkgs#pnpm_11`, astro check/build, md-go-validator via website flake, html-validate, dedup, /v3-import + stale-refs + CHANGELOG-sync checks, Firebase deploy gated on the `FIREBASE_SERVICE_ACCOUNT` secret (fails soft without it).
+- `release.yml` — tag trigger `vX.Y.Z*`: gates → `scripts/release-notes.sh` (CHANGELOG section, fails if empty) → Forgejo release via API → GitHub release via API when `GH_RELEASE_PAT` is set.
+- `benchmark.yml` — `go test -bench` + `scripts/bench-threshold.sh` vs committed `testdata/bench-baseline.txt` (alert 150% / fail 300%). Baseline updates are deliberate local commits.
+- `probe.yml` — runner diagnostics: toolchain versions, filesystem hazards, egress probes (Firebase/npm/github/proxy).
 
-**Benchmark** (`.github/workflows/benchmark.yml`):
+**Runner facts** (evo-x2, verified from the runner unit): PATH carries nix 2.34.9, **go 1.26.8 (this module needs 1.27 — ALL Go must ride the flake or `nix shell nixpkgs#go_1_27`)**, node 24.21.0, jq, python3, curl, wget, gcc; warm `GOMODCACHE`/`GOCACHE`/`npm_config_cache` point at `/mnt/buildcache/ci-runner-cache/*`; job workspace is NOEXEC and `/var/tmp` is an inode-capped tmpfs (node builds must copy to a buildcache state root, eventcatalog-hub pattern); systemd DynamicUser uid churns — `chmod -R a+rwX` cached trees; NixOS switches open seconds-long resolver/connect/mount windows (network steps get bounded retries).
 
-- Push to master only (no PR trigger — avoids `contents: write` permission on fork PRs)
-- Path filters: `*.go`, `go.mod`, `go.sum`, `.github/workflows/benchmark.yml`
-- `workflow_dispatch` enabled
-- `go test -bench=. -benchmem` → `benchmark-action/github-action-benchmark@v1`
-- Pushes benchmark data to `gh-pages` branch (`dev/bench/` directory)
-- Alert threshold: 150%, fail threshold: 300%
+**Release flow** — see RELEASING.md: tag on Forgejo → release workflow → Forgejo release (+ GitHub via PAT) → push mirror → proxy.golang.org.
 
-**Website** (`.github/workflows/website.yml`):
+### CI Known Issues
 
-- Path filters: `website/**`, `.github/workflows/website.yml`, `.github/workflows/lighthouse.yml`, `lighthouserc.json`
-- `workflow_dispatch` enabled
-- Concurrency group cancels in-progress runs
-- `pnpm install --frozen-lockfile` → `astro check` (typecheck) → build → doc validation (md-go-validator, optional) → HTML validation (enforced, not suppressed) → code dedup check
-- Import path validation: ensures all `gogenfilter` imports include `/v3`
-- Stale reference detection: checks curated docs for references to deleted files
-- CHANGELOG sync check: verifies version sections match between root and website
-- Cross-repo checkout for `LarsArtmann/md-go-validator` uses `secrets.PRIVATE_REPO_TOKEN` with `github.token` fallback; `continue-on-error: true` so build/deploy proceeds even without access. `LarsArtmann/go-output` checkout removed (was unused).
-- Deploy to Firebase Hosting via `firebase-tools` CLI (master push only, runs under Node 24). Formerly used `FirebaseExtended/action-hosting-deploy@v0` (removed due to Node 20 deprecation).
-- Node version pinned via `website/.node-version` (currently Node 24)
-
-**Lighthouse CI** (`.github/workflows/lighthouse.yml`):
-
-- Uses `treosh/lighthouse-ci-action@v12` (official LHCI, 1.2k+ stars, collaborated with Google Chrome team)
-- **Prerequisite**: Install [Lighthouse CI GitHub App](https://github.com/apps/lighthouse-ci) for the repo, then add the token as `LHCI_GITHUB_APP_TOKEN` secret
-- Triggers: push/PR to master (when website/config files change), plus `workflow_dispatch` for on-demand
-- Scans: `https://gogenfilter.web.app/` (root, docs, API, changelog) — 3 runs per URL for stability
-- Assertions: `lighthouse:no-pwa` preset + permissive custom thresholds (performance: warn≥0.8, accessibility: error≥0.8, SEO/best-practices: error≥0.9)
-- Uploads results to temporary public storage + artifacts (14-day retention)
-- Config in `lighthouserc.json` only (budgets NOT used — LHCI v12 rejects budgets+assertions together)
-
-### CI Known Issues (2026-06-01)
-
-- **Website CI**: `PRIVATE_REPO_TOKEN` secret optional — md-go-validator checkout has `continue-on-error: true`, doc validation is skipped gracefully when unavailable
-- **Lighthouse CI**: Advisory-only monitor — all assertions set to `warn` level. The workflow collects metrics and uploads artifacts but never fails the build. To upgrade to gating: install LHCI GitHub App, add `LHCI_GITHUB_APP_TOKEN`, upgrade assertions to `error` in `lighthouserc.json`.
-- **Lighthouse CI**: `LHCI_GITHUB_APP_TOKEN` secret not configured — GitHub status checks not produced. Workflow runs as advisory-only with all assertions at `warn` level.
+- **Secrets do not migrate**: set `FIREBASE_SERVICE_ACCOUNT` (website deploy) and `GH_RELEASE_PAT` (optional GitHub release mirroring) in the Forgejo repo settings after the flip; until then the workflows degrade gracefully (deploy skipped, Forgejo-only releases).
+- **Actions on pull mirrors are disabled** (`has_actions: false` pre-flip) — workflows only run once the repo is flipped native.
+- **Zombie runs** (Forgejo #14843, fix pending): watch with `scripts/ci-health.sh` (exit 1 on runs stuck in flight >60m).
 
 ## Key API Patterns
 
@@ -235,6 +208,7 @@ Four separate GitHub Actions workflows, all triggered on push to master with pat
 - **Theme systems unified (2026-08-11)** — The landing page now uses the same `data-theme` attribute on `<html>` as Starlight docs (`data-theme="light"` / `data-theme="dark"`), and both share the `localStorage["starlight-theme"]` key. The landing page toggle is three-state (light → dark → auto), matching Starlight's docs toggle. The `"auto"` state follows `prefers-color-scheme` and updates reactively via a `matchMedia` change listener. Old `"theme"` localStorage key is read as backward-compat fallback. Default is `"auto"` (no key set). No-JS fallback: `<html data-theme="dark">` default in LandingLayout. Changes: `global.css` (`:root.light` → `:root[data-theme="light"]`), `theme-init.js`, `header.js` (three-state cycle + `resolveVisualTheme`/`getStoredTheme` helpers), `Header.astro` (three icon spans: sun/moon/monitor), `types.ts` + `Icon.astro` (added `monitor` icon).
 - **`astro-og-canvas` requires the `param` option** — `OGImageRoute({ param: "slug", ... })` in `src/pages/og/[...slug].ts`. The `param` value must match the bracket segment name. Removing it causes a `PrerenderDynamicEndpointPathCollide` build error (undefined param). The library generates `/og/<slug>.png` automatically; do NOT add `.png` to the filename. **v0.13.0 removed `param` from `OGImageRouteConfig` types** — a `@ts-expect-error` directive on that line is required for `astro check` to pass (the option is still needed at runtime). Local `node_modules` can drift stale (e.g., 0.12.0 installed while lockfile pins 0.13.0); `pnpm install --frozen-lockfile` resyncs — a stale local install masks the type error.
 - **BuildFlow auto-commits during doc work** — BuildFlow may commit work mid-session with generic messages. Check `git log` and `git status` early and often. If commits bundle unrelated changes, consider the working tree may not reflect only your changes.
+- **The auto-commit daemon can commit DELETIONS** — on 2026-10-05 a `chore: auto-commit 0 changed file(s)` commit removed `testdata/templ/page_templ.go` (a tracked test fixture) from master; integration tests then failed with "file does not exist" for 20 days unnoticed (GitHub Actions was billing-dead, local gates weren't run). `.gitignore` whitelists do NOT protect tracked files from deletion — when a test fails on a missing testdata file, check `git log --diff-filter=D -- <path>` and restore with `git show <rev>^:<path>`.
 - **`docs/status/archive/`** — Historical status reports and planning docs. Reports accumulate in `docs/status/`; older ones move to `archive/` when the active directory grows beyond ~15 files. There is no hard "keep only 3" rule — historical reports carry valuable cross-references and resolution annotations, so pruning is by relevance and age, not a fixed count.
 
 ## License

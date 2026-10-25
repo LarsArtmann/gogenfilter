@@ -1,7 +1,7 @@
 # TODO List
 
-**Updated:** 2026-08-10
-**Current version:** v3.5.0
+**Updated:** 2026-10-25
+**Current version:** v3.6.1
 **Strategic direction:** v4 — golangci-lint plugin (see [ROADMAP.md](ROADMAP.md))
 
 > Open work only. Completed items live in [CHANGELOG.md](CHANGELOG.md); long-term ideas live in
@@ -13,9 +13,8 @@
       `plugin/go.mod` before tagging. Verify `golangci-lint custom` builds successfully with the
       published version.
       _Priority: HIGH | Effort: 1 hr | Needs: v3.5.0 tagged first_
-- [ ] **Add plugin CI job** — Verify `plugin/` compiles and tests pass in CI. Add a job to
-      `.github/workflows/ci.yml` that runs `cd plugin && GOWORK=off go test ./...`.
-      _Priority: HIGH | Effort: 1 hr_
+- [x] **Add plugin CI job** — DONE via the Forgejo `ci.yml` (2026-10-25): `nix shell nixpkgs#go_1_27 nixpkgs#gcc -c bash -c 'cd plugin && GOWORK=off go test ./...'` runs in the consolidated quality-gate job; verified green locally before the flip.
+      _Priority: HIGH | Effort: 1 hr | Status: DONE (2026-10-25)_
 - [ ] **Integration test with real golangci-lint** — Build a custom golangci-lint binary with the
       plugin and run it against a test project containing generated files. Verify diagnostics appear.
       _Priority: MEDIUM | Effort: 2 hr_
@@ -33,18 +32,66 @@
 - [ ] **Visually verify the site (screenshots)** — No session has ever rendered a pixel. Serve
       locally (`cd website && pnpm run dev`), screenshot every page in both themes + mobile, confirm
       colors/layouts/gradients. _Priority: HIGH | Effort: 1 hr | Needs: browser_
-- [ ] **Website performance audit** — Establish Lighthouse baselines (performance, accessibility,
-      SEO, best-practices) on the post-redesign site. Lighthouse CI is now advisory-only (all
-      assertions at `warn` level). _Priority: MEDIUM | Effort: 1 hr | Needs: Lighthouse_
+- [ ] **Website performance audit** — Establish performance/a11y/SEO baselines on the post-redesign
+      site with manual runs ([unlighthouse.dev/tools](https://unlighthouse.dev/tools) or local
+      Lighthouse); LHCI automation was killed with the GitHub CI (2026-10-25, decision D3).
+      _Priority: MEDIUM | Effort: 1 hr | Needs: browser_
 - [ ] **Test on real browsers** (Chrome, Firefox, Safari) — Verify the color-token fixes, CSP
       changes, and OG images render correctly across browsers.
       _Priority: MEDIUM | Effort: 30 min | Needs: browsers_
 
 ## CI / Process
 
-- [ ] **Configure LHCI_GITHUB_APP_TOKEN** — Install Lighthouse CI GitHub App and add the token
-      secret. Once configured, upgrade assertions from `warn` to `error` in `lighthouserc.json`.
-      _Priority: LOW | Effort: 30 min | Needs: GitHub App install_
+- [x] **Configure LHCI_GITHUB_APP_TOKEN** — KILLED 2026-10-25 (migration decision D3): the
+      Lighthouse CI monitor was advisory-only theater (warn-only assertions, no token, no reader);
+      `lighthouse.yml` + `lighthouserc.json` are deleted in the Forgejo cutover commit. Revisit only
+      with a real consumer for the metrics.
+      _Priority: LOW | Status: KILLED (2026-10-25)_
+
+## Forgejo CI Migration (2026-10-25)
+
+Plan: `docs/planning/2026-10-25_17-13_forgejo-ci-migration-pareto-plan.md`. Workflows + scripts are
+written, validated, and pushed (`.forgejo/workflows/`, `scripts/`); the flip is the only user-gated
+step. Order matters: flip → push/verify → secrets → drill → cutover.
+
+- [ ] **USER: run the flip** — `sudo systemctl start forgejo-flip-check@gogenfilter` (read the
+      plan output), then `sudo systemctl start forgejo-flip@gogenfilter`. Verify: repo native
+      (mirror=false), ~11 open issues/PRs imported, 10 releases imported, push mirror attached.
+      _Priority: HIGH | Effort: 10 min | Needs: sudo on evo-x2_
+- [ ] **Switch clone origins** — this clone: `git remote set-url origin ssh://forgejo@forgejo.home.lan/lars/gogenfilter.git`
+      + keep `github` as fallback remote. **Mac clone must switch BEFORE its next push** (clobber
+      risk while the push mirror is live).
+      _Priority: HIGH | Effort: 10 min_
+- [ ] **Verify first Forgejo runs green** — push master to Forgejo; `ci.yml` (all gates incl.
+      plugin tests + coverage awk gate), `website.yml` (build+validate; deploy skips without
+      secret), `probe.yml` (records toolchain versions + Firebase egress verdict). Watch runs in
+      the Forgejo UI or `scripts/ci-health.sh`.
+      _Priority: HIGH | Effort: 30 min_
+- [ ] **Set Forgejo Actions secrets** — `FIREBASE_SERVICE_ACCOUNT` (website deploy leg; deploy
+      fails soft until set) and `GH_RELEASE_PAT` (GitHub release mirroring, needs `repo` scope).
+      Optional: `RELEASE_TOKEN` only if the default Actions token turns out read-scoped. Repo →
+      Settings → Actions → Secrets.
+      _Priority: HIGH | Effort: 10 min | Needs: Forgejo UI_
+- [ ] **Release drill** — tag `v0.0.0-ci-drill` on Forgejo → release.yml creates the Forgejo
+      release from CHANGELOG (drill tag has no section, so verify the fail-path message is clean,
+      then tag a section-bearing test or accept the gate failure as the drill result) → delete
+      tag+release both sides.
+      _Priority: HIGH | Effort: 30 min_
+- [ ] **Cutover deletions** — after Forgejo ci+website are green: delete `.github/workflows/` +
+      `.github/dependabot.yml` + `lighthouserc.json`, remove the README CI badge, confirm the
+      push mirror propagates the deletion to GitHub.
+      _Priority: HIGH | Effort: 15 min_
+- [ ] **Dependency-update strategy** — dependabot is GitHub-only and dies at cutover; decide
+      Renovate self-host vs quarterly manual `buildflow update` sweep; record the decision here.
+      _Priority: MEDIUM | Effort: 30 min_
+- [ ] **Optional hardening** — add `gogenfilter` to `SystemNix` `forgejo.canonicalRepos` (declarative
+      push-mirror re-attachment; currently unused, S-1599 gated), attic nix-cache secrets for
+      faster evals, schedule `scripts/ci-health.sh` via Gatus/cron (zombie-run watch, Forgejo
+      #14843).
+      _Priority: LOW | Effort: 30 min_
+- [ ] **1-week post-cutover retro** — deploy reliability, zombie runs, capacity contention;
+      annotate `docs/status/2026-10-25_16-57_forgejo-migration-assessment-self-review.md`.
+      _Priority: LOW | Effort: 30 min | Needs: 1 week_
 
 ## Dependencies / Security
 
