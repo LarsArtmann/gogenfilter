@@ -96,7 +96,7 @@ jobs:
           echo "Forgejo release created: $html_url"
           rm -f release-response.json
 
-      - name: Mirror release to GitHub (D2: users browse github.com)
+      - name: Mirror release to GitHub (users browse github.com, decision D2)
         env:
           GH_RELEASE_PAT: ${{ secrets.GH_RELEASE_PAT }}
         run: |

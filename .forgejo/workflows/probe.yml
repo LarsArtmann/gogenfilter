@@ -60,7 +60,7 @@ jobs:
           echo "nixpkgs#pnpm      -> $(nix eval --raw nixpkgs#pnpm.version; echo)"
           echo "nixpkgs#golangci-lint -> $(nix eval --raw nixpkgs#golangci-lint.version; echo)"
 
-      - name: Filesystem hazard checks (runbook: noexec workspace, tmpfs caps)
+      - name: Filesystem hazard checks (noexec workspace, tmpfs caps)
         run: |
           set -euo pipefail
           echo "--- /tmp writable?"

@@ -84,7 +84,7 @@ jobs:
           npm_config_store_dir: ${{ env.PNPM_STORE }}
         run: |
           set -euo pipefail
-          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c bash -c '
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c bash -c '
             node -v && pnpm --version
             pnpm install --frozen-lockfile
           '
@@ -93,15 +93,15 @@ jobs:
       - name: pnpm audit (advisory)
         continue-on-error: true
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#pnpm -c pnpm audit --audit-level=high --omit=dev
+        run: nix shell nixpkgs#pnpm_11 -c pnpm audit --audit-level=high --omit=dev
 
       - name: Typecheck (astro check)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm exec astro check
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec astro check
 
       - name: Build (astro build + CSP post-fix)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm run build
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run build
 
       - name: Validate documentation code blocks (md-go-validator, website flake)
         working-directory: website
@@ -109,11 +109,11 @@ jobs:
 
       - name: HTML validation
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm exec html-validate --config .htmlvalidate.json "dist/**/*.html"
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec html-validate --config .htmlvalidate.json "dist/**/*.html"
 
       - name: Code duplication check (jscpd via dedup.sh)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm -c pnpm run dedup
+        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run dedup
 
       - name: Validate import paths contain /v3
         run: |
