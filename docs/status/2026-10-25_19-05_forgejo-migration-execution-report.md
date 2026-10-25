@@ -66,3 +66,28 @@ will fight the new push mirror — switch its origin first.
   should add a temporary CHANGELOG section to exercise the success path end-to-end.
 - `forgejo.canonicalRepos` left untouched: no host sets it yet (S-1599, gated) and the
   flip script attaches the push mirror itself.
+
+## Incident addendum (2026-10-25 19:07–19:30): flip false-failure, import fully successful
+
+The user ran the flip; it died after 2m57s with `post-flip verify failed: GitHub had 11 open
+issues but forgejo imported 0`. Investigation:
+
+- **Import was 100% faithful**: Forgejo API shows `mirror=false`, `has_actions=true`,
+  `release_counter=10` (all releases), `open_pr_counter=11`, `open_issues_count=0`, master HEAD
+  `64d1a68` (= GitHub HEAD at flip time). GitHub had 11 open **PRs** and 0 real issues
+  (`pulls?state=open` = 11; issues minus PRs = 0).
+- **Root cause**: GitHub's `open_issues_count` counts issues AND PRs; Forgejo splits them
+  (`open_issues_count` + `open_pr_counter`). The flip script compared GitHub's combined counter
+  against Forgejo's issues-only counter → guaranteed false failure for any PR-only repo.
+- **Consequence**: the script exited before the push-mirror attach — the repo is native with NO
+  push mirror yet.
+- **Fixes (SystemNix, committed + toplevel build verified)**:
+  1. `_forgejo-scripts.nix` — verify now compares `open_issues_count + open_pr_counter` vs
+     GitHub's `open_issues_count`, and the failure message reports both sides.
+  2. `configuration.nix` — `gogenfilter` added to `canonicalRepos`, so the sync unit's phase 5
+     attaches the push mirror idempotently (the designed recovery path; the flip script itself now
+     refuses non-mirrors by design).
+- **New hazard surfaced**: the sync PAT lacks the `workflow` scope (domains already 114 commits
+  frozen as of 2026-10-25) — needed for gogenfilter until the cutover deletes `.github/workflows/`.
+  Recovery sequence recorded in TODO_LIST (gh auth refresh → update-github-token → rebuild →
+  start sync).

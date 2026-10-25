@@ -54,10 +54,20 @@ Plan: `docs/planning/2026-10-25_17-13_forgejo-ci-migration-pareto-plan.md`. Work
 written, validated, and pushed (`.forgejo/workflows/`, `scripts/`); the flip is the only user-gated
 step. Order matters: flip → push/verify → secrets → drill → cutover.
 
-- [ ] **USER: run the flip** — `sudo systemctl start forgejo-flip-check@gogenfilter` (read the
-      plan output), then `sudo systemctl start forgejo-flip@gogenfilter`. Verify: repo native
-      (mirror=false), ~11 open issues/PRs imported, 10 releases imported, push mirror attached.
-      _Priority: HIGH | Effort: 10 min | Needs: sudo on evo-x2_
+- [x] **USER: run the flip** — RAN 2026-10-25 19:07. The migrate itself fully succeeded
+      (native, Actions enabled, 11 open PRs + 10 releases imported, master = GitHub HEAD), but the
+      flip's verify **false-failed** on a counter-semantics bug: GitHub's `open_issues_count`
+      includes PRs, Forgejo's excludes them (all 11 were PRs, 0 real issues). The script died
+      BEFORE attaching the push mirror. Root cause + fix live in SystemNix
+      (`_forgejo-scripts.nix`, compare `open_issues_count + open_pr_counter`).
+      _Priority: HIGH | Status: DONE (verify bug fixed upstream; mirror attach below)_
+- [ ] **USER: deploy the SystemNix fix + attach the push mirror** — (a) `gh auth refresh -s workflow`
+      (the sync PAT lacks `workflow` scope — domains is already 114 commits frozen; gogenfilter
+      needs it while `.github/workflows/` exists, i.e. until cutover), (b) `forgejo-update-github-token`
+      (refreshes sops), (c) `sudo nixos-rebuild switch --flake .#evo-x2` (toplevel pre-verified to
+      build), (d) `sudo systemctl start forgejo-github-sync` (phase 5 attaches gogenfilter's push
+      mirror idempotently — it is already in `canonicalRepos`).
+      _Priority: HIGH | Effort: 15 min | Needs: sudo + browser for gh auth_
 - [ ] **Switch clone origins** — this clone: `git remote set-url origin ssh://forgejo@forgejo.home.lan/lars/gogenfilter.git`
       + keep `github` as fallback remote. **Mac clone must switch BEFORE its next push** (clobber
       risk while the push mirror is live).
