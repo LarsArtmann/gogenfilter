@@ -42,7 +42,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  WEB_STATE_ROOT: /mnt/buildcache/gogenfilter-web
+  # MUST live inside ci-runner-cache: the runner unit's ReadWritePaths
+  # whitelist (learned the hard way by eventcatalog-hub on 2026-10-27 —
+  # a sibling /mnt/buildcache/<repo> root is EROFS inside the job).
+  WEB_STATE_ROOT: /mnt/buildcache/ci-runner-cache/gogenfilter-web
   PNPM_STORE: /mnt/buildcache/ci-runner-cache/pnpm-store
 
 jobs:

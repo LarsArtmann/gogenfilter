@@ -93,10 +93,15 @@ jobs:
       - name: Coverage (root package, ≥98% gate — awk, the runner has no bc)
         run: |
           set -euo pipefail
-          nix shell nixpkgs#go_1_27 -c bash -c \
-            'go test -covermode=atomic -coverprofile=coverage.out .'
-          go tool cover -func=coverage.out | tail -1
-          total=$(go tool cover -func=coverage.out | awk '$1 == "total:" { gsub(/%/, "", $3); print $3 }')
+          # EVERY go invocation rides go_1_27: the host go is 1.26.8 and
+          # GOTOOLCHAIN=local makes it refuse this module (go tool cover
+          # included — it parses go.mod too).
+          nix shell nixpkgs#go_1_27 -c bash -c '
+            go test -covermode=atomic -coverprofile=coverage.out .
+            go tool cover -func=coverage.out > coverage-func.txt
+          '
+          tail -1 coverage-func.txt
+          total=$(awk '$1 == "total:" { gsub(/%/, "", $3); print $3 }' coverage-func.txt)
           if awk -v t="$total" 'BEGIN { exit !(t + 0 >= 98.0) }'; then
             echo "Coverage ${total}% meets the 98% threshold"
           else
