@@ -37,6 +37,9 @@ on:
       - website/flake.lock
   workflow_dispatch:
 
+env:
+  GF_LOG: /mnt/buildcache/ci-runner-cache/gf-logs
+
 concurrency:
   group: website-${{ github.ref }}
   cancel-in-progress: true
@@ -59,10 +62,13 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: A11y guard (template family violation classes)
-        run: bash scripts/a11y-guard.sh
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run01.log") 2>&1
+          bash scripts/a11y-guard.sh
 
       - name: Prepare exec-allowed build state (workspace is NOEXEC)
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run01.log") 2>&1
           set -euo pipefail
           ok=0
           for attempt in 1 2 3 4 5 6; do
@@ -86,6 +92,7 @@ jobs:
         env:
           npm_config_store_dir: ${{ env.PNPM_STORE }}
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run02.log") 2>&1
           set -euo pipefail
           nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c bash -c '
             node -v && pnpm --version
@@ -96,30 +103,43 @@ jobs:
       - name: pnpm audit (advisory)
         continue-on-error: true
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#pnpm_11 -c pnpm audit --audit-level=high --omit=dev
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run02.log") 2>&1
+          nix shell nixpkgs#pnpm_11 -c pnpm audit --audit-level=high --omit=dev
 
       - name: Typecheck (astro check)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec astro check
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run03.log") 2>&1
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec astro check
 
       - name: Build (astro build + CSP post-fix)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run build
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run04.log") 2>&1
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run build
 
       - name: Validate documentation code blocks (md-go-validator, website flake)
         working-directory: website
-        run: nix run .#validate-docs
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run05.log") 2>&1
+          nix run .#validate-docs
 
       - name: HTML validation
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec html-validate --config .htmlvalidate.json "dist/**/*.html"
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run06.log") 2>&1
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm exec html-validate --config .htmlvalidate.json "dist/**/*.html"
 
       - name: Code duplication check (jscpd via dedup.sh)
         working-directory: /mnt/buildcache/gogenfilter-web/site
-        run: nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run dedup
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run07.log") 2>&1
+          nix shell nixpkgs#nodejs_24 nixpkgs#pnpm_11 -c pnpm run dedup
 
       - name: Validate import paths contain /v3
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run03.log") 2>&1
           ERRORS=""
           # Check that all import paths in docs and website source reference /v3
           for file in $(grep -rl 'github.com/LarsArtmann/gogenfilter' --include='*.md' --include='*.mdx' --include='*.ts' --include='*.astro' README.md website/src/ website/src/content/); do
@@ -139,6 +159,7 @@ jobs:
 
       - name: Check for stale references to deleted files
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run04.log") 2>&1
           DELETED_FILES="metrics.go phantom.go errorCodeDefs"
           ERRORS=""
           for deleted in $DELETED_FILES; do
@@ -160,6 +181,7 @@ jobs:
 
       - name: Verify CHANGELOG sync
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run05.log") 2>&1
           ROOT_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' CHANGELOG.md | sort)
           WEB_VERSIONS=$(grep -oP '^## \K\[v[\d.]+\]' website/src/content/docs/changelog.mdx | sort)
           if [ "$ROOT_VERSIONS" != "$WEB_VERSIONS" ]; then
@@ -175,6 +197,7 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-web-run06.log") 2>&1
           set -euo pipefail
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "::warning::FIREBASE_SERVICE_ACCOUNT secret is not set on Forgejo — skipping deploy (build/validation above still ran). Set the secret in the Forgejo web UI: Repo → Settings → Actions → Secrets, then re-run this workflow."

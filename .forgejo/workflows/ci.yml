@@ -68,6 +68,7 @@ concurrency:
 
 env:
   GOTOOLCHAIN: local
+  GF_LOG: /mnt/buildcache/ci-runner-cache/gf-logs
 
 jobs:
   quality:
@@ -80,18 +81,24 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Flake checks (sandboxed build + tests + treefmt)
-        run: nix flake check
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run01.log") 2>&1
+          nix flake check
 
       - name: Build + vet
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run01.log") 2>&1
           nix run .#build
           nix run .#vet
 
       - name: Race detector (full suite)
-        run: nix run .#test-race
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run02.log") 2>&1
+          nix run .#test-race
 
       - name: Coverage (root package, ≥98% gate — awk, the runner has no bc)
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run02.log") 2>&1
           set -euo pipefail
           # EVERY go invocation rides go_1_27: the host go is 1.26.8 and
           # GOTOOLCHAIN=local makes it refuse this module (go tool cover
@@ -110,15 +117,19 @@ jobs:
           fi
 
       - name: Lint (golangci-lint v2 via flake — version kept in lockstep with devshell + GitHub CI)
-        run: nix run .#lint
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run03.log") 2>&1
+          nix run .#lint
 
       - name: Plugin module tests (separate Go module, GOWORK=off)
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run03.log") 2>&1
           nix shell nixpkgs#go_1_27 nixpkgs#gcc -c bash -c \
             'cd plugin && GOWORK=off go test ./...'
 
       - name: Code duplication (art-dupl v0.1.0 — v0.3.0 is broken upstream, TODO_LIST)
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run04.log") 2>&1
           set -euo pipefail
           export GOBIN="$PWD/.tools"
           nix shell nixpkgs#go_1_27 -c bash -c 'go install github.com/LarsArtmann/art-dupl/cmd/art-dupl@v0.1.0'
@@ -128,6 +139,7 @@ jobs:
 
       - name: Generated docs freshness (gendocs table is the source of truth)
         run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run05.log") 2>&1
           nix run .#gendocs
           if ! git diff --exit-code -- README.md doc.go website/src/data/generators.json website/src/content/docs/generators.mdx website/src/content/docs/api/detection.mdx; then
             echo "::error::Generated docs are stale. Run 'nix run .#gendocs' (or go generate ./...) and commit the changes."
@@ -136,7 +148,11 @@ jobs:
           fi
 
       - name: Internal markdown links
-        run: python3 scripts/check-markdown-links.py
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run04.log") 2>&1
+          python3 scripts/check-markdown-links.py
 
       - name: Vulnerability scan (govulncheck)
-        run: nix run .#vulncheck
+        run: |
+          mkdir -p "$GF_LOG" && exec > >(tee -a "$GF_LOG/${GITHUB_RUN_NUMBER}-ci-run05.log") 2>&1
+          nix run .#vulncheck
