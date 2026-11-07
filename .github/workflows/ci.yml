@@ -57,6 +57,10 @@ jobs:
 
       - run: go vet ./...
 
+      # I/O surface gate: every production I/O call site must be declared in
+      # docs/architecture/io-surface/. Pinned tool version; upgrade deliberately.
+      - run: go run github.com/larsartmann/io-surface/cmd/io-surface@v0.3.0 check --root .
+
       - run: go test -race ./... # all packages compile and pass
 
       - run: go test -race -coverprofile=coverage.out .
