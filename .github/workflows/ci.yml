@@ -61,6 +61,16 @@ jobs:
       # docs/architecture/io-surface/. Pinned tool version; upgrade deliberately.
       - run: go run github.com/larsartmann/io-surface/cmd/io-surface@v0.3.0 check --root .
 
+      # I/O radar artifact (Theme 5 policy: artifact-only until a rule
+      # promotes above info). Advisory detector findings; the SARIF file is
+      # the retro's instrumentation source (pilot retro #2 metric).
+      - run: go run github.com/larsartmann/io-surface/cmd/io-surface@v0.3.0 lint --root . --format sarif > io-surface-lint.sarif
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: io-surface-lint-sarif
+          path: io-surface-lint.sarif
+          if-no-files-found: error
+
       - run: go test -race ./... # all packages compile and pass
 
       - run: go test -race -coverprofile=coverage.out .
