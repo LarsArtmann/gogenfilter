@@ -3,7 +3,7 @@ module github.com/LarsArtmann/gogenfilter/plugin
 go 1.27
 
 require (
-	github.com/LarsArtmann/gogenfilter/v3 v3.6.1
+	github.com/LarsArtmann/gogenfilter/v3 v3.7.0
 	github.com/golangci/plugin-module-register v0.1.2
 	golang.org/x/tools v0.52.0
 )
