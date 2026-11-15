@@ -59,7 +59,7 @@
           pname = "md-go-validator";
           version = mdgoVersion;
           src = md-go-validator.outPath or md-go-validator;
-          vendorHash = "sha256-fYZoTXM7uPiV174Mp6/HgUNKwNih/BzjnCMjHwdcAOE=";
+          vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
           proxyVendor = true;
           GOEXPERIMENT = "jsonv2";
           doCheck = false;
@@ -89,7 +89,7 @@
           "aarch64-linux"
         ];
         src = packageSrc;
-        vendorHash = "sha256-cf2KvkrLsfTHaqdmzBZ4YB28uGwWiQVLPfgprlGP/1c=";
+        vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
         # Match the hand-rolled build: vendoring via the module proxy.
         proxyVendor = true;
         enableTestCheck = true;

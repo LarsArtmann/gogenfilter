@@ -40,7 +40,7 @@
         }:
         let
           mdgo = inputs.md-go-validator.packages.${pkgs.stdenv.system}.default.overrideAttrs (_: {
-            vendorHash = "sha256-r2hvS99DCP2DkLrMkRs4lOkvDk2tQI+CGQl89KM4ZBc=";
+            vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
           });
 
           mkApp = name: runtimeInputs: text: {
