@@ -59,7 +59,7 @@
           pname = "md-go-validator";
           version = mdgoVersion;
           src = md-go-validator.outPath or md-go-validator;
-          vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+          vendorHash = "sha256-L7VZob8uScONKN80WjMXkWYr6qPzswiKVROJp/CHcIM=";
           proxyVendor = true;
           GOEXPERIMENT = "jsonv2";
           doCheck = false;
