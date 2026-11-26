@@ -37,14 +37,12 @@ on:
       - website/flake.lock
   workflow_dispatch:
 
-env:
-  GF_LOG: /mnt/buildcache/ci-runner-cache/gf-logs
-
 concurrency:
   group: website-${{ github.ref }}
   cancel-in-progress: true
 
 env:
+  GF_LOG: /mnt/buildcache/ci-runner-cache/gf-logs
   # MUST live inside ci-runner-cache: the runner unit's ReadWritePaths
   # whitelist (learned the hard way by eventcatalog-hub on 2026-10-27 —
   # a sibling /mnt/buildcache/<repo> root is EROFS inside the job).
